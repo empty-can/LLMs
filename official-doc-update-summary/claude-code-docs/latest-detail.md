@@ -167,7 +167,7 @@ Agent SDK のサブエージェントページで、定義と再開（resume）�
 - 前回サマリ(詳細版): [./archives/2026-06-05/latest-detail.md](./archives/2026-06-05/latest-detail.md)
 
 <!--
-base_commit: 1e3e2b137e7caf8898440f8f3e9733bb21fc7fdf
-head_commit: e5de99c411b81e86652a5d7f00210938b6465bf3
+base_commit: 980975cf497b0cce6847425a0787fccd839be1ae
+head_commit: 980975cf497b0cce6847425a0787fccd839be1ae
 generated_at_full: 2026-06-06T13:09:17+09:00
 -->

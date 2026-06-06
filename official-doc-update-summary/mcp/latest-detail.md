@@ -62,7 +62,7 @@
 - 前回サマリ(詳細版): [./archives/2026-06-05/latest-detail.md](./archives/2026-06-05/latest-detail.md)
 
 <!--
-base_commit: a266740e84fc0b8638ba00bdb5d77781b4ce3ef8
-head_commit: e5de99c411b81e86652a5d7f00210938b6465bf3
+base_commit: 980975cf497b0cce6847425a0787fccd839be1ae
+head_commit: 980975cf497b0cce6847425a0787fccd839be1ae
 generated_at_full: 2026-06-06T13:38:18+09:00
 -->
