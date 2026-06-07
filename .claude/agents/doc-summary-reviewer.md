@@ -46,7 +46,7 @@ SKILL.md の Phase 1/2 チェックリストのうち、機械的に検証可能
 - [ ] **内部リンク／アンカー整合**: bullet 内の `(#anchor)` が対応する `## N. <タイトル>` の GFM アンカー（番号含む・Unicode 保持）と一致。不一致は **[IMPORTANT]**
 - [ ] **h2 番号整合**: ハイライト / 新規追加 / 大幅更新 配下の個別テーマ h2 に `## N. <title>` 形式の番号が付与され、固定 category 見出しと新着情報配下には番号が無い。違反は **[IMPORTANT]**
 - [ ] **日付の日本語表記**: **本文中の**全ての年月日が `YYYY年MM月DD日` 表記（`Week N` のみ英語例外）。frontmatter の `作成日` と末尾フッタ HTML コメント内の日付（`generated_at_full`）は機械可読メタデータのため ISO 形式が正で**対象外**。違反は **[SUGGESTION]**
-- [ ] **メタデータ整合**: frontmatter の `対象期間` / `作成日` と末尾フッタの `base_commit` / `head_commit` / `generated_at_full` が `BASE_COMMIT` / `HEAD_COMMIT` と一致。不一致は **[IMPORTANT]**
+- [ ] **メタデータ整合(PT -1日ルール)**: 末尾フッタの `base_commit` / `head_commit` が `BASE_COMMIT` / `HEAD_COMMIT` と hash 一致。frontmatter の `対象期間` は `base_commit` / `head_commit` の各コミット日付(`git log -1 --format=%cs <commit>`)の **前日**、`作成日` は末尾フッタ `generated_at_full` の日付の **前日**(JST 15:00 実行=PT 前日基準のため意図的に -1 日。`generated_at_full` 自体は実時刻で -1 しない)。**対象期間がコミット日付と「同日」(=旧ルールのまま -1 されていない)場合や hash 不一致**は **[IMPORTANT]**
 
 ## 判定ルール（決定論的）
 

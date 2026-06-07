@@ -260,6 +260,14 @@ try {
         }
     }
 
+    # 5.5 生成中の scratch を除去（決定論ガード）。ヘッドレス claude が差分照合等で
+    #     official-llms-txts 配下へ一時ファイル（例: Windows パスを bash リダイレクトに
+    #     渡して名前が潰れた `C:cc-workspace...tmp-llms-full-*.txt`）を残すことがある。
+    #     dl 済みの正規ファイルは手順 4 で既に追跡・コミット済みのため、ここで
+    #     official-llms-txts 配下の未追跡物を消しても実害はなく、scratch のみ除去される。
+    #     これを怠ると次回 dl の `git add official-llms-txts`（手順 4）で誤コミットされる。
+    & git clean -fd "official-llms-txts" 2>$null | Out-Null
+
     # 6. 生成物を commit
     $summaryDir = "official-doc-update-summary"
     Invoke-Git add $summaryDir | Out-Null

@@ -73,6 +73,8 @@ git diff <BASE_COMMIT> <HEAD_COMMIT> -- <INPUT_BASE>
 出力が空なら標準出力に `差分なし、処理停止` を出して終了 (exit 0)。
 非空ならその内容を `DIFF_CONTENT` とする。
 
+> **scratch ファイルの置き場所**: 差分照合等で一時ファイルが必要な場合でも、`official-llms-txts/` や `official-doc-update-summary/` 配下には**書き込まない**(誤って `git add` で混入する)。`git diff` / `git show` の出力は直接変数・パイプで扱い、どうしてもファイルが要るなら gitignore 済みの `work/` 配下に置く。Windows 絶対パス(`C:\...`)を bash のリダイレクト先に渡すと名前が壊れた scratch が cwd に残るので避ける。
+
 ### 3. 入力ドキュメント読み込み
 
 Read tool で以下を読む:
@@ -103,8 +105,8 @@ Read tool で `$TEMPLATE` を読み込む。
 
 | Placeholder | 内容 |
 |---|---|
-| `{{PERIOD}}` | `BASE_COMMIT` の日付 〜 `HEAD_COMMIT` の日付 (`git log -1 --format=%cs <commit>` で取得) |
-| `{{GENERATED_AT}}` | 今日の日付 (`YYYY-MM-DD`) |
+| `{{PERIOD}}` | **PT 基準の対象期間**。`BASE_COMMIT`・`HEAD_COMMIT` の各コミット日付 (`git log -1 --format=%cs <commit>`) を取得し、**それぞれ 1 日前**にした日付を使う(後述「日付基準(PT -1日ルール)」参照) |
+| `{{GENERATED_AT}}` | **作成日**。`GENERATED_AT_FULL` の日付の **1 日前**(= 実行日(JST)の前日, PT 基準。`YYYY-MM-DD`)(後述「日付基準」参照) |
 | `{{OVERALL_SUMMARY_INTRO}}` | 全体要約の冒頭 1〜2 文(英語、項目数の言及程度) |
 | `{{OVERALL_SUMMARY_BULLETS}}` | 主要項目の番号付き箇条書き(後述の選定ルール参照) |
 | `{{HIGHLIGHT_BULLETS}}` | 主要 3〜5 件のハイライト bullet(英語、内部リンク付き、後述フォーマット厳守) |
@@ -118,12 +120,26 @@ Read tool で `$TEMPLATE` を読み込む。
 | `{{WHATS_NEW_DETAILS}}` | 各新着情報ページの `## <タイトル>` 見出し + 1〜2 段落 + 末尾の ja/en ページリンク |
 | `{{BASE_COMMIT}}` | 手順 1 で決定した値 |
 | `{{HEAD_COMMIT}}` | 手順 2 で取得した値 |
-| `{{GENERATED_AT_FULL}}` | 生成時刻 (`YYYY-MM-DDTHH:MM:SS+09:00` 形式) |
+| `{{GENERATED_AT_FULL}}` | **実際の生成時刻** (`YYYY-MM-DDTHH:MM:SS+09:00`、JST 実時刻)。**-1 日しない**(機械的 provenance は偽らない)。よって `作成日` はこの日付より 1 日前になる |
 | `{{PREV_GENERATED_AT}}` | アーカイブフォルダ名 `<ARCHIVE_NAME>`(手順 1 で決定。通常は前回サマリの作成日、同日衝突時は `_<HHMM>` 付き)。関連リンクのパスがこの値になる(初版時は `(none)` 等の placeholder、関連リンクは手動編集で削除) |
 
 URL 併記ルール(サイト依存):
 - URL言語併記=あり のサイト: en URL の `/docs/en/` を `/docs/ja/` に機械的置換して ja URL とし、ja/en を併記する
 - URL言語併記=なし のサイト(例: `mcp`): 言語サブパスが無いため **単一 URL** を使う(`.md` 除去のみ)。bullet・末尾リンクの `([日本語](url-ja) / [English](url-en))` 形式は使わず、単一リンクにする。`{{WHATS_NEW_*}}` placeholder はテンプレートに存在しないためスキップする
+
+#### 日付基準(PT -1日ルール)
+
+本パイプラインは **JST 15:00** に実行され、これは常に太平洋時間(PT)の前日夜(PDT 前日 23:00 / PST 前日 22:00)にあたる。取得した公式ドキュメントの内容は「PT で前日まで」の断面なので、レポートの**表示日付は PT 基準(= 実行日(JST)の前日)に揃える**。JST 15:00 実行なら DST に関わらずオフセットは常に **-1 日固定**。
+
+- **対象期間 `{{PERIOD}}`**: `BASE_COMMIT` / `HEAD_COMMIT` の各コミット日付を 1 日前にする
+- **作成日 `{{GENERATED_AT}}`**: 実行日(JST)の前日(= `GENERATED_AT_FULL` の日付の前日)
+- **`{{GENERATED_AT_FULL}}`**: 実時刻(JST, +09:00)のまま **-1 日しない**。よって `作成日` は `generated_at_full` の日付より 1 日前になる(意図的な差。整合チェックもこの前提)
+
+日付計算は `date` コマンドが allowed-tools に無いため **python** で行う:
+- 現在時刻(generated_at_full): `python -c "import datetime;print(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S+09:00'))"`
+- 日付の前日: `python -c "import datetime,sys;print((datetime.date.fromisoformat(sys.argv[1])-datetime.timedelta(days=1)).isoformat())" <YYYY-MM-DD>`
+
+> **移行境界(2026-06-08 実行分から適用)**: 2026-06-07 までの claude-code-docs / mcp サマリは旧ルール(JST 当日基準・-1 なし)で作成済み。本 PT -1日ルールは **2026-06-08 実行分以降**に適用する。境界では前回サマリの対象期間末尾(旧=JST 当日)と今回の対象期間先頭(新=PT 前日)が 1 日重なる場合があるが、ルール変更の継ぎ目として許容する。
 
 #### `{{OVERALL_SUMMARY_BULLETS}}` の選定ルール
 
@@ -208,7 +224,7 @@ URL 併記ルール(サイト依存):
 - [ ] 内部リンク整合性: bullet 内の `(#anchor)` が対応する `## N. <タイトル>` の GFM アンカー(番号含む)と一致する
 - [ ] 末尾参考リンクのテキスト: `[<タイトル> - Claude Code Docs (日本語 or English)]` 形式で空タイトルなし
 - [ ] 新着情報ページ独自情報: `whats-new/` ページに `$INPUT_LLMS_FULL` の同セクションには無い内容がある場合、それも反映済み
-- [ ] メタデータ整合性: frontmatter の `対象期間` / `作成日` と末尾フッタの `base_commit` / `head_commit` / `generated_at_full` が正しい値
+- [ ] メタデータ整合性(PT -1日ルール): frontmatter の `対象期間` は `base_commit` / `head_commit` の各コミット日付の **前日**、`作成日` は `generated_at_full` の日付の **前日**。末尾フッタの `base_commit` / `head_commit` は実 hash、`generated_at_full` は実時刻(JST, -1 しない)
 - [ ] 日付表記: 全ての年月日が日本語表記(`YYYY年MM月DD日`、ただし `Week N` は例外で英語のまま)
 
 ### 8. 日本語化

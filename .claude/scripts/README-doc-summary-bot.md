@@ -76,10 +76,17 @@ pwsh -NoProfile -File .claude\scripts\run-doc-summary.ps1 -Site all -DryRun -Res
 
 ```powershell
 # まず内容確認（実登録しない）
-pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 07:00 -WhatIfOnly
+pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 15:00 -WhatIfOnly
 # 問題なければ登録
-pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 07:00
+pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 15:00
 ```
+
+> **実行時刻は JST 15:00**（既存タスクの時刻変更は `schtasks /Change /TN CC-DocSummaryBot /ST 15:00`）。
+> JST 15:00 は常に太平洋時間(PT)の前日夜（PDT 前日 23:00 / PST 前日 22:00）にあたり、米国の前営業日の
+> 更新を完全にカバーしつつ PC 稼働帯に収まる。時差 16h のため JST 実行をいくら遅らせても PT 当日には
+> 届かないので、「PT 前日断面を取得し、レポート日付も PT 基準（実行日 -1 日）で表記する」方針を採る。
+> **日付ルールの詳細と移行境界（2026-06-08 実行分から適用）は SKILL.md「日付基準(PT -1日ルール)」が
+> 唯一の正**。2026-06-07 までのサマリは旧ルール（JST 当日基準）で作成済み。
 
 既定は **Interactive ログオン**（ユーザーがログオン中のみ実行）。これは DPAPI トークンが S4U
 （パスワードなし）ログオンでは復号できない場合があるため。ログオフ中も走らせたい場合は
