@@ -92,8 +92,26 @@ API が**予期しない非リトライ可能エラー**を拒否（reject）と
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-- [日本語](https://code.claude.com/docs/ja/changelog) / [English](https://code.claude.com/docs/en/changelog):  
-  changelog ページに v2.1.166・v2.1.167・v2.1.168 のリリースエントリが追加されました。v2.1.167・v2.1.168 はいずれも「バグ修正と信頼性向上」のみです。v2.1.166 には上記ハイライトの新機能・セキュリティ強化に加え、次の改善・修正が含まれます。`claude update` がダウンロード前に対象バージョンを通知する（従来は無言）、`claude agents` のリストで URL を入力すると最初のプロンプトにその URL を含むセッションに絞り込める、処理不能な画像送信時に繰り返し出ていた「image could not be processed」エラーと余分なトークン消費を修正、起動時のワーカー登録中に短時間のバックエンド障害が起きるとリモートセッションが恒久的に固まる問題を修正、JetBrains 系 IDE（IntelliJ・PyCharm・WebStorm 等）2026.1 以降のターミナルのちらつきを同期出力の有効化で修正、Kitty キーボードプロトコル使用ターミナル（WezTerm・Ghostty・kitty）で Shift＋非 ASCII 文字（例: Shift+ä → Ä）が脱落する問題を修正、Windows で kill されたプロセスの子が出力パイプを保持した際に PowerShell コマンド検証が制限時間を大幅に超えてハングする問題を修正、macOS でデーモン停止後に孤立した `claude --bg-pty-host` プロセスが CPU 100% で回り続ける問題を修正、`/voice` 切替後に古い認証チェックを消すため `/login` が必要だった voice モードの問題を修正、管理設定に無効なエントリが 1 つあると残りの有効なポリシーの強制まで無言で無効化される問題を修正、管理設定の `allowedMcpServers`／`deniedMcpServers` 述語が `${VAR}` 参照を使うとマッチしない問題を修正、git worktree に入ったバックグラウンドエージェントのセッションが `claude agents` から再オープンすると「No conversation found」でクラッシュループする問題を修正、ストリーミング中に Ctrl+O のトランスクリプト表示で思考テキストが重複する問題を修正、リモートセッション内で実行した `/doctor` が「Not inside a remote session」という矛盾した失敗チェックを表示する問題を修正、`claude agents` のディスパッチ／返信入力で複数行プロンプト入力時にカーソルが 1 行目末尾に張り付く問題を修正、Unicode 非対応ターミナルでタスクリストのバックグラウンドエージェント行間に空行が出る問題を修正。
+- [日本語](https://code.claude.com/docs/ja/changelog) / [English](https://code.claude.com/docs/en/changelog): changelog ページに 3 つのリリースエントリ（v2.1.166・v2.1.167・v2.1.168、いずれも 2026年06月06日）が追加されました。
+  - **v2.1.168**: バグ修正と信頼性向上のみ。
+  - **v2.1.167**: バグ修正と信頼性向上のみ。
+  - **v2.1.166**: ハイライトに挙げた上位 5 項目（`fallbackModel`・deny ルールの glob 対応・クロスセッションメッセージング強化・thinking 無効化・非リトライ可能エラー時のフォールバック再試行）に加え、次の改善・修正を含みます。
+    - `claude update` がダウンロード前に対象バージョンを通知するようになった（従来は無言）。
+    - `claude agents` の一覧で URL を入力すると、その URL を最初のプロンプトに含むセッションに絞り込めるようになった。
+    - 処理できない画像を送信した際に繰り返し出ていた「image could not be processed」エラーと余分なトークン消費を修正。
+    - 起動時のワーカー登録中に短時間のバックエンド障害が起きると、リモートセッションが恒久的に固まる問題を修正。
+    - JetBrains 系 IDE（IntelliJ・PyCharm・WebStorm 等）2026.1 以降のターミナルのちらつきを、同期出力の有効化で修正。
+    - Kitty キーボードプロトコルを使うターミナル（WezTerm・Ghostty・kitty）で Shift＋非 ASCII 文字（例: Shift+ä → Ä）が脱落する問題を修正。
+    - Windows で、kill されたプロセスの子が出力パイプを保持した際に PowerShell コマンド検証が制限時間を大幅に超えてハングする問題を修正。
+    - macOS で、デーモン停止後に接続が残ると孤立した `claude --bg-pty-host` プロセスが CPU 100% で回り続ける問題を修正。
+    - `/voice` 切替後に古い認証チェックを消すため `/login` が必要だった voice モードの問題を修正。
+    - 管理設定（managed settings）に無効なエントリが 1 つあると、残りの有効なポリシーの強制まで無言で無効化される問題を修正。
+    - 管理設定の `allowedMcpServers`／`deniedMcpServers` 述語が `${VAR}` 参照を使うとマッチしない問題を修正。
+    - git worktree に入ったバックグラウンドエージェントのセッションが、`claude agents` から再オープンすると「No conversation found」でクラッシュループする問題を修正。
+    - ストリーミング中に Ctrl+O のトランスクリプト表示で思考テキストが重複する問題を修正。
+    - リモートセッション内で実行した `/doctor` が「Not inside a remote session」という矛盾した失敗チェックを表示する問題を修正。
+    - `claude agents` のディスパッチ／返信入力で、複数行プロンプト入力時にカーソルが 1 行目末尾に張り付く問題を修正。
+    - Unicode 非対応ターミナルで、タスクリストのバックグラウンドエージェント行間に空行が出る問題を修正。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
