@@ -9,6 +9,8 @@ Claude Code 周辺の公式ドキュメントを LLM／人間の双方が扱い�
 1. **公式 `llms.txt` / `llms-full.txt` の取り込み**: Claude Code 公式ドキュメント（`code.claude.com`）と Model Context Protocol 公式（`modelcontextprotocol.io`）が公開する `llms.txt` / `llms-full.txt` を定期取得して保存する。
 2. **更新サマリ（人間向け changelog）**: 上記の更新差分を、人間が読みやすい changelog／リリースノート風の Markdown として自動生成・蓄積する（詳細版＋ライト版の 2 ファイル方式）。
 
+> 📄 **公開中の更新サマリは [`official-doc-update-summary/`（トップページ）](./official-doc-update-summary/README.md) から閲覧できます。** 最新版・過去アーカイブへのリンクと読み方をまとめています。
+
 > **将来スコープ**: 任意リポジトリ向けに生成した `llms.txt`（現状 `cc-relative-info` の `gen-out`）と、それらに対する更新サマリも、将来は本リポジトリで公開する想定。命名の `official-*` は、将来の `generated-*` 系と併存させるための区別。
 
 ## 構成
@@ -24,21 +26,8 @@ LLMs/
 └── .claude/                       # 本リポジトリ内で自走するパイプライン一式（下記）
 ```
 
-## どう更新されるか（自動運用）
+## どう更新されるか
 
-日次でスケジュール実行される無人パイプラインが、取得 → サマリ生成 → 第三者レビュー → push までを自動で行います。
+更新サマリは、日次でスケジュール実行される**無人パイプラインが自動生成**しています（取得 → サマリ生成 → 第三者レビュー → 人手レビュー → 公開）。利用者が手を動かす必要はありません。
 
-```
-dl（公式 llms.txt 取得）
-  → 更新サマリ生成（Claude による要約・翻訳）
-  → 第三者レビュー（ハルシネーション／規約違反の機械検査・必須）
-  → commit → bot ブランチへ push
-  → 人手レビュー → main へマージ（＝公開）
-```
-
-- **ブランチ運用**: `main`（公開済みコンテンツ）/ `bot/doc-summary`（bot の未確定生成）。bot が `bot/doc-summary` へ push し、人手レビュー後に `main` へマージして公開する。
-- パイプラインの実装・運用手順は `.claude/scripts/README-doc-summary-bot.md` を参照。
-
-## 関連リポジトリ
-
-- **`cc-relative-info`**: Claude Code 拡張（Skill / Rule / Agent）の開発サンドボックス。本リポジトリのパイプライン（Skill・Agent・スクリプト）の出自であり、汎用 `llms.txt` 生成ツール `generate-llms-txt` 等はあちらに残る。
+> パイプラインの構成・ブランチ運用・スケジューラ・push 認証などの**メンテナー向け情報**は、リポジトリを保守する立場で作業するとき自動で参照される `.claude/CLAUDE.md`（および `.claude/scripts/README-doc-summary-bot.md`）に集約しています。
