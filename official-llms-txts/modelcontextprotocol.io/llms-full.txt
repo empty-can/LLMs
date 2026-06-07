@@ -8084,7 +8084,7 @@ For our testing purposes, we will create an extremely simple MCP server that exp
   </Tab>
 
   <Tab title="Python">
-    You can see the complete Python project in the [sample repository](https://github.com/localden/min-py-mcp-auth).
+    You can see the complete Python project in the [sample repository](https://github.com/modelcontextprotocol/python-sdk/tree/main/examples/servers/simple-auth).
 
     To simplify our authorization interaction, in Python scenarios we rely on [FastMCP](https://gofastmcp.com/getting-started/welcome). Many of the conventions around authorization, like the endpoints and token validation logic, are consistent across languages, but some offer simpler ways of integrating them in production scenarios.
 
@@ -10769,7 +10769,7 @@ Optional extensions to the Model Context Protocol
 
 MCP extensions are optional additions to the specification that define capabilities beyond the core protocol. Extensions enable functionality that may be modular (e.g., distinct features like authentication), specialized (e.g., industry-specific logic), or experimental (e.g., features being incubated for potential core inclusion).
 
-Extensions are identified using a unique *extension identifier* with the format: `{vendor-prefix}/{extension-name}`, e.g. `io.modelcontextprotocol/oauth-client-credentials`. Official extensions use the `io.modelcontextprotocol` vendor prefix.
+Extensions are identified using a unique *extension identifier* with the format: `{vendor-prefix}/{extension-name}`, e.g. `io.modelcontextprotocol/oauth-client-credentials`. Identifiers follow the same rules as [`_meta` keys](/specification/draft/basic/index#meta), with a mandatory prefix. Official extensions use the `io.modelcontextprotocol` vendor prefix.
 
 <Tip>
   If you're building a third-party extension, use a reversed domain name you own as the vendor prefix to avoid collisions (similar to Java package naming). For example, a company owning `example.com` would use `com.example/` as their prefix (e.g., `com.example/my-extension`).
@@ -11060,7 +11060,7 @@ state does not change.
 
 ## Notifications
 
-Servers can push status updates via `notifications/tasks/status`. Clients opt
+Servers can push status updates via `notifications/tasks`. Clients opt
 into these through the `subscriptions/listen` mechanism. Each notification
 carries the full task state, eliminating the need for an extra `tasks/get`
 round-trip.
@@ -20003,6 +20003,9 @@ released as Current, Tier 1 SDKs:
   `DeprecationWarning`, Node.js's `process.emitWarning`, or a configurable
   logger).
 
+A Tier 1 SDK that consistently fails to surface a Deprecated feature is subject to the
+[Tier Relegation Process](/community/sdk-tiers#tier-relegation).
+
 ## Removing a Feature
 
 1. Once a feature is set for removal, the removal is executed at the discretion
@@ -20012,6 +20015,8 @@ released as Current, Tier 1 SDKs:
    example extending or shortening the timeline
    ([Expedited removal](#expedited-removal)) or restoring the feature to Active
    ([Feature states](#feature-states)).
+
+Features may remain Deprecated, without removal, for much longer than the minimum deprecation window.
 
 ## Expedited Removal
 
@@ -20024,6 +20029,20 @@ in the deprecation SEP or, where the risk surfaces after that SEP is already
 Final, in a short expedited-removal SEP that references it. The shortened
 window must still provide at least ninety days between the feature becoming
 Deprecated and its earliest removal.
+
+## Roles
+
+| Action                                         | Who                                                                                             |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Propose deprecation, extension, or restoration | Any contributor, per the SEP process                                                            |
+| Sponsor                                        | A Maintainer or Core Maintainer, per the SEP process                                            |
+| Approve a deprecation SEP                      | Core Maintainers, per the [governance decision process](/community/governance#decision-process) |
+| Decide a removal during release preparation    | Core Maintainers, per the [governance decision process](/community/governance#decision-process) |
+| Approve an extension or restoration SEP        | Core Maintainers, per the [governance decision process](/community/governance#decision-process) |
+| Approve expedited removal                      | Core Maintainers, per the [governance decision process](/community/governance#decision-process) |
+
+Lead Maintainers retain veto authority over each of the approvals
+above, per the [governance roles](/community/governance#roles) definition.
 
 
 # Governance and Stewardship
@@ -20230,6 +20249,7 @@ Conformance scores are calculated against **applicable required tests** only:
 * Excluding tests marked as pending or skipped
 * Excluding tests for experimental features
 * Excluding legacy backward-compatibility tests (unless the SDK claims legacy support)
+* Excluding tests labeled `disputed` in the conformance repository, until the dispute is resolved
 
 Conformance testing validates that SDKs correctly implement the protocol by running standardized test
 scenarios and checking protocol message exchanges. See [Tier Relegation](#tier-relegation) for how
@@ -20253,6 +20273,8 @@ continuously for 4 weeks:
 
 * **Tier 1 → Tier 2**: Any conformance test fails
 * **Tier 2 → Tier 3**: More than 20% of conformance tests fail
+
+An SDK may also be relegated if issues remain unaddressed for two months.
 
 ## Issue Triage Labels
 
@@ -20336,11 +20358,12 @@ Not sure? Ask in [Discord](/community/communication#discord) before starting sig
 
 ## SEP Types
 
-There are three kinds of SEP:
+There are four kinds of SEP:
 
 1. **Standards Track** - Describes a new feature or implementation for the Model Context Protocol, or an interoperability standard supported outside the core specification.
 2. **Informational** - Describes a design issue or provides guidelines/information to the community without proposing a new feature.
 3. **Process** - Describes a process surrounding MCP or proposes a change to a process (like this document).
+4. **Extensions Track** - Describes a protocol extension. Follows the same review and acceptance process as Standards Track SEPs, but indicates that the proposal is for an extension rather than a protocol addition. See [Creating Extensions](/extensions/overview#creating-extensions) for the extension lifecycle.
 
 ## SEP Workflow
 
