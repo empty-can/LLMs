@@ -77,14 +77,29 @@ function Write-Log {
     $line | Tee-Object -FilePath $LOG_FILE -Append
 }
 
-# git をラップし、失敗時に例外化（$LASTEXITCODE を確実に判定）
+# git をラップし、失敗時に例外化（$LASTEXITCODE を確実に判定）。
+# git は正常時も "Switched to branch" / "Already up to date." 等を stderr に書く。
+# 呼び出し側セッションが $ErrorActionPreference='Stop'（本スクリプト既定）や、
+# PowerShell 7.4 既定の $PSNativeCommandUseErrorActionPreference=$true の下では、
+# この正常 stderr が終端エラー化し、成功した checkout/merge まで FAILURE 扱いになる
+# （実害: 対話 pwsh での手動実行が bot 切替直後に "Switched to branch" で異常終了）。
+# 対策は 2 点。(1) 関数内だけ EAP を Continue に下げ、成否は $LASTEXITCODE のみで判定。
+# (2) stderr を含む出力は ErrorRecord のまま返すと呼び出し側のパイプ（| Out-Null）で
+# エラーストリームへ再放出され得るため、文字列化して返す。
 function Invoke-Git {
     param([Parameter(ValueFromRemainingArguments = $true)][string[]]$GitArgs)
-    $out = & git @GitArgs 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        throw "git $($GitArgs -join ' ') が失敗 (exit $LASTEXITCODE): $out"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $out = & git @GitArgs 2>&1
+        $code = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $prevEAP
     }
-    return $out
+    if ($code -ne 0) {
+        throw "git $($GitArgs -join ' ') が失敗 (exit $code): $($out -join "`n")"
+    }
+    return ($out | ForEach-Object { $_.ToString() })
 }
 
 # bash を解決する。PATH に無ければ Git for Windows 同梱の bash を探す
@@ -121,13 +136,19 @@ function Invoke-BotPush {
     if ([string]::IsNullOrEmpty($token)) { throw "復号したトークンが空です" }
     # sh 関数が展開する変数。PowerShell ではなく git の子 sh が参照する
     $env:GH_PUSH_TOKEN = $token
+    # push も正常時に進捗・"To <url>" 等を stderr に書くため、Invoke-Git と同じく
+    # 関数内だけ EAP を Continue に下げ、成否は $LASTEXITCODE で判定し、出力は文字列化して返す。
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     try {
         $helper = '!f() { echo username=x-access-token; echo "password=$GH_PUSH_TOKEN"; }; f'
         $out = & git -c credential.helper= -c "credential.helper=$helper" push origin $Branch 2>&1
-        if ($LASTEXITCODE -ne 0) { throw "push 失敗 (exit $LASTEXITCODE): $out" }
-        return $out
+        $code = $LASTEXITCODE
+        if ($code -ne 0) { throw "push 失敗 (exit $code): $($out -join "`n")" }
+        return ($out | ForEach-Object { $_.ToString() })
     } finally {
         Remove-Item Env:\GH_PUSH_TOKEN -ErrorAction SilentlyContinue
+        $ErrorActionPreference = $prevEAP
     }
 }
 
