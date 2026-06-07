@@ -36,6 +36,14 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+# claude -p の JSON 出力（日本語を含む）を UTF-8 で受ける。既定のコンソール
+# コードページ（CP932 等）で外部プロセス出力をデコードすると日本語が文字化けし、
+# result JSON の ConvertFrom-Json が壊れて is_error を誤判定する（生成成功でも
+# 失敗扱いになり生成物が破棄される）。実害として 2026-06-07 の自動実行が
+# Phase 3 PASS 済みの生成物を破棄し FAILURE 終了した。
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 # --- 定数 -------------------------------------------------------------------
 $BOT_BRANCH  = "bot/doc-summary"
 $BASE_BRANCH = "main"
@@ -45,8 +53,13 @@ $GEN_MODEL   = "opus"               # ヘッドレス生成のモデル（レビ
 # bot push 用 PAT を DPAPI 暗号化して保管するファイル（同一ユーザー・同一マシンでのみ復号可）。
 # 初回セットアップ: Read-Host -AsSecureString | Export-Clixml $TOKEN_FILE
 $TOKEN_FILE  = Join-Path $env:USERPROFILE ".claude\doc-summary-bot-token.xml"
-# claude が SKILL 実行で使うツール群（acceptEdits と二重で明示）
-$ALLOWED_TOOLS = "Read Write Edit Grep Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(mkdir -p:*) Bash(mv:*) Bash(git checkout:*) Bash(git clean:*) Bash(python:*) Bash(echo:*) Task Agent(doc-summary-reviewer)"
+# claude が SKILL 実行で使うツール群（acceptEdits と二重で明示）。
+# 注: これらは「単純コマンド」のみ許可する。claude が複合コマンド
+# （例 `cd X && git mv A B`、`f=...; for ...; awk ...`）で呼ぶと先頭トークンが
+# パターンに一致せず拒否される。SKILL 側で補助計算・退避を単純コマンドに
+# 分解させる必要がある（2026-06-07 の自動実行で git mv/python3/node/awk が
+# 複合形で permission_denied になった。ただし claude は代替手段で完走した）。
+$ALLOWED_TOOLS = "Read Write Edit Grep Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(mkdir -p:*) Bash(mv:*) Bash(git mv:*) Bash(git checkout:*) Bash(git clean:*) Bash(python:*) Bash(python3:*) Bash(node:*) Bash(awk:*) Bash(echo:*) Task Agent(doc-summary-reviewer)"
 
 # サイト設定（SKILL.md サイト設定テーブルと一致させる）
 $SITES = @(
