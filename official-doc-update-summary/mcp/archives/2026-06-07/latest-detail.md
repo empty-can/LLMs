@@ -1,0 +1,97 @@
+---
+対象期間: 2026年06月06日 〜 2026年06月07日
+作成日: 2026-06-07
+---
+
+# MCP 公式ドキュメント更新サマリ - 詳細版
+
+<!-- light:summary:start -->
+> 今回の対象期間は、新規ページの追加や既存ページの大幅な書き換えはなく、拡張機構（extensions）と SDK ガバナンスまわりの仕様・運用ルールを細かく整備する更新が中心です。いずれも既存ページへの小規模な追記・修正ですが、実装者が参照するメソッド名やプロセス定義に関わる実質的な内容を含みます。
+>
+> 主要なものを以下に挙げます。
+>
+> 1. MCP Tasks 拡張の状態通知メソッドが `notifications/tasks` に変更
+> 2. 拡張機構の正式化と SEP Extensions Track 種別の追加
+> 3. 機能ライフサイクルと SDK ガバナンスの整備（Roles テーブル追加・降格条件の明確化）
+<!-- light:summary:end -->
+
+## ハイライト
+
+<!-- light:highlight-list:start -->
+1. [**MCP Tasks 拡張の状態通知メソッド変更**](#1-mcp-tasks-拡張の状態通知メソッド変更):  
+  サーバーがタスクの状態更新をプッシュする通知メソッドが `notifications/tasks/status` から `notifications/tasks` に変更された。クライアントは従来どおり `subscriptions/listen` で購読し、各通知はタスクの全状態を含むため `tasks/get` の追加往復は不要。
+2. [**拡張機構の正式化と SEP Extensions Track 種別の追加**](#2-拡張機構の正式化と-sep-extensions-track-種別の追加):  
+  SEP の種別が 3 種から 4 種へ増え、プロトコル拡張を扱う「Extensions Track」が新設された。あわせて Extensions Overview で拡張識別子が `_meta` キーと同じ命名規則（プレフィックス必須）に従うことが明文化された。
+3. [**機能ライフサイクルと SDK ガバナンスの整備**](#3-機能ライフサイクルと-sdk-ガバナンスの整備):  
+  Feature Lifecycle ページに、廃止（deprecation）の提案・承認権限を定める「Roles」テーブルが追加され、Lead Maintainer の拒否権などが明文化された。SDK Tiering 側でも適合性テストの `disputed` 除外や、長期未対応による降格条件が追記された。
+<!-- light:highlight-list:end -->
+
+## 1. MCP Tasks 拡張の状態通知メソッド変更
+
+MCP Tasks（非同期タスク実行の拡張）における状態通知の仕様が更新されました。サーバーがタスクの状態更新をプッシュする際の通知メソッドが、これまでの `notifications/tasks/status` から `notifications/tasks` に変更されています。
+
+通知の購読方法（クライアントが `subscriptions/listen` の仕組みでオプトインする点）や、各通知がタスクの完全な状態を運ぶため別途 `tasks/get` で問い合わせる往復が不要になる点は従来どおりです。今回の変更はメソッド名そのものの修正であり、Tasks 拡張を実装するクライアント／サーバーは参照する通知メソッド名の更新が必要になります。
+
+- [MCP Tasks - MCP Docs](https://modelcontextprotocol.io/extensions/tasks/overview)
+
+## 2. 拡張機構の正式化と SEP Extensions Track 種別の追加
+
+拡張（extensions）の提案・識別の枠組みを正式化する更新が、SEP Guidelines と Extensions Overview の双方に入りました。
+
+SEP Guidelines では、SEP（Specification Enhancement Proposal）の種別がこれまでの 3 種（Standards Track / Informational / Process）から 4 種に増え、4 つ目として **Extensions Track** が追加されました。これはプロトコル拡張を記述するための種別で、レビューおよび受理のプロセスは Standards Track と同一ですが、提案がコアプロトコルへの追加ではなく拡張であることを示します。拡張のライフサイクルについては Extensions Overview の「Creating Extensions」を参照する形になっています。
+
+Extensions Overview 側では、拡張識別子（`{vendor-prefix}/{extension-name}` 形式、例: `io.modelcontextprotocol/oauth-client-credentials`）が `_meta` キーと同じ命名規則に従い、プレフィックスが必須である旨が明文化されました。公式拡張は引き続き `io.modelcontextprotocol` ベンダープレフィックスを用います。
+
+- [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines)
+- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview)
+
+## 3. 機能ライフサイクルと SDK ガバナンスの整備
+
+仕様機能の廃止運用と SDK の階層（tier）ガバナンスに関する規定が、Feature Lifecycle and Deprecation Policy と SDK Tiering System の両ページで補強されました。
+
+Feature Lifecycle ページには、廃止プロセスの権限分担を定める **Roles** テーブルが新設されました。廃止・延長・復活の提案は任意のコントリビューターが SEP プロセスに沿って行えること、スポンサーは Maintainer または Core Maintainer が務めること、廃止 SEP の承認・リリース準備中の削除判断・拡張／復活 SEP の承認・迅速削除の承認はいずれも Core Maintainer がガバナンス決定プロセスに沿って担うことが整理されています。加えて Lead Maintainer がこれらの承認それぞれに対して拒否権を保持する点が明記されました。あわせて、Deprecated 機能を最低廃止期間を超えて削除せず長期間そのまま維持しうること、また Deprecated 機能を一貫して表面化できない Tier 1 SDK は Tier Relegation（降格）プロセスの対象となることが追記されています。
+
+SDK Tiering System 側では、適合性スコアの算定から「conformance リポジトリで `disputed` とラベル付けされたテストを、その係争が解決するまで除外する」ことが明記されました。また階層降格の条件として、課題が 2 か月間未対応のまま残った場合にも SDK が降格されうる旨が追加されています。
+
+- [Feature Lifecycle and Deprecation Policy - MCP Docs](https://modelcontextprotocol.io/community/feature-lifecycle)
+- [SDK Tiering System - MCP Docs](https://modelcontextprotocol.io/community/sdk-tiers)
+
+## 新規追加されたページ
+
+<!-- light:new-pages:start -->
+*(新規追加されたページはありません)*
+<!-- light:new-pages:end -->
+
+## 大幅に更新されたページ
+
+<!-- light:updated-pages:start -->
+*(大幅に更新されたページはありません)*
+<!-- light:updated-pages:end -->
+
+## 軽微な更新
+
+<!-- light:minor-updates:start -->
+- [MCP Tasks](https://modelcontextprotocol.io/extensions/tasks/overview):  
+  状態通知のメソッド名を `notifications/tasks/status` → `notifications/tasks` に変更（購読方法・通知が全状態を運ぶ挙動は従来どおり）。
+- [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines):  
+  SEP の種別を 3 種から 4 種へ拡張し、プロトコル拡張用の「Extensions Track」を追加。
+- [Extensions Overview](https://modelcontextprotocol.io/extensions/overview):  
+  拡張識別子が `_meta` キーと同じ規則（プレフィックス必須）に従う旨を明文化。
+- [Feature Lifecycle and Deprecation Policy](https://modelcontextprotocol.io/community/feature-lifecycle):  
+  廃止プロセスの権限分担を定める「Roles」テーブルを追加。Deprecated 機能の長期維持の可能性、および Deprecated 機能を表面化できない Tier 1 SDK が降格対象になる旨を追記。
+- [SDK Tiering System](https://modelcontextprotocol.io/community/sdk-tiers):  
+  適合性スコア算定から `disputed` ラベル付きテストを係争解決まで除外する旨、および課題が 2 か月未対応の場合も降格対象になる旨を追記。
+- [Understanding Authorization in MCP](https://modelcontextprotocol.io/docs/tutorials/security/authorization):  
+  Python 向けサンプルリポジトリのリンクを `localden/min-py-mcp-auth` から公式の `modelcontextprotocol/python-sdk`（`examples/servers/simple-auth`）へ差し替え（本文の記述変更なし）。
+<!-- light:minor-updates:end -->
+
+## 関連リンク
+
+- 前回サマリ(ライト版): [./archives/2026-06-06/latest.md](./archives/2026-06-06/latest.md)
+- 前回サマリ(詳細版): [./archives/2026-06-06/latest-detail.md](./archives/2026-06-06/latest-detail.md)
+
+<!--
+base_commit: 980975cf497b0cce6847425a0787fccd839be1ae
+head_commit: 3212bb05a367af1491e80f0689f4d8cd5a2a136f
+generated_at_full: 2026-06-07T17:06:04+09:00
+-->

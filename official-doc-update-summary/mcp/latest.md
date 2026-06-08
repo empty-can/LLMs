@@ -5,22 +5,16 @@
 
 # MCP 公式ドキュメント更新サマリ
 
-> 今回の対象期間は、新規ページの追加や既存ページの大幅な書き換えはなく、拡張機構（extensions）と SDK ガバナンスまわりの仕様・運用ルールを細かく整備する更新が中心です。いずれも既存ページへの小規模な追記・修正ですが、実装者が参照するメソッド名やプロセス定義に関わる実質的な内容を含みます。
+> 今回の対象期間は、新規ページの追加や既存ページの大幅な書き換えはなく、3 つのワーキンググループ憲章（Charter）に参照用リポジトリを示す「Resources」セクションを追加する小規模な更新のみです。いずれも既存ページへの数行の追記で、仕様や運用ルールの変更は含みません。
 >
 > 主要なものを以下に挙げます。
 >
-> 1. MCP Tasks 拡張の状態通知メソッドが `notifications/tasks` に変更
-> 2. 拡張機構の正式化と SEP Extensions Track 種別の追加
-> 3. 機能ライフサイクルと SDK ガバナンスの整備（Roles テーブル追加・降格条件の明確化）
+> 1. 3 つのワーキンググループ憲章への参照リポジトリ（Resources セクション）の追加
 
 ## ハイライト
 
-1. [**MCP Tasks 拡張の状態通知メソッド変更**](./latest-detail.md#1-mcp-tasks-拡張の状態通知メソッド変更):  
-  サーバーがタスクの状態更新をプッシュする通知メソッドが `notifications/tasks/status` から `notifications/tasks` に変更された。クライアントは従来どおり `subscriptions/listen` で購読し、各通知はタスクの全状態を含むため `tasks/get` の追加往復は不要。
-2. [**拡張機構の正式化と SEP Extensions Track 種別の追加**](./latest-detail.md#2-拡張機構の正式化と-sep-extensions-track-種別の追加):  
-  SEP の種別が 3 種から 4 種へ増え、プロトコル拡張を扱う「Extensions Track」が新設された。あわせて Extensions Overview で拡張識別子が `_meta` キーと同じ命名規則（プレフィックス必須）に従うことが明文化された。
-3. [**機能ライフサイクルと SDK ガバナンスの整備**](./latest-detail.md#3-機能ライフサイクルと-sdk-ガバナンスの整備):  
-  Feature Lifecycle ページに、廃止（deprecation）の提案・承認権限を定める「Roles」テーブルが追加され、Lead Maintainer の拒否権などが明文化された。SDK Tiering 側でも適合性テストの `disputed` 除外や、長期未対応による降格条件が追記された。
+1. [**ワーキンググループ憲章へのリポジトリ参照の追加**](./latest-detail.md#1-ワーキンググループ憲章へのリポジトリ参照の追加):  
+  Registry / Server Card / Triggers and Events の 3 つのワーキンググループの憲章ページに、それぞれの作業対象リポジトリへのリンクを並べた「Resources」セクションが追加された。仕様や運用ルールの変更ではなく、各グループが扱うコードへの導線を示す追記。
 
 ## 新規追加されたページ
 
@@ -32,26 +26,20 @@
 
 ## 軽微な更新
 
-- [MCP Tasks](https://modelcontextprotocol.io/extensions/tasks/overview):  
-  状態通知のメソッド名を `notifications/tasks/status` → `notifications/tasks` に変更（購読方法・通知が全状態を運ぶ挙動は従来どおり）。
-- [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines):  
-  SEP の種別を 3 種から 4 種へ拡張し、プロトコル拡張用の「Extensions Track」を追加。
-- [Extensions Overview](https://modelcontextprotocol.io/extensions/overview):  
-  拡張識別子が `_meta` キーと同じ規則（プレフィックス必須）に従う旨を明文化。
-- [Feature Lifecycle and Deprecation Policy](https://modelcontextprotocol.io/community/feature-lifecycle):  
-  廃止プロセスの権限分担を定める「Roles」テーブルを追加。Deprecated 機能の長期維持の可能性、および Deprecated 機能を表面化できない Tier 1 SDK が降格対象になる旨を追記。
-- [SDK Tiering System](https://modelcontextprotocol.io/community/sdk-tiers):  
-  適合性スコア算定から `disputed` ラベル付きテストを係争解決まで除外する旨、および課題が 2 か月未対応の場合も降格対象になる旨を追記。
-- [Understanding Authorization in MCP](https://modelcontextprotocol.io/docs/tutorials/security/authorization):  
-  Python 向けサンプルリポジトリのリンクを `localden/min-py-mcp-auth` から公式の `modelcontextprotocol/python-sdk`（`examples/servers/simple-auth`）へ差し替え（本文の記述変更なし）。
+- [Registry Charter](https://modelcontextprotocol.io/community/registry/charter):  
+  「Resources」セクションを追加し、Registry サービス本体のリポジトリ `modelcontextprotocol/registry` へのリンクを記載。
+- [Server Card Charter](https://modelcontextprotocol.io/community/server-card/charter):  
+  「Resources」セクションを追加し、実験的拡張リポジトリ `modelcontextprotocol/experimental-ext-server-card` へのリンクを記載。
+- [Triggers and Events Charter](https://modelcontextprotocol.io/community/triggers-events/charter):  
+  「Resources」セクションを追加し、インキュベーション用リポジトリ `modelcontextprotocol/experimental-ext-triggers-events` へのリンクを記載。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/2026-06-06/latest.md](./archives/2026-06-06/latest.md)
-- 前回サマリ(詳細版): [./archives/2026-06-06/latest-detail.md](./archives/2026-06-06/latest-detail.md)
+- 前回サマリ(ライト版): [./archives/2026-06-07/latest.md](./archives/2026-06-07/latest.md)
+- 前回サマリ(詳細版): [./archives/2026-06-07/latest-detail.md](./archives/2026-06-07/latest-detail.md)
 
 <!--
-base_commit: 980975cf497b0cce6847425a0787fccd839be1ae
-head_commit: 3212bb05a367af1491e80f0689f4d8cd5a2a136f
-generated_at_full: 2026-06-07T17:06:04+09:00
+base_commit: 3212bb05a367af1491e80f0689f4d8cd5a2a136f
+head_commit: c8d7c825ed36495e6a0e413b95a39aab0c8f586a
+generated_at_full: 2026-06-08T15:01:28+09:00
 -->
