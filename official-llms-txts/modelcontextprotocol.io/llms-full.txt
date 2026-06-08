@@ -36297,6 +36297,10 @@ The Registry Working Group exists to build and maintain the official MCP Registr
 
 Discord: `#registry-dev`
 
+## Resources
+
+* Registry service repository: [modelcontextprotocol/registry](https://github.com/modelcontextprotocol/registry)
+
 ## Deliverables & Success Metrics
 
 ### Active Work Items
@@ -36487,6 +36491,10 @@ The Server Card Working Group exists to define mechanisms that facilitate discov
 | Working Session | Weekly    | 60 min   | Technical discussion, proposal review |
 
 Discord: [#server-card-wg](https://discord.com/channels/1358869848138059966/1399986204405141534)
+
+## Resources
+
+* Experimental extension repository: [modelcontextprotocol/experimental-ext-server-card](https://github.com/modelcontextprotocol/experimental-ext-server-card)
 
 ## Deliverables & Success Metrics
 
@@ -36816,6 +36824,10 @@ The Triggers and Events Working Group exists to define how MCP servers proactive
 | Meeting         | Frequency | Duration | Purpose                               |
 | --------------- | --------- | -------- | ------------------------------------- |
 | Working Session | Weekly    | 30 min   | Technical discussion, proposal review |
+
+## Resources
+
+* Incubation repository: [modelcontextprotocol/experimental-ext-triggers-events](https://github.com/modelcontextprotocol/experimental-ext-triggers-events)
 
 ## Deliverables & Success Metrics
 
