@@ -38,7 +38,7 @@
 
 ## 軽微な更新
 
-- [日本語](https://code.claude.com/docs/ja/changelog) / [English](https://code.claude.com/docs/en/changelog): changelog ページに 3 つのリリースエントリ（v2.1.166・v2.1.167・v2.1.168、いずれも 2026年06月06日）が追加されました。
+- changelog ページに 3 つのリリースエントリ（v2.1.166・v2.1.167・v2.1.168、いずれも 2026年06月06日）が追加されました。
   - **v2.1.168**: バグ修正と信頼性向上のみ。
   - **v2.1.167**: バグ修正と信頼性向上のみ。
   - **v2.1.166**: ハイライトに挙げた上位 5 項目（`fallbackModel`・deny ルールの glob 対応・クロスセッションメッセージング強化・thinking 無効化・非リトライ可能エラー時のフォールバック再試行）に加え、次の改善・修正を含みます。
@@ -52,7 +52,7 @@
     - macOS で、デーモン停止後に接続が残ると孤立した `claude --bg-pty-host` プロセスが CPU 100% で回り続ける問題を修正。
     - `/voice` 切替後に古い認証チェックを消すため `/login` が必要だった voice モードの問題を修正。
     - 管理設定（managed settings）に無効なエントリが 1 つあると、残りの有効なポリシーの強制まで無言で無効化される問題を修正。
-    - 管理設定の `allowedMcpServers`／`deniedMcpServers` 述語が `${VAR}` 参照を使うとマッチしない問題を修正。
+    - 管理設定の `allowedMcpServers`／`deniedMcpServers` 述語が `${VAR}` 参照を使うとマッチしない問題を修正（[日本語](https://code.claude.com/docs/ja/managed-mcp) / [English](https://code.claude.com/docs/en/managed-mcp)）。
     - git worktree に入ったバックグラウンドエージェントのセッションが、`claude agents` から再オープンすると「No conversation found」でクラッシュループする問題を修正。
     - ストリーミング中に Ctrl+O のトランスクリプト表示で思考テキストが重複する問題を修正。
     - リモートセッション内で実行した `/doctor` が「Not inside a remote session」という矛盾した失敗チェックを表示する問題を修正。
@@ -65,8 +65,8 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/2026-06-06/latest.md](./archives/2026-06-06/latest.md)
-- 前回サマリ(詳細版): [./archives/2026-06-06/latest-detail.md](./archives/2026-06-06/latest-detail.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-06.md](./archives/latest/2026-06-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-06.md](./archives/latest-detail/2026-06-06.md)
 
 <!--
 base_commit: 980975cf497b0cce6847425a0787fccd839be1ae

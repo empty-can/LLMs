@@ -35,8 +35,8 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/2026-06-07/latest.md](./archives/2026-06-07/latest.md)
-- 前回サマリ(詳細版): [./archives/2026-06-07/latest-detail.md](./archives/2026-06-07/latest-detail.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-07.md](./archives/latest/2026-06-07.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-07.md](./archives/latest-detail/2026-06-07.md)
 
 <!--
 base_commit: 3212bb05a367af1491e80f0689f4d8cd5a2a136f

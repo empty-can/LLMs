@@ -52,9 +52,9 @@ Read tool で `$LATEST_DETAIL` を読み込む。
 
 - `$LATEST_DETAIL` が存在する: frontmatter から `作成日` を抽出して `PREV_GENERATED_AT` とする(= 前回サマリの作成日 = 前回対象期間の最終日。**起点日ではなく最終日を使う**)。あわせて末尾フッタ `generated_at_full` の時刻を `HHMM`(4 桁・24h) として抽出し `PREV_GENERATED_TIME` とする
 - 存在しない: `PREV_GENERATED_AT` は空(手順 10 の旧版アーカイブをスキップ)
-- **`ARCHIVE_NAME` の決定**(アーカイブフォルダ名。手順 10 の退避先と手順 6 の `{{PREV_GENERATED_AT}}` の双方で使う):
+- **`ARCHIVE_NAME` の決定**(アーカイブのファイル名(拡張子なし)。手順 10 の退避先と手順 6 の `{{PREV_GENERATED_AT}}` の双方で使う):
   - 既定は `ARCHIVE_NAME = <PREV_GENERATED_AT>`
-  - ただし `${ARCHIVES_DIR}<PREV_GENERATED_AT>/` が **既に存在する** 場合(= 同一作成日のサマリが既にアーカイブ済み = 同日に複数回生成)は、そのまま退避すると既存アーカイブを上書き消失させるため、`ARCHIVE_NAME = <PREV_GENERATED_AT>_<PREV_GENERATED_TIME>`(例: `2026-06-02_1125`) とする
+  - ただし `${ARCHIVES_DIR}latest-detail/<PREV_GENERATED_AT>.md` が **既に存在する** 場合(= 同一作成日のサマリが既にアーカイブ済み = 同日に複数回生成)は、そのまま退避すると既存アーカイブを上書き消失させるため、`ARCHIVE_NAME = <PREV_GENERATED_AT>_<PREV_GENERATED_TIME>`(例: `2026-06-02_1125`) とする
 
 > `--from` 指定時に既存ファイルが存在しても、その既存ファイルは手順 10 で `${ARCHIVES_DIR}<ARCHIVE_NAME>/` へ通常通り退避される。`--from` は **新たな BASE_COMMIT を明示する** だけで、既存サマリの扱いは変えない。
 
@@ -121,7 +121,7 @@ Read tool で `$TEMPLATE` を読み込む。
 | `{{BASE_COMMIT}}` | 手順 1 で決定した値 |
 | `{{HEAD_COMMIT}}` | 手順 2 で取得した値 |
 | `{{GENERATED_AT_FULL}}` | **実際の生成時刻** (`YYYY-MM-DDTHH:MM:SS+09:00`、JST 実時刻)。**-1 日しない**(機械的 provenance は偽らない)。よって `作成日` はこの日付より 1 日前になる |
-| `{{PREV_GENERATED_AT}}` | アーカイブフォルダ名 `<ARCHIVE_NAME>`(手順 1 で決定。通常は前回サマリの作成日、同日衝突時は `_<HHMM>` 付き)。関連リンクのパスがこの値になる(初版時は `(none)` 等の placeholder、関連リンクは手動編集で削除) |
+| `{{PREV_GENERATED_AT}}` | アーカイブのファイル名(拡張子なし) `<ARCHIVE_NAME>`(手順 1 で決定。通常は前回サマリの作成日、同日衝突時は `_<HHMM>` 付き)。関連リンクのパス `./archives/latest/<値>.md` ・ `./archives/latest-detail/<値>.md` に入る(初版時は `(none)` 等の placeholder、関連リンクは手動編集で削除) |
 
 URL 併記ルール(サイト依存):
 - URL言語併記=あり のサイト: en URL の `/docs/en/` を `/docs/ja/` に機械的置換して ja URL とし、ja/en を併記する
@@ -160,7 +160,7 @@ URL 併記ルール(サイト依存):
 | `{{NEW_PAGES_BULLETS}}` | `- [**<ページタイトル>**](#<anchor>) ([日本語](url-ja) / [English](url-en)):  ⏎`<br>`  <要約>` |
 | `{{UPDATED_PAGES_BULLETS}}` | `- [**<ページタイトル>**](#<anchor>) ([日本語](url-ja) / [English](url-en)):  ⏎`<br>`  <要約>` |
 | `{{WHATS_NEW_BULLETS}}` | `- [**2026年MM月DD日～EE日(Week N)**](#<anchor>) ([日本語](url-ja) / [English](url-en)):  ⏎`<br>`  <要約>` |
-| `{{MINOR_UPDATES}}` | `- [日本語](url-ja) / [English](url-en):  ⏎`<br>`  <要約>` (bold 無し、詳細セクション無しのため anchor 化なし) |
+| `{{MINOR_UPDATES}}` | `- [日本語](url-ja) / [English](url-en):  ⏎`<br>`  <要約>` (bold 無し、詳細セクション無しのため anchor 化なし)。**通常ページが無い変更(changelog のみ)はリンクを置かず `- <要約>` のみ**(changelog ページの URL は使わない) |
 
 `<anchor>` は対応する `## <番号と本体>` 見出しから GFM 規則(小文字化・スペース→ハイフン・非英数字非ハイフン除去、Unicode 保持)で生成。**h2 が番号付き(`## 1. <title>`)の場合、anchor も番号を含む**(例: `#1-claude-opus-48-リリース`)。
 
@@ -206,6 +206,8 @@ URL 併記ルール(サイト依存):
 
 ハイライトテーマ(機能単位)では、その機能を主に解説しているページの URL を 1〜2 ページ分記載。
 
+> **changelog ページへのリンクは原則しない(重要)**: `changelog` ページ(`/docs/<lang>/changelog`)は巨大で閲覧性が低いため、末尾参考リンク・bullet いずれにも **changelog ページの URL を置かない**。changelog でしか確認できない変更(新機能・修正)であっても、対応する**通常ドキュメントページに記載(修正加筆)があるか**を `$INPUT_LLMS_FULL` で確認し、**該当ページがあればその ja/en をリンク**、**無ければリンクを省略する**(changelog の URL で代替しない)。changelog ページ自体の更新(タイトル改称・リリースエントリ追加)を述べる軽微更新 bullet も、リンクを付けずテキストのみとする。
+
 #### 新着情報ページ独自情報の検出(セルフレビュー観点)
 
 `/whats-new/<page>.md` の本文と、`$INPUT_LLMS_FULL` 内の対応ページ展開を比較し、**新着情報ページにしか記載されていない内容があれば** `{{WHATS_NEW_DETAILS}}` の該当セクションに反映する。両者に差がなければ通常通り要約する。
@@ -216,6 +218,7 @@ URL 併記ルール(サイト依存):
 
 - [ ] リンク実在性: 末尾参考リンクの全 URL の `.md` 除去前形(en パスに対応する `.md` 付き URL)が `$INPUT_LLMS_TXT` 内に実在する
 - [ ] URL 拡張子: 末尾参考リンクの ja URL / en URL いずれにも `.md` が付いていない
+- [ ] changelog リンク不使用: 末尾参考リンク・bullet に changelog ページ(`/docs/<lang>/changelog`)の URL が無い。changelog 由来の変更は対応する通常ページがあればそれを、無ければリンク省略(changelog の URL で代替しない)
 - [ ] 本文整合性: ハイライト・大幅更新の記述が `$INPUT_LLMS_FULL` の対応ページ本文と矛盾しない
 - [ ] 網羅性: `DIFF_CONTENT` で検出された全ページが新規 / 大幅更新 / 軽微更新 / 新着情報のいずれかに分類されている
 - [ ] カテゴリ整合性: `whats-new/` ページは全て新着情報カテゴリに分類されている
@@ -243,14 +246,14 @@ URL 併記ルール(サイト依存):
 
 ### 10. 旧版アーカイブ (前回サマリが存在する場合のみ)
 
-`ARCHIVE_NAME` は手順 1 で決定済み(通常は `<PREV_GENERATED_AT>`、同日衝突時は `<PREV_GENERATED_AT>_<PREV_GENERATED_TIME>`)。Bash で実行:
+`ARCHIVE_NAME` は手順 1 で決定済み(通常は `<PREV_GENERATED_AT>`、同日衝突時は `<PREV_GENERATED_AT>_<PREV_GENERATED_TIME>`)。アーカイブはライト版・詳細版を**種別ごとのフォルダ**に日付名ファイルとして退避する(`archives/latest/<日付>.md` / `archives/latest-detail/<日付>.md`。過去回を辿る際に日付フォルダを個別に開かずに種別ごとに一覧できる構成)。Bash で実行:
 ```
-mkdir -p ${ARCHIVES_DIR}<ARCHIVE_NAME>/
-mv ${LATEST_LIGHT} ${ARCHIVES_DIR}<ARCHIVE_NAME>/latest.md
-mv ${LATEST_DETAIL} ${ARCHIVES_DIR}<ARCHIVE_NAME>/latest-detail.md
+mkdir -p ${ARCHIVES_DIR}latest/ ${ARCHIVES_DIR}latest-detail/
+mv ${LATEST_LIGHT} ${ARCHIVES_DIR}latest/<ARCHIVE_NAME>.md
+mv ${LATEST_DETAIL} ${ARCHIVES_DIR}latest-detail/<ARCHIVE_NAME>.md
 ```
 
-> 手順 6 の `{{PREV_GENERATED_AT}}` placeholder(関連リンクのパス)にも同じ `<ARCHIVE_NAME>` を使い、アーカイブ実体とリンク先を一致させる。
+> 手順 6 の `{{PREV_GENERATED_AT}}` placeholder(関連リンクのパス)にも同じ `<ARCHIVE_NAME>` を使い、アーカイブ実体(`archives/latest/<ARCHIVE_NAME>.md` / `archives/latest-detail/<ARCHIVE_NAME>.md`)とリンク先を一致させる。
 
 ### 11. 詳細版書き出し
 
@@ -305,7 +308,7 @@ python ${DERIVE_SCRIPT} ${LATEST_DETAIL}
 
 以下の情報を含む完了メッセージを出力:
 - 生成パス: `$LATEST_LIGHT` / `$LATEST_DETAIL`
-- 旧版アーカイブ先 (該当する場合): `${ARCHIVES_DIR}<ARCHIVE_NAME>/`
+- 旧版アーカイブ先 (該当する場合): `${ARCHIVES_DIR}latest/<ARCHIVE_NAME>.md` ・ `${ARCHIVES_DIR}latest-detail/<ARCHIVE_NAME>.md`
 - 統計: ハイライト件数 / 新規追加件数 / 大幅更新件数 / 軽微更新件数 / 新着情報件数
 - 期間: `<BASE_COMMIT short> .. <HEAD_COMMIT short>` (各 7 桁)
 - Phase 3 結果: 実行した場合は `判定: PASS` (N 回目で合格) / スキップした場合は `Phase 3: スキップ (手動実行)`

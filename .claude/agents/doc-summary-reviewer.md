@@ -41,6 +41,7 @@ model: sonnet
 SKILL.md の Phase 1/2 チェックリストのうち、機械的に検証可能な項目を再検査する（執筆 Agent のセルフレビュー漏れの二重防御）。
 
 - [ ] **URL 拡張子**: 末尾参考リンク・bullet の全 URL に `.md` が付いていない。付いていれば **[IMPORTANT]**
+- [ ] **changelog ページリンク不使用**: 末尾参考リンク・bullet・軽微更新のいずれにも changelog ページ(`/docs/<lang>/changelog`)の URL が無い。changelog でしか確認できない変更は、対応する通常ドキュメントページが `llms-full.txt` にあればその ja/en をリンク、無ければリンク省略が正。changelog ページの URL が残っていれば **[IMPORTANT]**（通常ページが実在するのにリンクしていない明確な取りこぼしは **[SUGGESTION]**）
 - [ ] **URL 言語併記**: `URL_LANG=あり` のサイトは `([日本語](url-ja) / [English](url-en))` 形式で ja は en の `/docs/en/`→`/docs/ja/` 置換。`URL_LANG=なし`（mcp）は単一 URL。違反は **[IMPORTANT]**
 - [ ] **概要≤ハイライト件数**: 概要 bullet（`{{OVERALL_SUMMARY_BULLETS}}` 相当）の項目数が ハイライト bullet 数と**一致**。超過は **[CRITICAL]**（`derive_light.py` がエラー終了し `latest.md` 生成失敗のため）
 - [ ] **内部リンク／アンカー整合**: bullet 内の `(#anchor)` が対応する `## N. <タイトル>` の GFM アンカー（番号含む・Unicode 保持）と一致。不一致は **[IMPORTANT]**

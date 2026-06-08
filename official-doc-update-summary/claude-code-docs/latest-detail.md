@@ -36,46 +36,34 @@
 
 新しい設定 `fallbackModel` が追加されました。プライマリモデルが過負荷（overloaded）または利用不可（unavailable）のときに、順に試行する**最大 3 つ**のフォールバックモデルを構成できます。指定した順序で試されるため、優先度の高い代替モデルから順にフォールバックさせられます。
 
-あわせて、これまで主にヘッドレス／非対話起動向けだった `--fallback-model` フラグが、**対話セッションにも適用される**ようになりました。これにより、対話的に Claude Code を使っている最中でもプライマリモデルが落ちた際のフォールバック先をコマンドラインから指定できます。本変更は v2.1.166 の changelog に記載されています。
-
-- [Claude Code 変更履歴 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/changelog)
-- [Claude Code changelog - Claude Code Docs (English)](https://code.claude.com/docs/en/changelog)
+あわせて、これまで主にヘッドレス／非対話起動向けだった `--fallback-model` フラグが、**対話セッションにも適用される**ようになりました。これにより、対話的に Claude Code を使っている最中でもプライマリモデルが落ちた際のフォールバック先をコマンドラインから指定できます。本変更は v2.1.166 の changelog に記載されています（設定リファレンス等の通常ページには未反映のため、参考リンクは省略します）。
 
 ## 2. deny ルールでのツール名 glob パターン対応
 
 権限ルールの deny ルールにおいて、ツール名を書く位置で **glob パターン**が使えるようになりました。たとえば `"*"` を指定するとすべてのツールを拒否できます。広範なツール群を一括で拒否する用途が簡潔に書けるようになります。
 
-一方で allow ルールは MCP 以外の glob を**拒否**します（許可は広く効きすぎるとリスクが大きいため、ワイルドカード許可は MCP に限定される趣旨です）。また、deny ルール中に未知（存在しない）のツール名が含まれている場合は、**起動時に警告**が出るようになり、ルールの綴り間違いなどに気づきやすくなりました。本変更は v2.1.166 の changelog に記載されています。
-
-- [Claude Code 変更履歴 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/changelog)
-- [Claude Code changelog - Claude Code Docs (English)](https://code.claude.com/docs/en/changelog)
+一方で allow ルールは MCP 以外の glob を**拒否**します（許可は広く効きすぎるとリスクが大きいため、ワイルドカード許可は MCP に限定される趣旨です）。また、deny ルール中に未知（存在しない）のツール名が含まれている場合は、**起動時に警告**が出るようになり、ルールの綴り間違いなどに気づきやすくなりました。本変更は v2.1.166 の changelog に記載されています（権限リファレンス等の通常ページには未反映のため、参考リンクは省略します）。
 
 ## 3. クロスセッションメッセージングのセキュリティ強化
 
 複数の Claude セッション間でメッセージをやり取りする仕組みが強化されました。他の Claude セッションから `SendMessage` で**中継された**メッセージは、もはや**ユーザー権限（user authority）を持ちません**。これにより、別セッション経由で権限昇格を引き起こすような中継を防ぎます。
 
-具体的には、受信側のセッションは中継された権限要求（permission request）を**拒否**し、auto モードはそれらを**ブロック**します。セッション間メッセージングを悪用して、本来ユーザーの承認が必要な操作を別セッション経由で通そうとする経路が塞がれました。本変更は v2.1.166 の changelog に記載されています。
-
-- [Claude Code 変更履歴 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/changelog)
-- [Claude Code changelog - Claude Code Docs (English)](https://code.claude.com/docs/en/changelog)
+具体的には、受信側のセッションは中継された権限要求（permission request）を**拒否**し、auto モードはそれらを**ブロック**します。セッション間メッセージングを悪用して、本来ユーザーの承認が必要な操作を別セッション経由で通そうとする経路が塞がれました。本変更は v2.1.166 の changelog に記載されています（該当する通常ページが無いため、参考リンクは省略します）。
 
 ## 4. デフォルトで思考するモデルの thinking 無効化対応
 
 `MAX_THINKING_TOKENS=0`・`--thinking disabled`・およびモデル別の thinking トグルが、**Claude API 経由でデフォルトで思考する**モデルに対しても thinking を無効化できるようになりました。これまでデフォルトで思考が有効なモデルでは、これらの操作で思考を止めきれないケースがありましたが、今回それらが期待どおり thinking を無効化します。
 
-なお、この挙動変更は Claude API 経由のモデルが対象で、**サードパーティプロバイダー（3P）は従来どおり**で変更されません。本変更は v2.1.166 の changelog に記載されています。
+なお、この挙動変更は Claude API 経由のモデルが対象で、**サードパーティプロバイダー（3P）は従来どおり**で変更されません。`MAX_THINKING_TOKENS` による thinking 無効化の詳細は環境変数リファレンスを参照してください。
 
-- [Claude Code 変更履歴 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/changelog)
-- [Claude Code changelog - Claude Code Docs (English)](https://code.claude.com/docs/en/changelog)
+- [環境変数設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/env-vars)
+- [Environment variables - Claude Code Docs (English)](https://code.claude.com/docs/en/env-vars)
 
 ## 5. 非リトライ可能エラー時のフォールバックモデルへの自動リトライ
 
 API が**予期しない非リトライ可能エラー**を拒否（reject）として返したとき、Claude Code がそのターンを**フォールバックモデルで 1 回だけ再試行**するようになりました。プライマリモデル側で想定外のエラーが起きても、フォールバック先で一度リカバリを試みることで、ターンが即失敗するのを避けられます。
 
-ただし、認証（auth）・レート制限（rate-limit）・リクエストサイズ（request-size）・トランスポート（transport）の各エラーは、これまでどおり**即座に表面化**します（これらは再試行で解決しない性質のため）。本変更は v2.1.166 の changelog に記載されています。
-
-- [Claude Code 変更履歴 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/changelog)
-- [Claude Code changelog - Claude Code Docs (English)](https://code.claude.com/docs/en/changelog)
+ただし、認証（auth）・レート制限（rate-limit）・リクエストサイズ（request-size）・トランスポート（transport）の各エラーは、これまでどおり**即座に表面化**します（これらは再試行で解決しない性質のため）。本変更は v2.1.166 の changelog に記載されています（該当する通常ページが無いため、参考リンクは省略します）。
 
 ## 新規追加されたページ
 
@@ -92,7 +80,7 @@ API が**予期しない非リトライ可能エラー**を拒否（reject）と
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-- [日本語](https://code.claude.com/docs/ja/changelog) / [English](https://code.claude.com/docs/en/changelog): changelog ページに 3 つのリリースエントリ（v2.1.166・v2.1.167・v2.1.168、いずれも 2026年06月06日）が追加されました。
+- changelog ページに 3 つのリリースエントリ（v2.1.166・v2.1.167・v2.1.168、いずれも 2026年06月06日）が追加されました。
   - **v2.1.168**: バグ修正と信頼性向上のみ。
   - **v2.1.167**: バグ修正と信頼性向上のみ。
   - **v2.1.166**: ハイライトに挙げた上位 5 項目（`fallbackModel`・deny ルールの glob 対応・クロスセッションメッセージング強化・thinking 無効化・非リトライ可能エラー時のフォールバック再試行）に加え、次の改善・修正を含みます。
@@ -106,7 +94,7 @@ API が**予期しない非リトライ可能エラー**を拒否（reject）と
     - macOS で、デーモン停止後に接続が残ると孤立した `claude --bg-pty-host` プロセスが CPU 100% で回り続ける問題を修正。
     - `/voice` 切替後に古い認証チェックを消すため `/login` が必要だった voice モードの問題を修正。
     - 管理設定（managed settings）に無効なエントリが 1 つあると、残りの有効なポリシーの強制まで無言で無効化される問題を修正。
-    - 管理設定の `allowedMcpServers`／`deniedMcpServers` 述語が `${VAR}` 参照を使うとマッチしない問題を修正。
+    - 管理設定の `allowedMcpServers`／`deniedMcpServers` 述語が `${VAR}` 参照を使うとマッチしない問題を修正（[日本語](https://code.claude.com/docs/ja/managed-mcp) / [English](https://code.claude.com/docs/en/managed-mcp)）。
     - git worktree に入ったバックグラウンドエージェントのセッションが、`claude agents` から再オープンすると「No conversation found」でクラッシュループする問題を修正。
     - ストリーミング中に Ctrl+O のトランスクリプト表示で思考テキストが重複する問題を修正。
     - リモートセッション内で実行した `/doctor` が「Not inside a remote session」という矛盾した失敗チェックを表示する問題を修正。
@@ -122,8 +110,8 @@ API が**予期しない非リトライ可能エラー**を拒否（reject）と
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/2026-06-06/latest.md](./archives/2026-06-06/latest.md)
-- 前回サマリ(詳細版): [./archives/2026-06-06/latest-detail.md](./archives/2026-06-06/latest-detail.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-06.md](./archives/latest/2026-06-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-06.md](./archives/latest-detail/2026-06-06.md)
 
 <!--
 base_commit: 980975cf497b0cce6847425a0787fccd839be1ae
