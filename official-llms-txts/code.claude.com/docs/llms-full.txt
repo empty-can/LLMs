@@ -98,11 +98,11 @@ Cloud providers expose spend through AWS Cost Explorer, GCP Billing, or Azure Co
 
 On Team, Enterprise, Claude API, and cloud provider plans, Anthropic does not train models on your code or prompts. Your API provider determines retention and compliance posture.
 
-| Topic                     | What to know                                                                    | Where to start                                 |
-| :------------------------ | :------------------------------------------------------------------------------ | :--------------------------------------------- |
-| Data usage policy         | What Anthropic collects, how long it's retained, what's never used for training | [Data usage](/docs/en/data-usage)                   |
-| Zero Data Retention (ZDR) | Nothing stored after the request completes. Available on Claude for Enterprise  | [Zero data retention](/docs/en/zero-data-retention) |
-| Security architecture     | Network model, encryption, authentication, audit trail                          | [Security](/docs/en/security)                       |
+| Topic                     | What to know                                                                                         | Where to start                                 |
+| :------------------------ | :--------------------------------------------------------------------------------------------------- | :--------------------------------------------- |
+| Data usage policy         | What Anthropic collects, how long it's retained, what's never used for training                      | [Data usage](/docs/en/data-usage)                   |
+| Zero Data Retention (ZDR) | Nothing stored after the request completes. Available to qualified accounts on Claude for Enterprise | [Zero data retention](/docs/en/zero-data-retention) |
+| Security architecture     | Network model, encryption, authentication, audit trail                                               | [Security](/docs/en/security)                       |
 
 If you need request-level audit logging or to route traffic by data sensitivity, place an [LLM gateway](/docs/en/llm-gateway) between developers and your provider. For regulatory requirements and certifications, see [Legal and compliance](/docs/en/legal-and-compliance).
 
@@ -2993,6 +2993,39 @@ Release notes for Claude Code, including new features, improvements, and bug fix
 This page is generated from the [CHANGELOG.md on GitHub](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md).
 
 Run `claude --version` to check your installed version.
+
+<Update label="2.1.169" description="June 8, 2026">
+  * Added `--safe-mode` flag (and `CLAUDE_CODE_SAFE_MODE`) to start Claude Code with all customizations (CLAUDE.md, plugins, skills, hooks, MCP servers) disabled for troubleshooting
+  * Added `/cd` command to move a session to a new working directory without breaking the prompt cache mid-session
+  * Added a `disableBundledSkills` setting and `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS` environment variable to hide bundled skills, workflows, and built-in slash commands from the model
+  * Fixed Up/Down arrows jumping to command history past the wrapped rows of a long input line — they now move through each visual row first, and history recall enters at the near edge
+  * Fixed enterprise managed MCP policies (`allowedMcpServers`/`deniedMcpServers`) not being enforced on reconnect, IDE-typed configs, `--mcp-config` servers during the first session after install, or before remote settings loaded; also fixed slow cold starts for orgs without remote settings
+  * Fixed a \~30-50ms UI stall at the start of each turn for macOS users logged in with claude.ai credentials
+  * Fixed `claude -p` being slow or appearing to hang on Windows while waiting for the slash-command/skill scan (regression in 2.1.161)
+  * Fixed Remote Control getting stuck on "reconnecting" after resuming a session when an OAuth token refresh happened at the same time
+  * Fixed Git Credential Manager's "Connect to GitHub" popup appearing on Windows at startup when background git commands ran without cached credentials
+  * Fixed footer hints (e.g. "esc to interrupt") not showing for users with a custom statusline
+  * Fixed stale permission and dialog prompts reappearing every time you reattached to a remote session whose worker had died while waiting on them
+  * Fixed `claude agents --json` omitting blocked and just-dispatched background sessions; added `--all` to include completed sessions, plus new `id` and `state` fields
+  * Fixed agents view leaving a stale/garbled frame after navigating back from an agent on WSL in Windows Terminal
+  * Fixed background agents ignoring project-level settings `env` values (e.g. `ANTHROPIC_MODEL`) when dispatched onto a pre-warmed worker
+  * Fixed MCPB plugin cache being spuriously invalidated on Windows, causing unnecessary re-extraction
+  * Fixed plugin `.in_use` PID lock files accumulating without bound; stale markers from crashed sessions are now swept once per day
+  * Fixed untrusted project settings being able to set OTEL client-certificate paths without trust confirmation
+  * `/workflows` now opens immediately even while a turn is in progress
+  * Improved `TaskCreate` reliability: malformed inputs are repaired automatically and validation errors for unloaded tools include the schema
+  * Improved the error message shown when your organization has disabled API key authentication, with guidance based on where the active API key comes from
+  * Reduced CPU usage while responses stream and during spinner animations
+  * Restored a default 5-minute idle timeout on Vertex/Foundry so a stalled stream aborts instead of hanging indefinitely; set `API_FORCE_IDLE_TIMEOUT=0` to opt out
+  * Remote-managed settings with an invalid entry now apply their remaining valid policies and surface the validation error, instead of silently dropping the whole payload
+  * Background sessions now preserve `--ide`, `--chrome`, `--bare`, `--remote-control`, and other flags across retire→wake, and respawn state validation was hardened
+  * Background sessions are now told that shared-checkout edits are blocked until they enter a worktree, avoiding a wasted rejected edit before `EnterWorktree`
+  * The "CLAUDE.md is too long" warning threshold now scales with the model's context window
+  * Auto-updater on Windows now stops retrying within a session once `claude.exe` is held by another process
+  * Improved color contrast for skill tags in the slash-command menu
+  * Promo credit claims for Apple/Google-billed subscribers without a payment method now explain where to add one
+  * Added a tip suggesting `claude agents` when running multiple concurrent sessions
+</Update>
 
 <Update label="2.1.168" description="June 6, 2026">
   * Bug fixes and reliability improvements
@@ -11276,7 +11309,7 @@ Anthropic retains Claude Code data based on your account type and preferences.
 **Commercial users (Team, Enterprise, and API)**:
 
 * Standard: 30-day retention period
-* [Zero data retention](/docs/en/zero-data-retention): available for Claude Code on Claude for Enterprise. ZDR is enabled on a per-organization basis; each new organization must have ZDR enabled separately by your account team
+* [Zero data retention](/docs/en/zero-data-retention): available to qualified accounts for Claude Code on Claude for Enterprise. ZDR is not included in the standard Enterprise plan; it is enabled on a per-organization basis by your account team after confirming eligibility
 * Local caching: Claude Code clients store session transcripts locally in plaintext under `~/.claude/projects/` for 30 days by default to enable session resumption. Adjust the period with `cleanupPeriodDays`. See [application data](/docs/en/claude-directory#application-data) for what's stored and how to clear it.
 
 You can delete individual Claude Code on the web sessions at any time. Deleting a session permanently removes the session's event data. For instructions on how to delete sessions, see [Delete sessions](/docs/en/claude-code-on-the-web#delete-sessions).
@@ -34927,7 +34960,7 @@ allowed-tools: Bash(git add *) Bash(git commit *) Bash(git status *)
 ---
 ```
 
-To block a skill from using certain tools, add deny rules in your [permission settings](/en/permissions) instead.
+To remove tools from Claude's available pool while a skill is active, list them in `disallowed-tools` in the skill's frontmatter. The restriction clears when you send your next message. To block tools across all skills and prompts, add deny rules in your [permission settings](/en/permissions).
 
 ### Pass arguments to skills
 
@@ -41184,9 +41217,13 @@ Worktrees handle file isolation. The related pages below cover delegating work i
 # Zero data retention
 Source: https://code.claude.com/docs/en/zero-data-retention
 
-Learn about Zero Data Retention (ZDR) for Claude Code on Claude for Enterprise, including scope, disabled features, and how to request enablement.
+Learn about Zero Data Retention (ZDR) for Claude Code, available to qualified accounts on Claude for Enterprise, including scope, disabled features, and how to request enablement.
 
-Zero Data Retention (ZDR) is available for Claude Code when used through Claude for Enterprise. When ZDR is enabled, prompts and model responses generated during Claude Code sessions are processed in real time and not stored by Anthropic after the response is returned, except where needed to comply with law or combat misuse.
+Zero Data Retention (ZDR) for Claude Code is available to qualified accounts on Claude for Enterprise. When ZDR is enabled, prompts and model responses generated during Claude Code sessions are processed in real time and not stored by Anthropic after the response is returned, except where needed to comply with law or combat misuse.
+
+<Note>
+  ZDR is not included in the standard Claude for Enterprise plan and cannot be enabled from your admin settings. It is available to qualified accounts and requires separate enablement by Anthropic. If your organization requires ZDR, [contact sales](https://www.anthropic.com/contact-sales?utm_source=claude_code\&utm_medium=docs\&utm_content=zero_data_retention_request) or your Anthropic account team to confirm eligibility.
+</Note>
 
 ZDR on Claude for Enterprise gives enterprise customers the ability to use Claude Code with zero data retention and access administrative capabilities:
 
