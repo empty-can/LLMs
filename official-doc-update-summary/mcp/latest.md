@@ -1,20 +1,20 @@
 ---
-対象期間: 2026年06月06日 〜 2026年06月07日
-作成日: 2026-06-07
+対象期間: 2026年06月07日 〜 2026年06月09日
+作成日: 2026-06-09
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
-> 今回の対象期間は、新規ページの追加や既存ページの大幅な書き換えはなく、3 つのワーキンググループ憲章（Charter）に参照用リポジトリを示す「Resources」セクションを追加する小規模な更新のみです。いずれも既存ページへの数行の追記で、仕様や運用ルールの変更は含みません。
+> 今回の対象期間は、新規ページの追加や既存ページ本文の更新はなく、拡張機能インデックス（`llms.txt`）における Tasks 拡張ページの表示タイトルを「MCP Tasks」から「Tasks」へ正規化する 1 件の軽微な変更のみです。URL・説明文・ページ本文に変更はありません。
 >
 > 主要なものを以下に挙げます。
 >
-> 1. 3 つのワーキンググループ憲章への参照リポジトリ（Resources セクション）の追加
+> 1. Tasks 拡張ページの索引タイトルを「MCP Tasks」→「Tasks」へ正規化（他の拡張ページの命名と整合）
 
 ## ハイライト
 
-1. [**ワーキンググループ憲章へのリポジトリ参照の追加**](./latest-detail.md#1-ワーキンググループ憲章へのリポジトリ参照の追加):  
-  Registry / Server Card / Triggers and Events の 3 つのワーキンググループの憲章ページに、それぞれの作業対象リポジトリへのリンクを並べた「Resources」セクションが追加された。仕様や運用ルールの変更ではなく、各グループが扱うコードへの導線を示す追記。
+1. [**Tasks 拡張ページの索引タイトル正規化**](./latest-detail.md#1-tasks-拡張ページの索引タイトル正規化):  
+  拡張機能一覧で Tasks 拡張概要ページの表示タイトルが「MCP Tasks」から「Tasks」へ変更された。本文・仕様・説明文の変更ではなく、Authorization Extensions や Extensions Overview など多くの拡張ページが採る「MCP」接頭辞なしの命名に表記を揃える正規化。
 
 ## 新規追加されたページ
 
@@ -26,20 +26,16 @@
 
 ## 軽微な更新
 
-- [Registry Charter](https://modelcontextprotocol.io/community/registry/charter):  
-  「Resources」セクションを追加し、Registry サービス本体のリポジトリ `modelcontextprotocol/registry` へのリンクを記載。
-- [Server Card Charter](https://modelcontextprotocol.io/community/server-card/charter):  
-  「Resources」セクションを追加し、実験的拡張リポジトリ `modelcontextprotocol/experimental-ext-server-card` へのリンクを記載。
-- [Triggers and Events Charter](https://modelcontextprotocol.io/community/triggers-events/charter):  
-  「Resources」セクションを追加し、インキュベーション用リポジトリ `modelcontextprotocol/experimental-ext-triggers-events` へのリンクを記載。
+- [タスク拡張（Tasks）](https://modelcontextprotocol.io/extensions/tasks/overview):  
+  拡張機能インデックスでの表示タイトルが「MCP Tasks」から「Tasks」へ変更。URL・説明文・ページ本文は不変。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-07.md](./archives/latest/2026-06-07.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-07.md](./archives/latest-detail/2026-06-07.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-07_1501.md](./archives/latest/2026-06-07_1501.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-07_1501.md](./archives/latest-detail/2026-06-07_1501.md)
 
 <!--
-base_commit: 3212bb05a367af1491e80f0689f4d8cd5a2a136f
-head_commit: c8d7c825ed36495e6a0e413b95a39aab0c8f586a
-generated_at_full: 2026-06-08T15:01:28+09:00
+base_commit: c8d7c825ed36495e6a0e413b95a39aab0c8f586a
+head_commit: e2d1b0571046ac6ca57dd9cd86ee5fb9a0e575b4
+generated_at_full: 2026-06-10T15:28:22+09:00
 -->

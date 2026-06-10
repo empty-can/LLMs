@@ -1,125 +1,141 @@
 ---
-対象期間: 2026年06月06日 〜 2026年06月08日
-作成日: 2026-06-08
+対象期間: 2026年06月08日 〜 2026年06月09日
+作成日: 2026-06-09
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
-> 今回の更新は、changelog への v2.1.169（新機能・修正・改善を多数含む大型リリース）追加と、スキル・ゼロデータ保持（ZDR）関連の通常ページ更新が中心です。リファレンスの新規追加・大幅更新ページはありません。
+> 今回の更新は、Claude Fable 5 のリリース（v2.1.170）を中心に、モデル設定まわりの大規模な拡充と、新規ページ「advisor（アドバイザー）ツール」の追加が目立ちます。新規追加ページ 1 件・大幅更新ページ 1 件のほか、複数の軽微更新があります。
 >
 > 主要なものを以下に挙げます。
 >
-> 1. トラブルシュート用に全カスタマイズを無効化して起動する `--safe-mode` フラグ（と `CLAUDE_CODE_SAFE_MODE`）を追加
-> 2. プロンプトキャッシュを壊さずセッションの作業ディレクトリを変更する `/cd` コマンドを追加
-> 3. バンドルスキル・ワークフロー・組み込みコマンドをモデルから隠す `disableBundledSkills` 設定（と `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS`）を追加
-> 4. スキル稼働中だけツールを利用可能プールから外す frontmatter `disallowed-tools` を追加
-> 5. ZDR が標準 Enterprise プランに非同梱で、適格アカウント向け・Anthropic による個別有効化が必要である旨を明確化
+> 1. Claude Fable 5（Mythos クラスの最上位モデル）が v2.1.170 で利用可能になり、`fable`／`best` エイリアスと「Work with Fable 5」ガイダンスが追加
+> 2. メインモデルを要所でより強力なアドバイザーモデルに相談させる「advisor（アドバイザー）ツール」の新規ページが追加
+> 3. プライマリモデルが過負荷・利用不可のときに順に試す `fallbackModel`（フォールバックモデルチェーン）の解説がモデル設定ページに追加
+> 4. Fable 5 の安全分類器がフラグした要求を Opus へ自動でリルートする「自動モデルフォールバック」を追加
+> 5. 管理設定・配信設定の不正エントリを全体破棄せず部分適用する寛容なパース挙動を明文化
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**safe-mode フラグによる全カスタマイズ無効化**](#1-safe-mode-フラグによる全カスタマイズ無効化):  
-  CLAUDE.md・プラグイン・スキル・フック・MCP サーバーといった全カスタマイズを無効化した状態で起動する `--safe-mode` フラグ（と環境変数 `CLAUDE_CODE_SAFE_MODE`）が追加された。設定やプラグイン起因の不具合を切り分けるトラブルシュート用途に使える。
-2. [**/cd コマンドによる作業ディレクトリの変更**](#2-cd-コマンドによる作業ディレクトリの変更):  
-  セッション途中でプロンプトキャッシュを壊すことなく作業ディレクトリを移動できる `/cd` コマンドが追加された。セッションを開き直さずに別ディレクトリへ移れる。
-3. [**disableBundledSkills 設定によるバンドルスキルの非表示**](#3-disablebundledskills-設定によるバンドルスキルの非表示):  
-  バンドルされたスキル・ワークフロー・組み込みスラッシュコマンドをモデルから隠す `disableBundledSkills` 設定と環境変数 `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS` が追加された。
-4. [**スキルの disallowed-tools によるツール除外**](#4-スキルの-disallowed-tools-によるツール除外):  
-  スキルの frontmatter に `disallowed-tools` を指定すると、そのスキルがアクティブな間だけ Claude の利用可能ツールから特定ツールを外せるようになった。制限は次のメッセージ送信時に解除される。
-5. [**ゼロデータ保持 ZDR の適格アカウント要件の明確化**](#5-ゼロデータ保持-zdr-の適格アカウント要件の明確化):  
-  ZDR が Claude for Enterprise の適格アカウント向けであり、標準の Enterprise プランには含まれず、Anthropic による個別有効化と適格性確認が必要である旨が複数ページで明確化された。
+1. [**Claude Fable 5 のリリース**](#1-claude-fable-5-のリリース):  
+  Mythos クラスの最上位モデル Claude Fable 5 が v2.1.170 で Claude Code に追加された。デフォルトではなく `/model fable` で選択し、最難関・長時間タスク向けの `fable` エイリアスと、Fable 5 がある組織では Fable 5・なければ最新 Opus を使う `best` エイリアスが新設された。
+2. [**advisor ツールの追加**](#2-advisor-ツールの追加):  
+  メインモデルに加えて、タスクの要所でより強力な「アドバイザー」モデルに相談させる server tool が追加された。`/advisor`・`advisorModel` 設定・`--advisor` フラグで有効化でき、アドバイザーは会話全体を受け取って指針を返す。
+3. [**フォールバックモデルチェーン**](#3-フォールバックモデルチェーン):  
+  プライマリモデルが過負荷・利用不可・その他の非リトライ可能なサーバーエラーを返したとき、設定したフォールバックモデルへ順に切り替える `fallbackModel`／`--fallback-model` の解説がモデル設定ページに追加された。
+4. [**Fable 5 の自動モデルフォールバック**](#4-fable-5-の自動モデルフォールバック):  
+  Fable 5 はサイバーセキュリティ・生物学コンテンツ向けの安全分類器付きで動作し、分類器がフラグした要求はデフォルトの Opus モデルへ自動でリルートされる。`/config` で自動切替をオフにして都度判断させることもできる。
+5. [**管理設定・配信設定の不正エントリの部分適用**](#5-管理設定配信設定の不正エントリの部分適用):  
+  管理設定・配信設定で、スキーマ検証に失敗したエントリだけを除去し残りの有効なポリシーを適用する寛容なパース挙動が明文化された（v2.1.169 以降）。1 つのタイポで組織ポリシー全体が無効化されない。
 <!-- light:highlight-list:end -->
 
-## 1. safe-mode フラグによる全カスタマイズ無効化
+## 1. Claude Fable 5 のリリース
 
-新しい `--safe-mode` フラグ（および環境変数 `CLAUDE_CODE_SAFE_MODE`）が追加されました。これを付けて起動すると、CLAUDE.md・プラグイン・スキル・フック・MCP サーバーといった**すべてのカスタマイズを無効化**した状態で Claude Code が立ち上がります。
+v2.1.170 で **Claude Fable 5**（Mythos クラスの、Anthropic がこれまで一般提供したどのモデルをも上回る能力を持つ最上位モデル）が Claude Code で利用可能になりました。1 回の作業で収まらない大規模なタスクに向き、長時間の自律セッションを維持し、行動の前に調査し、小型モデルよりも頻繁に自分の作業を検証します。
 
-設定やプラグインが原因の不具合を切り分けたいときに、素の状態から動作を確認できるトラブルシュート用途を想定した機能です。本変更は v2.1.169 の changelog に記載されています（設定・CLI リファレンス等の通常ページには未反映のため、参考リンクは省略します）。
+Fable 5 はデフォルトモデルではなく、`/model fable` で選択します。モデル設定ページに「Work with Fable 5」セクションが追加され、あわせて 2 つのエイリアスが新設されました。`fable` は最難関・最長のタスクに Fable 5 を使い、`best` は組織が Fable 5 にアクセスできる場合は Fable 5、できない場合は最新の Opus を使います。Fable 5 は思考をオフにできず（セッショントグルや `MAX_THINKING_TOKENS=0` は無効）、効果レベルに `xhigh` を含み、Anthropic API では常に 1M コンテキストで動作します。利用には v2.1.170 以降が必要で、ゼロデータ保持（ZDR）環境では利用できません。
 
-## 2. /cd コマンドによる作業ディレクトリの変更
+- [モデル設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config)
 
-`/cd` コマンドが追加されました。セッションの途中で**プロンプトキャッシュを壊すことなく**、作業ディレクトリ（working directory）を新しい場所へ移動できます。
+## 2. advisor ツールの追加
 
-これまでディレクトリを切り替えるにはセッションを開き直す必要があり、その際にプロンプトキャッシュが失われていましたが、セッションを維持したまま別ディレクトリへ移れるようになりました。本変更は v2.1.169 の changelog に記載されています（該当する通常ページが無いため、参考リンクは省略します）。
+新しい「advisor（アドバイザー）ツール」が追加されました。メインモデルに加えて、タスクの要所（アプローチを確定する前、繰り返すエラーで行き詰まったとき、タスク完了を宣言する前など）で、通常はより強力な 2 つ目のモデル＝アドバイザーに相談させる仕組みです。アドバイザーはツール呼び出しと結果を含む会話全体を受け取り、Claude が継続前に適用する指針を返します。
 
-## 3. disableBundledSkills 設定によるバンドルスキルの非表示
+有効化は `/advisor` コマンド・`advisorModel` 設定・`--advisor` フラグの 3 通りです。アドバイザーは Anthropic のインフラ上でサーバーサイド実行される server tool で、メインモデルと同等以上の能力が要求され、ペアリングの妥当性は Claude Code ではなく API が強制します。コストはアドバイザーモデルのレートで加算されますが、要所だけで呼ぶため強力なモデルを通しで使うより安く済むのが一般的です。`/advisor` の切り替えはプロンプトキャッシュを壊しません。
 
-新しい設定 `disableBundledSkills` と環境変数 `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS` が追加されました。これらを使うと、バンドルされたスキル・ワークフロー・組み込みスラッシュコマンドを**モデルから隠す**ことができます。
+- [アドバイザーツールで難しい判断をエスカレーションする - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/advisor)
+- [Escalate hard decisions with the advisor tool - Claude Code Docs (English)](https://code.claude.com/docs/en/advisor)
 
-不要な組み込み機能をモデルの選択肢から外したい場合に利用できます。本変更は v2.1.169 の changelog に記載されています（設定リファレンス等の通常ページには未反映のため、参考リンクは省略します）。
+## 3. フォールバックモデルチェーン
 
-## 4. スキルの disallowed-tools によるツール除外
+モデル設定ページに「フォールバックモデルチェーン」セクションが追加されました。プライマリモデルが過負荷・利用不可、またはその他の非リトライ可能なサーバーエラーを返したとき、リクエストを失敗させる代わりにフォールバックモデルへ切り替えます。認証・課金・レート制限・リクエストサイズ・トランスポートのエラーでは切り替えず、通常のリトライ・エラー処理に従います。
 
-スキルの frontmatter に `disallowed-tools` を指定することで、**そのスキルがアクティブな間だけ** Claude の利用可能なツールのプールから特定のツールを外せるようになりました。この制限は**次のメッセージを送った時点で解除**されます。
+設定方法は、単一セッション向けのカンマ区切りフラグ `--fallback-model sonnet,haiku` と、永続化用の配列設定 `fallbackModel` の 2 通りです。フラグが設定より優先され、各要素はモデル名・エイリアス・`default` を受け付けます。チェーンは重複除去後に最大 3 モデルで、超過分は無視されます。切り替えはそのターンのみ有効で、次のメッセージは再びプライマリから試します。到達不能なモデルや `availableModels` の許可外の要素はスキップ・除外されます。
 
-すべてのスキルとプロンプトにわたってツールを恒久的にブロックしたい場合は、従来どおり権限設定（permission settings）の deny ルールを使います。スキルのドキュメントも、従来の「deny ルールを使う」記述からこの新しい `disallowed-tools` の説明へ更新されました。
+- [モデル設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config)
 
-- [スキルで Claude を拡張する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/skills)
-- [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills)
+## 4. Fable 5 の自動モデルフォールバック
 
-## 5. ゼロデータ保持 ZDR の適格アカウント要件の明確化
+モデル設定ページに「自動モデルフォールバック」セクションが追加されました。これは可用性ベースのフォールバックチェーンとは別の、コンテンツベースのフォールバックです。Fable 5 はサイバーセキュリティ・生物学コンテンツ向けの安全分類器付きで動作し、分類器が要求をフラグすると、その要求はデフォルトの Opus モデル（Anthropic API・LLM ゲートウェイでは Opus 4.8、Claude Platform on AWS では Opus 4.7）で再実行され、トランスクリプトに通知が出ます。以降はその Opus で継続し、`/model fable` で Fable 5 に戻せます。
 
-ゼロデータ保持（Zero Data Retention; ZDR）に関する記述が更新され、ZDR が **Claude for Enterprise の適格アカウント（qualified accounts）向け**であることが明確化されました。
+フォールバックはセッション最初の要求でも起こり得ます。最初の要求には CLAUDE.md の内容や git status などのワークスペースコンテキストが含まれ、セキュリティ・生物学関連の素材を含むリポジトリはそれだけで分類器に引っかかるためです。`claude --safe-mode` でカスタマイズを無効化すると要因の切り分けに使えます。`/config` で「フラグ時にモデルを切り替える」をオフにすると、フラグのたびに「Opus に切り替える」か「プロンプトを編集して Fable 5 で再試行する」かを選べます。Bedrock・Vertex AI・Foundry では両モデルの ID を識別できる場合のみ自動切替が働きます。オフェンシブセキュリティや生物学のワークロードでは頻繁に（多くは最初の要求から）フォールバックしますが、これはアカウントのフラグではなく当該ドメインで想定される挙動です。
 
-あわせて、ZDR は**標準の Enterprise プランには含まれず**、管理者設定からは有効化できないこと、有効化には Anthropic による**個別の手続き**が必要で、適格性の確認が前提となることが追記されました。ZDR が必要な組織は、セールスまたは Anthropic のアカウントチームに問い合わせて適格性を確認します。この趣旨はゼロデータ保持ページ本文（Note を含む）のほか、データ利用ページや組織向けセットアップページの概要表にも反映されています。
+- [モデル設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config)
 
-- [ゼロデータ保持 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/zero-data-retention)
-- [Zero data retention - Claude Code Docs (English)](https://code.claude.com/docs/en/zero-data-retention)
+## 5. 管理設定・配信設定の不正エントリの部分適用
+
+管理設定（managed settings）の不正エントリの扱いが明文化されました（v2.1.169 以降）。管理設定は寛容にパースされ、スキーマ検証に失敗したエントリを除去して警告を記録し、残りの有効なポリシーはすべて適用します。これにより、1 つのタイポで組織ポリシー全体が無効化されることがなくなりました。挙動はサーバー管理設定・MDM 経由の plist/レジストリポリシー・`managed-settings.json` の 3 つの配信方式で共通です。
+
+セキュリティ強制フィールドは一括除去ではなくフィールド単位で扱われます。`allowedMcpServers` は不正時に空の許可リストとして強制（＝修正まで全 MCP サーバーを拒否）、`forceLoginOrgUUID` は修正まで全組織のログインを不許可といった fail-closed 挙動です。一方 `requiredMinimumVersion`／`requiredMaximumVersion` は設計上 fail-open で、不正値は強制されず除去されるため、不正なポリシー配信で起動不能になりません。検証エラーは起動時ダイアログ・`-p` の stderr・`claude doctor` に表示されます。配信設定（delivered settings）も同じ規則で部分適用され、ユーザー・プロジェクト・ローカル設定は従来どおり厳格（ファイル全体を拒否）です。
+
+- [Claude Code 設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/settings)
+- [Claude Code settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings)
+- [サーバー管理設定を構成する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/server-managed-settings)
+- [Configure server-managed settings - Claude Code Docs (English)](https://code.claude.com/docs/en/server-managed-settings)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-*(新規追加されたページはありません)*
+- [**アドバイザーツールで難しい判断をエスカレーションする**](#1-アドバイザーツールで難しい判断をエスカレーションする) ([日本語](https://code.claude.com/docs/ja/advisor) / [English](https://code.claude.com/docs/en/advisor)):  
+  メインモデルとより強力なアドバイザーモデルをペアにし、タスクの要所で Claude が相談する仕組みを解説した新規ページ（capability の概要はハイライト 2 も参照）。
 <!-- light:new-pages:end -->
+
+## 1. アドバイザーツールで難しい判断をエスカレーションする
+
+advisor ツールは、ほとんどのターンが定型作業でありつつプラン品質が結果を左右するような、長く複数ステップにわたるタスクに向いています。大規模なリファクタ、同じエラーが再発するデバッグ、完了宣言前に独立した確認を入れたいタスクなどが例です。逆に計画の余地が少ない短いタスクや、毎ターン最強モデルが要るタスクでは効果が薄く、その場合はメインモデルの切り替えを検討します。
+
+有効化は `/advisor` コマンド（引数なしでピッカー、`/advisor opus` で直接指定。選択は `advisorModel` に保存され永続化）、`advisorModel` 設定、`--advisor` フラグの 3 通りです。アドバイザーはメインモデルと同等以上の能力が要求され、メインモデルごとに受理されるアドバイザーが決まっています（例: Opus 4.6 以降のメインには Fable または同バージョン以上の Opus）。ペアリングの妥当性は Claude Code ではなく API が強制し、不正なペアは次のリクエストでエラーになります。
+
+コストはアドバイザーモデルの入出力レートで加算され、サブスクリプションではプランの使用量上限にカウントされます。アドバイザーの有効化・無効化はメインモデルのプロンプトキャッシュを無効化しません。要件は Claude Code v2.1.98 以降・Anthropic API 専用（Bedrock／Vertex AI／Foundry では利用不可）・対応メインモデルで、`CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1` で完全に無効化できます。
+
+- [アドバイザーツールで難しい判断をエスカレーションする - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/advisor)
+- [Escalate hard decisions with the advisor tool - Claude Code Docs (English)](https://code.claude.com/docs/en/advisor)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-*(大幅に更新されたページはありません)*
+- [**モデル設定**](#1-モデル設定) ([日本語](https://code.claude.com/docs/ja/model-config) / [English](https://code.claude.com/docs/en/model-config)):  
+  Fable 5 対応（「Work with Fable 5」・`fable`／`best` エイリアス）、フォールバックモデルチェーン、Fable 5 の自動モデルフォールバックなど複数の新セクションが追加された（詳細はハイライト 1・3・4 参照）。
 <!-- light:updated-pages:end -->
+
+## 1. モデル設定
+
+モデル設定ページに、今回の Fable 5 リリースに伴う複数の新セクションが追加されました。「Work with Fable 5」では Fable 5 の特性と使いこなし方を解説し、モデルエイリアス表には `fable`（最難関・長時間タスク向け）と `best`（Fable 5 がある組織では Fable 5、なければ最新 Opus）が加わりました。`default` のアカウント別解決先や効果レベル表・1M コンテキスト表にも Fable 5 が反映され、`ANTHROPIC_DEFAULT_FABLE_MODEL` 環境変数が追加されています。
+
+あわせて「フォールバックモデルチェーン」（可用性ベース。`fallbackModel`／`--fallback-model`）と「自動モデルフォールバック」（Fable 5 の安全分類器によるコンテンツベース。トリガー要因の確認・切替前確認・Bedrock/Vertex/Foundry での有効化・セキュリティ研究/生物学ワークロードの各サブセクションを含む）が新設されました。これらの詳細はハイライト 1・3・4 を参照してください。
+
+- [モデル設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-- changelog ページに 1 つのリリースエントリ（v2.1.169、2026年06月08日）が追加されました。
-  - **v2.1.169**: ハイライトに挙げた 3 件（`--safe-mode`／`/cd`／`disableBundledSkills`）に加え、次の修正・改善を含みます。
-    - 長い入力行で折り返した行を超えてコマンド履歴へジャンプしていた上下矢印を修正。各表示行を先に移動するようになり、履歴呼び出しは近い端から入るようになった。
-    - エンタープライズの管理 MCP ポリシー（`allowedMcpServers`／`deniedMcpServers`）が、再接続時・IDE で入力した構成・インストール後最初のセッション中の `--mcp-config` サーバー・リモート設定の読み込み前に強制されない問題を修正。リモート設定を持たない組織での遅いコールドスタートも修正。
-    - claude.ai 認証情報でログインした macOS ユーザーで、各ターン開始時に約 30〜50ms の UI 停止が起きる問題を修正。
-    - Windows で `claude -p` がスラッシュコマンド／スキルのスキャン待ちの間に遅くなる・ハングしたように見える問題を修正（2.1.161 のリグレッション）。
-    - セッション再開時に OAuth トークン更新が同時に起きると、リモートコントロールが「reconnecting」で止まる問題を修正。
-    - バックグラウンドの git コマンドがキャッシュ済み認証情報なしで実行されたとき、Windows の起動時に Git Credential Manager の「Connect to GitHub」ポップアップが出る問題を修正。
-    - カスタムステータスラインを使うユーザーでフッターのヒント（例: 「esc to interrupt」）が表示されない問題を修正。
-    - ワーカーが死んだリモートセッションに再アタッチするたび、待機中だった古い権限・ダイアログのプロンプトが再表示される問題を修正。
-    - `claude agents --json` がブロック中・ディスパッチ直後のバックグラウンドセッションを省く問題を修正。完了済みセッションを含める `--all` と、新しい `id`・`state` フィールドを追加。
-    - Windows Terminal の WSL でエージェントから戻ったあと、エージェントビューに古い／文字化けしたフレームが残る問題を修正。
-    - 事前ウォームされたワーカーにディスパッチされたバックグラウンドエージェントが、プロジェクトレベル設定の `env` 値（例: `ANTHROPIC_MODEL`）を無視する問題を修正。
-    - Windows で MCPB プラグインのキャッシュが誤って無効化され、不要な再展開が起きる問題を修正。
-    - プラグインの `.in_use` PID ロックファイルが際限なく蓄積する問題を修正。クラッシュしたセッションの古いマーカーは 1 日 1 回掃除されるようになった。
-    - 信頼されていないプロジェクト設定が、信頼確認なしに OTEL クライアント証明書のパスを設定できる問題を修正。
-    - ターン進行中でも `/workflows` がすぐ開くようになった。
-    - `TaskCreate` の信頼性を改善。不正な入力は自動修復され、未ロードのツールに対する検証エラーにスキーマが含まれるようになった。
-    - 組織が API キー認証を無効化している場合のエラーメッセージを改善し、現在の API キーの出所に基づくガイダンスを表示するようにした。
-    - 応答ストリーミング中とスピナーアニメーション中の CPU 使用率を削減。
-    - Vertex／Foundry でデフォルト 5 分のアイドルタイムアウトを復活させ、停止したストリームが無限にハングせず中断されるようにした。`API_FORCE_IDLE_TIMEOUT=0` で無効化可能。
-    - リモート管理設定に無効なエントリがあるとき、ペイロード全体を黙って破棄せず、残りの有効なポリシーを適用して検証エラーを表面化するようにした。
-    - バックグラウンドセッションが retire→wake をまたいで `--ide`・`--chrome`・`--bare`・`--remote-control` などのフラグを保持するようになり、再生成時の状態検証も強化された。
-    - バックグラウンドセッションに、worktree に入るまで共有チェックアウトの編集がブロックされる旨を伝えるようにし、`EnterWorktree` 前の無駄な編集拒否を避けるようにした。
-    - 「CLAUDE.md is too long」警告のしきい値が、モデルのコンテキストウィンドウに応じてスケールするようになった。
-    - Windows の自動更新が、`claude.exe` が別プロセスに保持されている場合、セッション内での再試行を停止するようになった。
-    - スラッシュコマンドメニューのスキルタグの色コントラストを改善。
-    - 支払い方法のない Apple／Google 課金のサブスクライバーがプロモクレジットを請求する際、支払い方法の追加場所を案内するようにした。
-    - 複数の並行セッションを実行しているとき、`claude agents` を提案するヒントを追加。
-- [日本語](https://code.claude.com/docs/ja/skills) / [English](https://code.claude.com/docs/en/skills):  
-  スキルの frontmatter `disallowed-tools` でスキル稼働中のツールを除外できる旨が追記されました（詳細はハイライト 4 参照）。
+- changelog ページの 2 つのリリースエントリに変更がありました。
+  - **v2.1.170**（2026年06月09日、新規エントリ）: Claude Fable 5 のリリース（ハイライト 1 参照）に加え、次の修正を含みます。
+    - VS Code 統合ターミナルや Claude Code の環境変数を継承したシェルから起動した際に、セッションのトランスクリプトが保存されず（`--resume` にも表示されない）問題を修正。
+  - **v2.1.169**（2026年06月08日、既存エントリへの追記）: 次の項目が追記されました。
+    - Self-hosted runner に `post-session` ライフサイクルフック（セッション終了後・ワークスペース削除前に実行し、未コミット作業のスナップショットやログのエクスポートが可能）を追加。あわせて子プロセスの SIGTERM→SIGKILL 待機ウィンドウをデフォルト値（5 秒）据え置きのまま設定可能にした。
 - [日本語](https://code.claude.com/docs/ja/zero-data-retention) / [English](https://code.claude.com/docs/en/zero-data-retention):  
-  ゼロデータ保持ページ本文が拡充され、ZDR が標準 Enterprise プランに非同梱で適格アカウント向け・Anthropic による個別有効化が必要である旨の Note が追加されました（詳細はハイライト 5 参照）。
-- [日本語](https://code.claude.com/docs/ja/data-usage) / [English](https://code.claude.com/docs/en/data-usage):  
-  データ利用ページの保持に関する記述が、ZDR は適格アカウント向け・標準プラン非同梱で適格確認後に有効化される、という表現へ更新されました。
-- [日本語](https://code.claude.com/docs/ja/admin-setup) / [English](https://code.claude.com/docs/en/admin-setup):  
-  組織向けセットアップページのデータ取り扱い概要表の ZDR 行が「適格アカウント向け（available to qualified accounts）」表記へ更新されました。
+  「ZDR でのモデル可用性」セクションが追加され、Claude Fable 5 はデータ保持を要するモデルクラスのため ZDR 組織では利用できない（`/model` ピッカーから除外または無効表示）旨が明記されました。`best` エイリアスは ZDR 組織では Opus に解決されます（関連: ハイライト 1）。
+- [日本語](https://code.claude.com/docs/ja/settings) / [English](https://code.claude.com/docs/en/settings):  
+  「管理設定の不正エントリ」セクションが追加されました（詳細はハイライト 5 参照）。
+- [日本語](https://code.claude.com/docs/ja/server-managed-settings) / [English](https://code.claude.com/docs/en/server-managed-settings):  
+  「配信設定の不正エントリ」セクションが追加されました（詳細はハイライト 5 参照）。
+- [日本語](https://code.claude.com/docs/ja/permissions) / [English](https://code.claude.com/docs/en/permissions):  
+  deny／ask ルールのツール名グロブ（「ツール名のワイルドカード」、`"*"` や `mcp__*` など）と、`/cd` コマンドの移動先ディレクトリを制御する `Cd` 権限ルールの解説が追加されました。
+- [日本語](https://code.claude.com/docs/ja/troubleshooting) / [English](https://code.claude.com/docs/en/troubleshooting):  
+  「1M コンテキストには使用クレジットが必要（Usage credits required for 1M context）」と「組織が API キー認証を無効化している（Your organization has disabled API key authentication）」の 2 つのエラー項目が追加されました。
+- [日本語](https://code.claude.com/docs/ja/agent-view) / [English](https://code.claude.com/docs/en/agent-view):  
+  `claude agents --json` の出力の解説が改訂され、完了済みのバックグラウンドセッションも含める `--all` フラグと、各エントリの `id`（`claude attach`／`logs`／`stop` で使用可）・`state`（`working`／`blocked`／`done`／`failed`／`stopped`）フィールドが追記されました。
+- [日本語](https://code.claude.com/docs/ja/desktop) / [English](https://code.claude.com/docs/en/desktop):  
+  macOS の MDM 設定の preference domain が `com.anthropic.Claude` から `com.anthropic.claudefordesktop` に変更されました。
+- 複数のページで「リモートセッション（remote sessions）」の呼称が「クラウドセッション（cloud sessions）」へ統一されました（デスクトップ・Web 版・共通ワークフロー等）。機能自体の変更ではなく用語の統一です。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -130,11 +146,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-07.md](./archives/latest/2026-06-07.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-07.md](./archives/latest-detail/2026-06-07.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-08.md](./archives/latest/2026-06-08.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-08.md](./archives/latest-detail/2026-06-08.md)
 
 <!--
-base_commit: e5d9dfc35723075599065ec9bc400eacf168e564
-head_commit: f31d0c4aeda71092a3db3bbef9405dcfc432e5ab
-generated_at_full: 2026-06-09T15:02:52+09:00
+base_commit: f31d0c4aeda71092a3db3bbef9405dcfc432e5ab
+head_commit: e2d1b0571046ac6ca57dd9cd86ee5fb9a0e575b4
+generated_at_full: 2026-06-10T15:01:25+09:00
 -->
