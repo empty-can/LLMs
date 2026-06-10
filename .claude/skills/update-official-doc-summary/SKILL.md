@@ -31,6 +31,7 @@ disable-model-invocation: true
 - `ARCHIVES_DIR` = `${SUMMARY_DIR}archives/`
 - `TEMPLATE` = `.claude/skills/update-official-doc-summary/templates/<テンプレート>`
 - `DERIVE_SCRIPT` = `.claude/skills/update-official-doc-summary/scripts/derive_light.py`
+- `ARCHIVE_SCRIPT` = `.claude/skills/update-official-doc-summary/scripts/archive_summary.py`
 - `INPUT_LLMS_TXT` = `<INPUT_BASE>llms.txt`
 - `INPUT_LLMS_FULL` = `<INPUT_BASE>llms-full.txt`
 - `INPUT_DOCS_MAP` = docs_map=あり のとき `<INPUT_BASE>en/claude_code_docs_map.md`。docs_map=なし のとき使用しない
@@ -246,12 +247,11 @@ URL 併記ルール(サイト依存):
 
 ### 10. 旧版アーカイブ (前回サマリが存在する場合のみ)
 
-`ARCHIVE_NAME` は手順 1 で決定済み(通常は `<PREV_GENERATED_AT>`、同日衝突時は `<PREV_GENERATED_AT>_<PREV_GENERATED_TIME>`)。アーカイブはライト版・詳細版を**種別ごとのフォルダ**に日付名ファイルとして退避する(`archives/latest/<日付>.md` / `archives/latest-detail/<日付>.md`。過去回を辿る際に日付フォルダを個別に開かずに種別ごとに一覧できる構成)。Bash で実行:
+`ARCHIVE_NAME` は手順 1 で決定済み(通常は `<PREV_GENERATED_AT>`、同日衝突時は `<PREV_GENERATED_AT>_<PREV_GENERATED_TIME>`)。アーカイブはライト版・詳細版を**種別ごとのフォルダ**に日付名ファイルとして退避する(`archives/latest/<日付>.md` / `archives/latest-detail/<日付>.md`。過去回を辿る際に日付フォルダを個別に開かずに種別ごとに一覧できる構成)。**退避は専用スクリプト `archive_summary.py` で行う**(単純な mv ではなく、移動でファイルの階層が深くなることにより壊れる相対リンクを同時に再構成するため)。Bash で実行:
 ```
-mkdir -p ${ARCHIVES_DIR}latest/ ${ARCHIVES_DIR}latest-detail/
-mv ${LATEST_LIGHT} ${ARCHIVES_DIR}latest/<ARCHIVE_NAME>.md
-mv ${LATEST_DETAIL} ${ARCHIVES_DIR}latest-detail/<ARCHIVE_NAME>.md
+python ${ARCHIVE_SCRIPT} ${LATEST_LIGHT} ${LATEST_DETAIL} ${ARCHIVES_DIR} <ARCHIVE_NAME>
 ```
+このスクリプトは `${LATEST_LIGHT}`→`${ARCHIVES_DIR}latest/<ARCHIVE_NAME>.md`、`${LATEST_DETAIL}`→`${ARCHIVES_DIR}latest-detail/<ARCHIVE_NAME>.md` へ移動し、移動後の深さに合わせて次のリンクを書き換える: ①ライト版の詳細版アンカー `./latest-detail.md#` → `../latest-detail/<ARCHIVE_NAME>.md#`(derive_light が live 位置前提で出力するため) ②両版の前回サマリリンク `./archives/latest(-detail)/` → `../latest(-detail)/`。**この再構成を省くとアーカイブ内のドキュメント間リンクが切れる**ため、mv 直書きには戻さないこと。
 
 > 手順 6 の `{{PREV_GENERATED_AT}}` placeholder(関連リンクのパス)にも同じ `<ARCHIVE_NAME>` を使い、アーカイブ実体(`archives/latest/<ARCHIVE_NAME>.md` / `archives/latest-detail/<ARCHIVE_NAME>.md`)とリンク先を一致させる。
 
