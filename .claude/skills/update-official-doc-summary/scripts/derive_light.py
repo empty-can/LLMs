@@ -125,10 +125,11 @@ def derive(detail_text: str) -> str:
     if not regions:
         raise SystemExit('ERROR: No <!-- light:*:start --> markers found in detail file')
 
-    # 概要件数 <= ハイライト件数 を保証する。概要(summary blockquote の `> N.`)が
+    # 概要件数 <= ハイライト件数 を保証する。概要(summary の `N.` 箇条書き)が
     # ハイライト(`N.`)より多いと、読み手が件数差を不審に思うため、ここで弾く。
+    # 概要は ```markdown フェンス内の番号付き箇条書き(旧版は blockquote `> N.`)。両形式を数える。
     region_map = dict(regions)
-    n_summary = len(re.findall(r'^>\s*\d+\.\s', region_map.get('summary', ''), re.MULTILINE))
+    n_summary = len(re.findall(r'^\s*>?\s*\d+\.\s', region_map.get('summary', ''), re.MULTILINE))
     n_highlight = len(re.findall(r'^\d+\.\s', region_map.get('highlight-list', ''), re.MULTILINE))
     if n_summary > n_highlight:
         raise SystemExit(
