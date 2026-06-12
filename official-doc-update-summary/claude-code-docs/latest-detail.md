@@ -1,43 +1,69 @@
 ---
-対象期間: 2026年06月09日 〜 2026年06月10日
-作成日: 2026-06-10
+対象期間: 2026年06月10日 〜 2026年06月11日
+作成日: 2026-06-11
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の更新は、リリース v2.1.172 の changelog 追加（主にバグ修正と細かな改善）が中心で、新機能としてはサブエージェントのネスト生成が目を引きます。あわせてプラグインページのマーケットプレイス登録・投稿フローの記述が更新されました。新規追加・大幅更新ページはなく、軽微更新のみです。
+今回は新規追加・大幅更新ページはなく、既存ドキュメントの記述明確化を中心とした軽微更新が中心です。リリース v2.1.173 の changelog 追加（小規模なバグ修正 2 件）に加え、主要な明確化を 4 件のハイライトとして取り上げます。
 
 主要なものを以下に挙げます。
 
-1. サブエージェントが自身のサブエージェントを生成できるようになった（v2.1.172、最大 5 階層）
-2. `claude-plugins-official` マーケットプレイスの自動登録タイミングが明確化され、コミュニティ投稿フォームの URL・利用要件も更新された
+1. `/code-review` のローカル実行が、ブランチのアップストリーム比較＋未コミット変更をデフォルト対象とすることが明記され、`main...my-feature` のような ref レンジ指定にも対応した
+2. VS Code 拡張機能は CLI の専用コピーをチャットパネル用に同梱するだけで、`claude` を PATH には追加しないことが明確化された（ターミナル利用にはスタンドアロン CLI が別途必要）
+3. `claude --resume <session-id>` によるセッション再開は、現在のプロジェクトディレクトリとその git worktree にスコープされることが明記された
+4. プラグイン同梱 MCP サーバーのツール名の完全形式（`mcp__plugin_<plugin-name>_<server-name>__<tool-name>`）がドキュメント化された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**サブエージェントのネスト生成**](#1-サブエージェントのネスト生成):  
-  v2.1.172 で、サブエージェントが自身のサブエージェントを生成できるようになった（最大 5 階層の深さまで）。これまで単層だった委譲構造を多段に拡張できる。changelog（リリースノート）で告知された変更で、専用ドキュメントページにはまだ反映されていない。
-2. [**プラグインマーケットプレイスの登録と投稿フローの変更**](#2-プラグインマーケットプレイスの登録と投稿フローの変更):  
-  公式マーケットプレイス `claude-plugins-official` の自動登録タイミングが「初回の対話的起動時」と明確化され、それより前に走る非対話スクリプトでは明示追加が必要になった。あわせてコミュニティ投稿フォームの URL と利用要件（Team/Enterprise 組織・ディレクトリ管理アクセス）が更新された。
+1. [**コードレビューのローカル実行範囲の明確化と ref レンジ指定対応**](#1-コードレビューのローカル実行範囲の明確化と-ref-レンジ指定対応):  
+  `/code-review` のローカル実行のデフォルト対象（ブランチのアップストリーム比較＋未コミット変更）が明記され、ファイルパス・PR 番号・ブランチ名に加えて `main...my-feature` 形式の ref レンジ指定でレビュー対象を選べるようになった。
+2. [**VS Code 拡張機能の CLI 同梱仕様の明確化**](#2-vs-code-拡張機能の-cli-同梱仕様の明確化):  
+  VS Code 拡張機能はチャットパネル用に CLI の専用（プライベート）コピーを同梱するだけで、`claude` をシェルの PATH には追加しないことが明確化された。ターミナルで `claude` を使うにはスタンドアロン CLI のインストールが別途必要。
+3. [**セッション ID による再開のディレクトリスコープ明確化**](#3-セッション-id-による再開のディレクトリスコープ明確化):  
+  `claude -p` や Agent SDK で作成したセッションを `claude --resume <session-id>` で再開する際、ID 検索が現在のプロジェクトディレクトリとその git worktree にスコープされることが明記された。別の場所で作成したセッションは見つからない。
+4. [**プラグイン同梱 MCP サーバーのツール名の明文化**](#4-プラグイン同梱-mcp-サーバーのツール名の明文化):  
+  プラグインにバンドルされた MCP サーバーのツールを権限ルールやサブエージェントの `tools` で参照する際に使う完全名 `mcp__plugin_<plugin-name>_<server-name>__<tool-name>` の形式が新たに記載された。
 <!-- light:highlight-list:end -->
 
-## 1. サブエージェントのネスト生成
+## 1. コードレビューのローカル実行範囲の明確化と ref レンジ指定対応
 
-リリース v2.1.172 で、サブエージェントが自身のサブエージェントを生成できるようになりました（最大 5 階層の深さまで）。これにより、親エージェントから委譲されたサブエージェントが、さらに下位のサブエージェントへ作業を分割・委譲する多段の構成が可能になります。
+「Code Review」ページの「ローカルで差分をレビューする」節で、`/code-review` コマンドの対象範囲に関する記述が拡充されました。これまで「現在の差分をレビューする」とだけ説明されていたデフォルト対象が、新しい記述では「ブランチのアップストリームに対して先行しているコミット＋ワーキングツリーの未コミット変更」と明記されました。
 
-本項目は changelog（リリースノート）で告知されたもので、現時点で専用のドキュメントページには反映されていないため、末尾の参考リンクは省略します。サブエージェント全般については「カスタムサブエージェントを作成する」ページ（`/docs/ja/sub-agents`）を参照してください。
+あわせて、レビュー対象の指定方法が拡張されました。デフォルトの差分以外をレビューしたい場合は、ファイルパス・PR 番号・ブランチ名に加えて、`main...my-feature` のような **ref レンジ**を渡せるようになりました。ref レンジ形式は、ブランチのアップストリーム設定に関わらず、`my-feature` から `main` への PR に含まれるコミット差分をレビューします。さらに、`/code-review ultra --fix` の ultrareview は独自のスコープ（現在のブランチをリポジトリのデフォルトブランチと比較し、未コミット・ステージ済みの変更を加えたもの）を使うことも明記されました。
 
-## 2. プラグインマーケットプレイスの登録と投稿フローの変更
+- [Code Review - Claude Code Docs (English)](https://code.claude.com/docs/en/code-review#review-a-diff-locally)
 
-「プラグインを作成する」ページのマーケットプレイス節で、公式マーケットプレイス `claude-plugins-official` の登録挙動が明確化されました。従来は「すべての Claude Code インストールで自動的に利用可能」とされていましたが、新しい記述では「Claude Code を初めて対話的に起動したときに自動登録される」と改められました。その初回起動より前に走る非対話スクリプトでは自動登録されないため、`claude plugin marketplace add anthropics/claude-plugins-official` で明示的に追加する必要があります。
+## 2. VS Code 拡張機能の CLI 同梱仕様の明確化
 
-あわせて、コミュニティマーケットプレイスへのプラグイン投稿フローも更新されました。claude.ai の投稿フォーム URL が `claude.ai/admin-settings/directory/submissions/plugins/new` に変更され、このフォームの利用には Team または Enterprise 組織とディレクトリ管理アクセスが必要（組織の Owner はデフォルトで保有）であることが明記されました。Team/Enterprise 組織に属さない個人作成者は、代わりに Console フォーム（`platform.claude.com/plugins/submit`）を利用できます。
+「Use Claude Code in VS Code」ページの複数箇所で、拡張機能と CLI の関係に関する記述が改められました。従来は「拡張機能には CLI が含まれており、統合ターミナルからアクセスできる」とされていましたが、新しい記述では「拡張機能はチャットパネル用に CLI の専用（プライベート）コピーを拡張機能ディレクトリ内に同梱しているだけで、`claude` をシステムの PATH には追加しない」と明確化されました。
 
-- [Create plugins - Claude Code Docs (English)](https://code.claude.com/docs/en/plugins#submit-your-plugin-to-the-community-marketplace)
+このため、VS Code の統合ターミナルで `claude`（`claude mcp add` や `claude --resume` を含む）を実行するには、別途[スタンドアロン CLI のインストール](https://code.claude.com/docs/en/setup)が必要です。「Prerequisites」「VS Code extension vs. Claude Code CLI」「Run CLI in VS Code」の各節にこの趣旨が追記されました。関連して、「Troubleshoot installation and login」ページの「PATH を確認する」節にも、VS Code 拡張機能は `claude` を `~/.local/bin/claude` に配置せず、拡張機能のみをインストールした場合は同パスが存在しない旨の Note が追加されています。
+
+- [Use Claude Code in VS Code - Claude Code Docs (English)](https://code.claude.com/docs/en/vs-code#run-cli-in-vs-code)
+- [Troubleshoot installation and login - Claude Code Docs (English)](https://code.claude.com/docs/en/troubleshoot-install#verify-your-path)
+
+## 3. セッション ID による再開のディレクトリスコープ明確化
+
+「Manage sessions」ページの「セッションを再開する」節、CLI リファレンスの `--resume` フラグ、headless（プログラム実行）ページの会話継続例で、セッション ID による再開のスコープが明記されました。`claude -p` や Agent SDK で作成したセッションはセッションピッカーに表示されませんが、`claude --resume <session-id>` で ID を渡せば再開できます。
+
+新しい記述では、この再開は**セッションを開始したディレクトリから実行する必要がある**ことが明確化されました。セッション ID の検索は現在のプロジェクトディレクトリとその git worktree にスコープされるため、別の場所で作成したセッションを再開しようとすると `No conversation found with session ID: <session-id>` と報告されます。CLI リファレンスの `--resume` 説明でも、ID を指定した場合は現在のプロジェクトディレクトリと git worktree のみを検索する旨が補足されました（ピッカーと名前検索は `/add-dir` で追加したディレクトリのセッションも含みます）。
+
+- [Manage sessions - Claude Code Docs (English)](https://code.claude.com/docs/en/sessions#resume-a-session)
+- [CLI reference - Claude Code Docs (English)](https://code.claude.com/docs/en/cli-reference#cli-flags)
+
+## 4. プラグイン同梱 MCP サーバーのツール名の明文化
+
+「Connect Claude Code to tools via MCP」ページの「プラグイン提供の MCP サーバー」節に、プラグインにバンドルされた MCP サーバーのツール名の完全形式に関する記述が追加されました。プラグイン同梱 MCP サーバーのツールは、呼び出し名にプラグイン名とサーバーキーの両方を含み、完全形は `mcp__plugin_<plugin-name>_<server-name>__<tool-name>` となります（`A-Z` / `a-z` / `0-9` / `_` / `-` 以外の文字は `_` に置換）。
+
+例えば `my-plugin` というプラグインに同梱された `database-tools` サーバーの `query` ツールは、`mcp__plugin_my-plugin_database-tools__query` として呼び出せます。この完全名は、権限ルール、スキルの `allowed-tools` リスト、サブエージェントの `tools` フィールドでツールを参照する際に使います。
+
+- [Connect Claude Code to tools via MCP - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers)
 
 ## 新規追加されたページ
 
@@ -54,31 +80,18 @@
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、changelog のリリースエントリ **v2.1.172**（2026年06月10日）の追加と、ドキュメントページ 2 件の小規模更新です。サブエージェントのネスト生成（ハイライト 1 参照）を除く内容を、分類別に示します。
-
-**新機能**
-- `/plugin` でマーケットプレイスのプラグインを閲覧する際の検索バーが追加された。
+今回の軽微な更新は、changelog のリリースエントリ **v2.1.173**（2026年06月11日）の追加と、ハイライトに挙げた明確化以外のドキュメント更新です。分類別に示します。
 
 **機能改善**
-- Amazon Bedrock が `AWS_REGION` 未設定時に `~/.aws` 設定ファイルから AWS リージョンを読むようになった（AWS SDK の優先順位に準拠）。`/status` にリージョンの取得元が表示される。
-- OTEL メトリクス `claude_code.lines_of_code.count` に `model` 属性が追加された。
-- 長い会話でのパフォーマンスが改善された（冗長なメッセージ正規化の除去、ツール使用状態が不変なときの全履歴変換の回避）。あわせてアイドル時の CPU 使用量も削減された。
-- 公式マーケットプレイス `claude-plugins-official` の自動登録タイミングと、コミュニティ投稿フォームの URL・利用要件の記述が更新された（詳細はハイライト 2 参照）。 — [日本語](https://code.claude.com/docs/ja/plugins#submit-your-plugin-to-the-community-marketplace) / [English](https://code.claude.com/docs/en/plugins#submit-your-plugin-to-the-community-marketplace)
+- 「クイックスタート」ページの「必須コマンド」表が、ターミナルから実行する**シェルコマンド**と、Claude Code 起動後に使う**セッションコマンド**の 2 つの表に再構成された。あわせて終了コマンドの表記が `exit` から `/exit` に変更され、CLI リファレンスとコマンドリファレンスへのリンクが追加された。 — [English](https://code.claude.com/docs/en/quickstart#essential-commands)
+- 「監視（Monitoring）」ページの「バックエンドの考慮事項」節で、フル機能のオブザーバビリティプラットフォームの例に **Grafana Cloud** が Honeycomb・Datadog と並んで追記された（メトリクス・イベント/ログ・トレースの 3 箇所）。 — [English](https://code.claude.com/docs/en/monitoring-usage#backend-considerations)
 
 **バグ修正**
-- 使用クレジットなしで 1M コンテキストを使うセッションが恒久的にスタックする問題を修正（標準コンテキスト上限内に自動コンパクトされるようになった）。
-- `availableModels` の制限がサブエージェントのモデル上書き・エージェント発行時のモデルピッカー・アドバイザーモデルに適用されない問題を修正。
-- `availableModels` の許可リストが `claude-opus-4-8` のようなバージョン指定 ID を使うと、`/model` ピッカーの Opus・Sonnet の 1M 行を隠してしまう問題を修正。
-- Bedrock の `/model` ピッカーがプロバイダー非提供のモデルを提示していた問題を修正（選択するとセッションモデルが無言で切り替わっていた）。
-- `ANTHROPIC_DEFAULT_OPUS_MODEL` が既に 1M サフィックスを含む場合にモデル ID が二重（例 `[1M][1m]`）になる問題を修正。
-- `opusplan` 設定がプランモードで 1M コンテキストを伴って動作しない問題を修正（`opusplan[1m]` の回避策もプランモードで正しく Opus に切り替わるようになった）。
-- `WebFetch(domain:*.example.com)` のワイルドカードドメインルールがサブドメインに一致しない問題、および `Read(secrets-*/config.json)` のようなパターン途中のワイルドカードを含むファイル権限ルールが起動時に拒否される問題を修正。
-- チームメモリストア（`CLAUDE_MEMORY_STORES`）がリモートセッションのメモリ呼び出しで見つからない問題を修正。
-- \[VSCode] PowerShell のツール呼び出しが整形済みのコマンド表示・権限ダイアログではなく生の JSON として描画される問題を修正（表示されるシェル出力から ANSI エスケープも除去）。
-- ほか、バックグラウンドエージェント／エージェントビュー関連の複数の修正を含む。
+- Fable 5 のモデル名に付いた `[1m]` サフィックスが正規化されない問題を修正（Fable 5 はデフォルトで 1M コンテキストを含むため、サフィックスは自動的に除去される）(v2.1.173)。
+- Windows でサンドボックスを設定で有効化している場合に、誤った「サンドボックスの依存関係が不足しています」という起動時警告が表示される問題を修正 (v2.1.173)。
 
 **その他**
-- model-config ページの「Work with Fable 5」セクションで、Fable 5 紹介ページへの外部リンク先が `introducing-claude-fable-5` から `introducing-claude-fable-5-and-claude-mythos-5` に更新された（リンク先 URL の変更のみで、本文の内容変更はなし）。 — [English](https://code.claude.com/docs/en/model-config#work-with-fable-5)
+- 「クイックスタート」ページのインストール手順タブで、ソース内の描画ヒント（`theme={null}`）に重複が生じているが、レンダリング後の表示・内容に変化はない（読者向けの影響なし）。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -89,11 +102,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-09.md](./archives/latest/2026-06-09.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-09.md](./archives/latest-detail/2026-06-09.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-10.md](./archives/latest/2026-06-10.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-10.md](./archives/latest-detail/2026-06-10.md)
 
 <!--
-base_commit: e2d1b0571046ac6ca57dd9cd86ee5fb9a0e575b4
-head_commit: 3c7fbb9579354ba1c5661f28ffd067f47e7775f7
-generated_at_full: 2026-06-11T15:02:59+09:00
+base_commit: 3c7fbb9579354ba1c5661f28ffd067f47e7775f7
+head_commit: 6a6b186d0111554e832b52e835e9dbe612ce6c34
+generated_at_full: 2026-06-12T15:06:01+09:00
 -->
