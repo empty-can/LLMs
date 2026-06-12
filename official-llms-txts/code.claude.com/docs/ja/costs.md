@@ -1,0 +1,245 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# コストを効果的に管理する
+
+> トークン使用量を追跡し、チームの支出制限を設定し、コンテキスト管理、モデル選択、拡張思考設定、前処理フックを使用して Claude Code のコストを削減します。
+
+Claude Code は API トークン消費によって課金されます。サブスクリプションプラン価格（Pro、Max、Team、Enterprise）については、[claude.com/pricing](https://claude.com/pricing) を参照してください。開発者あたりのコストは、モデル選択、コードベースサイズ、複数インスタンスの実行や自動化などの使用パターンに基づいて大きく異なります。
+
+エンタープライズ展開全体では、平均コストは開発者 1 人あたり 1 日約 13 ドル、開発者 1 人あたり月額 150～250 ドルで、90% のユーザーの 1 日あたりのコストは 30 ドル以下です。自分のチームの支出を見積もるには、小規模なパイロットグループから始めて、以下の追跡ツールを使用してベースラインを確立してから、より広い展開を行ってください。
+
+このページでは、[コストを追跡する方法](#track-your-costs)、[チームのコストを管理する方法](#managing-costs-for-teams)、および [トークン使用量を削減する方法](#reduce-token-usage) について説明します。
+
+<h2 id="track-your-costs">
+  コストを追跡する
+</h2>
+
+<h3 id="using-the-/usage-command">
+  `/usage` コマンドを使用する
+</h3>
+
+<Note>
+  `/usage` のセッションブロックは API トークン使用量を表示し、API ユーザーを対象としています。Claude Max および Pro サブスクライバーはサブスクリプションに使用量が含まれているため、セッションコスト数値は請求目的では関連がありません。サブスクライバーは同じ画面でプラン使用量バー、アクティビティ統計、および使用量の内訳を表示します。
+</Note>
+
+`/usage` の上部のセッションブロックは、現在のセッションの詳細なトークン使用統計を表示します。ドル数値はトークン数から局所的に計算された推定値であり、実際の請求書と異なる場合があります。権限のある請求については、[Claude Console](https://platform.claude.com/usage) の使用量ページを参照してください。
+
+```text theme={null}
+Total cost:            $0.55
+Total duration (API):  6m 19.7s
+Total duration (wall): 6h 33m 10.2s
+Total code changes:    0 lines added, 0 lines removed
+```
+
+Pro、Max、Team、または Enterprise プランでは、`/usage` はプラン制限に対してカウントされるものの内訳も表示します。最近の使用量をスキル、サブエージェント、プラグイン、および個別の MCP サーバーに属性付けし、それぞれが合計のパーセンテージとして表示されます。`d` または `w` を押して、過去 24 時間と過去 7 日間を切り替えることができます。数値は概算であり、このマシン上のローカルセッション履歴から計算されるため、他のデバイスまたは claude.ai からの使用量は含まれていません。
+
+<h2 id="managing-costs-for-teams">
+  チームのコストを管理する
+</h2>
+
+Claude API を使用する場合、Claude Code ワークスペース支出の合計に対して [ワークスペース支出制限を設定](https://platform.claude.com/docs/ja/build-with-claude/workspaces#workspace-limits) できます。管理者は Console で [コストと使用状況レポートを表示](https://platform.claude.com/docs/ja/build-with-claude/workspaces#usage-and-cost-tracking) できます。
+
+Pro および Max プランでは、`/usage-credits` コマンドを使用して使用クレジットの月間支出制限を設定できます。その制限に達しても使用クレジットがまだ利用可能な場合、Claude Code はプロンプトを表示して、制限を引き上げるか削除するよう促し、CLI を離れることなく続行できるようにします。制限の変更にはアカウントの請求アクセスが必要です。
+
+<Note>
+  Claude Code を Claude Console アカウントで初めて認証すると、「Claude Code」というワークスペースが自動的に作成されます。このワークスペースは、組織内のすべての Claude Code 使用量の一元化されたコスト追跡と管理を提供します。このワークスペースの API キーを作成することはできません。これは Claude Code 認証と使用量専用です。
+
+  カスタムレート制限を持つ組織の場合、このワークスペースの Claude Code トラフィックは組織全体の API レート制限にカウントされます。Claude Console の Limits ページでこのワークスペースに [ワークスペースレート制限](https://platform.claude.com/docs/ja/api/rate-limits#setting-lower-limits-for-workspaces) を設定して、Claude Code の共有をキャップし、他の本番ワークロードを保護できます。
+</Note>
+
+Bedrock、Vertex、および Foundry では、Claude Code はクラウドからメトリクスを送信しません。コストメトリクスを取得するために、複数の大規模企業は [LiteLLM](/ja/llm-gateway#litellm-configuration) を使用していると報告しており、これは企業が [キーごとに支出を追跡](https://docs.litellm.ai/docs/proxy/virtual_keys#tracking-spend) するのに役立つオープンソースツールです。このプロジェクトは Anthropic と提携していないため、セキュリティについて監査されていません。
+
+<h3 id="rate-limit-recommendations">
+  レート制限の推奨事項
+</h3>
+
+チーム向けに Claude Code を設定する場合、組織のサイズに基づいて、これらのユーザーあたりのトークン/分（TPM）およびリクエスト/分（RPM）の推奨事項を検討してください。
+
+| チームサイズ       | ユーザーあたり TPM | ユーザーあたり RPM |
+| ------------ | ----------- | ----------- |
+| 1～5 ユーザー     | 200k～300k   | 5～7         |
+| 5～20 ユーザー    | 100k～150k   | 2.5～3.5     |
+| 20～50 ユーザー   | 50k～75k     | 1.25～1.75   |
+| 50～100 ユーザー  | 25k～35k     | 0.62～0.87   |
+| 100～500 ユーザー | 15k～20k     | 0.37～0.47   |
+| 500 ユーザー以上   | 10k～15k     | 0.25～0.35   |
+
+たとえば、200 ユーザーがいる場合、各ユーザーに 20k TPM をリクエストするか、合計 400 万 TPM（200\*20,000 = 400 万）をリクエストできます。
+
+チームサイズが大きくなるにつれて、ユーザーあたりの TPM は減少します。これは、より大きな組織では Claude Code を同時に使用するユーザーが少ない傾向があるためです。これらのレート制限は個別ユーザーレベルではなく組織レベルで適用されます。つまり、他のユーザーが積極的にサービスを使用していない場合、個別ユーザーは計算された共有量を一時的に超えて消費できます。
+
+<Note>
+  大規模グループとのライブトレーニングセッションなど、異常に高い同時使用シナリオが予想される場合は、ユーザーあたりのより高い TPM 割り当てが必要になる場合があります。
+</Note>
+
+<h3 id="agent-team-token-costs">
+  エージェントチームのトークンコスト
+</h3>
+
+[エージェントチーム](/ja/agent-teams) は複数の Claude Code インスタンスを生成し、各インスタンスは独自のコンテキストウィンドウを持ちます。トークン使用量はアクティブなチームメイトの数と各チームメイトが実行される期間に応じてスケーリングされます。
+
+エージェントチームのコストを管理可能に保つには、以下を実行してください。
+
+* チームメイトに Sonnet を使用します。これは調整タスクの機能とコストのバランスを取ります。
+* チームを小さく保ちます。各チームメイトは独自のコンテキストウィンドウを実行するため、トークン使用量はおおよそチームサイズに比例します。
+* スポーンプロンプトを焦点を絞ったものにします。チームメイトは CLAUDE.md、MCP サーバー、およびスキルを自動的に読み込みますが、スポーンプロンプト内のすべてが最初からコンテキストに追加されます。
+* 作業が完了したらチームをクリーンアップします。アクティブなチームメイトはアイドル状態でもトークンを消費し続けます。
+* エージェントチームはデフォルトで無効になっています。[settings.json](/ja/settings) または環境で `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` を設定して有効にします。[エージェントチームを有効にする](/ja/agent-teams#enable-agent-teams) を参照してください。
+
+<h2 id="reduce-token-usage">
+  トークン使用量を削減する
+</h2>
+
+トークンコストはコンテキストサイズに応じてスケーリングされます。Claude が処理するコンテキストが多いほど、より多くのトークンを使用します。Claude Code は [プロンプトキャッシング](/ja/prompt-caching)（システムプロンプトなどの繰り返されるコンテンツのコストを削減）と自動コンパクション（コンテキスト制限に近づくと会話履歴を要約）を通じてコストを自動的に最適化します。
+
+以下の戦略は、コンテキストを小さく保ち、メッセージあたりのコストを削減するのに役立ちます。
+
+<h3 id="manage-context-proactively">
+  コンテキストを積極的に管理する
+</h3>
+
+`/usage` を使用して現在のトークン使用量を確認するか、[ステータスラインを設定](/ja/statusline#context-window-usage) してそれを継続的に表示します。
+
+* **タスク間でクリアする**: 関連のない作業に切り替える場合は `/clear` を使用して新しく開始します。古いコンテキストは後続のすべてのメッセージでトークンを浪費します。クリアする前に `/rename` を使用してセッションに名前を付けると、後で簡単に見つけることができます。その後、`/resume` を使用して戻ります。
+* **カスタムコンパクション指示を追加する**: `/compact Focus on code samples and API usage` は、要約中に保持する内容を Claude に指示します。
+
+CLAUDE.md でコンパクション動作をカスタマイズすることもできます。
+
+```markdown theme={null}
+# Compact instructions
+
+When you are using compact, please focus on test output and code changes
+```
+
+<h3 id="choose-the-right-model">
+  適切なモデルを選択する
+</h3>
+
+Sonnet はほとんどのコーディングタスクをうまく処理し、Opus よりもコストが低くなります。複雑なアーキテクチャの決定または複数ステップの推論のために Opus を予約します。`/model` を使用してセッション中にモデルを切り替えるか、`/config` でデフォルトを設定します。単純な subagent タスクの場合、[subagent 設定](/ja/sub-agents#choose-a-model) で `model: haiku` を指定します。
+
+<h3 id="reduce-mcp-server-overhead">
+  MCP サーバーのオーバーヘッドを削減する
+</h3>
+
+MCP ツール定義は [デフォルトで遅延](/ja/mcp#scale-with-mcp-tool-search) されるため、Claude が特定のツールを使用するまで、ツール名のみがコンテキストに入ります。`/context` を実行して、何がスペースを消費しているかを確認します。
+
+* **利用可能な場合は CLI ツールを優先する**: `gh`、`aws`、`gcloud`、`sentry-cli` などのツールは、ツールごとのリストを追加しないため、MCP サーバーよりもコンテキスト効率が高くなります。Claude はオーバーヘッドなしで CLI コマンドを直接実行できます。
+* **未使用のサーバーを無効にする**: `/mcp` を実行して設定されたサーバーを確認し、積極的に使用していないサーバーを無効にします。
+
+<h3 id="install-code-intelligence-plugins-for-typed-languages">
+  型付き言語用のコードインテリジェンスプラグインをインストールする
+</h3>
+
+[コードインテリジェンスプラグイン](/ja/discover-plugins#code-intelligence) は Claude にテキストベースの検索の代わりに正確なシンボルナビゲーションを提供し、不慣れなコードを探索する際の不要なファイル読み取りを削減します。単一の「定義に移動」呼び出しは、grep の後に複数の候補ファイルを読み取る必要があるものを置き換えます。インストールされた言語サーバーは編集後に型エラーを自動的に報告するため、Claude はコンパイラを実行せずにエラーをキャッチします。
+
+<h3 id="offload-processing-to-hooks-and-skills">
+  フックとスキルに処理をオフロードする
+</h3>
+
+カスタム [フック](/ja/hooks) は Claude がそれを見る前にデータを前処理できます。Claude が 10,000 行のログファイルを読んでエラーを見つける代わりに、フックは `ERROR` に対して grep を実行し、一致する行のみを返すことができ、コンテキストを数万トークンから数百に削減します。
+
+[スキル](/ja/skills) は Claude にドメイン知識を与えることができるため、探索する必要がありません。たとえば、「codebase-overview」スキルはプロジェクトのアーキテクチャ、主要なディレクトリ、および命名規則を説明できます。Claude がスキルを呼び出すと、構造を理解するために複数のファイルを読むトークンを費やす代わりに、このコンテキストが即座に取得されます。
+
+たとえば、この PreToolUse フックはテスト出力をフィルタリングして失敗のみを表示します。
+
+<Tabs>
+  <Tab title="settings.json">
+    これを [settings.json](/ja/settings#settings-files) に追加して、すべての Bash コマンドの前にフックを実行します。
+
+    ```json theme={null}
+    {
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Bash",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "~/.claude/hooks/filter-test-output.sh"
+              }
+            ]
+          }
+        ]
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="filter-test-output.sh">
+    フックはこのスクリプトを呼び出し、コマンドがテストランナーであるかどうかを確認し、失敗のみを表示するように変更します。
+
+    ```bash theme={null}
+    #!/bin/bash
+    input=$(cat)
+    cmd=$(echo "$input" | jq -r '.tool_input.command')
+
+    # If running tests, filter to show only failures
+    if [[ "$cmd" =~ ^(npm test|pytest|go test) ]]; then
+      filtered_cmd="$cmd 2>&1 | grep -A 5 -E '(FAIL|ERROR|error:)' | head -100"
+      echo "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"updatedInput\":{\"command\":\"$filtered_cmd\"}}}"
+    else
+      echo "{}"
+    fi
+    ```
+  </Tab>
+</Tabs>
+
+<h3 id="move-instructions-from-claude-md-to-skills">
+  CLAUDE.md からスキルに指示を移動する
+</h3>
+
+[CLAUDE.md](/ja/memory) ファイルはセッション開始時にコンテキストに読み込まれます。PR レビューやデータベース移行などの特定のワークフロー用の詳細な指示が含まれている場合、関連のない作業を行っている場合でもそれらのトークンが存在します。[スキル](/ja/skills) はオンデマンドでのみ呼び出されたときに読み込まれるため、特殊な指示をスキルに移動することで、ベースコンテキストを小さく保ちます。CLAUDE.md を 200 行以下に保つことを目指し、必須のみを含めます。
+
+<h3 id="adjust-extended-thinking">
+  拡張思考を調整する
+</h3>
+
+拡張思考はデフォルトで有効になっています。これは複雑な計画と推論タスクのパフォーマンスを大幅に向上させるためです。思考トークンは出力トークンとして課金され、デフォルト予算はモデルに応じて数万トークンになる場合があります。深い推論が必要ない単純なタスクの場合、`/effort` で [努力レベル](/ja/model-config#adjust-effort-level) を低下させるか、`/model` で、`/config` で思考を無効にするか、`MAX_THINKING_TOKENS=8000` で予算を低下させることでコストを削減できます。
+
+<h3 id="delegate-verbose-operations-to-subagents">
+  詳細な操作を subagent に委任する
+</h3>
+
+テストの実行、ドキュメントの取得、またはログファイルの処理は、かなりのコンテキストを消費できます。これらを [subagent](/ja/sub-agents#isolate-high-volume-operations) に委任して、詳細な出力が subagent のコンテキストに留まり、メインの会話に戻るのはサマリーのみです。
+
+<h3 id="manage-agent-team-costs">
+  エージェントチームのコストを管理する
+</h3>
+
+エージェントチームは、チームメイトがプランモードで実行される場合、標準セッションよりも約 7 倍多くのトークンを使用します。これは、各チームメイトが独自のコンテキストウィンドウを維持し、別の Claude インスタンスとして実行されるためです。チームメイトあたりのトークン使用量を制限するために、チームタスクを小さく自己完結させておきます。詳細については、[エージェントチーム](/ja/agent-teams) を参照してください。
+
+<h3 id="write-specific-prompts">
+  具体的なプロンプトを作成する
+</h3>
+
+「このコードベースを改善する」のような曖昧なリクエストは、広範なスキャンをトリガーします。「auth.ts のログイン関数に入力検証を追加する」のような具体的なリクエストにより、Claude は最小限のファイル読み取りで効率的に作業できます。
+
+<h3 id="work-efficiently-on-complex-tasks">
+  複雑なタスクで効率的に作業する
+</h3>
+
+より長いまたはより複雑な作業の場合、これらの習慣は間違った方向に進むことからの無駄なトークンを回避するのに役立ちます。
+
+* **複雑なタスクにはプランモードを使用する**: Shift+Tab を押して、実装の前に [プランモード](/ja/permission-modes#analyze-before-you-edit-with-plan-mode) に入ります。Claude はコードベースを探索し、承認のためのアプローチを提案し、初期方向が間違っている場合の高価な再作業を防ぎます。
+* **早期に方向を修正する**: Claude が間違った方向に向かい始めた場合は、Escape を押して直ちに停止します。`/rewind` を使用するか、Escape をダブルタップして、会話とコードを前のチェックポイントに復元します。
+* **検証ターゲットを指定する**: テストケースを含めるか、スクリーンショットを貼り付けるか、プロンプトで予想される出力を定義します。Claude が独自の作業を検証できる場合、修正をリクエストする必要がある前に問題をキャッチします。
+* **段階的にテストする**: 1 つのファイルを作成し、テストしてから続行します。これは、修正が安い場合に早期に問題をキャッチします。
+
+<h2 id="background-token-usage">
+  バックグラウンドトークン使用量
+</h2>
+
+Claude Code はアイドル状態でも、バックグラウンド機能にトークンを使用します。
+
+* **会話要約**: `claude --resume` 機能の前の会話を要約するバックグラウンドジョブ
+* **コマンド処理**: `/usage` などの一部のコマンドは、ステータスを確認するためにリクエストを生成する場合があります
+
+これらのバックグラウンドプロセスは、アクティブなインタラクションがなくても、少量のトークン（通常はセッションあたり 0.04 ドル未満）を消費します。
+
+<h2 id="understanding-changes-in-claude-code-behavior">
+  Claude Code の動作の変更を理解する
+</h2>
+
+Claude Code は、コスト報告を含む機能の動作方法を変更する可能性のある定期的な更新を受け取ります。`claude --version` を実行して現在のバージョンを確認します。特定の請求に関する質問については、[Console アカウント](https://platform.claude.com/login) を通じて Anthropic サポートに連絡してください。
