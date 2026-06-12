@@ -10,10 +10,10 @@
       "kind": "ja-section",
       "term": "claude-plugins-official",
       "strong": true,
-      "status": "ready",
+      "status": "injected",
       "first_seen": "2026-06-12",
       "last_checked": "2026-06-12",
-      "injected_at": null
+      "injected_at": "2026-06-12"
     },
     "live::https://code.claude.com/docs/en/model-config#work-with-fable-5": {
       "name": "live",
@@ -108,10 +108,10 @@
       "kind": "ja-section",
       "term": "Co-Authored-By",
       "strong": true,
-      "status": "ready",
+      "status": "injected",
       "first_seen": "2026-06-12",
       "last_checked": "2026-06-12",
-      "injected_at": null
+      "injected_at": "2026-06-12"
     },
     "2026-06-06::https://code.claude.com/docs/en/mcp#option-3-add-a-local-stdio-server": {
       "name": "2026-06-06",
@@ -164,10 +164,10 @@
       "kind": "ja-section",
       "term": "ARGUMENTS",
       "strong": true,
-      "status": "ready",
+      "status": "injected",
       "first_seen": "2026-06-12",
       "last_checked": "2026-06-12",
-      "injected_at": null
+      "injected_at": "2026-06-12"
     },
     "2026-06-06::https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers": {
       "name": "2026-06-06",
@@ -318,10 +318,10 @@
       "kind": "ja-section",
       "term": "--all",
       "strong": true,
-      "status": "ready",
+      "status": "injected",
       "first_seen": "2026-06-12",
       "last_checked": "2026-06-12",
-      "injected_at": null
+      "injected_at": "2026-06-12"
     },
     "2026-06-09::https://code.claude.com/docs/en/troubleshooting#usage-credits-required-for-1m-context": {
       "name": "2026-06-09",

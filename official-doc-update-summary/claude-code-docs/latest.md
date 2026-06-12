@@ -40,7 +40,7 @@
 - Amazon Bedrock が `AWS_REGION` 未設定時に `~/.aws` 設定ファイルから AWS リージョンを読むようになった（AWS SDK の優先順位に準拠）。`/status` にリージョンの取得元が表示される。
 - OTEL メトリクス `claude_code.lines_of_code.count` に `model` 属性が追加された。
 - 長い会話でのパフォーマンスが改善された（冗長なメッセージ正規化の除去、ツール使用状態が不変なときの全履歴変換の回避）。あわせてアイドル時の CPU 使用量も削減された。
-- 公式マーケットプレイス `claude-plugins-official` の自動登録タイミングと、コミュニティ投稿フォームの URL・利用要件の記述が更新された（詳細はハイライト 2 参照）。 — [English](https://code.claude.com/docs/en/plugins#submit-your-plugin-to-the-community-marketplace)
+- 公式マーケットプレイス `claude-plugins-official` の自動登録タイミングと、コミュニティ投稿フォームの URL・利用要件の記述が更新された（詳細はハイライト 2 参照）。 — [日本語](https://code.claude.com/docs/ja/plugins#submit-your-plugin-to-the-community-marketplace) / [English](https://code.claude.com/docs/en/plugins#submit-your-plugin-to-the-community-marketplace)
 
 **バグ修正**
 - 使用クレジットなしで 1M コンテキストを使うセッションが恒久的にスタックする問題を修正（標準コンテキスト上限内に自動コンパクトされるようになった）。
