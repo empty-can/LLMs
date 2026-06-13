@@ -1,69 +1,78 @@
 ---
-対象期間: 2026年06月10日 〜 2026年06月11日
-作成日: 2026-06-11
+対象期間: 2026年06月11日 〜 2026年06月12日
+作成日: 2026-06-12
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回は新規追加・大幅更新ページはなく、既存ドキュメントの記述明確化を中心とした軽微更新が中心です。リリース v2.1.173 の changelog 追加（小規模なバグ修正 2 件）に加え、主要な明確化を 4 件のハイライトとして取り上げます。
+今回は v2.1.174〜v2.1.176 の 3 リリースにまたがる大規模な更新です。新規追加・大幅更新ページはありませんが、サブエージェント・モデルガバナンス・Bedrock 設定を中心に、既存ドキュメントへの実質的な追記が多数あります。主要な変更を 5 件のハイライトとして取り上げます。
 
 主要なものを以下に挙げます。
 
-1. `/code-review` のローカル実行が、ブランチのアップストリーム比較＋未コミット変更をデフォルト対象とすることが明記され、`main...my-feature` のような ref レンジ指定にも対応した
-2. VS Code 拡張機能は CLI の専用コピーをチャットパネル用に同梱するだけで、`claude` を PATH には追加しないことが明確化された（ターミナル利用にはスタンドアロン CLI が別途必要）
-3. `claude --resume <session-id>` によるセッション再開は、現在のプロジェクトディレクトリとその git worktree にスコープされることが明記された
-4. プラグイン同梱 MCP サーバーのツール名の完全形式（`mcp__plugin_<plugin-name>_<server-name>__<tool-name>`）がドキュメント化された
+1. サブエージェントが自身のサブエージェントを起動できるようになり（v2.1.172 以降）、ネスト時の深さ制限やパネル表示が文書化された
+2. `availableModels` アローリストの適用範囲がメインセッションに加えてサブエージェント・アドバイザー・フォールバックチェーンへ拡大し、Default モデルも縛る `enforceAvailableModels` 管理設定が追加された
+3. Bedrock で `AWS_REGION` が必須でなくなり（v2.1.172 以降）、AWS プロファイルのリージョンを含む優先順位で解決されるようになった
+4. Claude Code が生成したサブプロセスでのみ設定される新環境変数 `CLAUDE_CODE_CHILD_SESSION` が追加され、ネストセッションを IDE 統合ターミナル等と区別できるようになった
+5. VS Code 拡張機能に `/usage` で開く「アカウントと使用状況」ダイアログが追加され、プラン使用量とスキル・サブエージェント等の内訳が確認できるようになった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**コードレビューのローカル実行範囲の明確化と ref レンジ指定対応**](#1-コードレビューのローカル実行範囲の明確化と-ref-レンジ指定対応):  
-  `/code-review` のローカル実行のデフォルト対象（ブランチのアップストリーム比較＋未コミット変更）が明記され、ファイルパス・PR 番号・ブランチ名に加えて `main...my-feature` 形式の ref レンジ指定でレビュー対象を選べるようになった。
-2. [**VS Code 拡張機能の CLI 同梱仕様の明確化**](#2-vs-code-拡張機能の-cli-同梱仕様の明確化):  
-  VS Code 拡張機能はチャットパネル用に CLI の専用（プライベート）コピーを同梱するだけで、`claude` をシェルの PATH には追加しないことが明確化された。ターミナルで `claude` を使うにはスタンドアロン CLI のインストールが別途必要。
-3. [**セッション ID による再開のディレクトリスコープ明確化**](#3-セッション-id-による再開のディレクトリスコープ明確化):  
-  `claude -p` や Agent SDK で作成したセッションを `claude --resume <session-id>` で再開する際、ID 検索が現在のプロジェクトディレクトリとその git worktree にスコープされることが明記された。別の場所で作成したセッションは見つからない。
-4. [**プラグイン同梱 MCP サーバーのツール名の明文化**](#4-プラグイン同梱-mcp-サーバーのツール名の明文化):  
-  プラグインにバンドルされた MCP サーバーのツールを権限ルールやサブエージェントの `tools` で参照する際に使う完全名 `mcp__plugin_<plugin-name>_<server-name>__<tool-name>` の形式が新たに記載された。
+1. [**サブエージェントによるネストされたサブエージェントの起動**](#1-サブエージェントによるネストされたサブエージェントの起動):  
+  v2.1.172 以降、サブエージェントが自身のサブエージェントを起動できるようになった。委譲したタスクがさらに並列のサブタスクに分かれる場合に使い、中間出力はメイン会話に届かず最上位サブエージェントの要約のみが返る。フォアグラウンド／バックグラウンドでの深さ制限も文書化された。
+2. [**モデルアローリストのサブエージェントとアドバイザーへの適用拡大**](#2-モデルアローリストのサブエージェントとアドバイザーへの適用拡大):  
+  `availableModels` の適用範囲が、メインセッションだけでなくサブエージェント・アドバイザー・フォールバックチェーンへ拡大された。さらに Default モデルまで制限し管理リストの拡幅を禁じる `enforceAvailableModels` 管理設定が追加された。
+3. [**Bedrock リージョン解決の自動化**](#3-bedrock-リージョン解決の自動化):  
+  v2.1.172 以降、Bedrock では `AWS_REGION` が必須でなくなり、`AWS_REGION` → `AWS_DEFAULT_REGION` → AWS プロファイルの `region` → `us-east-1` の優先順位でリージョンが解決されるようになった。`/status` で解決結果と取得元を確認できる。
+4. [**CLAUDE_CODE_CHILD_SESSION によるネストセッション検出**](#4-claude_code_child_session-によるネストセッション検出):  
+  v2.1.172 以降、Claude Code 自身が生成したサブプロセスでのみ設定される新環境変数 `CLAUDE_CODE_CHILD_SESSION` が追加された。IDE 拡張機能も設定する `CLAUDECODE` と異なり、IDE 統合ターミナルで起動した最上位セッションとネストセッションを確実に区別できる。
+5. [**VS Code のアカウントと使用状況ダイアログ**](#5-vs-code-のアカウントと使用状況ダイアログ):  
+  VS Code 拡張機能に、`/usage` で開く「Account & usage」ダイアログが追加された。プラン使用量バーに加え、スキル・サブエージェント・プラグイン・MCP サーバー別の使用内訳と、使用量を押し上げている挙動の警告を表示する。
 <!-- light:highlight-list:end -->
 
-## 1. コードレビューのローカル実行範囲の明確化と ref レンジ指定対応
+## 1. サブエージェントによるネストされたサブエージェントの起動
 
-「Code Review」ページの「ローカルで差分をレビューする」節で、`/code-review` コマンドの対象範囲に関する記述が拡充されました。これまで「現在の差分をレビューする」とだけ説明されていたデフォルト対象が、新しい記述では「ブランチのアップストリームに対して先行しているコミット＋ワーキングツリーの未コミット変更」と明記されました。
+「Create custom subagents」ページに「Spawn nested subagents」節が新設され、サブエージェントがさらにサブエージェントを起動できるようになったことが文書化されました。v2.1.172 以降、委譲されたタスク自体が並列のサブタスクに分かれる場合（例: 指摘ごとに検証用サブエージェントを割り当てるレビュアー）に、ネストされたサブエージェントを起動できます。中間出力はメイン会話に届かず、最上位サブエージェントの要約だけが返ります。ネストされたサブエージェントは最上位と同じ方法で設定され、同じスコープから解決されます。プロンプト入力下のサブエージェントパネルにはツリー全体が表示され、各行に子孫数の `(+N)` カウントが付き、`/agents` の Running タブは実行中のサブエージェントをフラットに一覧します。
 
-あわせて、レビュー対象の指定方法が拡張されました。デフォルトの差分以外をレビューしたい場合は、ファイルパス・PR 番号・ブランチ名に加えて、`main...my-feature` のような **ref レンジ**を渡せるようになりました。ref レンジ形式は、ブランチのアップストリーム設定に関わらず、`my-feature` から `main` への PR に含まれるコミット差分をレビューします。さらに、`/code-review ultra --fix` の ultrareview は独自のスコープ（現在のブランチをリポジトリのデフォルトブランチと比較し、未コミット・ステージ済みの変更を加えたもの）を使うことも明記されました。
+深さは、メイン会話の下にあるサブエージェントの階層数として数えられます。**フォアグラウンド**サブエージェントは各階層が親をブロックするため連鎖が自己制限的になり、任意の深さまで起動できます。**バックグラウンド**サブエージェントは深さ 5 で Agent ツールを受け取らなくなり、それ以上起動できません（暴走する並行ツリーを防ぐための固定上限）。特定のサブエージェントに他を起動させたくない場合は、その `tools` から `Agent` を省くか `disallowedTools` に追加します。フォークは依然として別のフォークを起動できませんが、他のサブエージェント型は起動でき、それも深さ制限に数えられます。この変更に伴い、サブエージェントで利用できないツールの一覧から `Agent` が削除され、Agent SDK 側の「サブエージェントは自身のサブエージェントを起動できない」という注記も新しい深さルールの説明に置き換えられました。
 
-- [Code Review - Claude Code Docs (English)](https://code.claude.com/docs/en/code-review#review-a-diff-locally)
+- [Create custom subagents - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#spawn-nested-subagents)
 
-## 2. VS Code 拡張機能の CLI 同梱仕様の明確化
+## 2. モデルアローリストのサブエージェントとアドバイザーへの適用拡大
 
-「Use Claude Code in VS Code」ページの複数箇所で、拡張機能と CLI の関係に関する記述が改められました。従来は「拡張機能には CLI が含まれており、統合ターミナルからアクセスできる」とされていましたが、新しい記述では「拡張機能はチャットパネル用に CLI の専用（プライベート）コピーを拡張機能ディレクトリ内に同梱しているだけで、`claude` をシステムの PATH には追加しない」と明確化されました。
+「Model configuration」ページの「Restrict model selection」節で、`availableModels` アローリストの適用範囲が大きく拡張されました。これまではメインセッションのモデル選択（`/model`・`--model`・`ANTHROPIC_MODEL`）のみが対象でしたが、新しい記述では、ユーザーがモデルを指定できるあらゆる箇所に適用されることが明記されました。具体的には、**サブエージェントのモデル**（フロントマターの `model`、Agent ツールの `model` パラメーター、`/agents` のモデルピッカー、`CLAUDE_CODE_SUBAGENT_MODEL`）、**アドバイザーのモデル**（`advisorModel` 設定）、および**フォールバックチェーン**（リスト外の要素は除外）が対象に加わりました。
 
-このため、VS Code の統合ターミナルで `claude`（`claude mcp add` や `claude --resume` を含む）を実行するには、別途[スタンドアロン CLI のインストール](https://code.claude.com/docs/en/setup)が必要です。「Prerequisites」「VS Code extension vs. Claude Code CLI」「Run CLI in VS Code」の各節にこの趣旨が追記されました。関連して、「Troubleshoot installation and login」ページの「PATH を確認する」節にも、VS Code 拡張機能は `claude` を `~/.local/bin/claude` に配置せず、拡張機能のみをインストールした場合は同パスが存在しない旨の Note が追加されています。
+ブロックされたモデルの扱いも明記されました。`/model` でブロック対象に切り替えようとするとエラーで拒否され、`--model` フラグや `ANTHROPIC_MODEL` のブロック値は起動時に無視されてデフォルトモデルで開始します。サブエージェントやアドバイザーのオーバーライドがブロックされた場合は、リクエストを失敗させるのではなく継承モデルまたはデフォルトにフォールバックします。あわせて、新しい管理設定 `enforceAvailableModels`（v2.1.175）が追加されました。これを有効にすると、`availableModels` アローリストが Default モデルにも適用され（Default が許可外モデルに解決される場合は最初の許可モデルにフォールバック）、ユーザー設定やプロジェクト設定が管理側の `availableModels` リストを拡幅できなくなります。
 
-- [Use Claude Code in VS Code - Claude Code Docs (English)](https://code.claude.com/docs/en/vs-code#run-cli-in-vs-code)
-- [Troubleshoot installation and login - Claude Code Docs (English)](https://code.claude.com/docs/en/troubleshoot-install#verify-your-path)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#restrict-model-selection)
 
-## 3. セッション ID による再開のディレクトリスコープ明確化
+## 3. Bedrock リージョン解決の自動化
 
-「Manage sessions」ページの「セッションを再開する」節、CLI リファレンスの `--resume` フラグ、headless（プログラム実行）ページの会話継続例で、セッション ID による再開のスコープが明記されました。`claude -p` や Agent SDK で作成したセッションはセッションピッカーに表示されませんが、`claude --resume <session-id>` で ID を渡せば再開できます。
+「Claude Code on Amazon Bedrock」ページの「Configure Claude Code」節で、`AWS_REGION` の扱いが改められました。従来は「`AWS_REGION` は必須の環境変数で、Claude Code はこの設定を `.aws` 設定ファイルから読み込まない」と記載されていましたが、v2.1.172 以降は、AWS プロファイルのリージョンを上書きしたい場合、またはプロファイルにリージョンが設定されていない場合にのみ `AWS_REGION` を設定すればよくなりました。
 
-新しい記述では、この再開は**セッションを開始したディレクトリから実行する必要がある**ことが明確化されました。セッション ID の検索は現在のプロジェクトディレクトリとその git worktree にスコープされるため、別の場所で作成したセッションを再開しようとすると `No conversation found with session ID: <session-id>` と報告されます。CLI リファレンスの `--resume` 説明でも、ID を指定した場合は現在のプロジェクトディレクトリと git worktree のみを検索する旨が補足されました（ピッカーと名前検索は `/add-dir` で追加したディレクトリのセッションも含みます）。
+リージョンは次の優先順位で解決されます: `AWS_REGION` → `AWS_DEFAULT_REGION` → アクティブな AWS プロファイルの `region`（AWS SDK の優先順位に従い、共有認証情報ファイル→共有設定ファイルの順に読み取り）→ `us-east-1`。アクティブなプロファイルは `AWS_PROFILE` が設定されていればそれ、なければ `default` です。`/status` を実行すると解決されたリージョンを確認でき、リージョンが AWS 設定ファイルやデフォルトのフォールバックから来た場合はその取得元も表示されます。v2.1.171 以前は AWS 設定ファイルを読まないため、`AWS_REGION` を明示的に設定する必要があります。あわせて、AWS GovCloud リージョンでは推論プロファイル ID に `us-gov.` プレフィックスを使うことが追記され、Mantle エンドポイントのリージョン解決も v2.1.172 以降は Bedrock と同じ優先順位を用いるよう更新されました。
 
-- [Manage sessions - Claude Code Docs (English)](https://code.claude.com/docs/en/sessions#resume-a-session)
-- [CLI reference - Claude Code Docs (English)](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- [Claude Code on Amazon Bedrock - Claude Code Docs (English)](https://code.claude.com/docs/en/amazon-bedrock#3-configure-claude-code)
 
-## 4. プラグイン同梱 MCP サーバーのツール名の明文化
+## 4. CLAUDE_CODE_CHILD_SESSION によるネストセッション検出
 
-「Connect Claude Code to tools via MCP」ページの「プラグイン提供の MCP サーバー」節に、プラグインにバンドルされた MCP サーバーのツール名の完全形式に関する記述が追加されました。プラグイン同梱 MCP サーバーのツールは、呼び出し名にプラグイン名とサーバーキーの両方を含み、完全形は `mcp__plugin_<plugin-name>_<server-name>__<tool-name>` となります（`A-Z` / `a-z` / `0-9` / `_` / `-` 以外の文字は `_` に置換）。
+「Environment variables」ページに、新しい環境変数 `CLAUDE_CODE_CHILD_SESSION` が追加されました（v2.1.172 以降）。この変数は、Claude Code が Bash・PowerShell・Monitor の各ツール、hook コマンド、ステータスラインコマンドを通じて生成したサブプロセスで `1` に設定されます。長命で生成元セッションより長く存続する stdio MCP サーバーのサブプロセスには設定されません。
 
-例えば `my-plugin` というプラグインに同梱された `database-tools` サーバーの `query` ツールは、`mcp__plugin_my-plugin_database-tools__query` として呼び出せます。この完全名は、権限ルール、スキルの `allowed-tools` リスト、サブエージェントの `tools` フィールドでツールを参照する際に使います。
+`CLAUDECODE` との違いが重要です。`CLAUDECODE` は IDE 拡張機能も統合ターミナルで設定するため、人間が直接 CLI を実行している場面でも立つことがあります。一方 `CLAUDE_CODE_CHILD_SESSION` は Claude Code 自身の生成パスでのみ設定されるため、IDE 統合ターミナルで起動した最上位の `claude` と、ネストされたセッションを確実に区別できます。この変数経由で起動された対話的な `claude` TUI は、`--resume`・`--continue`・上矢印履歴・`claude agents` の一覧から自動的に除外されます（非対話の `claude -p` セッションは引き続き永続化されます）。この除外をオーバーライドするには `CLAUDE_CODE_FORCE_SESSION_PERSISTENCE=1` を設定します。なお `CLAUDE_CODE_FORCE_SESSION_PERSISTENCE` は「v2.1.170 で削除」とされていた記述が、現行バージョンで再び機能する説明に改められました。
 
-- [Connect Claude Code to tools via MCP - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers)
+- [Environment variables - Claude Code Docs (English)](https://code.claude.com/docs/en/env-vars)
+
+## 5. VS Code のアカウントと使用状況ダイアログ
+
+「Use Claude Code in VS Code」ページに「Check account and usage」節が新設されました（v2.1.174 以降）。コマンドメニューから `/usage` を実行すると「Account & usage」ダイアログが開き、サインイン中のアカウント、プラン、現在のセッションと週の使用量バー、各上限のリセットまでの時間が表示されます。
+
+ダイアログはプラン上限に寄与している要素も内訳表示します。最近の使用量の 10% 以上を占める挙動（キャッシュミス、ロングコンテキスト、サブエージェント多用や高並列のセッションなど）にはそれぞれ低減のヒントを添えてフラグを立て、スキル・サブエージェント・プラグイン・MCP サーバーごとの使用量を帰属テーブルで示します。Day／Week トグルで直近 24 時間と 7 日間を切り替えられます。数値は当該マシンのローカルセッション履歴から概算されるため、他デバイスや claude.ai の使用量は含まれません。「Manage costs effectively」ページにもこのダイアログへの相互参照が追記されました。
+
+- [Use Claude Code in VS Code - Claude Code Docs (English)](https://code.claude.com/docs/en/vs-code#check-account-and-usage)
 
 ## 新規追加されたページ
 
@@ -80,18 +89,55 @@
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、changelog のリリースエントリ **v2.1.173**（2026年06月11日）の追加と、ハイライトに挙げた明確化以外のドキュメント更新です。分類別に示します。
+今回の軽微な更新は、changelog のリリースエントリ **v2.1.174〜v2.1.176**（いずれも 2026年06月12日）の追加と、ハイライトに挙げた以外のドキュメント更新です。分類別に示します。
+
+**新機能**
+- `footerLinksRegexes` 設定が追加され、フッター行に正規表現でマッチしたリンクバッジを表示できるようになった（ユーザー設定／管理設定で構成可能、v2.1.176）。
+- フルスクリーンレンダリングでの高速スクロール時のマウスホイール加速をオフにできる `wheelScrollAccelerationEnabled` 設定が追加された（v2.1.174）。 — [English](https://code.claude.com/docs/en/settings#available-settings)
+- セッションタイトルが会話の言語で生成されるようになった（`language` 設定で特定言語に固定可能）（v2.1.176）。
 
 **機能改善**
-- 「クイックスタート」ページの「必須コマンド」表が、ターミナルから実行する**シェルコマンド**と、Claude Code 起動後に使う**セッションコマンド**の 2 つの表に再構成された。あわせて終了コマンドの表記が `exit` から `/exit` に変更され、CLI リファレンスとコマンドリファレンスへのリンクが追加された。 — [English](https://code.claude.com/docs/en/quickstart#essential-commands)
-- 「監視（Monitoring）」ページの「バックエンドの考慮事項」節で、フル機能のオブザーバビリティプラットフォームの例に **Grafana Cloud** が Honeycomb・Datadog と並んで追記された（メトリクス・イベント/ログ・トレースの 3 箇所）。 — [English](https://code.claude.com/docs/en/monitoring-usage#backend-considerations)
+- WebFetch 権限ルール（`WebFetch(domain:...)`）のワイルドカード照合仕様が詳細に明文化された（`*.example.com` が任意深さのサブドメインにマッチするが `example.com` 自体にはマッチしない、`*` が `.` を越えるのは先頭 `*.` かパターン全体の場合のみ、完全一致ルールがワイルドカードより優先される、など）。 — [English](https://code.claude.com/docs/en/permissions#webfetch)
+- `opusplan` の Plan Mode の Opus フェーズが、自動 1M アップグレード対象のプランでは 1M コンテキストを受け取るようになり、`opusplan[1m]` で両フェーズに 1M を強制できることが明記された（従来は 200K 固定と記載）。 — [English](https://code.claude.com/docs/en/model-config#opusplan-model-setting)
+- サードパーティプロバイダーでの `availableModels` 照合が、モデルエイリアス・バージョンプレフィックス（`claude-opus-4-8`）・フル ID のいずれでも可能になり、`[1m]` サフィックスは照合前に両側から除去されることが明記された（詳細はハイライト 2 参照）。
+- 「Could not resolve authentication method」エラーのトラブルシューティング節が追加された（バックグラウンド／クラウドセッション・Agent SDK で発生し、v2.1.174 以降で改善）。 — [English](https://code.claude.com/docs/en/troubleshoot-install#could-not-resolve-authentication-method)
+- `claude_code.lines_of_code.count` メトリクスが v2.1.172 以降モデル別に内訳できるようになった（監視）。 — [English](https://code.claude.com/docs/en/monitoring-usage#interpret-metrics-and-events-data)
+- `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` の説明が大幅に改訂され、しきい値が「自動コンパクトウィンドウ」に対する割合であること、Claude Code が先回りでコンパクトするケース（`CLAUDE_CODE_AUTO_COMPACT_WINDOW` 設定時・クラウドセッション・Remote Control セッション・拡張コンテキスト未使用の Sonnet 4.6／Opus 4.6）でのみ早期コンパクトに効くこと、デフォルトのローカルセッションではモデルのコンテキスト上限到達時にトリガーされることが明記された。 — [English](https://code.claude.com/docs/en/env-vars)
+- 「1M コンテキストの使用クレジットが必要」エラー節に、会話が 200K トークンを超えて本エラーが出た場合は Claude Code が自動的に標準上限内へコンパクトして以降その上限を維持するため対処不要であること、v2.1.172 より前は `/compact` を含む後続リクエストで繰り返し発生するため `/clear` で回復する旨が追記された。
+- Remote Control インジケーターが v2.1.172 以降 `/rc active` 表示になり、端末幅が足りない場合は非表示になるようになった（旧バージョンは常に `Remote Control active` 表示）。
+- `/agents` の Running タブが、実行中に加えて最近完了したサブエージェントも一覧するよう記述が更新された。
+- Agent SDK で複数の追記: プラグイン設定の `skipMcpDiscovery`、subagent 応答（`AgentOutput`／`PostToolUse`）に実行モデルを示す `resolvedModel`（v2.1.174 以降）、`SDKMessageOrigin` への `auto-continuation` 追加、構造化出力エラーがモデルフォールバックによる撤回でも起こりうる旨の説明。
+- xhigh 努力レベルの推奨対象が **Fable 5 / Opus 4.7 以降** に更新された（Agent SDK）。
+- VS Code・JetBrains の前提条件に、有料 Claude サブスクリプション（Pro/Max/Team/Enterprise）または Claude Console アカウントで利用でき API キーは不要である旨が明記された。
 
 **バグ修正**
-- Fable 5 のモデル名に付いた `[1m]` サフィックスが正規化されない問題を修正（Fable 5 はデフォルトで 1M コンテキストを含むため、サフィックスは自動的に除去される）(v2.1.173)。
-- Windows でサンドボックスを設定で有効化している場合に、誤った「サンドボックスの依存関係が不足しています」という起動時警告が表示される問題を修正 (v2.1.173)。
+- `/model` ピッカーが Default の解決先モデルファミリーを隠す問題、および `ANTHROPIC_DEFAULT_SONNET_MODEL` ピン時にハードコードされた Sonnet ラベルを表示する問題を修正（v2.1.174）。
+- Bedrock GovCloud リージョン（`us-gov-*`）が誤った推論プロファイルプレフィックス（`global`）を導出して 400 エラーになる問題を修正（v2.1.174）。
+- バックグラウンドセッションが起動元シェルから別セッションの `ANTHROPIC_*` プロバイダー環境（ゲートウェイ URL・カスタムヘッダー・モデルエイリアス）を継承する問題を修正（v2.1.174）。
+- 「Fable 5 is now consuming usage credits」バナーが従量課金エンタープライズアカウントに誤表示される問題、および git commit の co-author 表記が一部モデルで誤ったモデル名になる問題を修正（v2.1.174）。
+- `availableModels` 強制の抜け穴を修正: エイリアス選択が `ANTHROPIC_DEFAULT_*_MODEL` 経由でブロック対象モデルへリダイレクトされる問題と、`/fast` がアローリスト外モデルへ切り替わる問題（v2.1.176）。
+- auto モードが Opus 4.8 未有効の組織で Fable 5 利用時に失敗する問題を修正（分類器が利用可能な最良の Opus にフォールバック）（v2.1.176）。
+- hook の `if` 条件での Read/Edit/Write パス（`Edit(src/**)`・`Read(~/.ssh/**)`・`Read(.env)` 等）が正しくマッチしない問題を修正（v2.1.176）。
+- クラウドセッションが長時間アイドル後に「Could not resolve authentication method」で失敗する問題を修正し、`awsCredentialExport` 由来の Bedrock 認証情報を固定 1 時間でなく `Expiration` までキャッシュするよう改善（v2.1.176）。
+- Linux で `.claude/settings.json` が絶対パスを指すシンボリックリンクの場合にサンドボックスが起動しない問題を修正（v2.1.176）。
+- `/copy` とマウス選択コピーが SSH 経由の tmux 内でシステムクリップボードに届かない問題、および tmux 3.2 より前でペーストバッファが読み込まれない問題を修正（v2.1.176）。
+- Remote Control: web/mobile からの接続でセッションのモデルが無言で切り替わる問題を修正（v2.1.176）。
+- Remote Control: 切断通知が人間可読の理由でなく数値コードのみを表示し、接続失敗時に会話トランスクリプトへ重複行が追加される問題を修正（v2.1.176）。
+- Remote Control: 別アカウントにサインインしてもセッションが切断されない問題を修正（v2.1.176）。
+- `/cd` や worktree 移動後にセッションが旧ディレクトリの git ブランチを報告し続ける問題を修正（v2.1.176）。
+- `claude agents` で 1 つのウィンドウで戻る操作をしても、同一セッションにアタッチした他のウィンドウが切り離されないよう修正（v2.1.176）。
+- ターン途中で `/bg` した際に継続するものが無い場合に、バックグラウンドセッションが「Working」のまま固まる問題を修正（v2.1.176）。
+- バックグラウンドエージェントの PR URL 検索で、スケジュール起動中やジョブブロック中に開かれた PR が `claude agents` 検索に表示されない問題を修正（v2.1.176）。
+- agents ビューの入力欄が Windows でテキストカーソルを表示しない問題、および `claude --bg -cn <name>` がセッション名をシードしない問題を修正（v2.1.176）。
+- バックグラウンドセッションの永続状態内で、再生成前に Windows ネットワークパスを無害化するよう修正（v2.1.176）。
+- バックグラウンドセッションの再生成が、破損した状態ファイル由来の不正な resume ID を拒否するよう修正（v2.1.176）。
+- ReadOnly 属性が付いた `~/.claude/daemon` で Windows バックグラウンドサービスデーモンが起動しない問題を修正（v2.1.176）。
 
 **その他**
-- 「クイックスタート」ページのインストール手順タブで、ソース内の描画ヒント（`theme={null}`）に重複が生じているが、レンダリング後の表示・内容に変化はない（読者向けの影響なし）。
+- ドキュメント全体で「kill」表現が「stop」／「end」へ字句変更された（孤立 tmux セッションの終了、`Ctrl+X Ctrl+K`／`chat:killAgents` のバックグラウンドサブエージェント停止 等）。
+- `CLAUDECODE` 環境変数の説明に、IDE 拡張機能が統合ターミナルでも設定する旨と、ネストセッション判別には `CLAUDE_CODE_CHILD_SESSION` を使う旨が追記された（ハイライト 4 参照）。
+- プラグインマーケットプレイスの「ヒント出力」ガイドが、`CLAUDECODE` と `CLAUDE_CODE_CHILD_SESSION` のどちらでゲートするかの指針を含めて更新された（ハイライト 4 参照）。
+- 自動生成のページ見出しマップ `claude_code_docs_map.md` が更新された。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -102,11 +148,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-10.md](./archives/latest/2026-06-10.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-10.md](./archives/latest-detail/2026-06-10.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-11.md](./archives/latest/2026-06-11.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-11.md](./archives/latest-detail/2026-06-11.md)
 
 <!--
-base_commit: 3c7fbb9579354ba1c5661f28ffd067f47e7775f7
-head_commit: 6a6b186d0111554e832b52e835e9dbe612ce6c34
-generated_at_full: 2026-06-12T15:06:01+09:00
+base_commit: 6a6b186d0111554e832b52e835e9dbe612ce6c34
+head_commit: 62bc5f91b860cffe2ed4178338ba0481982995fb
+generated_at_full: 2026-06-13T15:03:37+09:00
 -->
