@@ -1206,7 +1206,11 @@ Session state is stored under your Claude Code config directory. If you set [`CL
 
 Each background session has the `CLAUDE_JOB_DIR` environment variable set to its `~/.claude/jobs/<id>` directory, so shell commands the session runs can write temporary files to `$CLAUDE_JOB_DIR/tmp` without colliding with parallel sessions.
 
-To inspect this state without reading the files directly, run `claude daemon status`. It reports whether the supervisor is reachable, its process ID and version, the socket directory, and how many background sessions are live. `/doctor` includes a summary of the same check. On Windows, `claude daemon status` surfaces the underlying file error when the daemon's pipe-key file is locked or unreadable instead of reporting a generic connection failure.
+To inspect this state without reading the files directly, run `claude daemon status`. It reports whether the supervisor is reachable, its process ID and version, the socket directory, and how many background sessions are live. `/doctor` includes a summary of the same check.
+
+The command also warns when the running supervisor is on a different version than the `claude` you invoked, which happens after an update the supervisor hasn't restarted into yet. The warning shows both versions and tells you to run `claude daemon stop --any` to pick up the new version. When Claude Code is installed as an OS service, the suggested command is `claude daemon stop` without the flag.
+
+On Windows, `claude daemon status` surfaces the underlying file error when the daemon's pipe-key file is locked or unreadable instead of reporting a generic connection failure.
 
 ### Turn off agent view
 
@@ -2146,10 +2150,6 @@ If you have an active Claude subscription but also have `ANTHROPIC_API_KEY` set 
 [Claude Code on the Web](/docs/en/claude-code-on-the-web) always uses your subscription credentials. `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` in the sandbox environment do not override them.
 
 ### Generate a long-lived token
-
-<Note>
-  Starting June 15, 2026, Agent SDK and `claude -p` usage on subscription plans will draw from a new monthly Agent SDK credit, separate from your interactive usage limits. See [Use the Claude Agent SDK with your Claude plan](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan) for details.
-</Note>
 
 For CI pipelines, scripts, or other environments where interactive browser login isn't available, generate a one-year OAuth token with `claude setup-token`:
 
@@ -3161,6 +3161,31 @@ Release notes for Claude Code, including new features, improvements, and bug fix
 This page is generated from the [CHANGELOG.md on GitHub](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md).
 
 Run `claude --version` to check your installed version.
+
+<Update label="2.1.178" description="June 15, 2026">
+  * Added `Tool(param:value)` syntax for permission rules to match a tool's input parameters (with `*` wildcard), e.g. `Agent(model:opus)` to block Opus subagents
+  * Skills in nested `.claude/skills` directories now load when working on files there; on a name clash, the nested skill appears as `<dir>:<name>` so both stay available
+  * Nested `.claude/` directories: the agent, workflow, and output-style closest to the working directory now wins when names collide; project-scope workflow saves now target the closest existing `.claude/workflows/`
+  * Improved auto mode: subagent spawns are now evaluated by the classifier before launch, closing a gap where a subagent could request a blocked action without review
+  * Improved `/doctor` with consistent flat tree layout across all sections, clearer section status icons, and highlighted command names
+  * Improved the skill listing truncation warning to show how many skill descriptions are affected
+  * Changed the workflow prompt keyword to use a purple shimmer highlight and trigger only on explicit phrases like "run a workflow" or "workflow:", not on any mention of the word
+  * Improved Remote Control error messages: connection failures now show a persistent red "/rc failed" indicator in the footer, and the "not yet enabled" error now explains whether it's a gate, a check failure, stale entitlement, or org policy
+  * `/bug` now requires a description before submitting, and no longer uses model-refusal text as the GitHub issue title
+  * Fixed a crash (out-of-memory) when the CLI inherits a stale websocket/OAuth file-descriptor environment variable from a parent process
+  * Fixed Claude in Chrome silently failing to connect when the OAuth token belongs to a different account than the Claude Code login
+  * Fixed nested `.claude/skills` skills with directory-qualified names being blocked by permission prompts in non-interactive runs
+  * Fixed several subagent issues: viewing a subagent's transcript now shows tool results and live progress, messages sent while it finishes its turn are no longer dropped, and backgrounding a running subagent (ctrl+b) no longer restarts it from scratch
+  * Fixed `claude agents` workers failing with `401 Invalid bearer token` when the daemon was started from a shell with a custom API gateway via `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN`
+  * Fixed compaction not honoring `--fallback-model`: compaction now falls back to the configured fallback model chain on overload or model-availability errors
+  * Fixed model requests continuing to fail with auth errors after credentials were refreshed outside the session, due to a stale cached request configuration
+  * Fixed background sessions created with `/bg` or `←←` after a turn finished showing "Working" forever in the agents list
+  * Fixed `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE=1` preventing fresh marketplace installs from cloning
+  * Fixed MCP server-level specs (`mcp__server`, `mcp__server__*`, `mcp__*`) in subagent `disallowedTools` being silently ignored
+  * Fixed vim mode undo: `u` now steps through NORMAL/VISUAL-mode commands one at a time instead of merging commands in quick succession into a single undo step
+  * Fixed statusline links with custom URI schemes (e.g. `vscode://`) not opening when clicked in `claude agents`
+  * \[VSCode] Fixed pressing Esc to dismiss a CJK IME candidate window canceling the running Claude task
+</Update>
 
 <Update label="2.1.176" description="June 12, 2026">
   * Session titles are now generated in the language of your conversation (set the `language` setting to pin a specific language)
@@ -12745,10 +12770,10 @@ git checkout <branch-name>
 
 ### Still stuck?
 
-* Search or file a bug on [GitHub Issues](https://github.com/anthropics/claude-code/issues)
-* Visit the [Claude support center](https://support.claude.com/)
+* Open Help → Get Support in the desktop app, or visit the [Claude support center](https://support.claude.com/) directly
+* For problems that also reproduce in the standalone `claude` CLI, search or file a bug on [GitHub Issues](https://github.com/anthropics/claude-code/issues)
 
-When filing a bug, include your desktop app version, your operating system, the exact error message, and relevant logs. On macOS, check Console.app. On Windows, check Event Viewer → Windows Logs → Application.
+When reporting a problem, include your desktop app version, your operating system, the exact error message, and relevant logs. On macOS, check Console.app. On Windows, check Event Viewer → Windows Logs → Application.
 
 
 # Get started with the desktop app
@@ -17130,10 +17155,6 @@ If you encounter 429 errors:
 Source: https://code.claude.com/docs/en/headless
 
 Use the Agent SDK to run Claude Code programmatically from the CLI, Python, or TypeScript.
-
-<Note>
-  Starting June 15, 2026, Agent SDK and `claude -p` usage on subscription plans will draw from a new monthly Agent SDK credit, separate from your interactive usage limits. See [Use the Claude Agent SDK with your Claude plan](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan) for details.
-</Note>
 
 The [Agent SDK](/docs/en/agent-sdk/overview) gives you the same tools, agent loop, and context management that power Claude Code. It's available as a CLI for scripts and CI/CD, or as [Python](/docs/en/agent-sdk/python) and [TypeScript](/docs/en/agent-sdk/typescript) packages for full programmatic control.
 
@@ -24715,19 +24736,19 @@ Choose your environment to get started. Most surfaces require a [Claude subscrip
       <Tab title="Native Install (Recommended)">
         **macOS, Linux, WSL:**
 
-        ```bash theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+        ```bash theme={null}
         curl -fsSL https://claude.ai/install.sh | bash
         ```
 
         **Windows PowerShell:**
 
-        ```powershell theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+        ```powershell theme={null}
         irm https://claude.ai/install.ps1 | iex
         ```
 
         **Windows CMD:**
 
-        ```batch theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+        ```batch theme={null}
         curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
         ```
 
@@ -24741,7 +24762,7 @@ Choose your environment to get started. Most surfaces require a [Claude subscrip
       </Tab>
 
       <Tab title="Homebrew">
-        ```bash theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+        ```bash theme={null}
         brew install --cask claude-code
         ```
 
@@ -24753,7 +24774,7 @@ Choose your environment to get started. Most surfaces require a [Claude subscrip
       </Tab>
 
       <Tab title="WinGet">
-        ```powershell theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+        ```powershell theme={null}
         winget install Anthropic.ClaudeCode
         ```
 
@@ -25416,6 +25437,8 @@ Deny and ask rules also accept glob patterns in the tool-name position. The patt
 Allow rules accept tool-name globs only after a literal `mcp__<server>__` prefix. The server segment must be glob-free so the rule names a specific server you configured. `mcp__puppeteer__*` matches every tool from the `puppeteer` server, and `mcp__github__get_*` matches its `get_` tools. An unanchored allow glob such as `"*"`, `"B*"`, or `"mcp__*"` is skipped with a warning and does not auto-approve anything.
 
 A deny or ask rule whose tool name matches no known tool produces a startup warning to catch typos. Tool names containing `_` or `*` are exempt from the check.
+
+The label shown for a tool in the transcript and permission dialog can differ from its canonical name. For example, the tool labeled `Stop Task` in the transcript has the canonical name `TaskStop`. Permission rules and [hook matchers](/docs/en/hooks) match the canonical name only, so a rule written as `Stop Task` does not match. For deny and ask rules, the startup warning above catches the mismatch. Use the canonical names listed in the [tools reference](/docs/en/tools-reference).
 
 ## Tool-specific permission rules
 
@@ -28041,19 +28064,19 @@ To install Claude Code, use one of the following methods:
   <Tab title="Native Install (Recommended)">
     **macOS, Linux, WSL:**
 
-    ```bash theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+    ```bash theme={null}
     curl -fsSL https://claude.ai/install.sh | bash
     ```
 
     **Windows PowerShell:**
 
-    ```powershell theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+    ```powershell theme={null}
     irm https://claude.ai/install.ps1 | iex
     ```
 
     **Windows CMD:**
 
-    ```batch theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+    ```batch theme={null}
     curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
     ```
 
@@ -28067,7 +28090,7 @@ To install Claude Code, use one of the following methods:
   </Tab>
 
   <Tab title="Homebrew">
-    ```bash theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+    ```bash theme={null}
     brew install --cask claude-code
     ```
 
@@ -28079,7 +28102,7 @@ To install Claude Code, use one of the following methods:
   </Tab>
 
   <Tab title="WinGet">
-    ```powershell theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
+    ```powershell theme={null}
     winget install Anthropic.ClaudeCode
     ```
 
@@ -28517,7 +28540,7 @@ Use Remote Control when you're in the middle of local work and want to keep goin
 
 When Remote Control is active, Claude can send push notifications to your phone.
 
-Claude decides when to push. It typically sends one when a long-running task finishes or when it needs a decision from you to continue. You can also request a push in your prompt, for example `notify me when the tests finish`. Beyond the on/off toggle below, there is no per-event configuration.
+Claude decides when to push. It typically sends one when a long-running task finishes or when it needs a decision from you to continue. You can also request a push in your prompt, for example `notify me when the tests finish`. Beyond the two on/off toggles below, there is no per-event configuration.
 
 <Note>
   Mobile push notifications require Claude Code v2.1.110 or later.
@@ -28539,7 +28562,7 @@ To set up mobile push notifications:
   </Step>
 
   <Step title="Enable push in Claude Code">
-    In your terminal, run `/config` and enable **Push when Claude decides**.
+    In your terminal, run `/config` and enable **Push when Claude decides** for proactive notifications, **Push when actions required** for permission prompts and questions, or both.
   </Step>
 </Steps>
 
@@ -30706,6 +30729,7 @@ This tolerance applies only to managed settings. User, project, and local settin
 | :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------- |
 | `advisorModel`                    | Model for the server-side [advisor tool](/docs/en/advisor). Accepts a model alias such as `"opus"`, `"sonnet"`, or `"fable"` (v2.1.170+), or a full model ID. Written automatically when you run `/advisor`. Unset to disable the advisor. Requires Claude Code v2.1.98 or later                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `"opus"`                                                                                                                       |
 | `agent`                           | Run the main thread as a named subagent, and set the default agent for sessions dispatched from `claude agents`. Applies that subagent's system prompt, tool restrictions, and model. See [Invoke subagents explicitly](/docs/en/sub-agents#invoke-subagents-explicitly)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `"code-reviewer"`                                                                                                              |
+| `agentPushNotifEnabled`           | When [Remote Control](/docs/en/remote-control) is connected, allow Claude to send proactive push notifications to your phone, for example when a long task finishes. Default: `false`. Appears in `/config` as **Push when Claude decides**. See [Mobile push notifications](/docs/en/remote-control#mobile-push-notifications). Requires Claude Code v2.1.119 or later                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `true`                                                                                                                         |
 | `allowAllClaudeAiMcps`            | (Managed settings only) Load claude.ai connectors alongside a deployed `managed-mcp.json`, which otherwise takes exclusive control and suppresses them. See [Managed MCP configuration](/docs/en/managed-mcp)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `true`                                                                                                                         |
 | `allowedChannelPlugins`           | (Managed settings only) Allowlist of channel plugins that may push messages. Replaces the default Anthropic allowlist when set. Undefined = fall back to the default, empty array = block all channel plugins. Requires `channelsEnabled: true`. See [Restrict which channel plugins can run](/docs/en/channels#restrict-which-channel-plugins-can-run)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `[{ "marketplace": "claude-plugins-official", "plugin": "telegram" }]`                                                         |
 | `allowedHttpHookUrls`             | Allowlist of URL patterns that HTTP hooks may target. Supports `*` as a wildcard. When set, hooks with non-matching URLs are blocked. Undefined = no restriction, empty array = block all HTTP hooks. Arrays merge across settings sources. See [Hook configuration](#hook-configuration)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `["https://hooks.example.com/*"]`                                                                                              |
@@ -30716,6 +30740,7 @@ This tolerance applies only to managed settings. User, project, and local settin
 | `alwaysThinkingEnabled`           | Enable [extended thinking](/docs/en/model-config#extended-thinking) by default for all sessions. Typically configured via the `/config` command rather than editing directly. To force thinking off regardless of this setting, set [`MAX_THINKING_TOKENS=0`](/docs/en/env-vars) in `env`, which disables thinking on the Anthropic API except on Fable 5, which cannot have thinking turned off. On [third-party providers](/docs/en/third-party-integrations) this omits the `thinking` parameter instead, and adaptive-reasoning models may still think                                                                                                                                                                                                                                                                                                       | `true`                                                                                                                         |
 | `apiKeyHelper`                    | Custom script, to be executed in `/bin/sh`, to generate an auth value. This value will be sent as `X-Api-Key` and `Authorization: Bearer` headers for model requests. Set the refresh interval with [`CLAUDE_CODE_API_KEY_HELPER_TTL_MS`](/docs/en/env-vars)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `/bin/generate_temp_api_key.sh`                                                                                                |
 | `attribution`                     | Customize attribution for git commits and pull requests. See [Attribution settings](#attribution-settings)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `{"commit": "🤖 Generated with Claude Code", "pr": ""}`                                                                        |
+| `autoCompactEnabled`              | Automatically compact the conversation when context approaches the limit. Default: `true`. Appears in `/config` as **Auto-compact**. To disable via environment variable, set [`DISABLE_AUTO_COMPACT`](/docs/en/env-vars) in `env`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `false`                                                                                                                        |
 | `autoMemoryDirectory`             | Custom directory for [auto memory](/docs/en/memory#storage-location) storage. Accepts an absolute path or a `~/`-prefixed path. From project or local settings, this is honored only after you accept the workspace trust dialog, since a cloned repository can supply this file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `"~/my-memory-dir"`                                                                                                            |
 | `autoMemoryEnabled`               | Enable [auto memory](/docs/en/memory#enable-or-disable-auto-memory). When `false`, Claude does not read from or write to the auto memory directory. Default: `true`. You can also toggle this with `/memory` during a session. To disable via environment variable, set [`CLAUDE_CODE_DISABLE_AUTO_MEMORY`](/docs/en/env-vars) in `env`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `false`                                                                                                                        |
 | `autoMode`                        | Customize what the [auto mode](/docs/en/permission-modes#eliminate-prompts-with-auto-mode) classifier blocks and allows. Contains `environment`, `allow`, `soft_deny`, and `hard_deny` arrays of prose rules. Include the literal string `"$defaults"` in an array to inherit the built-in rules at that position. See [Configure auto mode](/docs/en/auto-mode-config). Not read from shared project settings                                                                                                                                                                                                                                                                                                                                                                                                                                              | `{"soft_deny": ["$defaults", "Never run terraform apply"]}`                                                                    |
@@ -30751,6 +30776,7 @@ This tolerance applies only to managed settings. User, project, and local settin
 | `fallbackModel`                   | Fallback model(s) to try in order when the primary model is overloaded or unavailable. Claude Code switches to the next available model in the chain for the rest of the turn and shows a notice. `"default"` expands to the default model. Chains are capped at three models; extra entries are ignored. Unlike most array settings, this key does not merge across settings files: the highest-precedence file that defines it supplies the entire chain. The [`--fallback-model`](/en/cli-reference#cli-flags) flag overrides this for one session. See [Fallback model chains](/en/model-config#fallback-model-chains)                                                                                                                                                                                                                        | `["claude-sonnet-4-6", "claude-haiku-4-5"]`                                                                                    |
 | `fastModePerSessionOptIn`         | When `true`, fast mode does not persist across sessions. Each session starts with fast mode off, requiring users to enable it with `/fast`. The user's fast mode preference is still saved. See [Require per-session opt-in](/en/fast-mode#require-per-session-opt-in)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `true`                                                                                                                         |
 | `feedbackSurveyRate`              | Probability (0–1) that the [session quality survey](/en/data-usage#session-quality-surveys) appears when eligible. Set to `0` to suppress entirely, or set [`CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY`](/en/env-vars) in `env`. Useful when using Bedrock, Vertex, or Foundry where the default sample rate does not apply                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `0.05`                                                                                                                         |
+| `fileCheckpointingEnabled`        | Snapshot files before each edit so [`/rewind`](/en/checkpointing) can restore them. Default: `true`. Appears in `/config` as **Rewind code (checkpoints)**. To disable via environment variable, set [`CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING`](/en/env-vars) in `env`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                        |
 | `fileSuggestion`                  | Configure a custom script for `@` file autocomplete. See [File suggestion settings](#file-suggestion-settings)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `{"type": "command", "command": "~/.claude/file-suggestion.sh"}`                                                               |
 | `forceLoginMethod`                | Use `claudeai` to restrict login to Claude.ai accounts, `console` to restrict login to Claude Console accounts. When set in managed settings, sessions authenticated by `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, or `apiKeyHelper` are blocked at startup, since neither value can be satisfied without first-party OAuth. Third-party provider sessions such as Bedrock, Vertex, and Foundry are not blocked: they authenticate against your cloud provider rather than Anthropic                                                                                                                                                                                                                                                                                                                                                            | `claudeai`                                                                                                                     |
 | `forceLoginOrgUUID`               | Require login to belong to a specific Anthropic organization. Accepts a single UUID string, which also pre-selects that organization during login, or an array of UUIDs where any listed organization is accepted without pre-selection. When set in managed settings, login fails if the authenticated account does not belong to a listed organization, and sessions authenticated by `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, or `apiKeyHelper` are blocked at startup since organization membership cannot be verified for them. Third-party provider sessions such as Bedrock, Vertex, and Foundry are not blocked: use your cloud IAM to restrict which cloud accounts can be used. An empty array fails closed and blocks login with a misconfiguration message                                                                        | `"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"` or `["xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"]` |
@@ -30760,6 +30786,7 @@ This tolerance applies only to managed settings. User, project, and local settin
 | `httpHookAllowedEnvVars`          | Allowlist of environment variable names HTTP hooks may interpolate into headers. When set, each hook's effective `allowedEnvVars` is the intersection with this list. Undefined = no restriction. Arrays merge across settings sources. See [Hook configuration](#hook-configuration)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `["MY_TOKEN", "HOOK_SECRET"]`                                                                                                  |
 | `includeCoAuthoredBy`             | **Deprecated**: Use `attribution` instead. Whether to include the `co-authored-by Claude` byline in git commits and pull requests (default: `true`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `false`                                                                                                                        |
 | `includeGitInstructions`          | Include built-in commit and PR workflow instructions and the git status snapshot in Claude's system prompt (default: `true`). Set to `false` to remove both, for example when using your own git workflow skills. The `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS` environment variable takes precedence over this setting when set                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `false`                                                                                                                        |
+| `inputNeededNotifEnabled`         | When [Remote Control](/en/remote-control) is connected, send a push notification to your phone when a permission prompt or question is waiting for your input. Default: `false`. Appears in `/config` as **Push when actions required**. See [Mobile push notifications](/en/remote-control#mobile-push-notifications). Requires Claude Code v2.1.119 or later                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `true`                                                                                                                         |
 | `language`                        | Configure Claude's preferred response language (e.g., `"japanese"`, `"spanish"`, `"french"`). Claude will respond in this language by default. Also sets the [voice dictation](/en/voice-dictation#change-the-dictation-language) language                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `"japanese"`                                                                                                                   |
 | `maxSkillDescriptionChars`        | Per-skill character cap on the combined `description` and `when_to_use` text in the [skill listing](/en/skills#skill-descriptions-are-cut-short) Claude sees each turn (default: `1536`). Text longer than this is truncated. Raise to keep long descriptions intact at the cost of more context per turn; lower to fit more skills under [`skillListingBudgetFraction`](#available-settings). Requires Claude Code v2.1.105 or later                                                                                                                                                                                                                                                                                                                                                                                                             | `2048`                                                                                                                         |
 | `minimumVersion`                  | Floor that prevents background auto-updates and `claude update` from installing a version below this one. Switching from the `"latest"` channel to `"stable"` via `/config` prompts you to stay on the current version or allow the downgrade. Choosing to stay sets this value. Also useful in [managed settings](/en/permissions#managed-settings) to pin an organization-wide minimum. For a hard floor that blocks startup entirely, see `requiredMinimumVersion`                                                                                                                                                                                                                                                                                                                                                                             | `"2.1.100"`                                                                                                                    |
@@ -30795,9 +30822,11 @@ This tolerance applies only to managed settings. User, project, and local settin
 | `syntaxHighlightingDisabled`      | Disable syntax highlighting in diffs, code blocks, and file previews                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `true`                                                                                                                         |
 | `teammateMode`                    | How [agent team](/en/agent-teams) teammates display: `auto` (split panes when running inside tmux or iTerm2, in-process otherwise), `in-process`, or `tmux` (split panes using tmux or iTerm2, detected from your terminal). `--teammate-mode` overrides this for one session. See [choose a display mode](/en/agent-teams#choose-a-display-mode)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `"in-process"`                                                                                                                 |
 | `terminalProgressBarEnabled`      | Show the terminal progress bar in supported terminals: ConEmu, Ghostty 1.2.0+, and iTerm2 3.6.6+. Default: `true`. Appears in `/config` as **Terminal progress bar**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `false`                                                                                                                        |
+| `theme`                           | Color theme for the interface: `"auto"`, `"dark"`, `"light"`, `"dark-daltonized"`, `"light-daltonized"`, `"dark-ansi"`, `"light-ansi"`, or a custom theme reference such as `"custom:<slug>"` or `"custom:<plugin-name>:<slug>"`. Default: `"dark"`. See [Create a custom theme](/en/terminal-config#create-a-custom-theme). Appears in `/config` as **Theme**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `"dark"`                                                                                                                       |
 | `tui`                             | Terminal UI renderer. Use `"fullscreen"` for the flicker-free [alt-screen renderer](/en/fullscreen) with virtualized scrollback. Use `"default"` for the classic main-screen renderer. Set via `/tui`. You can also set the [`CLAUDE_CODE_NO_FLICKER`](/en/env-vars) environment variable. Background sessions opened from [agent view](/en/agent-view) always use the fullscreen renderer regardless of this setting                                                                                                                                                                                                                                                                                                                                                                                                                             | `"fullscreen"`                                                                                                                 |
 | `ultracode`                       | Turn on [ultracode](/en/workflows#let-claude-decide-with-ultracode) for the session. Session-only and not read from `settings.json`. Set through `/effort ultracode`, `--settings`, or an Agent SDK control request                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `true`                                                                                                                         |
 | `useAutoModeDuringPlan`           | Whether plan mode uses auto mode semantics when auto mode is available. Default: `true`. Not read from shared project settings. Appears in `/config` as "Use auto mode during plan"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `false`                                                                                                                        |
+| `verbose`                         | Show full tool output instead of truncated summaries. Default: `false`. Appears in `/config` as **Verbose output**. The `--verbose` flag overrides this for one session                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `true`                                                                                                                         |
 | `viewMode`                        | Default transcript view mode on startup: `"default"`, `"verbose"`, or `"focus"`. Overrides the sticky `/focus` selection when set. The `--verbose` flag overrides this for one session                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `"verbose"`                                                                                                                    |
 | `voice`                           | [Voice dictation](/en/voice-dictation) settings: `enabled` turns dictation on, `mode` selects `"hold"` or `"tap"`, and `autoSubmit` sends the prompt on key release in hold mode. Written automatically when you run `/voice`. Requires a Claude.ai account                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `{ "enabled": true, "mode": "tap" }`                                                                                           |
 | `voiceEnabled`                    | Legacy alias for `voice.enabled`. Prefer the `voice` object                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `true`                                                                                                                         |
@@ -30810,7 +30839,7 @@ This tolerance applies only to managed settings. User, project, and local settin
 These settings are stored in `~/.claude.json` rather than `settings.json`. Adding them to `settings.json` will trigger a schema validation error.
 
 <Note>
-  Versions before v2.1.119 also store `autoScrollEnabled`, `editorMode`, `showTurnDuration`, `teammateMode`, and `terminalProgressBarEnabled` here instead of in `settings.json`.
+  Versions before v2.1.119 also store a number of `/config` preference keys here instead of in `settings.json`, including `theme`, `verbose`, `editorMode`, `autoCompactEnabled`, and `preferredNotifChannel`.
 </Note>
 
 | Key                       | Description                                                                                                                                                                                                                                                                                                                           | Example    |
@@ -31105,7 +31134,7 @@ When [managed settings](/en/admin-setup#decide-how-settings-reach-devices) are i
 
 If a settings file has invalid JSON or a value that fails validation, Claude Code shows a setup issues notice at startup and the **Status** tab lists the affected files. Run `/doctor` for the details of each error.
 
-The line confirms which files are being read, not which layer supplied each individual key. The **Config** tab in the same dialog edits built-in toggles such as theme and verbose output, not your `settings.json` contents.
+The line confirms which files are being read, not which layer supplied each individual key. The **Config** tab in the same dialog is where you change preference toggles such as theme and verbose output.
 
 ### Key points about the configuration system
 
@@ -36376,6 +36405,7 @@ Match the error message or symptom you're seeing to a fix:
 | `TLS connect error` or `SSL/TLS secure channel`                                             | [Update CA certificates](#tls-or-ssl-connection-errors)                                                                 |
 | `Failed to fetch version` or can't reach download server                                    | [Check network and proxy settings](#check-network-connectivity)                                                         |
 | `irm is not recognized` or `&& is not valid`                                                | [Use the right command for your shell](#wrong-install-command-on-windows)                                               |
+| `Cask 'claude-code' is unavailable: No Cask with this name exists`                          | [Update Homebrew](#homebrew-cask-unavailable-or-outdated)                                                               |
 | `'bash' is not recognized as the name of a cmdlet`                                          | [Use the Windows installer command](#wrong-install-command-on-windows)                                                  |
 | `Claude Code on Windows requires either Git for Windows (for bash) or PowerShell`           | [Install a shell](#claude-code-on-windows-requires-either-git-for-windows-for-bash-or-powershell)                       |
 | `Claude Code does not support 32-bit Windows`                                               | [Open Windows PowerShell, not the x86 entry](#claude-code-does-not-support-32-bit-windows)                              |
@@ -36729,6 +36759,17 @@ The `curl ... | bash` command downloads the script and pipes it to Bash for exec
    ```powershell theme={null}
    winget install Anthropic.ClaudeCode
    ```
+
+### Homebrew cask unavailable or outdated
+
+Homebrew reports `Error: Cask 'claude-code' is unavailable: No Cask with this name exists` when your local copy of the Homebrew cask index predates the cask's publication. Refresh the index and retry:
+
+```bash theme={null}
+brew update
+brew install --cask claude-code
+```
+
+If Homebrew installs an older Claude Code version than you expect, the same stale index is usually the cause. The `claude-code` cask tracks the stable channel and is typically about one week behind the latest release; for the newest version run `brew install --cask claude-code@latest` instead. See [Configure release channel](/docs/en/setup#configure-release-channel) for the difference between the two casks.
 
 ### TLS or SSL connection errors
 
@@ -44419,10 +44460,6 @@ These guides cover adjacent topics for monitoring and deploying agents:
 Source: https://code.claude.com/docs/en/agent-sdk/overview
 
 Build production AI agents with Claude Code as a library
-
-<Note>
-  Starting June 15, 2026, Agent SDK and `claude -p` usage on subscription plans will draw from a new monthly Agent SDK credit, separate from your interactive usage limits. See [Use the Claude Agent SDK with your Claude plan](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan) for details.
-</Note>
 
 Build AI agents that autonomously read files, run commands, search the web, edit code, and more. The Agent SDK gives you the same tools, agent loop, and context management that power Claude Code, programmable in Python and TypeScript.
 
@@ -62089,10 +62126,6 @@ Source: https://code.claude.com/docs/en/legal-and-compliance
 
 Legal agreements, compliance certifications, and security information for Claude Code.
 
-<Note>
-  Starting June 15, 2026, Agent SDK and `claude -p` usage on subscription plans will draw from a new monthly Agent SDK credit, separate from your interactive usage limits. See [Use the Claude Agent SDK with your Claude plan](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan) for details.
-</Note>
-
 ## Legal agreements
 
 ### License
@@ -64470,12 +64503,210 @@ Run Claude Code on Claude Opus 4.8, orchestrate large tasks with dynamic workflo
 [Full changelog for v2.1.150–v2.1.157 →](/docs/en/changelog#2-1-150)
 
 
+# Week 23 · June 1–5, 2026
+Source: https://code.claude.com/docs/en/whats-new/2026-w23
+
+Run auto mode on Bedrock, Vertex, and Foundry, prompt before writing files that can run code in acceptEdits mode, list installed plugins with /plugin list, and require an approved version range for managed deployments.
+
+<div>
+  <span>Releases <a href="/docs/en/changelog#2-1-158">v2.1.158 → v2.1.165</a></span>
+  <span>4 features · June 1–5</span>
+</div>
+
+<div>
+  <div>
+    <span>Auto mode on Bedrock, Vertex, and Foundry</span>
+    <span>v2.1.158</span>
+  </div>
+
+  <p>Auto mode is now available on Bedrock, Vertex, and Foundry for Opus 4.7 and Opus 4.8, replacing permission prompts with background safety checks on third-party providers. Opt in by setting <code>CLAUDE\_CODE\_ENABLE\_AUTO\_MODE=1</code>.</p>
+
+  <p>Opt in on a third-party provider, then cycle to auto mode with Shift+Tab:</p>
+
+  ```bash terminal theme={null}
+  export CLAUDE_CODE_ENABLE_AUTO_MODE=1
+  ```
+
+  <a href="/docs/en/permission-modes#enable-auto-mode-on-bedrock-vertex-ai-or-foundry">Enable auto mode on third-party providers</a>
+</div>
+
+<div>
+  <div>
+    <span>Safer automatic edits</span>
+    <span>v2.1.160</span>
+  </div>
+
+  <p>Claude Code now prompts before writing files that can run code, even in <code>acceptEdits</code> mode. The protected set covers shell startup files such as <code>.zshenv</code> and <code>.bash\_login</code>, git config under <code>\~/.config/git/</code>, and build-tool configs such as <code>.npmrc</code>, <code>.bazelrc</code>, and <code>.pre-commit-config.yaml</code>. These writes are never auto-approved in any mode except <code>bypassPermissions</code>.</p>
+
+  <p>Work in acceptEdits mode; Claude now pauses before writing these files:</p>
+
+  ```bash terminal theme={null}
+  claude --permission-mode acceptEdits
+  ```
+
+  <a href="/docs/en/permission-modes#protected-paths">Protected paths</a>
+</div>
+
+<div>
+  <div>
+    <span>List installed plugins with /plugin list</span>
+    <span>v2.1.163</span>
+  </div>
+
+  <p>The new <code>/plugin list</code> command prints your installed plugins inline, without opening the <code>/plugin</code> menu, and is also available as <code>claude plugin list</code> from the shell. In the interactive form, add `--enabled` or `--disabled` to show only plugins in that state.</p>
+
+  <p>List the plugins that are currently turned on:</p>
+
+  ```text Claude Code theme={null}
+  > /plugin list --enabled
+  ```
+
+  <a href="/docs/en/plugins-reference#plugin-list">Plugin commands</a>
+</div>
+
+<div>
+  <div>
+    <span>Version requirements for managed deployments</span>
+    <span>v2.1.163</span>
+  </div>
+
+  <p>Two managed settings, <code>requiredMinimumVersion</code> and <code>requiredMaximumVersion</code>, let your organization require an approved Claude Code version range. A client outside the range exits at startup and tells the user to update through the organization's method. <code>claude update</code>, <code>claude install</code>, and <code>claude doctor</code> keep working so users can still recover.</p>
+
+  <p>Add a floor to your managed settings so older clients refuse to start:</p>
+
+  ```json managed-settings.json theme={null}
+  "requiredMinimumVersion": "2.1.163"
+  ```
+
+  <a href="/docs/en/admin-setup#decide-what-to-enforce">Decide what to enforce</a>
+</div>
+
+<div>
+  <p>Other wins</p>
+
+  <div>
+    <div>The trigger keyword for <a href="/docs/en/workflows">dynamic workflows</a> changed from <code>workflow</code> to <code>ultracode</code>; asking for a workflow in your own words still works, and the keyword is highlighted in violet in the prompt</div>
+    <div><a href="/docs/en/hooks">Stop and SubagentStop hooks</a> can return <code>hookSpecificOutput.additionalContext</code> to give Claude feedback and keep the turn going instead of being treated as an error</div>
+    <div><code>claude mcp</code> list, get, and add no longer print secrets: environment-variable references are not expanded, and credential headers and URL secrets are redacted</div>
+    <div>A failed Bash command in a parallel tool batch no longer cancels the others; each tool returns its own result independently</div>
+    <div>Editing a file no longer needs a separate Read first when you viewed it with a single-file <code>grep</code>, <code>egrep</code>, or <code>fgrep</code></div>
+    <div>Clicking a command in the autocomplete menu now fills it into your prompt instead of running it immediately; press Enter to run</div>
+    <div>Listing <code>Grep</code> or <code>Glob</code> in `--tools` now provides the dedicated search tools on native builds with embedded search, instead of silently ignoring those names</div>
+    <div><code>/effort</code> now confirms when your chosen level will persist as the default for new sessions</div>
+    <div><code>OTEL\_RESOURCE\_ATTRIBUTES</code> values are now attached as labels on metric datapoints, so you can slice usage metrics by custom dimensions like team or repo</div>
+    <div>Windsurf is renamed to Devin Desktop in <code>/ide</code>, <code>/terminal-setup</code>, and <code>/scroll-speed</code>, following the editor's rebrand</div>
+    <div><code>/btw</code> gains a <code>c to copy</code> shortcut that copies the raw markdown answer to the clipboard</div>
+  </div>
+</div>
+
+[Full changelog for v2.1.158–v2.1.165 →](/docs/en/changelog#2-1-158)
+
+
+# Week 24 · June 8–12, 2026
+Source: https://code.claude.com/docs/en/whats-new/2026-w24
+
+Move a session to a new directory with /cd, let sub-agents spawn their own sub-agents, and troubleshoot a broken configuration with safe mode.
+
+<div>
+  <span>Releases <a href="/docs/en/changelog#2-1-166">v2.1.166 → v2.1.176</a></span>
+  <span>3 features · June 8–12</span>
+</div>
+
+<div>
+  <div>
+    <span>Move a session with /cd</span>
+    <span>v2.1.169</span>
+  </div>
+
+  <p>The new <code>/cd</code> command moves the current session to a different working directory without rebuilding the prompt cache: the new directory's <code>CLAUDE.md</code> is appended as a message instead of replacing the system prompt. The session relocates to the new directory's project storage, so `--resume` and `--continue` find it there. Claude prompts you to trust the directory if you haven't worked in it before.</p>
+
+  <p>Move the session into another project without restarting:</p>
+
+  ```text Claude Code theme={null}
+  > /cd ../other-project
+  ```
+
+  <a href="/docs/en/commands#all-commands">Commands reference</a>
+</div>
+
+<div>
+  <div>
+    <span>Sub-agents can spawn sub-agents</span>
+    <span>v2.1.172</span>
+  </div>
+
+  <p>Sub-agents can now spawn their own sub-agents. The subagent panel below the prompt shows the full tree: each row carries a count of its descendants and a path back to <code>main</code>. Background sub-agents are capped at five levels deep to prevent runaway concurrent trees; foreground chains can spawn at any depth and are self-limiting.</p>
+
+  <p>Open the agents view to watch the nested tree as work fans out:</p>
+
+  ```text Claude Code theme={null}
+  > /agents
+  ```
+
+  <a href="/docs/en/sub-agents#spawn-nested-subagents">Spawn nested subagents</a>
+</div>
+
+<div>
+  <div>
+    <span>Troubleshoot with safe mode</span>
+    <span>v2.1.169</span>
+  </div>
+
+  <p>Start Claude Code with `--safe-mode`, or set <code>CLAUDE\_CODE\_SAFE\_MODE</code>, to launch with all customizations disabled: <code>CLAUDE.md</code>, skills, plugins, hooks, MCP servers, and custom commands and agents do not load. Authentication, model selection, built-in tools, and permissions still work. If a problem disappears in safe mode, one of those surfaces is the cause.</p>
+
+  <p>Launch a clean session to isolate a broken configuration:</p>
+
+  ```bash terminal theme={null}
+  claude --safe-mode
+  ```
+
+  <a href="/docs/en/debug-your-config#test-against-a-clean-configuration">Test against a clean configuration</a>
+</div>
+
+<div>
+  <p>Other wins</p>
+
+  <div>
+    <div><a href="/docs/en/model-config#fallback-model-chains"><code>fallbackModel</code></a> configures up to three fallback models tried in order when the primary is overloaded or unavailable, and `--fallback-model` now applies to interactive sessions too</div>
+    <div>Session titles are now generated in the language of your conversation; pin a specific one with the <code>language</code> setting</div>
+    <div>`claude agents --json` adds `--all` to include completed sessions plus new <code>id</code> and <code>state</code> fields, and no longer omits blocked or newly dispatched sessions</div>
+    <div>Browsing a marketplace's plugins in <code>/plugin</code> now has a search bar</div>
+    <div>New <code>disableBundledSkills</code> setting and <code>CLAUDE\_CODE\_DISABLE\_BUNDLED\_SKILLS</code> hide bundled skills, workflows, and built-in commands from the model</div>
+    <div>Deny rules accept a glob in the tool-name position, so <code>"\*"</code> denies all tools, and unknown tool names in deny rules now warn at startup</div>
+    <div>Cross-session messaging is hardened: messages relayed via <code>SendMessage</code> from other sessions no longer carry user authority, and auto mode blocks them</div>
+    <div>Amazon Bedrock reads the AWS region from <code>\~/.aws</code> config files when <code>AWS\_REGION</code> is unset, and <code>/status</code> shows where the region came from</div>
+    <div>New <code>enforceAvailableModels</code> managed setting makes the <code>availableModels</code> allowlist also constrain the Default model</div>
+    <div>Claude in Chrome browser tools now load in a single batched call instead of one per tool</div>
+    <div><code>claude update</code> announces the target version before downloading instead of going silent</div>
+    <div>New <code>footerLinksRegexes</code> setting adds regex-matched link badges to the footer row</div>
+  </div>
+</div>
+
+[Full changelog for v2.1.166–v2.1.176 →](/docs/en/changelog#2-1-166)
+
+
 # What's new
 Source: https://code.claude.com/docs/en/whats-new/index
 
 A weekly digest of notable Claude Code features, with code snippets, demos, and context on why they matter.
 
 The weekly dev digest highlights the features most likely to change how you work. Each entry includes runnable code, a short demo, and a link to the full docs. For every bug fix and minor improvement, see the [changelog](/docs/en/changelog).
+
+<Update label="Week 24" description="June 8–12, 2026">
+  **`/cd`**: move the current session to a new working directory mid-conversation without rebuilding the prompt cache.
+
+  Also this week: **sub-agents can spawn their own sub-agents** (background chains are capped at five levels deep); **`--safe-mode`** starts Claude Code with all customizations disabled for troubleshooting; and **`fallbackModel`** configures up to three fallback models tried in order.
+
+  [Read the Week 24 digest →](/docs/en/whats-new/2026-w24)
+</Update>
+
+<Update label="Week 23" description="June 1–5, 2026">
+  **Auto mode on Bedrock, Vertex, and Foundry**: auto mode is now available on third-party providers for Opus 4.7 and Opus 4.8, replacing permission prompts with background safety checks.
+
+  Also this week: **safer automatic edits** prompt before writing files that can run code in `acceptEdits` mode; **`/plugin list`** prints your installed plugins inline; and **version requirements** let managed deployments require an approved Claude Code version range.
+
+  [Read the Week 23 digest →](/docs/en/whats-new/2026-w23)
+</Update>
 
 <Update label="Week 22" description="May 25–29, 2026">
   **Claude Opus 4.8**: the new default model for Max, Team Premium, Enterprise pay-as-you-go, and Anthropic API accounts, with high effort by default and `/effort xhigh` for the hardest tasks.
