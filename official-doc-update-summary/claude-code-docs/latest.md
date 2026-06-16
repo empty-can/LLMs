@@ -1,28 +1,34 @@
 ---
-対象期間: 2026年06月12日 〜 2026年06月13日
-作成日: 2026-06-13
+対象期間: 2026年06月13日 〜 2026年06月15日
+作成日: 2026-06-15
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回は新規追加・大幅更新ページのない、既存ドキュメントの記述精緻化が中心の更新です。JetBrains プラグインのインストール手順の見直しと、モデルアローリスト（`availableModels`）強制まわりの仕様明確化が主な変更で、主要な変更を 3 件のハイライトとして取り上げます。
+今回は週間ダイジェスト（新着情報）2 件（Week 23 / Week 24）の追加が中心で、加えて多数の既存ページの記述精緻化と changelog（v2.1.178）の追加がありました。新規追加・大幅更新のリファレンスページはなく、新着情報で取り上げられた主要機能から 5 件をハイライトとして整理します。
 
 主要なものを以下に挙げます。
 
-1. JetBrains プラグインのインストール手順が再構成され、プラグインは CLI を同梱しないため Claude Code CLI とプラグインを別々にインストールする必要があることが明確化された
-2. 管理/ポリシー設定の `availableModels` が下位設定を完全に置き換える挙動（v2.1.175 以降）や、不正値時の扱い、`enforceAvailableModels` による Default モデルの制約が文書化され、モデルアローリスト強制の仕様が厳格化された
-3. `availableModels` が Opus を除外している場合、`opusplan` が Plan Mode で Opus に切り替えず Sonnet に留まることが明記された
+1. 新コマンド `/cd` で、プロンプトキャッシュを壊さずにセッションの作業ディレクトリを別ディレクトリへ移動できるようになった（v2.1.169）
+2. サブエージェントが自身のサブエージェントを生成できるようになり、サブエージェントパネルがネストツリーを表示する（バックグラウンドは 5 階層上限、v2.1.172）
+3. `--safe-mode`（`CLAUDE_CODE_SAFE_MODE`）で CLAUDE.md・スキル・プラグイン・hooks・MCP 等のカスタマイズを全て無効化したクリーン起動が可能になり、設定起因の問題切り分けに使える（v2.1.169）
+4. Amazon Bedrock・Google Vertex AI・Microsoft Foundry でも auto mode が利用可能になった（Opus 4.7 / 4.8 対応、`CLAUDE_CODE_ENABLE_AUTO_MODE=1` でオプトイン、v2.1.158）
+5. `acceptEdits` モードでも、コードを実行しうるファイル（`.zshenv`・`.npmrc` 等）への書き込み前に確認が入るようになった（保護パスの拡充、v2.1.160）
 ```
 
 ## ハイライト
 
-1. [**JetBrains プラグインのインストール手順再構成**](./latest-detail.md#1-jetbrains-プラグインのインストール手順再構成):  
-  JetBrains プラグインがプラグイン本体に CLI を同梱せず、IDE の統合ターミナルで `claude` を実行して接続する方式であることが明文化され、Claude Code CLI とプラグインを別々にインストールする 2 ステップ手順に再構成された。`claude` が PATH に無い場合の挙動やフルパス指定にも言及が加わった。
-2. [**モデルアローリスト強制の厳格化**](./latest-detail.md#2-モデルアローリスト強制の厳格化):  
-  管理/ポリシー設定の `availableModels` が下位（ユーザー/プロジェクト/ローカル）設定のマージ結果を完全に置き換える挙動（v2.1.175 以降）が明記された。あわせて `enforceAvailableModels` による Default モデルの制約、不正値時の扱い（空アローリスト = Default のみ）が文書化された。
-3. [**opusplan が availableModels の除外を尊重**](./latest-detail.md#3-opusplan-が-availablemodels-の除外を尊重):  
-  `availableModels` が Opus を除外している場合、`opusplan` は Plan Mode で Opus に切り替えず Sonnet のまま動作することが明記された。Sonnet 除外時の暗黙の Haiku→Sonnet Plan Mode アップグレードにも同様に適用される。
+1. [**`/cd` でセッションの作業ディレクトリを移動**](./latest-detail.md#1-cd-でセッションの作業ディレクトリを移動):  
+  新コマンド `/cd` は、プロンプトキャッシュを再構築せずに現在のセッションを別の作業ディレクトリへ移動する。新ディレクトリの `CLAUDE.md` はシステムプロンプトを置き換えるのではなくメッセージとして追記され、セッションは移動先のプロジェクトストレージに再配置されるため `--resume` / `--continue` から見つかる。初めて作業するディレクトリの場合は信頼確認を求められる。
+2. [**サブエージェントがサブエージェントを生成可能に**](./latest-detail.md#2-サブエージェントがサブエージェントを生成可能に):  
+  サブエージェントが自身のサブエージェントを生成できるようになった。プロンプト下のサブエージェントパネルがツリー全体を表示し、各行に子孫数と `main` への経路が付く。バックグラウンドのサブエージェントは暴走を防ぐため 5 階層までに制限され、フォアグラウンドの連鎖は任意の深さで生成でき自己制限的に動作する。
+3. [**セーフモードによるクリーンな設定の起動**](./latest-detail.md#3-セーフモードによるクリーンな設定の起動):  
+  `--safe-mode` フラグ（または `CLAUDE_CODE_SAFE_MODE`）で、`CLAUDE.md`・スキル・プラグイン・hooks・MCP サーバー・カスタムコマンド/エージェントを一切ロードしないクリーンな状態で起動する。認証・モデル選択・組み込みツール・権限は引き続き機能し、セーフモードで問題が消えればそれらカスタマイズのいずれかが原因と切り分けられる。
+4. [**サードパーティプロバイダでの auto mode 対応**](./latest-detail.md#4-サードパーティプロバイダでの-auto-mode-対応):  
+  auto mode が Amazon Bedrock・Google Cloud Vertex AI・Microsoft Foundry でも利用可能になり、これらのプロバイダ上で権限プロンプトをバックグラウンドの安全チェックに置き換える。対応モデルは Opus 4.7 と Opus 4.8 のみで、`CLAUDE_CODE_ENABLE_AUTO_MODE=1` を設定するとオプトインできる。
+5. [**acceptEdits モードでのファイル書き込み保護**](./latest-detail.md#5-acceptedits-モードでのファイル書き込み保護):  
+  `acceptEdits` モードでも、コードを実行しうるファイルへの書き込み前に確認が入るようになった。保護対象は `.zshenv`・`.bash_login` 等のシェル起動ファイル、`~/.config/git/` 配下の git 設定、`.npmrc`・`.bazelrc`・`.pre-commit-config.yaml` 等のビルドツール設定で、これらは `bypassPermissions` を除くどのモードでも自動承認されない。
 
 ## 新規追加されたページ
 
@@ -34,27 +40,59 @@
 
 ## 軽微な更新
 
-今回の対象期間は changelog や新着情報の更新を含まず、既存ドキュメントの記述精緻化が中心です。ハイライトに挙げた以外の更新を分類別に示します。
+今回の対象期間は、新着情報（後述）に加えて既存ページの記述精緻化と changelog（v2.1.178）の追加が中心です。新着情報のハイライトに挙げた以外の更新を分類別に示します。
+
+**新機能**
+- 権限ルールに `Tool(param:value)` 構文が追加され、ツールの入力パラメータにマッチできるようになった（`*` ワイルドカード可。例: `Agent(model:opus)` で Opus を使うサブエージェントをブロック）（v2.1.178）。現時点では changelog のみの記載で、権限リファレンスページには未反映。
+- ネストした `.claude/skills` ディレクトリのスキルが、その配下のファイルを扱う際にロードされるようになった。名前衝突時はネスト側スキルが `<dir>:<name>` として現れ、双方が利用可能に保たれる（v2.1.178）。
 
 **機能改善**
-- `/status` の設定ソース検証の説明が刷新された。「Verify active settings」節が **Status タブ**の `Setting sources` 行を前提とした記述に整理され、レイヤーの有無の解釈（表示=そのファイルを読み込み済み／非表示=未検出か空）、無効な JSON や検証失敗時の起動時セットアップ問題通知と `/doctor` 参照、`Config` タブが `settings.json` の内容ではなくテーマ等の組み込みトグルのエディタである旨が箇条書きで明確化された。 — [English](https://code.claude.com/docs/en/settings#verify-active-settings)
-- 「Set up Claude Code for your organization」ページの「Verify and onboard」節でも、`/status` 実行後に **Status タブ**の `Setting sources` 行で `Enterprise managed settings` とその配信元（`(remote)` / `(plist)` / `(HKLM)` / `(HKCU)` / `(file)`）を確認する、と表現が更新された。 — [English](https://code.claude.com/docs/en/admin-setup#verify-and-onboard)
-- 「Overview」ページの IDE 一覧の JetBrains タブに、プラグインが別途インストールする Claude Code CLI を必要とする旨と JetBrains セットアップ手順への参照が追記された（ハイライト 1 参照）。
+- 「Model configuration」ページの設定テーブルに、`/config` 由来の各種 preference キー（`theme`・`verbose`・`autoCompactEnabled`・`fileCheckpointingEnabled`・`agentPushNotifEnabled`・`inputNeededNotifEnabled`）の行が追加され、各キーが `/config` のどのトグルに対応するかが明文化された。あわせて v2.1.119 以前はこれらが `~/.claude.json` に保存される旨の注記も更新された。 — [English](https://code.claude.com/docs/en/settings#available-settings)
+- 「Remote control」ページで、モバイルプッシュ通知が 2 つのトグルに整理された。**Push when Claude decides**（`agentPushNotifEnabled`、長時間タスク完了時等の能動通知）と **Push when actions required**（`inputNeededNotifEnabled`、権限プロンプトや質問の待ち時）で、`/config` から個別に有効化できる。 — [English](https://code.claude.com/docs/en/remote-control#mobile-push-notifications)
+- `claude daemon status` が、起動中のスーパバイザと呼び出した `claude` のバージョンが異なる場合に警告するようになった（更新後にスーパバイザが新バージョンへ再起動していない状況で発生）。両方のバージョンを示し、`claude daemon stop --any` で新バージョンを取り込むよう促す。OS サービスとしてインストールされている場合は `claude daemon stop`（フラグなし）が案内される。 — [English](https://code.claude.com/docs/en/agent-view#where-state-is-stored)
+- 「Permissions」ページに、トランスクリプトや権限ダイアログに表示されるツールのラベルが正規名と異なりうる旨の説明が追加された（例: 表示が `Stop Task` のツールの正規名は `TaskStop`）。権限ルールと hook マッチャーは正規名のみにマッチするため、`Stop Task` と書いたルールはマッチしない。 — [English](https://code.claude.com/docs/en/permissions#tool-name-wildcards)
+- 「Troubleshooting」ページに「Homebrew cask unavailable or outdated」項目が追加された。`Cask 'claude-code' is unavailable` エラーはローカルの cask インデックスが古い場合に起き、`brew update` 後に再試行する。期待より古いバージョンが入る場合も同じ原因で、最新版は `brew install --cask claude-code@latest` で取得できる旨が解説された（エラー対応表にも該当行を追加）。 — [English](https://code.claude.com/docs/en/troubleshooting#homebrew-cask-unavailable-or-outdated)
+- デスクトップアプリのトラブルシューティング「Still stuck?」のサポート導線が更新され、まず Help → Get Support またはサポートセンターを案内し、standalone の `claude` CLI でも再現する問題のみ GitHub Issues へ、という整理になった。
+
+以下は v2.1.178 の changelog 由来の改善で、いずれも対応する通常ページへの記載が無いためリンクは付けない。
+
+- ネストした `.claude/` ディレクトリで、agent・workflow・output-style の名前が衝突した場合に作業ディレクトリに最も近いものが優先されるようになった（プロジェクトスコープの workflow 保存も最も近い既存の `.claude/workflows/` を対象にする）（v2.1.178）。
+- `/doctor` の表示が全セクションで一貫したフラットツリーになり、セクションのステータスアイコンとコマンド名の強調が改善された（v2.1.178）。
+- workflow のプロンプトキーワードが purple shimmer の強調表示になり、「run a workflow」「workflow:」のような明示的フレーズでのみ発火する（単に "workflow" と述べただけでは発火しない）よう変更された（v2.1.178）。
+- Remote Control のエラーメッセージが改善され、接続失敗時はフッタに赤い「/rc failed」インジケータが表示され続け、「未有効化」エラーがゲート/チェック失敗/期限切れ entitlement/組織ポリシーのいずれかを説明するようになった（v2.1.178）。
+- スキル一覧の切り詰め警告が、影響を受けるスキル説明の件数を示すよう改善された（v2.1.178）。
+
+**バグ修正**
+
+v2.1.178 で多数の修正が入った。主なものを挙げる。
+
+- compaction が `--fallback-model` を尊重するようになり、過負荷・モデル不可時に設定済みのフォールバックチェーンへ切り替わるようになった。
+- サブエージェントのトランスクリプト閲覧でツール結果とライブ進捗が表示されるようになった。
+- サブエージェントがターンを終える間に送ったメッセージが破棄されなくなった。
+- 実行中サブエージェントの `ctrl+b` でのバックグラウンド化が、タスクを最初からやり直さなくなった。
+- vim モードの取り消しが修正され、`u` が連続入力されたコマンドを 1 つにまとめず 1 ステップずつ取り消すようになった。
+- `/bug` が送信前に説明を必須とするようになり、モデルの拒否テキストを GitHub issue のタイトルに使わなくなった。
+- 親プロセスから古い websocket/OAuth のファイルディスクリプタ環境変数を継承した際のクラッシュ（OOM）が修正された。
+- `ANTHROPIC_BASE_URL` と `ANTHROPIC_AUTH_TOKEN` でカスタム API ゲートウェイを使うシェルからデーモンを起動した際に `claude agents` のワーカーが `401 Invalid bearer token` で失敗する問題が修正された。
 
 **その他**
-- 「Overview」ページのインストールタブ（Native Install / Homebrew / WinGet 等）のコードブロックに、ソース生成由来とみられる `theme={null}` 属性の重複付与が生じた（表示内容に実質的な変化はない）。
+- 「2026年06月15日以降、サブスクリプションプランでの Agent SDK / `claude -p` の利用が対話利用とは別枠の月次 Agent SDK クレジットを消費する」旨の注記が、認証（long-lived トークン生成）・headless・Agent SDK overview・法務とコンプライアンスの計 4 ページから削除された。
+- 「Overview」ページのインストールタブ（Native Install / Homebrew / WinGet 等）のコードブロックで、前回サマリの「その他」で触れた `theme={null}` 属性の重複付与が解消され、単一指定に正規化された（表示内容に変化はなく、ソース生成由来の重複が是正された）。
 
 ## 新着情報
 
-*(今回の対象期間に新着情報（週間ダイジェスト）の更新はありません)*
+- [**2026年06月01日～05日(Week 23)**](./latest-detail.md#2026年06月01日05日week-23) ([English](https://code.claude.com/docs/en/whats-new/2026-w23)):  
+  サードパーティプロバイダ（Bedrock/Vertex/Foundry）での auto mode、`acceptEdits` でのより安全な自動編集、`/plugin list` によるインストール済みプラグインの一覧表示、管理デプロイ向けの承認済みバージョン範囲指定（v2.1.158〜v2.1.165）。
+- [**2026年06月08日～12日(Week 24)**](./latest-detail.md#2026年06月08日12日week-24) ([English](https://code.claude.com/docs/en/whats-new/2026-w24)):  
+  `/cd` によるセッションの作業ディレクトリ移動、サブエージェントによるサブエージェント生成、`--safe-mode` での設定問題の切り分け（v2.1.166〜v2.1.176）。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-12.md](./archives/latest/2026-06-12.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-12.md](./archives/latest-detail/2026-06-12.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-13.md](./archives/latest/2026-06-13.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-13.md](./archives/latest-detail/2026-06-13.md)
 
 <!--
-base_commit: 62bc5f91b860cffe2ed4178338ba0481982995fb
-head_commit: ebc2609266a75e810f43ebdb2b01c73bbb73db73
-generated_at_full: 2026-06-14T15:02:03+09:00
+base_commit: ebc2609266a75e810f43ebdb2b01c73bbb73db73
+head_commit: 045e333d0dbf9f1ed09cfee6e2ec61227aa03027
+generated_at_full: 2026-06-16T15:07:19+09:00
 -->
