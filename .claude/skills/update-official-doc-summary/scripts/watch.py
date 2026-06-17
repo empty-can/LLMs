@@ -62,6 +62,18 @@ EN_LINK_RE = re.compile(
 # inline-code tokens on a line, candidates for a non-translatable reflection probe
 TERM_RE = re.compile(r"`([^`\s]{2,})`")
 UA = "doc-summary-watch/1.0 (+https://github.com/empty-can/LLMs)"
+# a numbered highlight detail heading ("## 3. title"). Its section is expected to
+# carry an official doc link; one with none is the req4 "page not created yet ->
+# emitted link-less" case (see find_linkless_highlights / the scan WARNING).
+HL_HEAD_RE = re.compile(r"^##\s+(\d+)\.\s+(.+?)\s*$")
+DOC_LINK_RE = re.compile(r"code\.claude\.com/docs/(?:en|ja)/")
+# req4 excludes changelog-derived highlights from the page-link watch. The generator
+# marks such an intentional omission with BOTH a "changelog" mention and a
+# "...リンクは省略します" note; a link-less highlight carrying both is permanently
+# link-less by design (and recurs every run), so the guard skips it. A genuinely
+# page-pending highlight lacks the changelog mention and is still flagged.
+CHANGELOG_RE = re.compile(r"changelog", re.IGNORECASE)
+LINK_OMIT_RE = re.compile(r"リンク[^。\n]{0,8}省略")
 
 
 def pick_probe(line: str):
@@ -82,6 +94,41 @@ def pick_probe(line: str):
     if strong:
         return max(strong, key=len), True
     return max(toks, key=len), False
+
+
+def find_linkless_highlights(text: str):
+    """Return [(num, title)] for numbered highlight sections that warrant an en link
+    but carry none -- the req4 "page not created yet -> emitted link-less" case that
+    this watch does NOT automate (scan seeds only from existing en links, inject
+    anchors on an existing en fragment). Surfacing them keeps an unattended run from
+    dropping them silently.
+
+    Changelog-derived highlights are link-less *by design* (req4 excludes them) and
+    recur every run; the generator marks them with both a "changelog" mention and a
+    "...リンクは省略します" note, so a section carrying both is skipped to avoid crying
+    wolf. A genuinely page-pending highlight lacks the changelog mention -> flagged.
+    """
+    out: list[tuple[str, str]] = []
+    cur = None                      # [num, title]
+    has_link = has_cl = has_omit = False
+    for line in text.split("\n"):
+        m = HL_HEAD_RE.match(line)
+        if m or (line.startswith("## ") and cur):
+            if cur and not has_link and not (has_cl and has_omit):
+                out.append((cur[0], cur[1]))
+            cur = [m.group(1), m.group(2)] if m else None
+            has_link = has_cl = has_omit = False
+            continue
+        if cur:
+            if DOC_LINK_RE.search(line):
+                has_link = True
+            if CHANGELOG_RE.search(line):
+                has_cl = True
+            if LINK_OMIT_RE.search(line):
+                has_omit = True
+    if cur and not has_link and not (has_cl and has_omit):
+        out.append((cur[0], cur[1]))
+    return out
 
 
 def repo_root() -> Path:
@@ -142,10 +189,12 @@ def cmd_scan(args) -> int:
     items = reg["items"]
     n_new = 0
     n_seen = 0
+    linkless: list[tuple[str, str, str]] = []   # (name, num, title) — req4 en-page gap
     for name, detail, _light in iter_pairs(sr):
         if not detail.is_file():
             continue
-        for line in read_text(detail).split("\n"):
+        text = read_text(detail)
+        for line in text.split("\n"):
             if "日本語" in line:  # already has a ja link -> not a watch target
                 continue
             for m in EN_LINK_RE.finditer(line):
@@ -170,9 +219,16 @@ def cmd_scan(args) -> int:
                     "injected_at": None,
                 }
                 n_new += 1
+        for num, title in find_linkless_highlights(text):
+            linkless.append((name, num, title))
     save_registry(rp, reg)
     print(f"scan: +{n_new} new, {n_seen} en-only links seen, {len(items)} in registry")
     print(f"      registry: {rp}")
+    if linkless:
+        print(f"\nWARNING: {len(linkless)} link-less highlight(s) — official page not yet")
+        print("         linked; en-page-creation watch is NOT automated (req4). Review:")
+        for nm, num, title in linkless:
+            print(f"  ! {nm:>12}  #{num} {title}")
     return 0
 
 
