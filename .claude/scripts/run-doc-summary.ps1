@@ -36,23 +36,17 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-# claude -p の JSON 出力（日本語を含む）を UTF-8 で受ける。既定のコンソール
-# コードページ（CP932 等）で外部プロセス出力をデコードすると日本語が文字化けし、
-# result JSON の ConvertFrom-Json が壊れて is_error を誤判定する（生成成功でも
-# 失敗扱いになり生成物が破棄される）。実害として 2026-06-07 の自動実行が
-# Phase 3 PASS 済みの生成物を破棄し FAILURE 終了した。
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$OutputEncoding = [System.Text.Encoding]::UTF8
+# 共通基盤（共有定数 $BOT_BRANCH/$BASE_BRANCH/$TOKEN_FILE・コンソール UTF-8 設定・
+# Write-Log・Invoke-Git・Invoke-BotPush）を dot-source で取り込む。ja 追従 watch bot
+# （run-ja-follow-watch.ps1）と同一実装を共有し、特にセキュリティ上慎重な push の
+# 二重保守による drift を防ぐ。
+. (Join-Path $PSScriptRoot "doc-summary-common.ps1")
 
-# --- 定数 -------------------------------------------------------------------
-$BOT_BRANCH  = "bot/doc-summary"
-$BASE_BRANCH = "main"
+# --- 定数（本 bot 固有）-----------------------------------------------------
 $REPO_ROOT   = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $LOG_DIR     = Join-Path $REPO_ROOT "work\doc-summary-bot"
 $GEN_MODEL   = "opus"               # ヘッドレス生成のモデル（レビューは agent 定義で sonnet 固定）
-# bot push 用 PAT を DPAPI 暗号化して保管するファイル（同一ユーザー・同一マシンでのみ復号可）。
-# 初回セットアップ: Read-Host -AsSecureString | Export-Clixml $TOKEN_FILE
-$TOKEN_FILE  = Join-Path $env:USERPROFILE ".claude\doc-summary-bot-token.xml"
+
 # claude が SKILL 実行で使うツール群（acceptEdits と二重で明示）。
 # 注: これらは「単純コマンド」のみ許可する。claude が複合コマンド
 # （例 `cd X && git mv A B`、`f=...; for ...; awk ...`）で呼ぶと先頭トークンが
@@ -71,37 +65,6 @@ $SITES = @(
 New-Item -ItemType Directory -Force -Path $LOG_DIR | Out-Null
 $LOG_FILE = Join-Path $LOG_DIR ("run-{0}.log" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
 
-function Write-Log {
-    param([string]$Message, [string]$Level = "INFO")
-    $line = "{0} [{1}] {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"), $Level, $Message
-    $line | Tee-Object -FilePath $LOG_FILE -Append
-}
-
-# git をラップし、失敗時に例外化（$LASTEXITCODE を確実に判定）。
-# git は正常時も "Switched to branch" / "Already up to date." 等を stderr に書く。
-# 呼び出し側セッションが $ErrorActionPreference='Stop'（本スクリプト既定）や、
-# PowerShell 7.4 既定の $PSNativeCommandUseErrorActionPreference=$true の下では、
-# この正常 stderr が終端エラー化し、成功した checkout/merge まで FAILURE 扱いになる
-# （実害: 対話 pwsh での手動実行が bot 切替直後に "Switched to branch" で異常終了）。
-# 対策は 2 点。(1) 関数内だけ EAP を Continue に下げ、成否は $LASTEXITCODE のみで判定。
-# (2) stderr を含む出力は ErrorRecord のまま返すと呼び出し側のパイプ（| Out-Null）で
-# エラーストリームへ再放出され得るため、文字列化して返す。
-function Invoke-Git {
-    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$GitArgs)
-    $prevEAP = $ErrorActionPreference
-    $ErrorActionPreference = 'Continue'
-    try {
-        $out = & git @GitArgs 2>&1
-        $code = $LASTEXITCODE
-    } finally {
-        $ErrorActionPreference = $prevEAP
-    }
-    if ($code -ne 0) {
-        throw "git $($GitArgs -join ' ') が失敗 (exit $code): $($out -join "`n")"
-    }
-    return ($out | ForEach-Object { $_.ToString() })
-}
-
 # bash を解決する。PATH に無ければ Git for Windows 同梱の bash を探す
 # （タスクスケジューラ実行時は PATH に Git の bin が通っていない構成があり得るため）。
 function Resolve-BashExe {
@@ -116,40 +79,6 @@ function Resolve-BashExe {
         }
     }
     throw "bash が見つからない（PATH にも Git for Windows 同梱位置にも無い）。Git for Windows を導入するか PATH を通すこと"
-}
-
-# bot ブランチ限定 push。GCM を一時無効化し、User scope の PAT を inline
-# credential helper 経由でその push 1 回だけ git に渡す（URL/引数/ログに露出させない）。
-# 無人実行で GCM の GUI プロンプトが出ないため確実に非対話で push できる。
-function Invoke-BotPush {
-    param([string]$Branch)
-    if (-not (Test-Path $TOKEN_FILE)) {
-        throw "トークンファイル $TOKEN_FILE が無い。初回セットアップ (Export-Clixml) を実施してください"
-    }
-    # DPAPI 復号（同一 Windows ユーザー・同一マシンでのみ成功する）
-    try {
-        $sec = Import-Clixml $TOKEN_FILE
-        $token = (New-Object System.Management.Automation.PSCredential("x-access-token", $sec)).GetNetworkCredential().Password
-    } catch {
-        throw "トークン復号に失敗（別ユーザー/別マシンでは復号不可）: $($_.Exception.Message)"
-    }
-    if ([string]::IsNullOrEmpty($token)) { throw "復号したトークンが空です" }
-    # sh 関数が展開する変数。PowerShell ではなく git の子 sh が参照する
-    $env:GH_PUSH_TOKEN = $token
-    # push も正常時に進捗・"To <url>" 等を stderr に書くため、Invoke-Git と同じく
-    # 関数内だけ EAP を Continue に下げ、成否は $LASTEXITCODE で判定し、出力は文字列化して返す。
-    $prevEAP = $ErrorActionPreference
-    $ErrorActionPreference = 'Continue'
-    try {
-        $helper = '!f() { echo username=x-access-token; echo "password=$GH_PUSH_TOKEN"; }; f'
-        $out = & git -c credential.helper= -c "credential.helper=$helper" push origin $Branch 2>&1
-        $code = $LASTEXITCODE
-        if ($code -ne 0) { throw "push 失敗 (exit $code): $($out -join "`n")" }
-        return ($out | ForEach-Object { $_.ToString() })
-    } finally {
-        Remove-Item Env:\GH_PUSH_TOKEN -ErrorAction SilentlyContinue
-        $ErrorActionPreference = $prevEAP
-    }
 }
 
 # --- メイン -----------------------------------------------------------------
