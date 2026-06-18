@@ -1,79 +1,50 @@
 ---
-対象期間: 2026年06月15日 〜 2026年06月16日
-作成日: 2026-06-16
+対象期間: 2026年06月16日 〜 2026年06月17日
+作成日: 2026-06-17
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回は新規ページ・新着情報の追加はなく、既存リファレンスページの精緻化が中心です。前回の changelog で予告されていた v2.1.178 の機能群（権限の入力パラメータマッチ、ネストした設定ディレクトリなど）が各リファレンスページに正式記載されたほか、エージェントチームのワークフローが大きく刷新され、changelog に v2.1.179 のバグ修正が追加されました。主要な 5 件をハイライトとして整理します。
+今回は新規ページ・新着情報の追加はなく、changelog への v2.1.181（2026年06月17日）リリース追加（新機能・改善・多数のバグ修正）と、既存リファレンスページの小規模な精緻化が中心です。主要な新機能 3 件をハイライトとして整理します。
 
 主要なものを以下に挙げます。
 
-1. エージェントチームが刷新され、チーム作成・クリーンアップの明示手順が廃止された（チームメンバー生成だけで自動的にチームが形成され、セッション終了時に自動後片付け。タスクリストは再開のため永続化）（v2.1.178）
-2. 権限ルールが `Tool(param:value)` 構文で入力パラメータにマッチできるようになり、権限リファレンスページに正式セクションとして記載された（deny/ask 専用。例: `Agent(model:opus)`）（v2.1.178）
-3. 新設定 `footerLinksRegexes` で、ターン出力中の正規表現マッチに応じてフッターにクリック可能なバッジ（課題キー等のリンク）を表示できるようになった（v2.1.176）
-4. ネストした `.claude/` 設定ディレクトリのサポートが拡大し、スキル・サブエージェント・出力スタイル・ワークフローのいずれも作業ディレクトリ直下のネスト定義をロードし、名前衝突時は最も近いものを優先するようになった（v2.1.178）
-5. アドバイザーモデルのペアリング検証がサーバー（API）側からクライアント側へ移り、リクエスト送信前に検証されるようになった。サブエージェントは設定済みアドバイザーを継承し、自身のモデルで同じペアリング検査を行う
+1. `/config key=value` 構文が追加され、任意の設定をプロンプトから直接変更できるようになった（対話・`-p`・Remote Control で動作。例: `/config thinking=false`）（v2.1.181）
+2. 新環境変数 `CLAUDE_CLIENT_PRESENCE_FILE` が追加され、指定したマーカーファイルでマシン在席中はモバイルプッシュ通知を抑止できるようになった（v2.1.181）
+3. macOS 向けに `sandbox.allowAppleEvents` オプトイン設定が追加され、sandbox 化されたコマンドが Apple Events を送信できるようになった（v2.1.181）
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**エージェントチームのワークフロー刷新**](#1-エージェントチームのワークフロー刷新):  
-  エージェントチームが v2.1.178 で大きく刷新された。事前のチーム作成や終了時の「クリーンアップ」操作が不要になり、最初のチームメンバーを生成した時点でメインセッションをリーダーとするチームが自動的に形成される。`TeamCreate` / `TeamDelete` ツールは廃止。チームはセッション由来名（`session-` + セッション ID 先頭 8 文字）で保存され、チーム設定はセッション終了時に削除される一方、タスクリストはローカルに永続化され再開セッションに引き継がれる。
-2. [**権限ルールが入力パラメータにマッチ可能に**](#2-権限ルールが入力パラメータにマッチ可能に):  
-  権限ルールが `Tool(param:value)` 構文でツールの最上位入力パラメータにマッチできるようになり、前回 changelog のみの記載だった機能が権限リファレンスページに正式セクションとして加わった。`Agent(model:opus)`・`Bash(run_in_background:true)` のように指定でき、`*` ワイルドカードも使える。安全側の設計として **deny / ask ルール専用**で、allow ルールには使えない。
-3. [**フッターリンクバッジの追加**](#3-フッターリンクバッジの追加):  
-  新設定 `footerLinksRegexes`（v2.1.176）で、ターン出力に正規表現がマッチしたときに入力欄下のフッターへクリック可能なバッジを描画できる。課題トラッカーのキーなどをセッションリンク化する用途で、`pattern`・`url`（`{name}` プレースホルダ）・任意の `label` を指定する。URL は出自オリジンの固定や 2048 文字上限、スキーム許可リスト、最大 5 個などの制約がある。
-4. [**ネストした設定ディレクトリのサポート拡大**](#4-ネストした設定ディレクトリのサポート拡大):  
-  v2.1.178 で、スキル・サブエージェント（`.claude/agents/`）・出力スタイル・ワークフローのいずれも、作業ディレクトリとリポジトリルートの間にあるネストした `.claude/` ディレクトリからロードされるようになった。同名定義が複数あるときは作業ディレクトリに最も近いものが優先され、ネストしたスキルは `<dir>:<name>` の修飾名で併存できる。
-5. [**アドバイザーのペアリング検証がクライアント側に**](#5-アドバイザーのペアリング検証がクライアント側に):  
-  アドバイザーモデルとメインモデルのペアリング検証が、従来の API（サーバー）側強制からクライアント側のリクエスト前検証へ変わった。アドバイザーがメインモデルより非力な場合はリクエストに添付されず、`/advisor` の出力と通知で示される。サブエージェントは設定済みアドバイザーを継承し、自身のモデルで同じペアリング検査を適用する。
+1. [**プロンプトから任意の設定を変更する新構文**](#1-プロンプトから任意の設定を変更する新構文):  
+  `/config key=value` 構文が追加され、任意の設定をプロンプトから直接変更できるようになった（v2.1.181）。例として `/config thinking=false` のように入力でき、対話モード・`-p`（ヘッドレス）・Remote Control のいずれでも動作する。
+2. [**在席中のモバイルプッシュ通知を抑止する環境変数**](#2-在席中のモバイルプッシュ通知を抑止する環境変数):  
+  新しい環境変数 `CLAUDE_CLIENT_PRESENCE_FILE`（v2.1.181）が追加された。マーカーファイルのパスを指すよう設定すると、ユーザーがそのマシンの前にいる間はモバイルプッシュ通知が抑止される。
+3. [**sandbox コマンドからの Apple Events 送信を許可する設定**](#3-sandbox-コマンドからの-apple-events-送信を許可する設定):  
+  macOS 向けに `sandbox.allowAppleEvents` というオプトイン設定が追加された（v2.1.181）。有効にすると、sandbox 化されたコマンドが macOS 上で Apple Events を送信できるようになる。
 <!-- light:highlight-list:end -->
 
-## 1. エージェントチームのワークフロー刷新
+## 1. プロンプトから任意の設定を変更する新構文
 
-エージェントチーム（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` で有効化する実験的機能）の使い方が v2.1.178 で大きく変わりました。これまでは「Claude にチームを作成させ、名前を付け、`TeamCreate` でセットアップし、完了後に `Clean up the team` で `TeamDelete` する」という明示的なライフサイクル操作が必要でしたが、これが不要になりました。最初のチームメンバーを生成した時点でメインセッションをリーダーとするチームが自動的に形成され、以降は自然言語でやりたいことを伝えるだけで済みます。`TeamCreate` と `TeamDelete` のツールは廃止され、Agent ツールの `team_name` 入力は受け付けられても無視されます。
+v2.1.181 で `/config key=value` 構文が追加され、任意の設定をプロンプトから直接変更できるようになりました。例えば `/config thinking=false` のように入力でき、対話モード・`-p`（ヘッドレス）・Remote Control のいずれの実行形態でも動作します。これまで設定の切り替えにはメニュー操作や `settings.json` の編集が必要だった場面でも、プロンプト 1 行で目的の設定キーに値を割り当てられます。
 
-ストレージとクリーンアップの扱いも変わりました。チームはセッション由来名（`session-` にセッション ID の先頭 8 文字を続けた名前）で `~/.claude/teams/{team-name}/` と `~/.claude/tasks/{team-name}/` に保存されます。チーム設定ディレクトリはセッション終了時に削除されますが、**タスクリストのディレクトリはローカルに永続化され、アップロードもされない**ため、再開したセッションはタスクを保持します。保持期間はセッショントランスクリプトと同じ `cleanupPeriodDays` で制御されます。チームメンバーの後片付けはセッション終了時に自動で行われるため、別途のクリーンアップ手順はありません。制限事項も「セッションあたり 1 つのチーム」（旧: 一度に 1 つ）に整理されました。あわせて `TaskCreated` / `TaskCompleted` / `TeammateIdle` の各 hook ペイロードの `team_name` フィールドは、セッション由来名を運ぶ非推奨フィールドとなりました（将来削除予定）。
+> 本項目は changelog（v2.1.181）でのみ告知されており、対応する通常リファレンスページにはまだ記載がないためページリンクは省略します。
 
-- [Claude Code セッションのチームを調整する - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-teams#architecture)
+## 2. 在席中のモバイルプッシュ通知を抑止する環境変数
 
-## 2. 権限ルールが入力パラメータにマッチ可能に
+新しい環境変数 `CLAUDE_CLIENT_PRESENCE_FILE`（v2.1.181）が追加されました。この変数にマーカーファイルのパスを指すよう設定しておくと、ユーザーがそのマシンの前にいる間はモバイルへのプッシュ通知が抑止されます。デスクトップで作業中の通知と、離席中に受け取りたいモバイル通知を切り分けるための仕組みです。
 
-権限ルールで `Tool(param:value)` 構文を使い、任意のツールの最上位入力パラメータにマッチできるようになりました。前回サマリでは v2.1.178 の changelog のみの記載で権限リファレンスには未反映でしたが、今回「Match by input parameter」セクションとして「権限を設定する」ページに正式に追加されました。Claude がそのパラメータをその値で呼び出したときにマッチします。例として `Agent(model:opus)`（Opus ティアを要求する Agent 呼び出し）、`Agent(isolation:worktree)`、`Bash(run_in_background:true)` などが挙げられています。
+> 本項目は changelog（v2.1.181）でのみ告知されており、対応する通常リファレンスページにはまだ記載がないためページリンクは省略します。
 
-この構文は **deny / ask ルール専用**です（許可ルールは、単一パラメータ値が呼び出し全体の安全を保証しないため、従来どおり各ツール固有のスペシファイア構文を使い続けます）。マッチ規則は、対象がツール入力の直接フィールドであること（オブジェクトや配列内のネストフィールドは不可）、1 ルールにつき 1 パラメータ、値に `*` ワイルドカードが使える（無い場合は完全一致）、モデルが省略したパラメータはマッチしない、値は正規化前の入力リテラルと比較される、などです。`command`（Bash/PowerShell）・`file_path`（Read/Edit/Write）・`url`（WebFetch）など、各ツールが独自の正規化ルールで扱うフィールドはこの方法ではマッチできず、`Bash(command:rm *)` のようなルールは無視されて起動時警告が出ます。
+## 3. sandbox コマンドからの Apple Events 送信を許可する設定
 
-- [権限を設定する - Claude Code Docs (English)](https://code.claude.com/docs/en/permissions#match-by-input-parameter)
+macOS 向けに `sandbox.allowAppleEvents` というオプトイン設定が追加されました（v2.1.181）。有効にすると、sandbox 化されたコマンドが macOS 上で Apple Events を送信できるようになります。あわせて、`open`・`osascript`・ブラウザベースの認証フローが macOS でエラー -600 で失敗する問題が、Apple Events エンタイトルメントの追加で修正されています（「軽微な更新」のバグ修正参照）。
 
-## 3. フッターリンクバッジの追加
-
-新しい設定 `footerLinksRegexes`（v2.1.176 以降）により、入力欄の下のフッターにクリック可能なバッジを描画できるようになりました。プロジェクトの CLI（レビューツールや課題トラッカーなど）が出力する ID を、セッション内のリンクに変えるための機能です。各エントリの `pattern` 正規表現がターン出力（ツール結果・取得ページ・ファイル内容、および Claude 自身の応答）に対して照合され、`url` と `label` 中の `{name}` プレースホルダが名前付きキャプチャグループから埋められます。
-
-たとえば `"pattern": "\\b(?<key>PROJ-\\d+)\\b"`、`"url": "https://issues.example.com/browse/{key}"` と設定すると、`PROJ-1234` が出力に現れたときにフッターへ該当課題へのリンクバッジが表示されます。制約として、構築 URL はテンプレートのリテラルオリジンを共有する必要がある（キャプチャ値でリンク先を変えられない）、2048 文字超の URL は破棄、スキームは `https` / `http` または `vscode`・`cursor`・`linear`・`notion` 等の認識済みディープリンクのみ、ラベルは 28 桁で切り詰め、バッジは最大 5 個（古いものから押し出され `/clear` で消える）、設定はユーザー・`--settings`・管理設定のみから読み込み（プロジェクト/ローカル設定では無視）などがあります。正規表現はターン完了時にメインスレッドで照合されるため、`(a+)+$` のようなネストした量指定子は破滅的バックトラッキングでセッションを固める恐れがあり、線形に保つよう推奨されています。カスタムステータスラインとは併存し、互いを置き換えません。
-
-- [Claude Code settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#footer-link-badges)
-
-## 4. ネストした設定ディレクトリのサポート拡大
-
-v2.1.178 で、ネストした `.claude/` 設定ディレクトリのサポートが複数の設定タイプに広がりました。スキルに加えて、**サブエージェント**（`.claude/agents/`）・**出力スタイル**（`.claude/output-styles/`）・**ワークフロー**（`.claude/workflows/`）も、作業ディレクトリからリポジトリルートまでの間にあるすべての `.claude/` ディレクトリから検出・ロードされるようになりました。同名の定義が複数のネストディレクトリにある場合は、**作業ディレクトリに最も近いもの**が使われます。ワークフローをプロジェクトに保存する際も、間に既存の `.claude/workflows/` があればそれに最も近いものへ書き込まれます。
-
-スキルについては、ネストしたスキルが別名を持つ場合に両方が併存し、ネスト側は `apps/web:deploy` のようなディレクトリ修飾名で現れます（`/deploy` はプロジェクトルートのスキル、`/apps/web:deploy` で明示的にネスト側を実行）。これはモノレポのパッケージが、リポジトリルートで開始したセッションでもそのパッケージ作業時に独自スキルを提供できるようにするものです。あわせて、いずれかのレベルに置いたスキルが同名のバンドルスキルを上書きする点（例: プロジェクトの `.claude/skills/` の `code-review` がバンドルの `/code-review` を置換）も明文化されました。
-
-- [Create custom subagents - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#choose-the-subagent-scope)
-- [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills#where-skills-live)
-
-## 5. アドバイザーのペアリング検証がクライアント側に
-
-アドバイザーツール（メインモデルに、より強力なアドバイザーモデルを組み合わせて要所で相談させる機能）のペアリング検証の仕組みが変わりました。これまではペアリングの強制が API（サーバー）側で行われ、不正なペアリングを設定しても次のリクエストでエラーになる挙動でしたが、今回 **Claude Code がリクエスト送信前にクライアント側で検証する**よう改められました。アドバイザーがメインモデルより非力な場合は、そのアドバイザーはメインモデルのリクエストに添付されず、`/advisor` コマンドの出力と通知でその旨が示されます（自身のモデルがペアリング条件を満たすサブエージェントは、引き続きアドバイザーを使えます）。メインモデルまたはアドバイザーが Claude Code の認識できないモデルの場合も添付されません。
-
-加えて、**サブエージェントは設定済みのアドバイザーを継承し、自身のモデルに対して同じペアリング検査を適用する**ことが明記されました。あわせて、Fable 5 をアドバイザーとして使う際の説明から「`/advisor` のピッカーに `fable` が現れないため直接指定する」旨の注記が整理（簡素化）されています。
-
-- [Escalate hard decisions with the advisor tool - Claude Code Docs (English)](https://code.claude.com/docs/en/advisor#choose-an-advisor-model)
+> 本項目は changelog（v2.1.181）でのみ告知されており、対応する通常リファレンスページにはまだ記載がないためページリンクは省略します。
 
 ## 新規追加されたページ
 
@@ -84,48 +55,62 @@ v2.1.178 で、ネストした `.claude/` 設定ディレクトリのサポー�
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**エージェントチーム（agent-teams）の刷新**](#1-エージェントチームのワークフロー刷新) ([English](https://code.claude.com/docs/en/agent-teams#architecture)):  
-  チーム作成・クリーンアップの明示手順の廃止、`TeamCreate` / `TeamDelete` の削除、セッション由来名での保存とタスクリストの永続化など、ページ全体にわたる大幅な書き換えが入りました（詳細はハイライト1参照）。
+*(今回の対象期間に大幅に更新されたページはありません)*
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の対象期間は、新規ページ・新着情報の追加はなく、既存リファレンスページの記述精緻化と changelog（v2.1.179）の追加が中心です。ハイライトに挙げた以外の更新を分類別に示します。
-
-**新機能**
-- Amazon Bedrock の認証情報ヘルパー出力に任意の `Expiration` フィールドが追加された。v2.1.176 以降、コマンドが有効な ISO 8601 の `Expiration` を返すと、その 5 分前まで認証情報がキャッシュされる（無い場合や旧バージョンでは従来どおり 1 時間キャッシュ）。 — [English](https://code.claude.com/docs/en/amazon-bedrock#2-configure-aws-credentials)
-- サブエージェント定義の `tools` / `disallowedTools` が、正確なツール名に加えて MCP サーバーレベルのパターンを受け付けるようになった。`mcp__<server>` や `mcp__<server>__*` でそのサーバーの全ツールを付与/除去でき、`disallowedTools` の `mcp__*` は任意サーバーの全 MCP ツールを除去する（subagents ページおよび Python/TypeScript SDK の `AgentDefinition` リファレンスに反映）。 — [English](https://code.claude.com/docs/en/sub-agents#available-tools)
-- Agent SDK に 2 つのメッセージ型が追加された。`SDKInformationalMessage`（ループからの非エラーのステータスバナーや hook フィードバックを `level` 付きで運ぶ）と `SDKWorkerShuttingDownMessage`（ホスト終了や Remote Control 切断によるワーカーの正常終了理由 `reason` を通知）。あわせて `SystemMessage` の `subtype` に `informational` / `worker_shutting_down` が加わった。 — [English](https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage)
+今回の対象期間は新規ページ・新着情報の追加はなく、changelog への v2.1.181（2026年06月17日）追加と既存リファレンスページの小規模な精緻化が中心です。新機能はハイライトに挙げたとおりです。それ以外の更新を分類別に示します（特記なき項目は v2.1.181）。
 
 **機能改善**
-- `availableModels` アローリストの適用範囲が明文化・拡張された。メインセッション/サブエージェント/アドバイザー/フォールバックチェーンに加え、エイリアス解決（`ANTHROPIC_DEFAULT_*_MODEL` でアローリスト外へ転送できない）と fast mode（`/fast` がリスト外の Opus へ暗黙切替する場合は「is not in your organization's allowed models」で拒否）も対象になった。 — [日本語](https://code.claude.com/docs/ja/model-config#restrict-model-selection) / [English](https://code.claude.com/docs/en/model-config#restrict-model-selection)
-- Remote Control に「Check connection status」節が追加され、フッターの `/rc active` インジケータ（クリックで claude.ai のセッションを開く）と、接続失敗時の赤い `/rc failed` インジケータが整理された。自動生成タイトルが会話の言語（または `language` 設定）に一致するようになり（v2.1.176）、新たなエラーメッセージ「Couldn't verify Remote Control eligibility」（フィーチャーフラグサービスへ到達できない場合、v2.1.178 追加）と、「Remote Control is not yet enabled for your account」の文面整理も入った。 — [English](https://code.claude.com/docs/en/remote-control#check-connection-status)
-- 権限ルールの評価順序の説明が補強され、`Bash(aws *)` のような広い deny ルールが、より狭い allow ルール（`Bash(aws s3 ls)` 等）にマッチする呼び出しも含めてブロックする＝deny ルールは allowlist 例外を持てないことが明記された。 — [English](https://code.claude.com/docs/en/permissions#manage-permissions)
-- auto mode の分類器がサブエージェントを評価する 3 段階のうち、spawn 時にタスク説明を事前評価する「ステップ 1」が v2.1.178 以降であることが注記された（旧バージョンはステップ 2・3 のみ）。
-- `--add-dir` で追加したディレクトリ内の `.claude/agents/` のサブエージェントもロードされるようになり、`--add-dir` から読み込まれる設定タイプの表に「Subagents」が追加された。 — [日本語](https://code.claude.com/docs/ja/permissions#additional-directories-grant-file-access-not-configuration) / [English](https://code.claude.com/docs/en/permissions#additional-directories-grant-file-access-not-configuration)
-- 「Verify active settings」節が書き直され、`/status` の **Status** タブの `Setting sources` 行（管理設定では `(remote)` / `(plist)` / `(HKLM)` 等の配信チャネルを併記）が読み込まれたソースを示すこと、**Config** タブはトグル編集用であって `settings.json` の内容ビューではないことが明確化された。 — [日本語](https://code.claude.com/docs/ja/settings#verify-active-settings) / [English](https://code.claude.com/docs/en/settings#verify-active-settings)
-- PostToolUse の `resolvedModel`（サブエージェントが実際に動くモデル）が、`availableModels` などの override が効いた場合に `tool_input` の `model` と異なりうる旨が補足された。
-- SDK の Todo 移行ガイドに、ストリームの `tool_use` 入力は生のキー名であり、Claude Code が実行前に `id`/`task_id`→`taskId`、`active_form`→`activeForm` と一部修復するがストリームには反映されない、という注意（サンプルも防御的読み取りに更新）が追加された。
-- WebFetch の `domain:` ワイルドカードの説明が、先頭 `*.` または単独 `*` 以外の位置ではワイルドカードが 2 つのドット間のテキストにのみマッチする（`example.*` は `example.org` にマッチするが `example.evil.com` にはマッチしない）という形に書き直された。
-- プラグインの skills ローディングについて、`source` がマーケットプレースルート（`source: "./"` 等）の場合は `skills` 配下に列挙したサブディレクトリがそのエントリの完全集合になる、という挙動が追記された。
-- `CLAUDE_CODE_FORK_SUBAGENT` と `/fork` の説明が「fork をモデルの既定にする」から「Claude が `fork` サブエージェントタイプを明示要求して fork を生成できる」へ整理され、サブエージェントタイプ無しの spawn は引き続き general-purpose を使う旨が明確化された。あわせて `CLAUDE_CODE_SCROLL_SPEED` の小数値（1 未満）挙動の説明など、環境変数表のいくつかの記述が精緻化された。
+- 長い段落のストリーミング表示が改善され、最初の改行を待たずに行単位でテキストが現れるようになった。
+- thinking 中の API 接続切断が、「Connection closed while thinking」表示の代わりに自動でリトライされるようになった。
+- サブエージェントパネルが改善され、アイドルのサブエージェントは 30 秒後に自動で隠れ、一覧はスクロールヒント付きで最大 5 行に制限され、キーボードヒントがフッターに表示されるようになった。
+- MCP の OAuth ブラウザページが Claude Code の見た目に揃えられ、成功時に自動で閉じるようになった。
+- フルスクリーンモードでの URL オープンが Cmd+クリック（macOS）/ Ctrl+クリックを要するよう変更され、ネイティブターミナルの挙動に揃えられた。
+- メモリ改善時の「Improved N memories」行が、verbose モード以外では個々のファイルを列挙しなくなった。
+- 同梱の Bun ランタイムが 1.4 に更新された。
+- スキルのコマンド名解決の表に、別のスキルと名前が衝突するネストした `.claude/skills/` の行が追加され、作業ディレクトリからの相対サブディレクトリパスで修飾した名前（例: `apps/web:deploy`）になることが明記された。 — [日本語](https://code.claude.com/docs/ja/skills#how-a-skill-gets-its-command-name) / [English](https://code.claude.com/docs/en/skills#how-a-skill-gets-its-command-name)
+- サブエージェント定義の `tools` / `disallowedTools` が MCP サーバーレベルのパターンを受け付ける説明に、`disallowedTools: mcp__github` で他サーバーと組み込みツールを保ったまま github MCP サーバーの全ツールだけを除去する YAML 例が追加された。 — [日本語](https://code.claude.com/docs/ja/sub-agents#available-tools) / [English](https://code.claude.com/docs/en/sub-agents#available-tools)
+- スキルの説明が文字予算で短縮される件のトラブルシューティングで、`/doctor` が「いくつのスキル説明が短縮/削除されているか」と影響を受けるスキルを示す、と説明が更新された（旧: 予算が溢れているかと影響スキルを確認）。 — [日本語](https://code.claude.com/docs/ja/skills#skill-descriptions-are-cut-short) / [English](https://code.claude.com/docs/en/skills#skill-descriptions-are-cut-short)
 
 **バグ修正**
 
-changelog に v2.1.179（2026年06月16日）が追加された。主な修正は以下のとおり。
+changelog に v2.1.181（2026年06月17日）が追加され、既存の v2.1.178 エントリにも 1 行が追記された。リリース単位で示す。
 
-- ストリーム途中の接続切断時に部分応答を保持するようになり、生のエラー表示やスピナーが「running tool」で固まる問題が解消された。
-- WSL2（Windows Terminal / VS Code）でのマウスホイールスクロールが修正された（v2.1.172 のリグレッション）。
-- sandbox の `denyRead`/`allowRead` グロブが大きなディレクトリツリーに対して Bash ツールの説明を肥大化させ、Linux でセッションが使えなくなる問題が修正された。
-- フィードバック調査が、ターン完了直後の 1 桁の返信をセッション評価として誤って取り込む問題が修正された。
-- ウェルカム画面で複数のプロモバナーが積み重なる問題が修正された（1 セッションあたり最大 1 つ）。
-- サブエージェント閲覧時に Ctrl+O でトランスクリプトが表示されない問題が修正された。
-- プロンプト入力欄のクリックでサブエージェント/フッターパネルからフォーカスが戻らない問題が修正された。
-- リモートセッションのバックグラウンドタスクがターン間で「still running」のまま見える問題が修正され、リモートセッションのプラグインロード性能も改善された。
-
-**その他**
-- `SDKMessageOrigin` の `peer` に `senderTaskId`（メッセージを送ったインプロセスのバックグラウンドサブエージェントのタスク ID。クロスセッションのピアでは省略）が追加された。
+- **v2.1.181**（2026年06月17日）
+  - カスタム `ANTHROPIC_BASE_URL` および Foundry で、リクエストごとのアテステーショントークンが毎ターン変わるためにプロンプトキャッシュが読み取れなかった問題を修正。
+  - ネットワークドライブやクラウド同期フォルダで Write/Edit が 0 バイトまたは切り詰められたファイルを生成する問題を修正。
+  - macOS で `open`・`osascript`・ブラウザベースの認証フローがエラー -600 で失敗する問題を、Apple Events エンタイトルメントの追加で修正。
+  - 新規環境で起動ごとに約 120ms 遅くなる退行（2.1.169 で混入）を修正し、MCP サーバー未設定時は最初のプロンプトが managed-settings の取得を待たなくなった。
+  - 劣化したネットワークでアカウント設定の取得が遅いとき、空のターミナルで最大 15 秒起動がブロックされる問題を修正。
+  - `.claude.json` に破損した null のプロジェクトエントリがあると起動時にクラッシュ（`TypeError: Cannot read properties of null`）する問題を修正。
+  - Spotlight が再インデックス中のとき、macOS の TUI がセッション開始時にフリーズ（Ctrl+C 無反応）する問題を修正。
+  - 別の Claude Code プロセスが 30 日トランスクリプトのクリーンアップを実行すると、長時間アイドルのセッションが履歴を失う問題を修正。
+  - フォアグラウンドのサブエージェントが際限なくネストした連鎖を生成する問題を修正し、バックグラウンドと同じ 5 階層の深さ制限に従うようにした。
+  - モデル切替直後に `/recap` と会話フォークが切替前のモデルを使う問題を修正。
+  - サブエージェントの「Thinking」表示時間が、サブエージェント自身ではなく親エージェントの経過時間を表示する問題を修正。
+  - ネストしたエージェントで待機中のサブエージェントが、エージェントパネルで「waiting」ではなく経過時間が進み続ける表示になる問題を修正。
+  - リトライ成功後も API リトライ表示（「Retrying in 0s · attempt N/10」）が画面に残る問題を修正。
+  - AWS `awsCredentialExport` の残存寿命が短い認証情報が毎分リフレッシュを起こす問題を修正し、`aws configure export-credentials` の JSON 形式も受け付けるようにした。
+  - `claude mcp get`/`list` が tools/list 失敗時に `✓ Connected` と表示する問題を修正し、エラー詳細付きで `! Connected · tools fetch failed` と表示するようにした。
+  - `/remote-control` が古い「connecting…」行を残す問題を修正し、接続後にトランスクリプトで確認を示すようにした。
+  - Windows で素の `git` を解決できないとき、ExitWorktree がクリーンな worktree の削除を「Could not verify worktree state」で拒否する問題を修正。
+  - `~/.claude/settings.json` がシンボリックリンクされた `~/.claude` 配下の相対シンボリックリンクのとき、`/effort` や `/model` などの設定変更が ENOENT で失敗する問題を修正。
+  - IDE の選択行番号がコンテキストリマインダーで 1 つずれる問題（IntelliJ・VS Code）を修正。
+  - フルスクリーンでネイティブターミナル選択（修飾キー+ドラッグ）後の Ctrl+C が、アプリの直前の選択でクリップボードを上書きする問題を修正。
+  - クリップボードにテキストがあるとき Ctrl+V が貼り付けずに「No image found in clipboard」と表示する問題を修正。
+  - エージェントディレクトリが既に存在するときにエージェント作成が「EEXIST: file already exists」で失敗する問題（Windows/OneDrive）を修正。
+  - AskUserQuestion のプレビュー内容がダイアログ端で折り返されず切れる問題を修正。
+  - AskUserQuestion の複数選択質問で、入力した「Other」の自由記述回答が送信時に黙って捨てられる問題を修正。
+  - `/stats` の「Most active day」と日次トークングラフの日付が、UTC マイナス圏のタイムゾーンで 1 日早く表示される問題を修正。
+  - Linux で `/copy` と選択時コピーが、Claude Code 起動後にインストールされたクリップボードユーティリティを検出しない問題を修正。
+  - Write（ファイル作成）プレビューでタブインデントのコードが誤ったインデントで描画される問題を修正。
+  - ターン中にキューされたユーザープロンプトが、トランスクリプトで全幅の背景ハイライトを表示しない問題を修正。
+  - Ghostty でアクティビティスピナーのパルスが誤ったグリフサイズに留まる問題を修正。
+- **v2.1.178**（既存エントリへの追記）
+  - `.claude/skills` または `.claude/hooks` がシンボリックリンクのとき Linux sandbox が起動に失敗する問題を修正。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -136,11 +121,11 @@ changelog に v2.1.179（2026年06月16日）が追加された。主な修正�
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-15.md](./archives/latest/2026-06-15.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-15.md](./archives/latest-detail/2026-06-15.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-16.md](./archives/latest/2026-06-16.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-16.md](./archives/latest-detail/2026-06-16.md)
 
 <!--
-base_commit: 045e333d0dbf9f1ed09cfee6e2ec61227aa03027
-head_commit: 903188279ac643213af8353f48bbc9b9c6dff390
-generated_at_full: 2026-06-17T15:06:02+09:00
+base_commit: 903188279ac643213af8353f48bbc9b9c6dff390
+head_commit: 36ebe5ec3ed55ca4d8d65463453e514b6892594d
+generated_at_full: 2026-06-18T15:03:07+09:00
 -->

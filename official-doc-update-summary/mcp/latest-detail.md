@@ -1,54 +1,42 @@
 ---
-対象期間: 2026年06月10日 〜 2026年06月16日
-作成日: 2026-06-16
+対象期間: 2026年06月16日 〜 2026年06月17日
+作成日: 2026-06-17
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、新規ページ 1 件（Security Interest Group の Charter）の追加と、コミュニティ各グループ Charter ページの URL 体系再編が中心です。
+今回の対象期間は、新規ページ 1 件（Enterprise-Managed Authorization Interest Group の Charter）の追加が中心です。
 
 主要なものを以下に挙げます。
 
-1. MCP 固有の脅威整理・セキュリティ提案レビュー・検証済み課題の Working Group / SEP 化を担う Security Interest Group の Charter が新設
-2. コミュニティ各グループの Charter ページ URL が Working Group / Interest Group 別の新パス体系へ再編
+1. エンタープライズ IdP・MCP クライアント・MCP サーバーの三者間で Enterprise-Managed Authorization 拡張（ID-JAG フロー）の相互運用性を調整する Enterprise-Managed Authorization Interest Group の Charter が新設
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**MCP Security Interest Group の新設**](#1-mcp-security-interest-group-の新設):  
-  MCP 固有の脅威整理、セキュリティ関連提案のレビュー、検証済み課題の Working Group / SEP 化を担う Security Interest Group の Charter が新規公開された。
-2. [**コミュニティ Charter の URL 体系再編**](#2-コミュニティ-charter-の-url-体系再編):  
-  コミュニティ各グループの Charter ページ URL が `/community/<name>/charter` から、Working Group は `/community/working-groups/<name>`、Interest Group は `/community/interest-groups/<name>` へと、グループ種別を反映した新パス体系へ移設された。
+1. [**Enterprise-Managed Authorization Interest Group の新設**](#1-enterprise-managed-authorization-interest-group-の新設):  
+  Enterprise-Managed Authorization 拡張（`io.modelcontextprotocol/enterprise-managed-authorization`）の実運用導入を調整する Interest Group の Charter が新規公開された。エンタープライズ IdP・MCP クライアント・MCP サーバーの認可サーバーが ID-JAG フローで端から端まで相互運用できて初めて価値が出る拡張のため、導入経験の収集・実装間の互換性ギャップの洗い出し・検証済み課題の Authorization IG / ext-auth 仕様へのフィードバックを担う。
 <!-- light:highlight-list:end -->
 
-## 1. MCP Security Interest Group の新設
+## 1. Enterprise-Managed Authorization Interest Group の新設
 
-MCP 固有のセキュリティ課題を扱う **Security Interest Group**（セキュリティ IG）の Charter が新規ページとして公開されました。このグループは、MCP 特有の脅威を体系的に整理（脅威モデリング）し、セキュリティに関連する提案をレビューし、検証済みの課題を焦点を絞った Working Group や [SEP](https://modelcontextprotocol.io/community/sep-guidelines) へと落とし込むことをミッションとしています。
+エンタープライズ環境向けの認可を扱う **Enterprise-Managed Authorization Interest Group**（EMA IG）の Charter が新規ページとして公開されました。このグループは、[Enterprise-Managed Authorization 拡張](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization)（`io.modelcontextprotocol/enterprise-managed-authorization`）の実世界での導入を、IdP ベンダー・MCP クライアント実装者・MCP サーバー運用者の三者が協調して進めるための場です。この拡張の ID-JAG フローは、エンタープライズ IdP・MCP クライアント・MCP サーバーの認可サーバーが端から端まで（end to end）相互運用できて初めて価値を発揮します。そのため本グループは、導入経験を集約し、独立した実装間の互換性ギャップを洗い出し、検証済みの課題を [Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth) と [ext-auth](https://github.com/modelcontextprotocol/ext-auth) 仕様へ還元することをミッションとしています。
 
-スコープ（In Scope）には、脅威モデリング、サーバー識別・アテステーション・受け入れ（admission）、サプライチェーンとプロベナンス（成果物の出所・完全性）、承認後のランタイムドリフト（ツール・スキーマ・挙動の変化）、監査可能性・可観測性、stdio など非 HTTP トランスポート固有のセキュリティ（シークレット管理・プロセス分離）、Security Best Practices ドキュメントの整備、脆弱性開示のルーティングが含まれます。一方、OAuth フローなど認可プロトコルの仕組み（[Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth) の担当）、TLS/mTLS などトランスポートのワイヤ暗号化（Transports WG の担当）、ツールアノテーションの設計（[Tool Annotations IG](https://modelcontextprotocol.io/community/interest-groups/tool-annotations) の担当）、ホスト型 Registry サービスの運用（[Registry WG](https://modelcontextprotocol.io/community/working-groups/registry) の担当）などは Out of Scope として他グループへ明確に振り分けられています。
+スコープ（In Scope）には、特定の IdP・MCP クライアント・MCP 認可サーバーを ID-JAG 交換の全工程で組み合わせた**相互運用レポート**、EMA 適合性スイートが検証すべきアサーション（ID-JAG 検証、audience・issuer チェック、クレームマッピング、アカウントリンク、エラー処理）を特定する**適合性シナリオの提供**、テナント分離・管理者同意フロー・JIT プロビジョニング・クレームから権限へのマッピング・トークン有効期間などの**デプロイメントパターン**の共有、既存 IdP 製品が仕様どおりに ID-JAG を発行・検証できない箇所を整理する**IdP 能力ギャップ**のカタログ化、実装中に見つかった曖昧さを ext-auth リポジトリへルーティングする**仕様明確化リクエスト**が含まれます。一方、Client Credentials・DPoP・Workload Identity Federation・コア OAuth 2.1 フローといった他の認可プロファイル（[Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth) の担当）、ID-JAG フロー固有でない一般的なエンタープライズ展開の話題、個別 IdP・クライアント製品のステップバイステップ設定手順、反トラスト方針に抵触する競争上機微な情報は Out of Scope とされています。
 
-Facilitator は Anthropic の Den Delimarsky 氏と Paul Carleton 氏で、2 週間ごとに 45 分の Office Hours を開催します。当面の議論テーマには、SEP-2809（Attested Tool-Server Admission, ATSA）、SDK の脆弱性開示、承認後の `list_changed` セマンティクス（ランタイムドリフト）、サプライチェーンの完全性、サーバー横断でのツール識別、能力宣言（Tool Annotations IG との合同）などが挙げられています。Charter の初版は 2026年06月13日付です。
+Facilitator は Anthropic の Paul Carleton 氏（[@pcarleton](https://github.com/pcarleton)）と Okta の Aaron Parecki 氏（[@aaronpk](https://github.com/aaronpk)）で、Lead Maintainer の Den Delimarsky 氏がスポンサーを務めます。2 週間ごとに 45 分の Interop Call を開催し、デプロイメントレポート・互換性マトリクスのレビュー・仕様フィードバックのトリアージを行います。関連グループとして、親グループである [Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth)（EMA の仕様変更はここで育成され、本 IG の知見がアジェンダに反映される）、ID-JAG フローにおける token-audience の混同・issuer 検証・アカウントリンクのリスクが境界領域となる [Security IG](https://modelcontextprotocol.io/community/interest-groups/security)、EMA クライアント実装を出荷する SDK Maintainers が挙げられています。Charter の初版は 2026年06月16日付です。
 
-- [Security Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/security)
-
-## 2. コミュニティ Charter の URL 体系再編
-
-コミュニティの各 Working Group / Interest Group の Charter ページの URL が、従来の `/community/<name>/charter` 形式から、グループ種別を URL に反映する新体系へ一斉に移設されました。Interest Group は `/community/interest-groups/<name>`（例: Authorization は `/community/interest-groups/auth`、Tool Annotations は `/community/interest-groups/tool-annotations`、新設の Security は `/community/interest-groups/security`）、Working Group は `/community/working-groups/<name>`（File Uploads・Inspector V2・Interceptors・Registry・SDK・Server Card・Skills Over MCP・Triggers and Events の 8 グループ）に整理されています。
-
-この再編に合わせて、Charter テンプレートと Working/Interest Groups のガバナンス文書も更新されました。[Group Charter Template](https://modelcontextprotocol.io/community/charter-template) では Charter 文書の保管先が `docs/community/working-groups/<group-name>.mdx`（IG は `docs/community/interest-groups/<group-name>.mdx`）という新ディレクトリ構成へと記述変更され、ガバナンス文書では Working Group 設立時の PR 提出先パスが新構成に合わせて更新されました。URL 上で Working Group と Interest Group が明確に区別されることで、二層構造のグループ分類がドキュメント体系として整理された形です。
-
-- [Working and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups)
-- [Group Charter Template - MCP Docs](https://modelcontextprotocol.io/community/charter-template)
+- [Enterprise-Managed Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Security Charter**](#1-mcp-security-interest-group-の新設) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/security)):  
-  MCP Security Interest Group の Charter。MCP 固有の脅威整理・セキュリティ提案レビュー・課題の WG/SEP 化を担う（詳細はハイライト1参照）。
+- [**Enterprise-Managed Authorization Charter**](#1-enterprise-managed-authorization-interest-group-の新設) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization)):  
+  Enterprise-Managed Authorization Interest Group の Charter。EMA 拡張（ID-JAG フロー）の IdP・クライアント・サーバー間の相互運用調整と実装フィードバックを担う（詳細はハイライト1参照）。
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
@@ -60,23 +48,19 @@ Facilitator は Anthropic の Den Delimarsky 氏と Paul Carleton 氏で、2 週
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、Charter URL 再編に伴う関連ドキュメントのパス記述更新が中心です。
+今回の軽微な更新は、新設 IG に伴う既存ページの相互参照追加です。
 
 **機能改善**
-- [Group Charter Template](https://modelcontextprotocol.io/community/charter-template): Charter 文書の保管先パスの記述を新ディレクトリ構成（`docs/community/working-groups/<group-name>.mdx` / `docs/community/interest-groups/<group-name>.mdx`）へ明確化。
-
-**その他**
-- コミュニティ各グループ（Authorization・Tool Annotations・File Uploads・Inspector V2・Interceptors・Registry・SDK・Server Card・Skills Over MCP・Triggers and Events）の Charter ページ URL を `/community/working-groups/<name>` ・ `/community/interest-groups/<name>` 配下へ移設（詳細はハイライト2参照）。
-- [Working and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups): Working Group 設立時の PR 提出先パス（`docs/community/working-groups/<name>/overview.mdx` ・ `charter.mdx`）を新ディレクトリ構成に合わせて更新。
+- [Authorization Charter](https://modelcontextprotocol.io/community/interest-groups/auth#related-groups): 関連グループ（Related Groups）に新設の Enterprise-Managed Authorization IG への参照を追加。Profiles WG が策定する EMA 拡張について IdP・クライアント・サーバーの相互運用テストを調整し、そこで浮上した仕様変更要求が Authorization IG へ差し戻される旨を明記。
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-10.md](./archives/latest/2026-06-10.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-10.md](./archives/latest-detail/2026-06-10.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-16.md](./archives/latest/2026-06-16.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-16.md](./archives/latest-detail/2026-06-16.md)
 
 <!--
-base_commit: 3c7fbb9579354ba1c5661f28ffd067f47e7775f7
-head_commit: 903188279ac643213af8353f48bbc9b9c6dff390
-generated_at_full: 2026-06-17T15:20:44+09:00
+base_commit: 903188279ac643213af8353f48bbc9b9c6dff390
+head_commit: 36ebe5ec3ed55ca4d8d65463453e514b6892594d
+generated_at_full: 2026-06-18T15:15:28+09:00
 -->
