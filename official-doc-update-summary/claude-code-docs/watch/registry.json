@@ -24,10 +24,10 @@
       "kind": "ja-section",
       "term": "introducing-claude-fable-5-and-claude-mythos-5",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-06::https://code.claude.com/docs/en/agent-sdk/subagents#resuming-subagents": {
       "name": "2026-06-06",
@@ -40,7 +40,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/monitoring-usage#events": {
@@ -52,10 +52,10 @@
       "kind": "ja-section",
       "term": "claude_code.api_refusal",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-06::https://code.claude.com/docs/en/interactive-mode#side-questions-with-%2Fbtw": {
       "name": "2026-06-06",
@@ -68,7 +68,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/commands#all-commands": {
@@ -80,10 +80,10 @@
       "kind": "ja-section",
       "term": "/reload-plugins",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-06::https://code.claude.com/docs/en/env-vars#variables": {
       "name": "2026-06-06",
@@ -94,10 +94,10 @@
       "kind": "ja-section",
       "term": "CLAUDE_CODE_SYNC_SKILLS_INSTALL_TIMEOUT_MS",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-06::https://code.claude.com/docs/en/settings#attribution-settings": {
       "name": "2026-06-06",
@@ -122,10 +122,10 @@
       "kind": "ja-section",
       "term": "MCP_TOOL_TIMEOUT",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-06::https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior": {
       "name": "2026-06-06",
@@ -136,10 +136,10 @@
       "kind": "ja-section",
       "term": "WebFetch(domain:...)",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-06::https://code.claude.com/docs/en/vs-code#uninstall-the-extension": {
       "name": "2026-06-06",
@@ -152,7 +152,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/skills#pass-arguments-to-skills": {
@@ -180,7 +180,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/agent-view#manage-sessions-from-the-shell": {
@@ -192,10 +192,10 @@
       "kind": "ja-section",
       "term": "waitingFor",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-06::https://code.claude.com/docs/en/deep-links#what-a-launched-session-shows": {
       "name": "2026-06-06",
@@ -208,7 +208,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/troubleshoot-install#check-network-connectivity": {
@@ -220,10 +220,10 @@
       "kind": "ja-section",
       "term": "Invoke-WebRequest",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-08::https://code.claude.com/docs/en/data-usage#data-retention": {
       "name": "2026-06-08",
@@ -236,7 +236,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-08::https://code.claude.com/docs/en/admin-setup#review-data-handling": {
@@ -248,9 +248,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/advisor": {
@@ -262,10 +262,10 @@
       "kind": "ja-page",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-09::https://code.claude.com/docs/en/permissions#cd": {
       "name": "2026-06-09",
@@ -276,10 +276,10 @@
       "kind": "ja-section",
       "term": "/cd",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-09::https://code.claude.com/docs/en/permissions#tool-name-wildcards": {
       "name": "2026-06-09",
@@ -290,10 +290,10 @@
       "kind": "ja-section",
       "term": "mcp__*",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-09::https://code.claude.com/docs/en/zero-data-retention#model-availability-under-zdr": {
       "name": "2026-06-09",
@@ -304,10 +304,10 @@
       "kind": "ja-section",
       "term": "/model",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-09::https://code.claude.com/docs/en/agent-view#manage-sessions-from-the-shell": {
       "name": "2026-06-09",
@@ -334,7 +334,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/troubleshooting#your-organization-has-disabled-api-key-authentication": {
@@ -348,7 +348,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/desktop#device-management-policies": {
@@ -360,10 +360,10 @@
       "kind": "ja-section",
       "term": "com.anthropic.claudefordesktop",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "live::https://code.claude.com/docs/en/agent-teams#architecture": {
       "name": "live",
@@ -374,9 +374,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/amazon-bedrock#2-configure-aws-credentials": {
@@ -388,10 +388,10 @@
       "kind": "ja-section",
       "term": "Expiration",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "live::https://code.claude.com/docs/en/sub-agents#available-tools": {
       "name": "live",
@@ -404,7 +404,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage": {
@@ -416,10 +416,10 @@
       "kind": "ja-section",
       "term": "SDKWorkerShuttingDownMessage",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "live::https://code.claude.com/docs/en/model-config#restrict-model-selection": {
       "name": "live",
@@ -444,9 +444,9 @@
       "kind": "ja-section",
       "term": "language",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#manage-permissions": {
@@ -460,7 +460,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#additional-directories-grant-file-access-not-configuration": {
@@ -500,10 +500,10 @@
       "kind": "ja-section",
       "term": "introducing-claude-fable-5-and-claude-mythos-5",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-11::https://code.claude.com/docs/en/quickstart#essential-commands": {
       "name": "2026-06-11",
@@ -514,10 +514,10 @@
       "kind": "ja-section",
       "term": "/exit",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-11::https://code.claude.com/docs/en/monitoring-usage#backend-considerations": {
       "name": "2026-06-11",
@@ -530,7 +530,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/settings#available-settings": {
@@ -542,10 +542,10 @@
       "kind": "ja-section",
       "term": "wheelScrollAccelerationEnabled",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-12::https://code.claude.com/docs/en/permissions#webfetch": {
       "name": "2026-06-12",
@@ -570,10 +570,10 @@
       "kind": "ja-section",
       "term": "opusplan[1m]",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-12::https://code.claude.com/docs/en/troubleshoot-install#could-not-resolve-authentication-method": {
       "name": "2026-06-12",
@@ -586,7 +586,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/monitoring-usage#interpret-metrics-and-events-data": {
@@ -640,10 +640,10 @@
       "kind": "ja-section",
       "term": "/status",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-15::https://code.claude.com/docs/en/settings#available-settings": {
       "name": "2026-06-15",
@@ -654,10 +654,10 @@
       "kind": "ja-section",
       "term": "fileCheckpointingEnabled",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-15::https://code.claude.com/docs/en/remote-control#mobile-push-notifications": {
       "name": "2026-06-15",
@@ -670,7 +670,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/agent-view#where-state-is-stored": {
@@ -684,7 +684,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/permissions#tool-name-wildcards": {
@@ -696,10 +696,10 @@
       "kind": "ja-section",
       "term": "TaskStop",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-15::https://code.claude.com/docs/en/troubleshooting#homebrew-cask-unavailable-or-outdated": {
       "name": "2026-06-15",
@@ -712,7 +712,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/whats-new/2026-w23": {
@@ -724,10 +724,10 @@
       "kind": "ja-page",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
-      "injected_at": null
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
     },
     "2026-06-15::https://code.claude.com/docs/en/whats-new/2026-w24": {
       "name": "2026-06-15",
@@ -738,9 +738,93 @@
       "kind": "ja-page",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-06-17",
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
+    },
+    "2026-06-16::https://code.claude.com/docs/en/agent-teams#architecture": {
+      "name": "2026-06-16",
+      "en_url": "https://code.claude.com/docs/en/agent-teams#architecture",
+      "ja_url": "https://code.claude.com/docs/ja/agent-teams#architecture",
+      "slug": "agent-teams",
+      "anchor": "architecture",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-06-18",
+      "last_checked": "2026-06-18",
+      "injected_at": null
+    },
+    "2026-06-16::https://code.claude.com/docs/en/amazon-bedrock#2-configure-aws-credentials": {
+      "name": "2026-06-16",
+      "en_url": "https://code.claude.com/docs/en/amazon-bedrock#2-configure-aws-credentials",
+      "ja_url": "https://code.claude.com/docs/ja/amazon-bedrock#2-configure-aws-credentials",
+      "slug": "amazon-bedrock",
+      "anchor": "2-configure-aws-credentials",
+      "kind": "ja-section",
+      "term": "Expiration",
+      "strong": true,
+      "status": "injected",
+      "first_seen": "2026-06-18",
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
+    },
+    "2026-06-16::https://code.claude.com/docs/en/sub-agents#available-tools": {
+      "name": "2026-06-16",
+      "en_url": "https://code.claude.com/docs/en/sub-agents#available-tools",
+      "ja_url": "https://code.claude.com/docs/ja/sub-agents#available-tools",
+      "slug": "sub-agents",
+      "anchor": "available-tools",
+      "kind": "ja-section",
+      "term": "mcp__<server>__*",
+      "strong": true,
+      "status": "pending",
+      "first_seen": "2026-06-18",
+      "last_checked": "2026-06-18",
+      "injected_at": null
+    },
+    "2026-06-16::https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage": {
+      "name": "2026-06-16",
+      "en_url": "https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage",
+      "ja_url": "https://code.claude.com/docs/ja/agent-sdk/typescript#sdkmessage",
+      "slug": "agent-sdk/typescript",
+      "anchor": "sdkmessage",
+      "kind": "ja-section",
+      "term": "SDKWorkerShuttingDownMessage",
+      "strong": true,
+      "status": "injected",
+      "first_seen": "2026-06-18",
+      "last_checked": "2026-06-18",
+      "injected_at": "2026-06-18"
+    },
+    "2026-06-16::https://code.claude.com/docs/en/remote-control#check-connection-status": {
+      "name": "2026-06-16",
+      "en_url": "https://code.claude.com/docs/en/remote-control#check-connection-status",
+      "ja_url": "https://code.claude.com/docs/ja/remote-control#check-connection-status",
+      "slug": "remote-control",
+      "anchor": "check-connection-status",
+      "kind": "ja-section",
+      "term": "language",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-06-18",
+      "last_checked": "2026-06-18",
+      "injected_at": null
+    },
+    "2026-06-16::https://code.claude.com/docs/en/permissions#manage-permissions": {
+      "name": "2026-06-16",
+      "en_url": "https://code.claude.com/docs/en/permissions#manage-permissions",
+      "ja_url": "https://code.claude.com/docs/ja/permissions#manage-permissions",
+      "slug": "permissions",
+      "anchor": "manage-permissions",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-06-18",
+      "last_checked": "2026-06-18",
       "injected_at": null
     }
   }
