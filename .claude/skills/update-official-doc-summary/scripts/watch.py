@@ -530,6 +530,46 @@ def cmd_inject(args) -> int:
     return 0
 
 
+# ------------------------------------------------------------------------ promote
+def cmd_promote(args) -> int:
+    """Flip ``manual`` items to ``ready`` after a human has verified the ja section.
+
+    ``check`` parks an item as ``manual`` when the ja section heading exists but no
+    distinctive code token is available to auto-confirm the content is reflected
+    (so a human must glance). Once verified, this promotes it so ``inject`` applies
+    it. ``--list`` shows candidates without changing anything; ``--only`` filters by
+    a substring of the item key (default: all ``manual`` items).
+    """
+    sr = summary_root(Path(args.root) if args.root else None)
+    rp = registry_path(sr)
+    reg = load_registry(rp)
+    items = reg["items"]
+    manual = [k for k, v in items.items() if v["status"] == "manual"]
+    if args.only:
+        manual = [k for k in manual if args.only in k]
+    if not manual:
+        print("promote: no matching 'manual' items")
+        return 0
+
+    def line(k: str) -> str:
+        it = items[k]
+        anc = ("#" + it["anchor"]) if it["anchor"] else ""
+        return f"{it['name']:>12}  {it['slug']}{anc}  ->  {it['ja_url']}"
+
+    if args.list:
+        print(f"promote: {len(manual)} manual item(s) (no change; pass without --list to promote):")
+        for k in manual:
+            print(f"  ? {line(k)}")
+        return 0
+    for k in manual:
+        items[k]["status"] = "ready"
+    save_registry(rp, reg)
+    print(f"promote: {len(manual)} item(s) manual -> ready (run 'inject --apply' to write)")
+    for k in manual:
+        print(f"  + {line(k)}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--root", help="repo root override (default: inferred)")
@@ -541,6 +581,9 @@ def main() -> int:
     pi = sub.add_parser("inject", help="apply ready items (detail+light)")
     pi.add_argument("--apply", action="store_true", help="write files (default: dry-run)")
     pi.add_argument("--commit", action="store_true", help="git commit applied changes")
+    pp = sub.add_parser("promote", help="flip 'manual' items to 'ready' after human review")
+    pp.add_argument("--only", help="substring filter on item key (default: all manual)")
+    pp.add_argument("--list", action="store_true", help="list manual items without changing them")
     args = ap.parse_args()
     try:
         if args.cmd == "scan":
@@ -549,6 +592,8 @@ def main() -> int:
             return cmd_check(args)
         if args.cmd == "inject":
             return cmd_inject(args)
+        if args.cmd == "promote":
+            return cmd_promote(args)
     except KeyboardInterrupt:
         return 1
     return 2
