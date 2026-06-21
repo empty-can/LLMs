@@ -40,6 +40,34 @@ Registry: ``official-doc-update-summary/claude-code-docs/watch/registry.json``
 (committed to repo B so CI persists watch state across runs).
 
 Exit codes: 0 ok, 1 runtime error, 2 usage error.
+
+Machine-stable invariants
+-------------------------
+The following structural contracts are relied on by scan, check, and inject.
+Future template or generator changes that violate them will silently break the
+pipeline:
+
+  Light block markers
+    ``<!-- light:<section>:start -->`` / ``<!-- light:<section>:end -->``
+    delimit named sections in latest.md. The watch pipeline does not parse
+    these but the generator must keep them consistent with latest-detail.md.
+
+  URL convention
+    All official links use ``https://code.claude.com/docs/en/<slug>(#<anchor>)``.
+    The en<->ja mapping is a literal prefix swap: ``/docs/en/`` -> ``/docs/ja/``.
+    The anchor id is the same on both en and ja pages (Mintlify reuses the
+    English slug id for Japanese headings).
+
+  Highlight heading format
+    ``## N. <title>`` (two hashes, a 1-or-more-digit number, a dot, the title).
+    Used by HL_HEAD_RE and find_linkless_highlights.
+
+  Injected form (Markdown only, no HTML)
+    ``[日本語](<ja_url>) / [<label>](<en_url>)``
+    Inject writes plain Markdown and never adds HTML attributes such as
+    ``target="_blank"``. The exact label of the en link is preserved from the
+    original. cmd_inject looks for ``[English](<en_url>)`` specifically, so
+    long-label links injected by a future phase must be handled separately.
 """
 from __future__ import annotations
 
@@ -52,12 +80,21 @@ import sys
 import tempfile
 import urllib.error
 import urllib.request
+from dataclasses import dataclass
 from pathlib import Path
 
 EN_PREFIX = "https://code.claude.com/docs/en/"
-# en-only official link, capturing full url / slug (may contain '/') / optional anchor
+# en-only official link with SHORT label "English" -- kept for cmd_inject's en_frag search
 EN_LINK_RE = re.compile(
     r"\[English\]\((" + re.escape(EN_PREFIX) + r"([^)#]+?)(?:#([^)]+))?)\)"
+)
+# any Markdown link whose URL starts with the en prefix, capturing label / url / slug / anchor
+_ANY_EN_LINK_RE = re.compile(
+    r"\[([^\]]+)\]\((" + re.escape(EN_PREFIX) + r"([^)#]+?)(?:#([^)]+))?)\)"
+)
+# 日本語 link immediately before an en link in the same line (already-injected pair, form 3)
+_JA_BEFORE_RE = re.compile(
+    r"\[日本語\]\(https://code\.claude\.com/docs/ja/[^)]+\)\s*/\s*\Z"
 )
 # inline-code tokens on a line, candidates for a non-translatable reflection probe
 TERM_RE = re.compile(r"`([^`\s]{2,})`")
@@ -74,6 +111,69 @@ DOC_LINK_RE = re.compile(r"code\.claude\.com/docs/(?:en|ja)/")
 # page-pending highlight lacks the changelog mention and is still flagged.
 CHANGELOG_RE = re.compile(r"changelog", re.IGNORECASE)
 LINK_OMIT_RE = re.compile(r"リンク[^。\n]{0,8}省略")
+
+
+@dataclass
+class DocLink:
+    """A single Claude Code Docs en-link occurrence parsed from a summary file.
+
+    Fields
+    ------
+    label       : anchor text of the Markdown link (e.g. "English" or the long title)
+    en_url      : full en URL including anchor if present
+    ja_url      : en_url with /docs/en/ -> /docs/ja/
+    slug        : path segment after /docs/en/ WITHOUT the anchor
+    anchor      : fragment id without the leading "#", or ""
+    already_ja  : True when this occurrence is form 3 (a 日本語 link is paired
+                  immediately before it on the same line)
+    en_link_text: the exact matched en-link substring "[<label>](<en_url>)" so a
+                  later phase can do a targeted string replacement
+    """
+    label: str
+    en_url: str
+    ja_url: str
+    slug: str
+    anchor: str
+    already_ja: bool
+    en_link_text: str
+
+
+def iter_doc_links(text: str):
+    """Yield a DocLink for EVERY Claude Code Docs en-link in *text*.
+
+    Recognises all three link forms produced by the summary generator:
+
+      Form 1 - short label:
+        ``[English](https://code.claude.com/docs/en/<slug>(#<anchor>))``
+      Form 2 - long label (highlight / new-page / updated-page sections):
+        ``[<any title text> (English)](https://code.claude.com/docs/en/<slug>(#<anchor>))``
+      Form 3 - already-injected pair (already_ja=True):
+        ``[日本語](<ja_url>) / [<label>](<en_url>)``
+
+    Yields one DocLink per occurrence. For form 3 the occurrence is yielded with
+    already_ja=True so callers can skip it when seeding new registry items.
+    """
+    for line in text.split("\n"):
+        for m in _ANY_EN_LINK_RE.finditer(line):
+            label = m.group(1)
+            en = m.group(2)
+            slug = m.group(3)
+            anchor = m.group(4) or ""
+            en_link_text = m.group(0)  # full "[<label>](<en_url>)" substring
+
+            # form 3: a 日本語 link appears immediately before this match on the line
+            prefix = line[: m.start()]
+            already_ja = bool(_JA_BEFORE_RE.search(prefix))
+
+            yield DocLink(
+                label=label,
+                en_url=en,
+                ja_url=ja_url(en),
+                slug=slug,
+                anchor=anchor,
+                already_ja=already_ja,
+                en_link_text=en_link_text,
+            )
 
 
 def pick_probe(line: str):
@@ -189,28 +289,28 @@ def cmd_scan(args) -> int:
     items = reg["items"]
     n_new = 0
     n_seen = 0
-    linkless: list[tuple[str, str, str]] = []   # (name, num, title) — req4 en-page gap
+    linkless: list[tuple[str, str, str]] = []   # (name, num, title) -- req4 en-page gap
     for name, detail, _light in iter_pairs(sr):
         if not detail.is_file():
             continue
         text = read_text(detail)
         for line in text.split("\n"):
-            if "日本語" in line:  # already has a ja link -> not a watch target
-                continue
-            for m in EN_LINK_RE.finditer(line):
-                en, slug, anchor = m.group(1), m.group(2), m.group(3) or ""
-                key = f"{name}::{en}"
+            for lnk in iter_doc_links(line):
+                if lnk.already_ja:
+                    # form 3: already injected -- not a new watch target
+                    continue
                 n_seen += 1
+                key = f"{name}::{lnk.en_url}"
                 if key in items:
                     continue
                 term, strong = pick_probe(line)
                 items[key] = {
                     "name": name,
-                    "en_url": en,
-                    "ja_url": ja_url(en),
-                    "slug": slug,
-                    "anchor": anchor,
-                    "kind": "ja-section" if anchor else "ja-page",
+                    "en_url": lnk.en_url,
+                    "ja_url": lnk.ja_url,
+                    "slug": lnk.slug,
+                    "anchor": lnk.anchor,
+                    "kind": "ja-section" if lnk.anchor else "ja-page",
                     "term": term,
                     "strong": strong,
                     "status": "pending",
@@ -225,7 +325,7 @@ def cmd_scan(args) -> int:
     print(f"scan: +{n_new} new, {n_seen} en-only links seen, {len(items)} in registry")
     print(f"      registry: {rp}")
     if linkless:
-        print(f"\nWARNING: {len(linkless)} link-less highlight(s) — official page not yet")
+        print(f"\nWARNING: {len(linkless)} link-less highlight(s) -- official page not yet")
         print("         linked; en-page-creation watch is NOT automated (req4). Review:")
         for nm, num, title in linkless:
             print(f"  ! {nm:>12}  #{num} {title}")
