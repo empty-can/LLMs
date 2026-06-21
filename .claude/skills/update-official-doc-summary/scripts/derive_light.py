@@ -29,16 +29,12 @@ LIGHT_FILENAME = 'latest.md'
 # rewritten to point at the detail file (./latest-detail.md#anchor).
 LINKED_SECTIONS = frozenset({'highlight-list', 'new-pages', 'updated-pages', 'whats-new'})
 
-# Section header to emit before the extracted content for each marker name.
-# An empty string means "no header" (used for the summary blockquote).
-SECTION_HEADERS = {
-    'summary':        '',
-    'highlight-list': '## ハイライト',
-    'new-pages':      '## 新規追加されたページ',
-    'updated-pages':  '## 大幅に更新されたページ',
-    'minor-updates':  '## 軽微な更新',
-    'whats-new':      '## 新着情報',
-}
+# Section headings are intentionally NOT hardcoded here. `extract_marker_regions`
+# inherits each section's heading from the detail file (the nearest h2-or-deeper
+# heading above the marker), so a maintainer can rename or reorder sections by
+# editing only the template and the light version follows automatically. The
+# marker *name* inside the HTML comment stays the stable machine token (shared
+# with watch.py); only the human-facing heading text is template-driven.
 
 
 def make_anchor(text: str) -> str:
@@ -68,13 +64,40 @@ def extract_footer(text: str) -> tuple[str, str]:
     return text[:m.start()].rstrip() + '\n', m.group(1)
 
 
-def extract_marker_regions(text: str) -> list[tuple[str, str]]:
-    """Return [(name, inner_content), ...] preserving file order."""
-    pattern = re.compile(
+def extract_marker_regions(text: str) -> list[tuple[str, str, str]]:
+    """Return [(name, header, inner_content), ...] preserving file order.
+
+    *header* is the section heading inherited from the detail file: the nearest
+    h2-or-deeper Markdown heading (``^#{2,} ``) appearing above the marker's
+    ``:start`` line and below the previous marker's ``:end`` (or document start).
+    It is the full heading line, e.g. ``## ハイライト``.
+
+    *header* is the empty string (no heading emitted) when no such heading exists
+    -- this covers the leading summary block, which sits directly under the H1
+    title with no h2 above it, and any section whose heading a maintainer has
+    deliberately removed from the template.
+
+    Inheriting the heading from the template (rather than a hardcoded table) lets
+    a maintainer rename or reorder sections by editing only the template; the
+    light version follows. The marker *name* remains the stable machine token.
+    """
+    marker_re = re.compile(
         r'<!--\s*light:([a-zA-Z\-]+):start\s*-->\s*\n(.*?)\n<!--\s*light:\1:end\s*-->',
         re.DOTALL,
     )
-    return [(m.group(1), m.group(2)) for m in pattern.finditer(text)]
+    heading_re = re.compile(r'^#{2,}\s+.+$', re.MULTILINE)
+
+    out: list[tuple[str, str, str]] = []
+    prev_end = 0
+    for m in marker_re.finditer(text):
+        # The section's heading is the last h2+ heading between the previous
+        # marker's end and this marker's start (i.e. the nearest one above it).
+        between = text[prev_end:m.start()]
+        headings = heading_re.findall(between)
+        header = headings[-1].rstrip() if headings else ''
+        out.append((m.group(1), header, m.group(2)))
+        prev_end = m.end()
+    return out
 
 
 def linkify_bullets(content: str) -> str:
@@ -128,7 +151,7 @@ def derive(detail_text: str) -> str:
     # 概要件数 <= ハイライト件数 を保証する。概要(summary の `N.` 箇条書き)が
     # ハイライト(`N.`)より多いと、読み手が件数差を不審に思うため、ここで弾く。
     # 概要は ```markdown フェンス内の番号付き箇条書き(旧版は blockquote `> N.`)。両形式を数える。
-    region_map = dict(regions)
+    region_map = {name: inner for name, _header, inner in regions}
     n_summary = len(re.findall(r'^\s*>?\s*\d+\.\s', region_map.get('summary', ''), re.MULTILINE))
     n_highlight = len(re.findall(r'^\d+\.\s', region_map.get('highlight-list', ''), re.MULTILINE))
     if n_summary > n_highlight:
@@ -146,8 +169,7 @@ def derive(detail_text: str) -> str:
     parts.append(light_title)
     parts.append('')
 
-    for name, inner in regions:
-        header = SECTION_HEADERS.get(name, f'## {name}')
+    for name, header, inner in regions:
         if name in LINKED_SECTIONS:
             inner = linkify_bullets(inner)
         if header:

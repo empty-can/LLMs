@@ -46,6 +46,7 @@ SKILL.md の Phase 1/2 チェックリストのうち、機械的に検証可能
 - [ ] **概要≤ハイライト件数**: 概要 bullet（`{{OVERALL_SUMMARY_BULLETS}}` 相当）の項目数が ハイライト bullet 数と**一致**。超過は **[CRITICAL]**（`derive_light.py` がエラー終了し `latest.md` 生成失敗のため）
 - [ ] **内部リンク／アンカー整合**: bullet 内の `(#anchor)` が対応する `## N. <タイトル>` の GFM アンカー（番号含む・Unicode 保持）と一致。不一致は **[IMPORTANT]**
 - [ ] **h2 番号整合**: ハイライト / 新規追加 / 大幅更新 配下の個別テーマ h2 に `## N. <title>` 形式の番号が付与され、固定 category 見出しと新着情報配下には番号が無い。違反は **[IMPORTANT]**
+- [ ] **ライト版見出しの詳細版継承一致**: `LATEST_LIGHT` の各セクション見出し(`## ...`)が、`LATEST_DETAIL` の対応する light マーカー直前のセクション見出しと**文言・出現順とも一致**する。ライト版見出しは `derive_light.py` が詳細版テンプレから継承するため本来必ず一致し、不一致は「詳細版テンプレの見出し編集後にライト版を再生成し忘れた」「詳細版で light マーカー直前に余計な `## 見出し` が混入した」のいずれかを示す → **[IMPORTANT]**
 - [ ] **軽微更新の複数リリース分割**: `軽微な更新` で changelog 等 1 ページに複数のリリースエントリ(`DIFF_CONTENT` 上で複数の `<Update label="...">` 等)が追加されている場合、ページ単位 1 bullet に潰さずリリース単位にネスト分割され(各 `**vX.Y.Z**`)、各変更が **1 項目 1 bullet** で列挙されている。複数リリースや多数の変更を読点(、)連結の長大な 1 文に圧縮していれば **[IMPORTANT]**
 - [ ] **日付の日本語表記**: **本文中の**全ての年月日が `YYYY年MM月DD日` 表記（`Week N` のみ英語例外）。frontmatter の `作成日` と末尾フッタ HTML コメント内の日付（`generated_at_full`）は機械可読メタデータのため ISO 形式が正で**対象外**。違反は **[SUGGESTION]**
 - [ ] **メタデータ整合(PT -1日ルール)**: 末尾フッタの `base_commit` / `head_commit` が `BASE_COMMIT` / `HEAD_COMMIT` と hash 一致。frontmatter の `対象期間` は `base_commit` / `head_commit` の各コミット日付(`git log -1 --format=%cs <commit>`)の **前日**、`作成日` は末尾フッタ `generated_at_full` の日付の **前日**(JST 15:00 実行=PT 前日基準のため意図的に -1 日。`generated_at_full` 自体は実時刻で -1 しない)。**対象期間がコミット日付と「同日」(=旧ルールのまま -1 されていない)場合や hash 不一致**は **[IMPORTANT]**
