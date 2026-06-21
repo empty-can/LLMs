@@ -346,6 +346,7 @@ def cmd_scan(args) -> int:
     items = reg["items"]
     n_new = 0
     n_seen = 0
+    n_revived = 0
     linkless: list[tuple[str, str, str]] = []   # (name, num, title) -- req4 en-page gap
     for name, detail, _light in iter_pairs(sr):
         if not detail.is_file():
@@ -359,6 +360,17 @@ def cmd_scan(args) -> int:
                 n_seen += 1
                 key = f"{name}::{lnk.en_url}"
                 if key in items:
+                    # G1: latest-detail.md is regenerated each period. If a
+                    # previously injected en link reappears in the LIVE file WITHOUT
+                    # its ja link (the regenerated live re-surfaced it un-injected,
+                    # i.e. already_ja is False here), revive it so check/inject
+                    # reprocess it. Archives are frozen snapshots -> never revived.
+                    it = items[key]
+                    if name == "live" and it["status"] == "injected":
+                        it["status"] = "pending"
+                        it["injected_at"] = None
+                        it["last_checked"] = None
+                        n_revived += 1
                     continue
                 term, strong = pick_probe(line)
                 items[key] = {
@@ -379,7 +391,8 @@ def cmd_scan(args) -> int:
         for num, title in find_linkless_highlights(text):
             linkless.append((name, num, title))
     save_registry(rp, reg)
-    print(f"scan: +{n_new} new, {n_seen} en-only links seen, {len(items)} in registry")
+    print(f"scan: +{n_new} new, {n_revived} revived, {n_seen} en-only links seen, "
+          f"{len(items)} in registry")
     print(f"      registry: {rp}")
     if linkless:
         print(f"\nWARNING: {len(linkless)} link-less highlight(s) -- official page not yet")
