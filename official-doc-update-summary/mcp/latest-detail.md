@@ -1,66 +1,68 @@
 ---
-対象期間: 2026年06月16日 〜 2026年06月17日
-作成日: 2026-06-17
+対象期間: 2026年06月17日 〜 2026年06月20日
+作成日: 2026-06-20
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、新規ページ 1 件（Enterprise-Managed Authorization Interest Group の Charter）の追加が中心です。
+今回の対象期間は、「Build an MCP client」チュートリアルへの Rust 実装の追加が中心です。
 
 主要なものを以下に挙げます。
 
-1. エンタープライズ IdP・MCP クライアント・MCP サーバーの三者間で Enterprise-Managed Authorization 拡張（ID-JAG フロー）の相互運用性を調整する Enterprise-Managed Authorization Interest Group の Charter が新設
+1. MCP クライアント構築チュートリアルに Rust（`rmcp` + `genai`）実装タブが追加され、環境構築から子プロセスでのサーバー接続・対話ループ・クリーンアップまでの完全なサンプルが提供されるようになった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Enterprise-Managed Authorization Interest Group の新設**](#1-enterprise-managed-authorization-interest-group-の新設):  
-  Enterprise-Managed Authorization 拡張（`io.modelcontextprotocol/enterprise-managed-authorization`）の実運用導入を調整する Interest Group の Charter が新規公開された。エンタープライズ IdP・MCP クライアント・MCP サーバーの認可サーバーが ID-JAG フローで端から端まで相互運用できて初めて価値が出る拡張のため、導入経験の収集・実装間の互換性ギャップの洗い出し・検証済み課題の Authorization IG / ext-auth 仕様へのフィードバックを担う。
+1. [**MCP クライアント構築チュートリアルに Rust 実装を追加**](#1-mcp-クライアント構築チュートリアルに-rust-実装を追加):  
+  「Build an MCP client」に Rust タブが新設され、`rmcp` クレート（Rust MCP SDK）と `genai` クレートを用いた完全なクライアント実装が、プロジェクト作成・API キー設定からサーバーへの接続、ツール変換、対話ループ、クリーンアップまで一通り解説された。
 <!-- light:highlight-list:end -->
 
-## 1. Enterprise-Managed Authorization Interest Group の新設
+## 1. MCP クライアント構築チュートリアルに Rust 実装を追加
 
-エンタープライズ環境向けの認可を扱う **Enterprise-Managed Authorization Interest Group**（EMA IG）の Charter が新規ページとして公開されました。このグループは、[Enterprise-Managed Authorization 拡張](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization)（`io.modelcontextprotocol/enterprise-managed-authorization`）の実世界での導入を、IdP ベンダー・MCP クライアント実装者・MCP サーバー運用者の三者が協調して進めるための場です。この拡張の ID-JAG フローは、エンタープライズ IdP・MCP クライアント・MCP サーバーの認可サーバーが端から端まで（end to end）相互運用できて初めて価値を発揮します。そのため本グループは、導入経験を集約し、独立した実装間の互換性ギャップを洗い出し、検証済みの課題を [Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth) と [ext-auth](https://github.com/modelcontextprotocol/ext-auth) 仕様へ還元することをミッションとしています。
+「Build an MCP client」チュートリアルに **Rust タブ** が追加され、Python・Node.js・Java・Kotlin・C#・Ruby に続く言語実装として Rust の完全なクライアント実装が掲載されました。この実装は [`rmcp`](https://github.com/modelcontextprotocol/rust-sdk) クレート（Rust 公式 MCP SDK）が提供する子プロセストランスポート（`TokioChildProcess`）でローカル MCP サーバーを起動・接続し、[`genai`](https://github.com/jeremychone/rust-genai) クレート経由で Claude（`claude-sonnet-4-20250514`）へリクエストを送る構成です。`Cargo.toml` の依存定義から始まり、`MCPClient` 構造体の定義、サーバー接続管理（`connect_to_server`）、MCP ツールを `genai` のツール定義へ変換する `convert_tools`、クエリ処理ロジック（`process_query`）、対話ループ（`chat_loop`）、セッションを確実に終了させるクリーンアップ（`cleanup`）、`#[tokio::main]` のエントリポイントまで、段階を追って `src/main.rs` を組み立てる流れになっています。
 
-スコープ（In Scope）には、特定の IdP・MCP クライアント・MCP 認可サーバーを ID-JAG 交換の全工程で組み合わせた**相互運用レポート**、EMA 適合性スイートが検証すべきアサーション（ID-JAG 検証、audience・issuer チェック、クレームマッピング、アカウントリンク、エラー処理）を特定する**適合性シナリオの提供**、テナント分離・管理者同意フロー・JIT プロビジョニング・クレームから権限へのマッピング・トークン有効期間などの**デプロイメントパターン**の共有、既存 IdP 製品が仕様どおりに ID-JAG を発行・検証できない箇所を整理する**IdP 能力ギャップ**のカタログ化、実装中に見つかった曖昧さを ext-auth リポジトリへルーティングする**仕様明確化リクエスト**が含まれます。一方、Client Credentials・DPoP・Workload Identity Federation・コア OAuth 2.1 フローといった他の認可プロファイル（[Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth) の担当）、ID-JAG フロー固有でない一般的なエンタープライズ展開の話題、個別 IdP・クライアント製品のステップバイステップ設定手順、反トラスト方針に抵触する競争上機微な情報は Out of Scope とされています。
+クエリ処理では、ユーザーのクエリと利用可能なツール一覧をまず Claude へ送り、Claude がツール呼び出しを要求した場合は MCP セッション経由で各ツールを実行し、その結果を Claude へ返して最終的な自然言語応答を得るという、ツール呼び出しのラウンドトリップが実装されています。チュートリアル末尾には、メソッドと自由関数を `impl MCPClient` ブロック内外の正しいスコープに配置することの確認、`cargo fmt --check` / `cargo check` でのコンパイル確認、`cargo run -- python path/to/server.py` のような起動方法、エラーハンドリング・リソース管理・セキュリティのベストプラクティス、サーバーコマンドや環境ファイル（`.env`）に関するトラブルシューティングまでが含まれます。なお Rust タブの各サブ見出し（System Requirements 等）は他言語タブと共通の見出しテキストを使うため、本変更に固有のセクションアンカーは付与されず、ページ全体へのリンクとしています。
 
-Facilitator は Anthropic の Paul Carleton 氏（[@pcarleton](https://github.com/pcarleton)）と Okta の Aaron Parecki 氏（[@aaronpk](https://github.com/aaronpk)）で、Lead Maintainer の Den Delimarsky 氏がスポンサーを務めます。2 週間ごとに 45 分の Interop Call を開催し、デプロイメントレポート・互換性マトリクスのレビュー・仕様フィードバックのトリアージを行います。関連グループとして、親グループである [Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth)（EMA の仕様変更はここで育成され、本 IG の知見がアジェンダに反映される）、ID-JAG フローにおける token-audience の混同・issuer 検証・アカウントリンクのリスクが境界領域となる [Security IG](https://modelcontextprotocol.io/community/interest-groups/security)、EMA クライアント実装を出荷する SDK Maintainers が挙げられています。Charter の初版は 2026年06月16日付です。
-
-- [Enterprise-Managed Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization)
+- [MCP クライアントを構築する - MCP Docs](https://modelcontextprotocol.io/docs/develop/build-client)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Enterprise-Managed Authorization Charter**](#1-enterprise-managed-authorization-interest-group-の新設) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization)):  
-  Enterprise-Managed Authorization Interest Group の Charter。EMA 拡張（ID-JAG フロー）の IdP・クライアント・サーバー間の相互運用調整と実装フィードバックを担う（詳細はハイライト1参照）。
+*(新規追加されたページはありません)*
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-*(大幅に更新されたページはありません)*
+- [**MCP クライアントを構築する（Build an MCP client）**](#1-mcp-クライアント構築チュートリアルに-rust-実装を追加) ([MCP Docs](https://modelcontextprotocol.io/docs/develop/build-client)):  
+  Rust 実装タブを新設し、`rmcp` + `genai` を用いた完全なクライアント実装（接続・ツール変換・対話ループ・クリーンアップ）を約470行にわたり追加（詳細はハイライト1参照）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、新設 IG に伴う既存ページの相互参照追加です。
+今回の軽微な更新は、対応クライアントの追記と仕様リンクの更新です。
 
 **機能改善**
-- [Authorization Charter](https://modelcontextprotocol.io/community/interest-groups/auth#related-groups): 関連グループ（Related Groups）に新設の Enterprise-Managed Authorization IG への参照を追加。Profiles WG が策定する EMA 拡張について IdP・クライアント・サーバーの相互運用テストを調整し、そこで浮上した仕様変更要求が Authorization IG へ差し戻される旨を明記。
+- MCP Apps の対応クライアント一覧に **Microsoft 365 Copilot** を追加。Claude・Claude Desktop・VS Code GitHub Copilot・Goose・Postman・MCPJam・Archestra.AI に並ぶ MCP Apps 対応ホストとして掲載。 — [MCP Docs](https://modelcontextprotocol.io/extensions/apps/overview#client-support)
+- 拡張機能のクライアント対応マトリクス（Support matrix）に **Microsoft 365 Copilot** と **PostHog Code** の 2 クライアントを追加。いずれも MCP Apps 列に対応（`<CHECK />`）として記載。 — [MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+
+**その他**
+- Enterprise-Managed Authorization 拡張ページの Specification カードのリンク先を、ext-auth リポジトリの `specification/draft/` から `specification/stable/` 配下の仕様（`enterprise-managed-authorization.mdx`）へ変更。 — [MCP Docs](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-16.md](./archives/latest/2026-06-16.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-16.md](./archives/latest-detail/2026-06-16.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-17.md](./archives/latest/2026-06-17.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-17.md](./archives/latest-detail/2026-06-17.md)
 
 <!--
-base_commit: 903188279ac643213af8353f48bbc9b9c6dff390
-head_commit: 36ebe5ec3ed55ca4d8d65463453e514b6892594d
-generated_at_full: 2026-06-18T15:15:28+09:00
+base_commit: 36ebe5ec3ed55ca4d8d65463453e514b6892594d
+head_commit: fd2ef0a97668a2c792c7c16e7eee4a5d0a25174d
+generated_at_full: 2026-06-21T09:26:15+09:00
 -->

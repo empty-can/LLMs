@@ -1,46 +1,50 @@
 ---
-対象期間: 2026年06月16日 〜 2026年06月17日
-作成日: 2026-06-17
+対象期間: 2026年06月17日 〜 2026年06月20日
+作成日: 2026-06-20
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、新規ページ 1 件（Enterprise-Managed Authorization Interest Group の Charter）の追加が中心です。
+今回の対象期間は、「Build an MCP client」チュートリアルへの Rust 実装の追加が中心です。
 
 主要なものを以下に挙げます。
 
-1. エンタープライズ IdP・MCP クライアント・MCP サーバーの三者間で Enterprise-Managed Authorization 拡張（ID-JAG フロー）の相互運用性を調整する Enterprise-Managed Authorization Interest Group の Charter が新設
+1. MCP クライアント構築チュートリアルに Rust（`rmcp` + `genai`）実装タブが追加され、環境構築から子プロセスでのサーバー接続・対話ループ・クリーンアップまでの完全なサンプルが提供されるようになった
 ```
 
 ## ハイライト
 
-1. [**Enterprise-Managed Authorization Interest Group の新設**](./latest-detail.md#1-enterprise-managed-authorization-interest-group-の新設):  
-  Enterprise-Managed Authorization 拡張（`io.modelcontextprotocol/enterprise-managed-authorization`）の実運用導入を調整する Interest Group の Charter が新規公開された。エンタープライズ IdP・MCP クライアント・MCP サーバーの認可サーバーが ID-JAG フローで端から端まで相互運用できて初めて価値が出る拡張のため、導入経験の収集・実装間の互換性ギャップの洗い出し・検証済み課題の Authorization IG / ext-auth 仕様へのフィードバックを担う。
+1. [**MCP クライアント構築チュートリアルに Rust 実装を追加**](./latest-detail.md#1-mcp-クライアント構築チュートリアルに-rust-実装を追加):  
+  「Build an MCP client」に Rust タブが新設され、`rmcp` クレート（Rust MCP SDK）と `genai` クレートを用いた完全なクライアント実装が、プロジェクト作成・API キー設定からサーバーへの接続、ツール変換、対話ループ、クリーンアップまで一通り解説された。
 
 ## 新規追加されたページ
 
-- [**Enterprise-Managed Authorization Charter**](./latest-detail.md#1-enterprise-managed-authorization-interest-group-の新設) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization)):  
-  Enterprise-Managed Authorization Interest Group の Charter。EMA 拡張（ID-JAG フロー）の IdP・クライアント・サーバー間の相互運用調整と実装フィードバックを担う（詳細はハイライト1参照）。
+*(新規追加されたページはありません)*
 
 ## 大幅に更新されたページ
 
-*(大幅に更新されたページはありません)*
+- [**MCP クライアントを構築する（Build an MCP client）**](./latest-detail.md#1-mcp-クライアント構築チュートリアルに-rust-実装を追加) ([MCP Docs](https://modelcontextprotocol.io/docs/develop/build-client)):  
+  Rust 実装タブを新設し、`rmcp` + `genai` を用いた完全なクライアント実装（接続・ツール変換・対話ループ・クリーンアップ）を約470行にわたり追加（詳細はハイライト1参照）。
 
 ## 軽微な更新
 
-今回の軽微な更新は、新設 IG に伴う既存ページの相互参照追加です。
+今回の軽微な更新は、対応クライアントの追記と仕様リンクの更新です。
 
 **機能改善**
-- [Authorization Charter](https://modelcontextprotocol.io/community/interest-groups/auth#related-groups): 関連グループ（Related Groups）に新設の Enterprise-Managed Authorization IG への参照を追加。Profiles WG が策定する EMA 拡張について IdP・クライアント・サーバーの相互運用テストを調整し、そこで浮上した仕様変更要求が Authorization IG へ差し戻される旨を明記。
+- MCP Apps の対応クライアント一覧に **Microsoft 365 Copilot** を追加。Claude・Claude Desktop・VS Code GitHub Copilot・Goose・Postman・MCPJam・Archestra.AI に並ぶ MCP Apps 対応ホストとして掲載。 — [MCP Docs](https://modelcontextprotocol.io/extensions/apps/overview#client-support)
+- 拡張機能のクライアント対応マトリクス（Support matrix）に **Microsoft 365 Copilot** と **PostHog Code** の 2 クライアントを追加。いずれも MCP Apps 列に対応（`<CHECK />`）として記載。 — [MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+
+**その他**
+- Enterprise-Managed Authorization 拡張ページの Specification カードのリンク先を、ext-auth リポジトリの `specification/draft/` から `specification/stable/` 配下の仕様（`enterprise-managed-authorization.mdx`）へ変更。 — [MCP Docs](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-16.md](./archives/latest/2026-06-16.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-16.md](./archives/latest-detail/2026-06-16.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-17.md](./archives/latest/2026-06-17.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-17.md](./archives/latest-detail/2026-06-17.md)
 
 <!--
-base_commit: 903188279ac643213af8353f48bbc9b9c6dff390
-head_commit: 36ebe5ec3ed55ca4d8d65463453e514b6892594d
-generated_at_full: 2026-06-18T15:15:28+09:00
+base_commit: 36ebe5ec3ed55ca4d8d65463453e514b6892594d
+head_commit: fd2ef0a97668a2c792c7c16e7eee4a5d0a25174d
+generated_at_full: 2026-06-21T09:26:15+09:00
 -->
