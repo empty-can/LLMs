@@ -172,6 +172,67 @@ def iter_doc_links(text: str):
             )
 
 
+def _gh_slug(heading_text: str) -> str:
+    """GitHub-style anchor slug from a Markdown heading text (no leading #)."""
+    s = heading_text.lower()
+    s = re.sub(r"[^\w\s-]", "", s)   # drop chars other than word chars, spaces, hyphens
+    s = re.sub(r"\s+", "-", s.strip())
+    return s
+
+
+def section_body(body: str, anchor: str) -> str:
+    """Return the slice of *body* belonging to the section identified by *anchor*.
+
+    Handles both shapes that ``fetch_ja`` may return:
+
+    * **Rendered HTML**: locates ``id="<anchor>"`` or ``id='<anchor>'``; the section
+      runs from that point to the next ``<h1``..``<h6`` tag (exclusive), or end-of-body.
+    * **Raw Markdown**: locates the heading line whose GitHub-style slug equals
+      *anchor*; the section runs from that heading line to the next Markdown
+      heading line (``^#{1,6} ``), exclusive.
+
+    Falls back to returning *body* unchanged if the anchor cannot be located in
+    either shape (prevents false-negative regression -- the item routes to manual
+    rather than being stuck at pending forever).
+    """
+    # --- HTML shape ---
+    # find id="anchor" or id='anchor'
+    html_id_re = re.compile(
+        r"""id=(?:"(?P<dq>[^"]*?)"|'(?P<sq>[^']*?)')""", re.IGNORECASE
+    )
+    for m in html_id_re.finditer(body):
+        found = m.group("dq") if m.group("dq") is not None else m.group("sq")
+        if found == anchor:
+            start = m.start()
+            # find the next heading tag after this point
+            next_h = re.search(r"<h[1-6][\s>]", body[start + 1:], re.IGNORECASE)
+            end = (start + 1 + next_h.start()) if next_h else len(body)
+            return body[start:end]
+
+    # --- Markdown shape ---
+    lines = body.split("\n")
+    in_section = False
+    section_lines: list[str] = []
+    heading_re = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
+    for line in lines:
+        hm = heading_re.match(line)
+        if hm:
+            if in_section:
+                # hit the next heading -> section ends
+                break
+            slug = _gh_slug(hm.group(2))
+            if slug == anchor:
+                in_section = True
+                section_lines.append(line)
+        elif in_section:
+            section_lines.append(line)
+    if section_lines:
+        return "\n".join(section_lines)
+
+    # --- fallback: anchor not found in either shape ---
+    return body
+
+
 def pick_probe(line: str):
     """Pick the most *distinctive* inline-code token on a line as a freshness probe.
 
@@ -377,7 +438,7 @@ def cmd_check(args) -> int:
             it["status"] = "pending"
             pending.append((k, "section heading not present yet"))
         elif strong and term:
-            if term in body:
+            if term in section_body(body, anchor):
                 it["status"] = "ready"      # distinctive token present -> change reflected
                 ready.append((k, f"reflected (`{term}`)"))
             else:
