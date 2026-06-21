@@ -84,10 +84,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 EN_PREFIX = "https://code.claude.com/docs/en/"
-# en-only official link with SHORT label "English" -- kept for cmd_inject's en_frag search
-EN_LINK_RE = re.compile(
-    r"\[English\]\((" + re.escape(EN_PREFIX) + r"([^)#]+?)(?:#([^)]+))?)\)"
-)
 # any Markdown link whose URL starts with the en prefix, capturing label / url / slug / anchor
 _ANY_EN_LINK_RE = re.compile(
     r"\[([^\]]+)\]\((" + re.escape(EN_PREFIX) + r"([^)#]+?)(?:#([^)]+))?)\)"
@@ -418,6 +414,33 @@ def git(*a) -> None:
     subprocess.run(["git", "-C", str(repo_root()), *a], check=True)
 
 
+def inject_ja_into_text(text: str, en_url: str, ja_url: str):
+    """Prefix ``[日本語](ja_url) / `` before EVERY un-injected occurrence of the en
+    link ``[<label>](en_url)`` in *text*, preserving each occurrence's own label.
+
+    Returns ``(new_text, n_inserted)``. Safe against double-injection: an occurrence
+    already preceded by a 日本語 link (form 3) is left untouched. Replacement is done
+    per line via ``re.sub`` with a callback, so only original match spans are
+    considered and inserted text is never re-processed (a blind ``str.replace`` would
+    corrupt an already-injected occurrence whose ``[label](en_url)`` substring is
+    identical to a not-yet-injected one).
+    """
+    n = 0
+
+    def repl(m: "re.Match") -> str:
+        nonlocal n
+        if m.group(2) != en_url:
+            return m.group(0)                       # a different page -> leave as-is
+        if _JA_BEFORE_RE.search(m.string[: m.start()]):
+            return m.group(0)                       # already injected -> leave as-is
+        n += 1
+        return f"[日本語]({ja_url}) / {m.group(0)}"
+
+    # per line so _JA_BEFORE_RE's end-anchored prefix check cannot span lines
+    out = [_ANY_EN_LINK_RE.sub(repl, line) for line in text.split("\n")]
+    return "\n".join(out), n
+
+
 def cmd_inject(args) -> int:
     sr = summary_root(Path(args.root) if args.root else None)
     rp = registry_path(sr)
@@ -438,29 +461,27 @@ def cmd_inject(args) -> int:
         if name not in pairs:
             skipped.append((k, "no file pair (live archived?)"))
             continue
-        en_frag = f"[English]({it['en_url']})"
-        new_frag = f"[日本語]({it['ja_url']}) / {en_frag}"
-        edits = []
-        ambiguous = False
+        en_url, ja_u = it["en_url"], it["ja_url"]
+        edits = []            # (fp, new_text) for files that gained a ja link
+        n_total = 0           # occurrences newly prefixed across both files
+        present = False       # the en link exists in at least one file
         for fp in pairs[name]:
             if not fp.is_file():
                 continue
             txt = read_text(fp)
-            if new_frag in txt:  # already injected here -> idempotent no-op
-                continue
-            c = txt.count(en_frag)
-            if c == 0:
-                continue
-            if c > 1:
-                ambiguous = True
-                break
-            edits.append((fp, txt.replace(en_frag, new_frag, 1)))
-        if ambiguous:
-            skipped.append((k, "ambiguous (en link appears >1x in a file)"))
-            continue
+            if any(l.en_url == en_url for l in iter_doc_links(txt)):
+                present = True
+            new_txt, n = inject_ja_into_text(txt, en_url, ja_u)
+            if n:
+                edits.append((fp, new_txt))
+                n_total += n
         label = f"{name} {it['slug']}{('#' + it['anchor']) if it['anchor'] else ''}"
+        if not present:
+            skipped.append((k, "en link not in current files (regenerated?)"))
+            continue
         if not edits:
-            it["status"] = "injected"          # both files already carry the ja link
+            # en link present but every occurrence already carries a ja link
+            it["status"] = "injected"
             it["injected_at"] = it["injected_at"] or today()
             applied.append(label + "  (already present)")
             continue
@@ -470,7 +491,8 @@ def cmd_inject(args) -> int:
                 changed.add(fp)
             it["status"] = "injected"
             it["injected_at"] = today()
-        applied.append(label + ("  (applied)" if args.apply else "  (would apply)"))
+        verb = "applied" if args.apply else "would apply"
+        applied.append(f"{label}  ({verb} x{n_total})")
 
     if args.apply:
         save_registry(rp, reg)
@@ -492,7 +514,7 @@ def cmd_inject(args) -> int:
             "refactor(official-docs): ja 翻訳追従リンクを自動注入 "
             f"({len([s for s in applied if 'applied' in s])}件)\n\n"
             "req4 watch: live ja ドキュメントへの反映を検出した en 単独リンクへ\n"
-            "[日本語] リンクを追加。本文は不変（リンク注入のみ・置換数==1検証済）。\n\n"
+            "[日本語] リンクを追加。本文は不変（リンク注入のみ・元ラベル保持・全出現置換）。\n\n"
             f"{body}\n\n"
             "Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>\n"
         )
