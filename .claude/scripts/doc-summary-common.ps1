@@ -67,22 +67,32 @@ function Invoke-Git {
 }
 
 # --- bot ブランチ限定セキュア push ------------------------------------------
-# GCM を一時無効化し、DPAPI 復号した PAT を inline credential helper 経由で
-# その push 1 回だけ git に渡す（URL/引数/ログに露出させない）。無人実行で GCM の
-# GUI プロンプトを出さずに非対話 push できる。
+# GCM を一時無効化し、PAT を inline credential helper 経由でその push 1 回だけ git に
+# 渡す（URL/引数/ログに露出させない）。無人実行で GCM の GUI プロンプトを出さずに
+# 非対話 push できる。
+# トークン取得元は (1) 環境変数 GITHUB_PERSONAL_ACCESS_TOKEN を優先し、(2) 無ければ
+# DPAPI 暗号化ファイル $TOKEN_FILE にフォールバックする。env 変数は失効時の再設定が
+# 容易（ファイル再暗号化が不要）で、User スコープに置けば Interactive ログオンの
+# スケジュールタスクからも参照できる。
 function Invoke-BotPush {
     param([string]$Branch)
-    if (-not (Test-Path $TOKEN_FILE)) {
-        throw "トークンファイル $TOKEN_FILE が無い。初回セットアップ (Export-Clixml) を実施してください"
+    $token = $env:GITHUB_PERSONAL_ACCESS_TOKEN
+    if (-not [string]::IsNullOrEmpty($token)) {
+        $tokenSrc = "env:GITHUB_PERSONAL_ACCESS_TOKEN"
+    } else {
+        if (-not (Test-Path $TOKEN_FILE)) {
+            throw "環境変数 GITHUB_PERSONAL_ACCESS_TOKEN が未設定で、トークンファイル $TOKEN_FILE も無い。どちらかを用意してください"
+        }
+        # DPAPI 復号（同一 Windows ユーザー・同一マシンでのみ成功する）
+        try {
+            $sec = Import-Clixml $TOKEN_FILE
+            $token = (New-Object System.Management.Automation.PSCredential("x-access-token", $sec)).GetNetworkCredential().Password
+        } catch {
+            throw "トークン復号に失敗（別ユーザー/別マシンでは復号不可）: $($_.Exception.Message)"
+        }
+        $tokenSrc = "DPAPI $TOKEN_FILE"
     }
-    # DPAPI 復号（同一 Windows ユーザー・同一マシンでのみ成功する）
-    try {
-        $sec = Import-Clixml $TOKEN_FILE
-        $token = (New-Object System.Management.Automation.PSCredential("x-access-token", $sec)).GetNetworkCredential().Password
-    } catch {
-        throw "トークン復号に失敗（別ユーザー/別マシンでは復号不可）: $($_.Exception.Message)"
-    }
-    if ([string]::IsNullOrEmpty($token)) { throw "復号したトークンが空です" }
+    if ([string]::IsNullOrEmpty($token)) { throw "トークンが空です（取得元: $tokenSrc）" }
     # sh 関数が展開する変数。PowerShell ではなく git の子 sh が参照する
     $env:GH_PUSH_TOKEN = $token
     # push も正常時に進捗・"To <url>" 等を stderr に書くため、Invoke-Git と同じく
