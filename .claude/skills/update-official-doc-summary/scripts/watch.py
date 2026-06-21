@@ -347,7 +347,8 @@ def cmd_scan(args) -> int:
     n_new = 0
     n_seen = 0
     n_revived = 0
-    linkless: list[tuple[str, str, str]] = []   # (name, num, title) -- req4 en-page gap
+    n_linkless = 0
+    linkless: list[str] = []   # registry keys of link-less highlights seen this run
     for name, detail, _light in iter_pairs(sr):
         if not detail.is_file():
             continue
@@ -389,16 +390,42 @@ def cmd_scan(args) -> int:
                 }
                 n_new += 1
         for num, title in find_linkless_highlights(text):
-            linkless.append((name, num, title))
+            # persist the link-less highlight so it survives across runs and can be
+            # resolved later (its official page does not exist yet, so there is no URL
+            # to predict -- a maintainer attaches it via 'resolve' once it appears).
+            key = f"{name}::linkless::{num}::{title}"
+            if key not in items:
+                items[key] = {
+                    "name": name,
+                    "kind": "linkless-highlight",
+                    "hl_num": num,
+                    "title": title,
+                    "en_url": None,
+                    "ja_url": None,
+                    "slug": None,
+                    "anchor": None,
+                    "term": None,
+                    "strong": False,
+                    "status": "linkless",     # awaiting human 'resolve'
+                    "first_seen": today(),
+                    "last_checked": None,
+                    "injected_at": None,
+                }
+                n_linkless += 1
+            linkless.append(key)
     save_registry(rp, reg)
-    print(f"scan: +{n_new} new, {n_revived} revived, {n_seen} en-only links seen, "
-          f"{len(items)} in registry")
+    print(f"scan: +{n_new} new, +{n_linkless} linkless, {n_revived} revived, "
+          f"{n_seen} en-only links seen, {len(items)} in registry")
     print(f"      registry: {rp}")
-    if linkless:
-        print(f"\nWARNING: {len(linkless)} link-less highlight(s) -- official page not yet")
-        print("         linked; en-page-creation watch is NOT automated (req4). Review:")
-        for nm, num, title in linkless:
-            print(f"  ! {nm:>12}  #{num} {title}")
+    unresolved = [k for k in linkless if items[k]["status"] == "linkless"]
+    if unresolved:
+        print(f"\nWARNING: {len(unresolved)} link-less highlight(s) -- official page not")
+        print("         created yet. When a page appears, attach it with:")
+        print("           watch.py resolve --key <KEY> --url <en-url> [--probe <token>]")
+        for k in unresolved:
+            it = items[k]
+            print(f"  ! {it['name']:>12}  #{it['hl_num']} {it['title']}")
+            print(f"      key: {k}")
     return 0
 
 
@@ -515,6 +542,31 @@ def inject_ja_into_text(text: str, en_url: str, ja_url: str):
     return "\n".join(out), n
 
 
+def insert_link_in_highlight(text: str, hl_num: str, link_line: str):
+    """Insert *link_line* at the end of the ``## <hl_num>. <title>`` highlight section.
+
+    A resolved link-less highlight has no existing ``[English](url)`` to anchor to, so
+    the link is appended after the section's last non-blank line (mirroring where a
+    normal highlight carries its trailing reference link), preceded by a blank line.
+    Returns ``(new_text, inserted)``; *inserted* is False if the section is not found
+    or the exact link_line is already present in it (idempotent).
+    """
+    lines = text.split("\n")
+    head_re = re.compile(r"^##\s+" + re.escape(hl_num) + r"\.\s")
+    start = next((i for i, ln in enumerate(lines) if head_re.match(ln)), None)
+    if start is None:
+        return text, False
+    end = next((i for i in range(start + 1, len(lines)) if lines[i].startswith("## ")),
+               len(lines))
+    if any(lines[i].strip() == link_line.strip() for i in range(start, end)):
+        return text, False
+    last = end - 1
+    while last > start and lines[last].strip() == "":
+        last -= 1
+    new_lines = lines[: last + 1] + ["", link_line] + lines[last + 1:]
+    return "\n".join(new_lines), True
+
+
 def cmd_inject(args) -> int:
     sr = summary_root(Path(args.root) if args.root else None)
     rp = registry_path(sr)
@@ -534,6 +586,31 @@ def cmd_inject(args) -> int:
         name = it["name"]
         if name not in pairs:
             skipped.append((k, "no file pair (live archived?)"))
+            continue
+        # resolved link-less highlight: no existing en link -> INSERT a new link line
+        # into the highlight section (detail only; light highlight bullets carry no
+        # official link). Normal items fall through to the replace-all path below.
+        if it.get("insert_hl"):
+            detail = pairs[name][0]
+            label = f"{name} #{it['hl_num']} {it['title']}"
+            if not detail.is_file():
+                skipped.append((k, "detail file missing"))
+                continue
+            link_line = f"- [日本語]({it['ja_url']}) / [English]({it['en_url']})"
+            new_txt, ins = insert_link_in_highlight(read_text(detail), it["insert_hl"],
+                                                    link_line)
+            if not ins:
+                it["status"] = "injected"          # section gone or already inserted
+                it["injected_at"] = it["injected_at"] or today()
+                applied.append(label + "  (already present / no-op)")
+                continue
+            if args.apply:
+                write_text(detail, new_txt)
+                changed.add(detail)
+                it["status"] = "injected"
+                it["injected_at"] = today()
+            verb = "applied" if args.apply else "would apply"
+            applied.append(f"{label}  ({verb} insert)")
             continue
         en_url, ja_u = it["en_url"], it["ja_url"]
         edits = []            # (fp, new_text) for files that gained a ja link
@@ -644,6 +721,65 @@ def cmd_promote(args) -> int:
     return 0
 
 
+# ------------------------------------------------------------------------ resolve
+def cmd_resolve(args) -> int:
+    """Attach a now-published official URL to a link-less highlight item.
+
+    Link-less items (seeded by scan with status='linkless') have no predicted URL --
+    their official page does not exist at generation time. Once the maintainer sees
+    the page/section appear, they supply its en URL here; the item becomes a normal
+    'pending' item so ``check`` validates the ja reflection and ``inject`` inserts the
+    link line into the highlight section. ``--list`` shows candidates; ``--ready``
+    skips ``check`` and marks the item ready for ``inject`` immediately.
+    """
+    sr = summary_root(Path(args.root) if args.root else None)
+    rp = registry_path(sr)
+    reg = load_registry(rp)
+    items = reg["items"]
+    linkless = [k for k, v in items.items() if v["status"] == "linkless"]
+
+    if args.list or not args.key:
+        if not linkless:
+            print("resolve: no 'linkless' items")
+        else:
+            print(f"resolve: {len(linkless)} linkless item(s):")
+            for k in linkless:
+                it = items[k]
+                print(f"  ? {it['name']:>12}  #{it['hl_num']} {it['title']}")
+                print(f"      key: {k}")
+        if not args.key:
+            return 0
+
+    if args.key not in items:
+        print(f"resolve: key not found: {args.key}")
+        return 2
+    it = items[args.key]
+    if it["status"] != "linkless":
+        print(f"resolve: item is not linkless (status={it['status']}): {args.key}")
+        return 2
+    if not args.url:
+        print("resolve: --url is required to resolve a key")
+        return 2
+    en = args.url
+    if not en.startswith(EN_PREFIX):
+        print(f"resolve: --url must start with {EN_PREFIX}")
+        return 2
+    slug, _, anchor = en[len(EN_PREFIX):].partition("#")
+    it["en_url"] = en
+    it["ja_url"] = ja_url(en)
+    it["slug"] = slug
+    it["anchor"] = anchor
+    it["kind"] = "ja-section" if anchor else "ja-page"
+    if args.probe:
+        it["term"], it["strong"] = args.probe, True
+    it["insert_hl"] = it["hl_num"]      # tells inject to INSERT (no existing en link)
+    it["status"] = "ready" if args.ready else "pending"
+    save_registry(rp, reg)
+    nxt = "inject --apply" if args.ready else "check"
+    print(f"resolve: {args.key}\n  -> {en}\n  status -> {it['status']} (run '{nxt}' next)")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--root", help="repo root override (default: inferred)")
@@ -658,6 +794,12 @@ def main() -> int:
     pp = sub.add_parser("promote", help="flip 'manual' items to 'ready' after human review")
     pp.add_argument("--only", help="substring filter on item key (default: all manual)")
     pp.add_argument("--list", action="store_true", help="list manual items without changing them")
+    pr = sub.add_parser("resolve", help="attach a published URL to a link-less highlight")
+    pr.add_argument("--key", help="registry key of the linkless item (omit to list)")
+    pr.add_argument("--url", help="now-published en URL (https://code.claude.com/docs/en/...)")
+    pr.add_argument("--probe", help="distinctive token to gate ja reflection (optional)")
+    pr.add_argument("--ready", action="store_true", help="skip check; mark ready for inject now")
+    pr.add_argument("--list", action="store_true", help="list linkless items and exit")
     args = ap.parse_args()
     try:
         if args.cmd == "scan":
@@ -668,6 +810,8 @@ def main() -> int:
             return cmd_inject(args)
         if args.cmd == "promote":
             return cmd_promote(args)
+        if args.cmd == "resolve":
+            return cmd_resolve(args)
     except KeyboardInterrupt:
         return 1
     return 2
