@@ -161,7 +161,7 @@ try {
         # コミットメッセージは BOM 無し UTF-8・LF で一時ファイルに書き、-F で渡す
         # （here-string を介さず文字化け/CRLF 混入を避ける）。
         $msgLines = @(
-            "refactor(official-docs): ja 翻訳追従リンクを自動注入 ($count件・watch bot)"
+            "refactor(official-docs): ja 翻訳追従リンクを自動注入 (${count}件・watch bot)"
             ""
             "req4 watch bot: live ja ドキュメントへの反映を検出した en 単独リンクへ"
             "[日本語] リンクを追加。本文は不変（リンク注入のみ・置換数==1検証済）。"
@@ -178,7 +178,7 @@ try {
         } finally {
             Remove-Item $msgFile -ErrorAction SilentlyContinue
         }
-        Write-Log "ja 追従リンクを commit ($count件)"
+        Write-Log "ja 追従リンクを commit (${count}件)"
     } else {
         Write-Log "ja 追従の新規注入なし。registry churn を revert してツリーをクリーン化"
         & git reset -q -- $SUMMARY_DIR 2>$null | Out-Null
