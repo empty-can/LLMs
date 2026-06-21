@@ -312,6 +312,8 @@ python ${DERIVE_SCRIPT} ${LATEST_DETAIL}
 スクリプトは `$LATEST_DETAIL` を読み、`$LATEST_LIGHT` を生成する。
 終了コードが非ゼロならエラー内容を標準エラーに出力して終了。
 
+> **`derive_light.py` を改修したときは**、同ディレクトリの回帰テストを実行して挙動退行が無いことを確認する: `python .claude/skills/update-official-doc-summary/scripts/test_derive_light.py`。見出しのテンプレ継承・マーカー抽出・summary 不在許容・概要≤ハイライト件数ガードを検査し、全 PASS で終了コード 0、いずれか失敗で 1 を返す（合成フィクスチャで自己完結。ライブ `latest-detail.md`/`latest.md` があれば追加でスモーク照合）。
+
 ### 13. Phase 3 第三者レビュー (doc-summary-reviewer)
 
 執筆 Agent 自身では気づけない確信的誤り(ハルシネーション)とフォーマット規約違反を、別 Agent で多層検出する。
