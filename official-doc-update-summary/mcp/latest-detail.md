@@ -1,34 +1,34 @@
 ---
-対象期間: 2026年06月17日 〜 2026年06月20日
-作成日: 2026-06-20
+対象期間: 2026年06月20日 〜 2026年06月22日
+作成日: 2026-06-22
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、「Build an MCP client」チュートリアルへの Rust 実装の追加が中心です。
+今回の対象期間は、Interceptors ワーキンググループ憲章のリーダーシップ表にリードが1名追加された1件の軽微な変更のみです。仕様・スコープ・運用ルールの記述に変更はありません。
 
 主要なものを以下に挙げます。
 
-1. MCP クライアント構築チュートリアルに Rust（`rmcp` + `genai`）実装タブが追加され、環境構築から子プロセスでのサーバー接続・対話ループ・クリーンアップまでの完全なサンプルが提供されるようになった
+1. Interceptors ワーキンググループのリーダーシップ表に新リード（Ola Hungerford / Nordstrom）が追加され、リードが4名から5名になった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**MCP クライアント構築チュートリアルに Rust 実装を追加**](#1-mcp-クライアント構築チュートリアルに-rust-実装を追加):  
-  「Build an MCP client」に Rust タブが新設され、`rmcp` クレート（Rust MCP SDK）と `genai` クレートを用いた完全なクライアント実装が、プロジェクト作成・API キー設定からサーバーへの接続、ツール変換、対話ループ、クリーンアップまで一通り解説された。
+1. [**Interceptors ワーキンググループのリーダーシップに新メンバーを追加**](#1-interceptors-ワーキンググループのリーダーシップに新メンバーを追加):  
+  Interceptors Charter の Leadership 表に Ola Hungerford 氏（Nordstrom、`@olaservo`）が Lead として追加され、リードが4名から5名に増えた。仕様・スコープ・意思決定権限などの記述に変更はなく、運営体制への人員追加のみ。
 <!-- light:highlight-list:end -->
 
-## 1. MCP クライアント構築チュートリアルに Rust 実装を追加
+## 1. Interceptors ワーキンググループのリーダーシップに新メンバーを追加
 
-「Build an MCP client」チュートリアルに **Rust タブ** が追加され、Python・Node.js・Java・Kotlin・C#・Ruby に続く言語実装として Rust の完全なクライアント実装が掲載されました。この実装は [`rmcp`](https://github.com/modelcontextprotocol/rust-sdk) クレート（Rust 公式 MCP SDK）が提供する子プロセストランスポート（`TokioChildProcess`）でローカル MCP サーバーを起動・接続し、[`genai`](https://github.com/jeremychone/rust-genai) クレート経由で Claude（`claude-sonnet-4-20250514`）へリクエストを送る構成です。`Cargo.toml` の依存定義から始まり、`MCPClient` 構造体の定義、サーバー接続管理（`connect_to_server`）、MCP ツールを `genai` のツール定義へ変換する `convert_tools`、クエリ処理ロジック（`process_query`）、対話ループ（`chat_loop`）、セッションを確実に終了させるクリーンアップ（`cleanup`）、`#[tokio::main]` のエントリポイントまで、段階を追って `src/main.rs` を組み立てる流れになっています。
+MCP コミュニティの **Interceptors ワーキンググループ憲章（Interceptors Charter）** の「Leadership」セクションに掲載されるリードが 1 名追加されました。新たに **Ola Hungerford 氏（所属: Nordstrom、GitHub: `@olaservo`、Term: Initial）** が Lead として加わり、これまでの Sambhav Kothari 氏（Bloomberg）・Peder Holdgaard Pedersen 氏（Saxo Bank）・Kurt Degiorgio 氏（Bloomberg）・Uk-Jae Jeong 氏（Bloomberg）の 4 名から、リードは合計 5 名となりました。
 
-クエリ処理では、ユーザーのクエリと利用可能なツール一覧をまず Claude へ送り、Claude がツール呼び出しを要求した場合は MCP セッション経由で各ツールを実行し、その結果を Claude へ返して最終的な自然言語応答を得るという、ツール呼び出しのラウンドトリップが実装されています。チュートリアル末尾には、メソッドと自由関数を `impl MCPClient` ブロック内外の正しいスコープに配置することの確認、`cargo fmt --check` / `cargo check` でのコンパイル確認、`cargo run -- python path/to/server.py` のような起動方法、エラーハンドリング・リソース管理・セキュリティのベストプラクティス、サーバーコマンドや環境ファイル（`.env`）に関するトラブルシューティングまでが含まれます。なお Rust タブの各サブ見出し（System Requirements 等）は他言語タブと共通の見出しテキストを使うため、本変更に固有のセクションアンカーは付与されず、ページ全体へのリンクとしています。
+変更は Leadership 表への 1 行追加のみで、ワーキンググループの種別（Working Group）・ミッション・スコープ・関連グループ・意思決定権限といった憲章本文の記述には変更はありません。Interceptors ワーキンググループは、ツール呼び出し・リソースアクセス・プロンプト処理・サンプリング・エリシテーションといった文脈操作を傍受・検証・変換する仕組みを、検証器（validator）と変換器（mutator）の 2 種類からなる新しい MCP プリミティブとして標準化することを目的とするグループです。今回の更新は、その運営体制に関する人員追記にあたります。
 
-- [MCP クライアントを構築する - MCP Docs](https://modelcontextprotocol.io/docs/develop/build-client)
+- [Interceptors 憲章（Interceptors Charter） - MCP Docs](https://modelcontextprotocol.io/community/working-groups/interceptors#leadership)
 
 ## 新規追加されたページ
 
@@ -39,30 +39,25 @@
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**MCP クライアントを構築する（Build an MCP client）**](#1-mcp-クライアント構築チュートリアルに-rust-実装を追加) ([MCP Docs](https://modelcontextprotocol.io/docs/develop/build-client)):  
-  Rust 実装タブを新設し、`rmcp` + `genai` を用いた完全なクライアント実装（接続・ツール変換・対話ループ・クリーンアップ）を約470行にわたり追加（詳細はハイライト1参照）。
+*(大幅に更新されたページはありません)*
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、対応クライアントの追記と仕様リンクの更新です。
-
-**機能改善**
-- MCP Apps の対応クライアント一覧に **Microsoft 365 Copilot** を追加。Claude・Claude Desktop・VS Code GitHub Copilot・Goose・Postman・MCPJam・Archestra.AI に並ぶ MCP Apps 対応ホストとして掲載。 — [MCP Docs](https://modelcontextprotocol.io/extensions/apps/overview#client-support)
-- 拡張機能のクライアント対応マトリクス（Support matrix）に **Microsoft 365 Copilot** と **PostHog Code** の 2 クライアントを追加。いずれも MCP Apps 列に対応（`<CHECK />`）として記載。 — [MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+今回の軽微な更新は、ワーキンググループ憲章の運営体制に関する追記 1 件です。
 
 **その他**
-- Enterprise-Managed Authorization 拡張ページの Specification カードのリンク先を、ext-auth リポジトリの `specification/draft/` から `specification/stable/` 配下の仕様（`enterprise-managed-authorization.mdx`）へ変更。 — [MCP Docs](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization)
+- Interceptors ワーキンググループ憲章の Leadership 表に新リード（Ola Hungerford 氏 / Nordstrom）を追加（詳細はハイライト1参照）。 — [Interceptors 憲章（Interceptors Charter） - MCP Docs](https://modelcontextprotocol.io/community/working-groups/interceptors#leadership)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-17.md](./archives/latest/2026-06-17.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-17.md](./archives/latest-detail/2026-06-17.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-20.md](./archives/latest/2026-06-20.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-20.md](./archives/latest-detail/2026-06-20.md)
 
 <!--
-base_commit: 36ebe5ec3ed55ca4d8d65463453e514b6892594d
-head_commit: fd2ef0a97668a2c792c7c16e7eee4a5d0a25174d
-generated_at_full: 2026-06-21T09:26:15+09:00
+base_commit: fd2ef0a97668a2c792c7c16e7eee4a5d0a25174d
+head_commit: db1b606290c053b1530a48339df97fa7fdaba745
+generated_at_full: 2026-06-23T15:37:51+09:00
 -->
