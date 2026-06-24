@@ -1,156 +1,131 @@
 ---
-対象期間: 2026年06月20日 〜 2026年06月22日
-作成日: 2026-06-22
+対象期間: 2026年06月22日 〜 2026年06月23日
+作成日: 2026-06-23
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は Claude Code v2.1.186（2026年06月22日）のリリースが中心で、新規ページ「plugin-relevance」の追加と、それに伴う多数のリファレンスページの更新がありました。
+今回の対象期間は Claude Code v2.1.187（2026年06月23日）のリリースを中心に、エージェントビュー（バックグラウンドセッション）と Slack 連携のドキュメント更新がありました。新規ページの追加はありません。
 
 主要なものを以下に挙げます。
 
-1. 組織のマーケットプレイスから利用者の作業内容に応じてプラグインを推薦できる新ページ「plugin-relevance」が追加された
-2. `claude mcp login` / `claude mcp logout` が追加され、`/mcp` パネルを開かずシェルから MCP サーバーの OAuth 認証ができるようになった（v2.1.186）
-3. バックグラウンドサブエージェントの権限要求が、従来の自動拒否からメインセッションでのプロンプト表示に変わった（v2.1.186）
-4. 入力欄の `!` シェルコマンドの出力に対し Claude が自動で応答するようになった（`respondToBashCommands` で無効化可、v2.1.186）
-5. `/review` コマンドが、GitHub プルリクエストを番号指定で `/code-review` エンジンによりレビューする形に刷新された（v2.1.186）
+1. Team / Enterprise ワークスペース向けに、Slack 版 Claude Code が組織管理の共有 ID で動く Claude Tag へ置き換えられる旨が案内された
+2. エージェントビューの入力欄で `/model <モデル名>` を打つと、以降ディスパッチするセッションのモデルを切り替えられるようになった（v2.1.172）
+3. バックグラウンドセッションがプロバイダー設定・認証情報をどこから読むかが整理され、`ANTHROPIC_BASE_URL` 等のゲートウェイ変数はシェルから継承しなくなった（v2.1.174）
+4. バックグラウンドディスパッチが `Could not resolve authentication method` で失敗する場合のトラブルシューティング節が追加された（v2.1.174）
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**プラグイン推薦ページ plugin-relevance の新設**](#1-プラグイン推薦ページ-plugin-relevance-の新設):  
-  マーケットプレイス運用者が `marketplace.json` のプラグインエントリに `relevance` ブロックを宣言し、管理設定で許可することで、利用者の作業ディレクトリ・実行コマンド・読み取りファイルなどに応じて Claude Code がプラグインのインストールを推薦できるようになった。
-2. [**コマンドラインからの MCP サーバー認証**](#2-コマンドラインからの-mcp-サーバー認証):  
-  `claude mcp login <name>` / `claude mcp logout <name>` が追加され、セッション内で `/mcp` パネルを開かずにシェルから OAuth フローを実行・認証情報の消去ができるようになった。SSH 越しでは `--no-browser` で認可 URL を出力できる（v2.1.186）。
-3. [**バックグラウンドサブエージェントの権限プロンプト**](#3-バックグラウンドサブエージェントの権限プロンプト):  
-  バックグラウンドのサブエージェントが権限を要するツール呼び出しに達したとき、従来の自動拒否に代わってメインセッションにプロンプトが表示されるようになった。どのサブエージェントの要求かが示され、Esc でその 1 件だけを拒否できる（v2.1.186）。
-4. [**シェルコマンド出力への自動応答**](#4-シェルコマンド出力への自動応答):  
-  入力欄で `!` プレフィックスのシェルコマンドを実行すると、その出力に対し Claude が自動で応答するようになった。従来どおり出力をコンテキストへ追加するだけに戻すには `respondToBashCommands` を `false` に設定する（v2.1.186）。
-5. [**/review コマンドの刷新**](#5-review-コマンドの刷新):  
-  `/review` が、ローカルでの単発レビューから、GitHub プルリクエストを番号指定で `/code-review`（medium）と同じエンジンによりレビューするコマンドに刷新された。引数なしでオープン PR を一覧から選べる（v2.1.186）。
+1. [**Claude Tag による Slack 版 Claude Code の置き換え**](#1-claude-tag-による-slack-版-claude-code-の置き換え):  
+  Team / Enterprise ワークスペース向けに、Slack 版 Claude Code が Claude Tag へ置き換えられる旨が案内された。Claude Tag は管理者が設定したアクセス権を持つ組織共有の @Claude で、既存の Claude for Slack アプリと同じアプリ上で動くため再インストール不要で、既存セットアップも移行期間中は機能し続ける。
+2. [**エージェントビューでのディスパッチモデル切り替え**](#2-エージェントビューでのディスパッチモデル切り替え):  
+  エージェントビューのディスパッチ入力に `/model <モデル名>` を入力すると、以降ディスパッチするセッションのモデルを切り替えられるようになった。`/model default` で解除でき、設定ファイルには書き込まれず現在の `claude agents` 実行中のみ有効（v2.1.172）。
+3. [**バックグラウンドセッションのプロバイダー設定とゲートウェイ変数**](#3-バックグラウンドセッションのプロバイダー設定とゲートウェイ変数):  
+  バックグラウンドセッションがプロジェクト設定の `env` 値・プロバイダー選択変数・認証情報をどこから読むかが明文化された。`ANTHROPIC_BASE_URL` 等のゲートウェイ変数はシェルから継承されなくなり、プロジェクトの `.claude/settings.json` の `env` で指定する形になった（v2.1.174）。
+4. [**認証エラー Could not resolve authentication method のトラブルシューティング**](#4-認証エラー-could-not-resolve-authentication-method-のトラブルシューティング):  
+  バックグラウンドディスパッチがこのエラーで失敗する場合の対処法が追加された。スーパーバイザーが事前ウォームしたワーカーを割り当てる仕組みの説明とあわせ、`claude daemon stop --any --keep-workers` で復旧する手順が示された（v2.1.174）。
 <!-- light:highlight-list:end -->
 
-## 1. プラグイン推薦ページ plugin-relevance の新設
+## 1. Claude Tag による Slack 版 Claude Code の置き換え
 
-組織のプラグインマーケットプレイスを運用する管理者向けに、利用者の作業内容に合わせてプラグインを推薦する仕組みを解説する新ページ「Recommend plugins for your org」が追加されました。マーケットプレイスの `marketplace.json` 内の各プラグインエントリに `relevance` ブロック（`topic` とシグナル群）を宣言すると、Claude Code が現在のセッションをそのシグナルと照合し、一致したときにインストール候補を提示します。
+「Slack での Claude Code」ページの冒頭に、本機能が Team / Enterprise ワークスペース向けに Claude Tag へ置き換えられる旨の Note が追加され、関連リソースにも Claude Tag のカードが加わりました。Claude Tag は、管理者が設定したアクセス権を持つ組織の共有 ID として @Claude を動かすもので、既存の Claude for Slack アプリと同じ Slack アプリ上で動作します。そのため再インストールは不要で、既存のセットアップも移行期間中は機能し続けます。ワークスペース単位での切り替え手順は移行ガイドに案内されています。
 
-シグナルには、作業ディレクトリ（`cwd`）、当該セッションで実行したコマンド名（`cli`）、Bash で接触したホスト名（`hosts`）、読み取ったファイルパス（`filesRead`）、読み取った依存マニフェストの内容（`manifestDeps`）が用意され、照合は利用者のマシン上でローカルに行われ、どのシグナルが一致したかが Anthropic やマーケットプレイス運用者へ送信されることはありません。一致時の表示はスピナーのヒント・セッション開始時の通知・`/plugin` Discover タブのピン留めの 3 か所で、Claude Code がプラグインを自動でインストールすることはなく、常に利用者が確認します。重要な点として、`relevance` の宣言だけでは有効にならず、管理設定（`managed-settings.json`）の `pluginSuggestionMarketplaces` でマーケットプレイスを許可リストに加える必要があります。本機能は Claude Code v2.1.152 以降が必要です。
+なお、本ページにはこの期間に、各セッションが自分の Claude アカウントで実行され接続済みリポジトリと自分のプラン上限を使う点の明記、トラブルシューティングへの「Claude Code がアカウントで有効になっていません」節の新設といった加筆も同時に入っています（これらは下記「軽微な更新」に整理しています）。
 
-- [Recommend plugins for your org - Claude Code Docs (English)](https://code.claude.com/docs/en/plugin-relevance)
+- [Slack での Claude Code - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/slack)
+- [Claude Code in Slack - Claude Code Docs (English)](https://code.claude.com/docs/en/slack)
 
-## 2. コマンドラインからの MCP サーバー認証
+## 2. エージェントビューでのディスパッチモデル切り替え
 
-v2.1.186 以降、設定済みの MCP サーバーの OAuth フローをシェルから直接実行する `claude mcp login <name>` と、保存済み認証情報を消去する `claude mcp logout <name>` が追加されました。これまでセッション内で `/mcp` パネルを開いて認証する必要があったところを、CLI から完結できます。HTTP・SSE・claude.ai コネクタの各サーバーに対応します。
+v2.1.172 以降、エージェントビュー（`claude agents`）のディスパッチ入力に `/model` に続けてモデル名を入力して `Enter` を押すと、以降ディスパッチするセッションのモデルを切り替えられるようになりました。ヘッダーは `(session)` マーカー付きでそのモデルを表示し、それ以降にディスパッチするセッションがそのモデルを使います。`/model default` と入力するとオーバーライドが解除され、ディスパッチのデフォルトに戻ります。
 
-SSH 越しに接続している場合は `--no-browser` を付けると、ブラウザを開く代わりに認可 URL を標準出力に表示します。ローカルマシンでその URL を開き、ブラウザのアドレスバーに表示された完全なリダイレクト URL をプロンプトに貼り付けて認証を完了します。貼り付け操作のためインタラクティブなターミナルが必要なので、`ssh -t` で接続してください。これらのコマンドは CLI リファレンスにも追記されています。
+このオーバーライドは現在の `claude agents` 実行の残りの間だけ有効で、設定ファイルには書き込まれません。たとえば 1 つのセッションを Opus で、次のセッションを Sonnet でディスパッチするといった使い分けが、入力欄からその場で行えます。これに伴い、エージェントビュー自体で実行されるコマンド（ディスパッチではなく）の一覧に `/model` が加わり、スキルや自分のコマンド、`/init` などのプロンプト展開組み込みは従来どおり新規バックグラウンドセッションの最初のプロンプトとして送られる旨が整理されました。
 
-- [Connect Claude Code to tools via MCP - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/mcp#authenticate-from-the-command-line)
-- [Connect Claude Code to tools via MCP - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#authenticate-from-the-command-line)
+- [エージェントビューで複数のエージェントを管理する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#set-the-model)
+- [Manage multiple agents with agent view - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#set-the-model)
 
-## 3. バックグラウンドサブエージェントの権限プロンプト
+## 3. バックグラウンドセッションのプロバイダー設定とゲートウェイ変数
 
-v2.1.186 以降、バックグラウンドで実行中のサブエージェントが権限を要するツール呼び出しに到達したとき、その権限プロンプトがメインセッションに表示されるようになりました。プロンプトにはどのサブエージェントが要求しているかが示され、承認するとサブエージェントは続行し、Esc を押すとそのサブエージェントを止めずにその 1 件のツール呼び出しだけを拒否できます。v2.1.186 より前は、バックグラウンドサブエージェントはプロンプトが出るはずのツール呼び出しを自動的に拒否し、そのツールなしで続行していました。
+v2.1.174 を境に、バックグラウンドセッションがプロバイダー設定や認証情報をどこから読むかが明文化されました。バックグラウンドセッションは実行されるディレクトリから設定を読むため、プロジェクト設定の `env` 値に置いた `ANTHROPIC_MODEL` やプロバイダー変数がそのディレクトリのバックグラウンドセッションに適用されます。`CLAUDE_CODE_USE_BEDROCK` / `CLAUDE_CODE_USE_VERTEX` などのクラウドプロバイダー選択や `ANTHROPIC_DEFAULT_*_MODEL` エイリアスは、セッションをディスパッチしたシェルに従います。
 
-この挙動変更は、`CLAUDE_CODE_FORK_SUBAGENT` 経由で起動されるフォークを含むすべてのバックグラウンドサブエージェントに適用されます。サブエージェントのフォアグラウンド／バックグラウンドの比較表でも、権限の扱いが「バックグラウンド実行時はメインセッションに表示」に更新されています。
+一方で `ANTHROPIC_BASE_URL` とそのペアの `ANTHROPIC_AUTH_TOKEN`、Bedrock・Vertex・Foundry の各ベース URL 変数といったゲートウェイエンドポイント変数は、スーパーバイザーの起動シェルからもディスパッチシェルからも継承されなくなりました。プロジェクト内のバックグラウンドセッションを LLM ゲートウェイへ向けるには、シェルでエクスポートするのではなく、そのプロジェクトの `.claude/settings.json` の `env` ブロックに `ANTHROPIC_BASE_URL` を設定します。v2.1.174 より前は、これらの変数をスーパーバイザーの起動シェルから継承していたため、プロジェクト用に設定したゲートウェイではなくそのシェルで設定したゲートウェイが使われることがありました。
 
-- [Create custom subagents - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/sub-agents#run-subagents-in-foreground-or-background)
-- [Create custom subagents - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)
+- [エージェントビューで複数のエージェントを管理する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#the-supervisor-process)
+- [Manage multiple agents with agent view - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#the-supervisor-process)
 
-## 4. シェルコマンド出力への自動応答
+## 4. 認証エラー Could not resolve authentication method のトラブルシューティング
 
-v2.1.186 以降、入力欄で `!` プレフィックスのシェルコマンドを実行すると、その出力がトランスクリプトに届いた時点で Claude が自動的に応答するようになりました。これにより、`! npm test` を実行するだけで、追加のプロンプトを送らずに失敗の説明を得られます。応答のコストは通常のプロンプトを送るのと同じです。
+v2.1.174 以降の挙動として、エージェントビューのトラブルシューティングに「ディスパッチが `Could not resolve authentication method` で失敗する」節が新設されました。インタラクティブセッションは正常に認証できるのにバックグラウンドディスパッチがこのエラーで失敗する場合、ディスパッチを受け取ったワーカーが認証情報を取得できていません。v2.1.174 以降はスーパーバイザーがワーカー割り当て時に新しい認証情報スナップショットを渡すため、このエラーはスーパーバイザープロセス自体に保存済み認証情報が無いことを意味します。`/login` 済みか API キー設定済みかを確認したうえで `claude daemon stop --any --keep-workers` でスーパーバイザーを停止し、次の `claude agents` / `claude --bg` で保存済み認証情報を読む新しいスーパーバイザーを起動して復旧します。
 
-従来どおり、出力をコンテキストに追加するだけで応答しない挙動に戻したい場合は、`settings.json` で `respondToBashCommands` を `false` に設定します（v2.1.186 より前は、シェルモードは常に出力をコンテキストに追加するだけで応答しませんでした）。この設定はインタラクティブモードのページと設定リファレンスの双方に記載されています。
+この節とあわせて、スーパーバイザーがコールドローンチの遅延を避けるために事前ウォームしたワーカープロセスを 1 つ準備しておき、ディスパッチ時にそれをセッションへ割り当てて次の置き換えを起動する、という仕組みの説明も追加されました。`ANTHROPIC_API_KEY` などの環境変数で認証している場合は、その変数が設定されたシェルから次のコマンドを実行する必要があります。
 
-- [Interactive mode - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/interactive-mode#shell-mode-with-prefix)
-- [Interactive mode - Claude Code Docs (English)](https://code.claude.com/docs/en/interactive-mode#shell-mode-with-prefix)
-
-## 5. /review コマンドの刷新
-
-v2.1.186 で `/review` コマンドが刷新されました。従来はプルリクエストを現在のセッション内でローカルに単発レビューするものでしたが、新しい `/review [PR]` は GitHub プルリクエストを番号指定で受け取り、`/code-review`（medium）と同じレビューエンジンでレビューします。引数なしで実行するとオープン PR の一覧から選択できます。チームメイトの PR を承認前に見る用途に向いた位置付けです。
-
-これに伴い ultrareview のページでは、比較表が `/code-review`・`/review <pr>`・`/code-review ultra` の 3 コマンドを並べる形に拡張されました。`/review <pr>` は「GitHub プルリクエストを対象に、セッション内でローカルに、中程度の `/code-review` エンジンで実行する」ものとして整理されています。
-
-- [Find bugs with ultrareview - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/ultrareview)
-- [Find bugs with ultrareview - Claude Code Docs (English)](https://code.claude.com/docs/en/ultrareview)
+- [エージェントビューで複数のエージェントを管理する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#dispatch-fails-with-could-not-resolve-authentication-method)
+- [Manage multiple agents with agent view - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#dispatch-fails-with-could-not-resolve-authentication-method)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Recommend plugins for your org（plugin-relevance）**](#1-プラグイン推薦ページ-plugin-relevance-の新設) ([English](https://code.claude.com/docs/en/plugin-relevance)):  
-  マーケットプレイス運用者・エンタープライズ管理者向けに、プラグインエントリへ `relevance` ブロックを宣言して利用者にプラグインを推薦する手順を解説する新ページ（主要機能はハイライト 1 参照）。日本語ページは未提供のため英語のみ。
+（今回の対象期間に新規追加されたリファレンスページはありません）
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-（今回の対象期間に、単一ページで 50 行以上の大幅更新に該当したページはありません。主要な機能追加はハイライト、その他はいずれも下記「軽微な更新」に整理しています）
+（今回の対象期間に、単一ページで 50 行以上の大幅更新に該当したページはありません。主要な更新はハイライト、その他はいずれも下記「軽微な更新」に整理しています）
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、ほぼすべてが Claude Code v2.1.186（2026年06月22日）の changelog 追加と、それを反映した各リファレンスページの加筆です。以下に分類して整理します（バージョン併記は単一リリースのため省略します）。
+今回の軽微な更新は、Claude Code v2.1.187（2026年06月23日）の changelog 追加と、Slack・エージェントビュー等のドキュメント加筆が中心です。以下に分類して整理します（バージョンは単一リリースのため、各 bullet への併記は省略します）。
 
 **新機能**
 
-- エージェントチームの表示モードに `iterm2`（iTerm2 ネイティブ分割ペイン）が追加された。`it2` CLI が必要で、未導入時はインストールコマンドを示すエラーを表示する。設定 `teammateMode` と CLI フラグ `--teammate-mode` の双方で指定可能 — [日本語](https://code.claude.com/docs/ja/agent-teams#choose-a-display-mode) / [English](https://code.claude.com/docs/en/agent-teams#choose-a-display-mode)
-- `/workflows` のエージェント詳細ビューに、ステータスでエージェント一覧を絞り込むフィルタ（`f` キー、押すたびに循環）が追加された — [日本語](https://code.claude.com/docs/ja/workflows) / [English](https://code.claude.com/docs/en/workflows)
-- `/plugin` の Installed タブに「Skills」セクションが追加された
-- `awsAuthRefresh` を設定している場合、`/login` に「Claude Platform on AWS · refresh credentials」オプションが追加され、Claude Code を再起動せずに AWS 認証情報を再読み込みできる — [日本語](https://code.claude.com/docs/ja/amazon-bedrock) / [English](https://code.claude.com/docs/en/amazon-bedrock)
-- 環境変数 `CLAUDE_CODE_RETRY_WATCHDOG` が追加された。無人セッション（CI ジョブ等）向けに、`429`・`529` の容量エラーを `CLAUDE_CODE_MAX_RETRIES` 回で諦めず無期限にリトライする — [日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)
-- 環境変数 `CLAUDE_CODE_FORCE_STRIKETHROUGH` が追加された。`~~text~~` の取り消し線レンダリングが自動検出されないターミナル（`TERM_PROGRAM` を転送しない SSH 等）で強制有効化する — [日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)
-- `marketplace.json` のプラグインエントリに `relevance` フィールドが追加された（詳細はハイライト 1 参照） — [日本語](https://code.claude.com/docs/ja/plugin-marketplaces#plugin-entries) / [English](https://code.claude.com/docs/en/plugin-marketplaces#plugin-entries)
-- 設定 `respondToBashCommands` が追加された（詳細はハイライト 4 参照）
-- CLI コマンド `claude mcp login` / `claude mcp logout` が追加された（詳細はハイライト 2 参照） — [日本語](https://code.claude.com/docs/ja/cli-reference) / [English](https://code.claude.com/docs/en/cli-reference)
+- `sandbox.credentials` 設定が追加された。サンドボックスで実行されるコマンドが認証情報ファイルやシークレットの環境変数を読み取るのをブロックする。
+- 組織が設定したモデル制限が、モデルピッカー・`--model`・`/model`・`ANTHROPIC_MODEL` に反映されるようになった。制限対象のモデルを選ぶと「組織の設定により制限されています」というメッセージが表示される。
+- フルスクリーンモードの選択メニュー（権限プロンプト・`/model`・`/config` など）で、マウスクリックによる選択がサポートされた。
+- Slack 連携のトラブルシューティングに「Claude Code がアカウントで有効になっていません」の節が追加された。管理者の有効化操作は不要で、claude.ai/code に一度サインインすればクラウド環境が作成されエラーが解消する旨を案内する — [日本語](https://code.claude.com/docs/ja/slack#claude-code-is-not-enabled-for-your-account) / [English](https://code.claude.com/docs/en/slack#claude-code-is-not-enabled-for-your-account)
+- エージェントビューの入力欄で `/model` がディスパッチモデルの切り替えコマンドとして扱われるようになった（詳細はハイライト 2 参照） — [日本語](https://code.claude.com/docs/ja/agent-view#set-the-model) / [English](https://code.claude.com/docs/en/agent-view#set-the-model)
 
 **機能改善**
 
-- バックグラウンドサブエージェントの権限プロンプト挙動が変更された（詳細はハイライト 3 参照）
-- `/review` コマンドが刷新され、ultrareview の比較表も 3 コマンド比較に更新された（詳細はハイライト 5 参照）
-- `CLAUDE_CODE_MAX_RETRIES` の上限が 15 に設定された。長時間の障害を待つ無人セッションでは `CLAUDE_CODE_RETRY_WATCHDOG` を使うよう案内が追記された（環境変数・監視・SDK の各ページに反映） — [日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)
-- `CLAUDE_CODE_CONNECT_TIMEOUT_MS` が v2.1.186 で削除され no-op になった。接続・TLS・応答ヘッダー段階の別タイムアウトは廃止され、`API_TIMEOUT_MS` を使う — [日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)
-- `CLAUDE_CODE_FORCE_SESSION_PERSISTENCE` の説明が更新され、tmux のケースは v2.1.178 以降自動検出されるため本変数が不要になった旨が明記された（例も `screen` 等に更新） — [日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)
-- `claude mcp get` / `claude mcp remove` が、タイポ時に最も近い設定済みサーバー名を提案し、長いサーバー一覧を切り詰めるようになった
-- skill frontmatter の `display-name`・`default-enabled`・`fallback`・`metadata.*` キーが kebab-case・snake_case・camelCase を受け付けるようになった — [日本語](https://code.claude.com/docs/ja/skills) / [English](https://code.claude.com/docs/en/skills)
-- 不正な `SKILL.md` の YAML frontmatter を、サイレントに失敗せず空メタデータでボディを読み込むようになった（`/skill-name` は動作するが説明文での自動マッチは効かない。`--debug` でパースエラーを確認可） — [日本語](https://code.claude.com/docs/ja/skills) / [English](https://code.claude.com/docs/en/skills)
-- メモリ機能で、`MEMORY.md` インデックスがサイズ上限に近づくとコンパクト化を促すリマインドが出るようになった
-- プラグインマーケットプレイスの `ref`＋`sha` ピンに関する注記が更新され、AWS CodeCommit など SHA でのフェッチに非対応のサーバーでは `ref` が存続している必要がある旨が追記された — [日本語](https://code.claude.com/docs/ja/plugin-marketplaces) / [English](https://code.claude.com/docs/en/plugin-marketplaces)
-- ストリームストール時に表示される「Waiting for API response · will retry in …」バナーの説明がトラブルシューティングに追加され、20 秒閾値や `CLAUDE_CODE_RETRY_WATCHDOG` の挙動が整理された — [日本語](https://code.claude.com/docs/ja/troubleshooting#automatic-retries) / [English](https://code.claude.com/docs/en/troubleshooting#automatic-retries)
-- `--add-dir` で読み込まれる設定の一覧表が更新され、`.claude/settings.json` と `.claude/settings.local.json` の両方から `enabledPlugins` と `extraKnownMarketplaces` のみ読み込む点が明確化された — [日本語](https://code.claude.com/docs/ja/settings) / [English](https://code.claude.com/docs/en/settings)
+- バックグラウンドセッションのプロバイダー設定・ゲートウェイ変数の解決方法が整理された（詳細はハイライト 3 参照） — [日本語](https://code.claude.com/docs/ja/agent-view#the-supervisor-process) / [English](https://code.claude.com/docs/en/agent-view#the-supervisor-process)
+- スーパーバイザーが事前ウォームしたワーカーを 1 つ保持して起動遅延を抑えるようになり、認証エラーのトラブルシューティングも追加された（詳細はハイライト 4 参照）
+- Slack 連携で、各セッションが自分の Claude アカウントで実行され、接続済みリポジトリと自分のプラン上限を使う点が本文に明記された — [日本語](https://code.claude.com/docs/ja/slack) / [English](https://code.claude.com/docs/en/slack)
+- `/install-github-app` が改善され、GitHub Actions ワークフローのセットアップが任意になった。GitHub App のインストールだけ行い、ワークフロー／シークレットの手順をスキップできる。
+- `/btw` で ←/→ の矢印キーによるナビゲーションが追加され、過去の回答をたどれるようになった。
+- `/plugin` が、最近使っていないプラグインを表に出して整理を促すようになった。
 
 **バグ修正**
 
-v2.1.186 で多数のバグ修正が行われました。主なものは以下のとおりです（いずれも changelog のみの言及で、対応する通常ドキュメントページはないためリンクは付しません）。
+v2.1.187 で多数のバグ修正が行われました。主なものは以下のとおりです（いずれも changelog のみの言及で、対応する通常ドキュメントページはないためリンクは付しません）。
 
-- スリープからの復帰後にストリーミングリクエストが「Content block not found」や JSON パースエラーで失敗する問題を修正
-- サブエージェントのトランスクリプトのスクロール位置が、終了時にメイントランスクリプトへ漏れる問題を修正
-- バックグラウンドタスクのプレビューが、エージェントのプラン読み込み前に生のツール名を一瞬表示する問題を修正
-- 同時実行 CLI セッションで in-product 権限ゲートがオフのとき、Chrome のタブグループ分離が適用されない問題を修正
-- バックグラウンドセッションのリキャップが重複し、エージェント自身のターン終了サマリがリキャップ行として表示されるように修正
-- `claude agents` からバックグラウンドセッションを開いたとき、前の画面が背後に残る問題を修正
-- `Agent(type)` の deny ルールと `Agent(x,y)` の許可タイプ制限が、名前付きサブエージェント生成で強制されない問題を修正
-- メインターン終了後にバックグラウンドエージェントが実行中だと、Esc・Ctrl+C が反応しない問題を修正
-- 権限プロンプトでオプションテキストがあふれると、オプション番号がずれる問題を修正
-- エージェントパネルで完了済みサブエージェントに `x` を押しても解除されない問題を修正
-- 古いセッションの再開時、意図的に廃止されたツールに対し誤解を招く「MCP server disconnected」通知が出る問題を修正
-- `/plugin` の Installed が、すでに最上部までスクロールしているのに「more above」インジケータを表示する問題を修正
-- `~~strikethrough~~` が取り消し線でレンダリングされず、リテラルのチルダが表示される問題を修正
-- `--tools` が、コールド初回起動時にフラグ読み込み前の feature-gated ツールをすり抜けさせる問題を修正
-- `claude agents` のバックグラウンドジョブのステータスが、返信後も古い「needs input」を表示する問題を修正
-- ライトターミナルで `claude agents` からバックグラウンドセッションを開く際の、ダークテーマのフラッシュを修正
-- `claude agents` で、マウス選択したテキストが削除後もハイライトされたままになる問題を修正
-- 従量課金の Enterprise／Team サブスクライバーで、セッションコストが表示されない問題を修正
-- Workflow の `agent({schema})` サブエージェントが、スキーマ検証失敗を繰り返すと 5 回で中止せず無限ループする問題を修正
-- エージェントチームで、tmux／ペインバックエンド経由で生成されたチームメイトがリーダーの `--effort` レベルを継承しない問題を修正
+- `--resume` が、元の `-p` 実行がモデルのターンを生成しなかった場合に「No conversation found」で失敗する問題を修正
+- `--json-schema` と Workflow の `agent({schema})` の構造化出力で、成功後もモデルが `StructuredOutput` を無限に再呼び出しできてしまう問題を修正し、後続ターンが確実に構造化出力を返すようにした
+- リモート MCP ツール呼び出しが応答なしで 5 分間ハングする問題を修正し、無期限にブロックせずエラーで中断するようにした（`CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT` で調整可）
+- エージェントプロキシの CA システム信頼インストール追加後、Claude Code Remote セッションの起動が約 2.7 秒遅くなる問題を修正
+- per-byte の拡張キーイベントとして貼り付けを受け取るターミナルで、貼り付けた韓国語／CJK テキストが文字化けする問題を修正
+- リモートコントロール経由の `/update` が、起動時の信頼ダイアログが表示されるべき場面でハングする問題を修正
+- エージェントがターンを構造化出力なしで終えたとき、エージェントビューのバックグラウンドジョブが「working」のまま止まる問題を修正
+- エージェントビューへ移動して戻った後、および `/bg`・`/tui`・`/update` の後にチャンネル接続が切れる問題を修正
+- エージェント停止通知が誰が停止したかを正しく示さない問題を修正し、文言も改善した（"came to rest" の代わりに "finished"／"stopped"）
+- サブエージェントの深さ追跡を修正（再開したサブエージェントは元の生成深さを復元し、フォークしたサブエージェントは深さ上限にカウントされる）
+- 強制終了したエージェントの worktree 登録のリークを修正（ロックされた `.git/worktrees/` エントリを自動でクリーンアップ）
+- macOS の Ghostty でフルスクリーンモード時に Cmd+クリックで URL が開かない問題を修正
+- `claude --help` が `--bg`／`--background` フラグを一覧表示しない問題を修正
+- `/share` のアップロード中に Esc・Ctrl-C・Ctrl-D が効かない問題を修正
+- [VSCode] 大きなセッションの再開時に拡張機能が応答しなくなる問題を修正
 
 **その他**
 
-- changelog ページに v2.1.186（2026年06月22日）のリリースエントリが追加された（changelog リンク不使用ポリシーによりリンクは付しません）
+- changelog ページに v2.1.187（2026年06月23日）のリリースエントリが追加された（changelog リンク不使用ポリシーによりリンクは付しません）。
+- 「ウェブ上の Claude Code」ページの関連リソースに、同じクラウド環境で動く Claude Tag への外部リンクが追加された — [日本語](https://code.claude.com/docs/ja/claude-code-on-the-web) / [English](https://code.claude.com/docs/en/claude-code-on-the-web)
+- 「スキル」ページの関連リソースに、リポジトリにコミットしたプロジェクトスキルが Claude Tag チャンネルでも読み込まれる旨の Claude Tag skills への外部リンクが追加された — [日本語](https://code.claude.com/docs/ja/skills) / [English](https://code.claude.com/docs/en/skills)
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -161,11 +136,11 @@ v2.1.186 で多数のバグ修正が行われました。主なものは以下�
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-20_1501.md](./archives/latest/2026-06-20_1501.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-20_1501.md](./archives/latest-detail/2026-06-20_1501.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-22.md](./archives/latest/2026-06-22.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-22.md](./archives/latest-detail/2026-06-22.md)
 
 <!--
-base_commit: 1a7d39cab3539583157847db90f343550a8fe42e
-head_commit: db1b606290c053b1530a48339df97fa7fdaba745
-generated_at_full: 2026-06-23T15:04:15+09:00
+base_commit: db1b606290c053b1530a48339df97fa7fdaba745
+head_commit: a8b1232abacba9353171c44560e7a6a4bfd70a63
+generated_at_full: 2026-06-24T15:00:50+09:00
 -->
