@@ -38,7 +38,7 @@
 なお、本ページにはこの期間に、各セッションが自分の Claude アカウントで実行され接続済みリポジトリと自分のプラン上限を使う点の明記、トラブルシューティングへの「Claude Code がアカウントで有効になっていません」節の新設といった加筆も同時に入っています（これらは下記「軽微な更新」に整理しています）。
 
 - [Slack での Claude Code - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/slack)
-- [Claude Code in Slack - Claude Code Docs (English)](https://code.claude.com/docs/en/slack)
+- [日本語](https://code.claude.com/docs/ja/slack) / [Claude Code in Slack - Claude Code Docs (English)](https://code.claude.com/docs/en/slack)
 
 ## 2. エージェントビューでのディスパッチモデル切り替え
 
