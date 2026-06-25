@@ -1,131 +1,141 @@
 ---
-対象期間: 2026年06月22日 〜 2026年06月23日
-作成日: 2026-06-23
+対象期間: 2026年06月23日 〜 2026年06月24日
+作成日: 2026-06-24
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は Claude Code v2.1.187（2026年06月23日）のリリースを中心に、エージェントビュー（バックグラウンドセッション）と Slack 連携のドキュメント更新がありました。新規ページの追加はありません。
+今回の対象期間は、先に changelog で告知されていた Claude Code v2.1.187 系の機能について、各リファレンスページの本文が大きく追記された更新が中心です。組織によるモデル制限の整備と、LLM ゲートウェイドキュメントの 3 ページ分割が目立ちます。
 
 主要なものを以下に挙げます。
 
-1. Team / Enterprise ワークスペース向けに、Slack 版 Claude Code が組織管理の共有 ID で動く Claude Tag へ置き換えられる旨が案内された
-2. エージェントビューの入力欄で `/model <モデル名>` を打つと、以降ディスパッチするセッションのモデルを切り替えられるようになった（v2.1.172）
-3. バックグラウンドセッションがプロバイダー設定・認証情報をどこから読むかが整理され、`ANTHROPIC_BASE_URL` 等のゲートウェイ変数はシェルから継承しなくなった（v2.1.174）
-4. バックグラウンドディスパッチが `Could not resolve authentication method` で失敗する場合のトラブルシューティング節が追加された（v2.1.174）
+1. Claude Console で個別モデルを無効化する「組織レベルのモデル制限」が新設され、選択時の挙動と専用エラーメッセージが文書化された（v2.1.187）
+2. availableModels 許可リストのドキュメントが大幅拡充され、各サーフェスへの配信経路を示す表や Default モデルの強制（enforceAvailableModels）の詳細が整理された
+3. sandbox.credentials 設定が追加され、サンドボックス内のコマンドから認証情報ファイルの読み取りとシークレット環境変数を遮断できるようになった（v2.1.187）
+4. サーバー管理設定の配信条件（組織 OAuth ログイン／直接設定の API キーが必要、apiKeyHelper は対象外、Claude Platform on AWS は非対応）が明確化された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Claude Tag による Slack 版 Claude Code の置き換え**](#1-claude-tag-による-slack-版-claude-code-の置き換え):  
-  Team / Enterprise ワークスペース向けに、Slack 版 Claude Code が Claude Tag へ置き換えられる旨が案内された。Claude Tag は管理者が設定したアクセス権を持つ組織共有の @Claude で、既存の Claude for Slack アプリと同じアプリ上で動くため再インストール不要で、既存セットアップも移行期間中は機能し続ける。
-2. [**エージェントビューでのディスパッチモデル切り替え**](#2-エージェントビューでのディスパッチモデル切り替え):  
-  エージェントビューのディスパッチ入力に `/model <モデル名>` を入力すると、以降ディスパッチするセッションのモデルを切り替えられるようになった。`/model default` で解除でき、設定ファイルには書き込まれず現在の `claude agents` 実行中のみ有効（v2.1.172）。
-3. [**バックグラウンドセッションのプロバイダー設定とゲートウェイ変数**](#3-バックグラウンドセッションのプロバイダー設定とゲートウェイ変数):  
-  バックグラウンドセッションがプロジェクト設定の `env` 値・プロバイダー選択変数・認証情報をどこから読むかが明文化された。`ANTHROPIC_BASE_URL` 等のゲートウェイ変数はシェルから継承されなくなり、プロジェクトの `.claude/settings.json` の `env` で指定する形になった（v2.1.174）。
-4. [**認証エラー Could not resolve authentication method のトラブルシューティング**](#4-認証エラー-could-not-resolve-authentication-method-のトラブルシューティング):  
-  バックグラウンドディスパッチがこのエラーで失敗する場合の対処法が追加された。スーパーバイザーが事前ウォームしたワーカーを割り当てる仕組みの説明とあわせ、`claude daemon stop --any --keep-workers` で復旧する手順が示された（v2.1.174）。
+1. [**Claude Console による組織レベルのモデル制限**](#1-claude-console-による組織レベルのモデル制限):  
+  Claude Console で個々のモデルを無効化して、組織メンバーが実行できるモデルを制限する仕組みが「Organization model restrictions」として新設された。制限モデルは `/model` ピッカーから隠され、`--model` 等で指定すると許可モデルに置き換える旨の通知が出る。`availableModels` とは独立して認証時のエンタイトルメントで配信され、サーバー側でも独立して強制される（v2.1.187）。
+2. [**availableModels 許可リストの適用範囲と Default モデル強制**](#2-availablemodels-許可リストの適用範囲と-default-モデル強制):  
+  `availableModels` のドキュメントが大幅に拡充された。許可リストが CLI/IDE・Desktop・Web/モバイル/クラウド・Agent SDK・Cowork の各サーフェスへどの配信経路（サーバー管理設定 / MDM・管理設定ファイル）で届くかを示す「Surface coverage」表が追加され、適用先も skills・commands・サブエージェント・フォールバックチェーン等へ広がった旨が整理された。`enforceAvailableModels` による Default モデルの強制も詳細化された。
+3. [**sandbox.credentials によるサンドボックスの認証情報保護**](#3-sandboxcredentials-によるサンドボックスの認証情報保護):  
+  サンドボックス内のコマンドがアクセスしてはいけない認証情報ファイルと環境変数を宣言する `sandbox.credentials` 設定が追加された。`credentials.files` は `filesystem.denyRead` と同じ読み取り遮断を適用し、`credentials.envVars` は各コマンド実行前に変数を unset する。対応値は `deny` のみで全スコープからマージされる（v2.1.187）。
+4. [**サーバー管理設定の配信条件の明確化**](#4-サーバー管理設定の配信条件の明確化):  
+  サーバー管理設定が配信されるには、セッションが組織 OAuth ログインまたは直接設定された API キーで認証されている必要があり、`apiKeyHelper` スクリプトが返すキーでは配信トリガーにならない旨が明記された。非対応プロバイダーの一覧に Claude Platform on AWS が追加され、エンドポイント管理設定がクラウドセッションに届かない点も補足された。
 <!-- light:highlight-list:end -->
 
-## 1. Claude Tag による Slack 版 Claude Code の置き換え
+## 1. Claude Console による組織レベルのモデル制限
 
-「Slack での Claude Code」ページの冒頭に、本機能が Team / Enterprise ワークスペース向けに Claude Tag へ置き換えられる旨の Note が追加され、関連リソースにも Claude Tag のカードが加わりました。Claude Tag は、管理者が設定したアクセス権を持つ組織の共有 ID として @Claude を動かすもので、既存の Claude for Slack アプリと同じ Slack アプリ上で動作します。そのため再インストールは不要で、既存のセットアップも移行期間中は機能し続けます。ワークスペース単位での切り替え手順は移行ガイドに案内されています。
+「モデル設定」ページに「Organization model restrictions」セクションが新設されました。メンバーが Anthropic API で認証する組織向けに、設定ファイルを配布せずに 1 つの組織全体スイッチでモデルを制限したい場合の方法で、管理者が Claude Console で個別モデルを無効化することで、メンバーが実行できるモデルを制限します。この制限は Claude Code 認証時にアカウントのエンタイトルメントとともに配信され、設定内の `availableModels` リストとは別に扱われ、セッション作成時にサーバー側でも独立して同じ制限が強制されます。Claude Code v2.1.187 以降が必要です。
 
-なお、本ページにはこの期間に、各セッションが自分の Claude アカウントで実行され接続済みリポジトリと自分のプラン上限を使う点の明記、トラブルシューティングへの「Claude Code がアカウントで有効になっていません」節の新設といった加筆も同時に入っています（これらは下記「軽微な更新」に整理しています）。
+制限されたモデルは `/model` ピッカーから隠されます。`--model`・`ANTHROPIC_MODEL` 環境変数・`model` 設定で名前指定すると `Model "<name>" is restricted by your organization's settings. Using <model> instead.` という通知が表示され、許可モデルでセッションが開始されます。`/model <name>` で制限モデルを入力した場合は拒否され、セッションは現在のモデルを維持します。`availableModels` と組織制限は合成され、モデルは「`availableModels` に許可され、かつ組織に制限されていない」場合にのみ選択可能です。組織制限は Anthropic API と LLM ゲートウェイのデプロイメントには配信されますが、Bedrock・Vertex AI・Foundry・Claude Platform on AWS には配信されないため、それらのプロバイダーでは `availableModels` を使います。あわせてトラブルシューティングに「Model is restricted by your organization's settings」エラーの対処節も追加されました。
 
-- [Slack での Claude Code - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/slack)
-- [日本語](https://code.claude.com/docs/ja/slack) / [Claude Code in Slack - Claude Code Docs (English)](https://code.claude.com/docs/en/slack)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#organization-model-restrictions)
 
-## 2. エージェントビューでのディスパッチモデル切り替え
+## 2. availableModels 許可リストの適用範囲と Default モデル強制
 
-v2.1.172 以降、エージェントビュー（`claude agents`）のディスパッチ入力に `/model` に続けてモデル名を入力して `Enter` を押すと、以降ディスパッチするセッションのモデルを切り替えられるようになりました。ヘッダーは `(session)` マーカー付きでそのモデルを表示し、それ以降にディスパッチするセッションがそのモデルを使います。`/model default` と入力するとオーバーライドが解除され、ディスパッチのデフォルトに戻ります。
+`availableModels` 許可リストのドキュメントがこの期間に大きく拡充されました。許可リストが適用される場所として、メインセッションモデルに加えて skills・commands の `model` フロントマター、サブエージェント、アドバイザーモデルと `--advisor` フラグ、バックグラウンドエージェントのディスパッチピッカーが明示され、フォールバックチェーンや `opusplan` のプランモード昇格、自動モデルフォールバックといった自動的なモデル変更も同じく許可リストで検査される旨が整理されました。さらに、許可リストがどの配信経路（管理コンソールのサーバー管理設定／MDM・管理設定ファイル）で CLI・IDE・Desktop ローカル・Web/モバイル/クラウド・Agent SDK・Cowork の各サーフェスに届くかをまとめた「Surface coverage」表が追加されています。クラウドセッションには端末配布の設定が届かないためサーバー管理設定で配信する、といった注意も併記されました。
 
-このオーバーライドは現在の `claude agents` 実行の残りの間だけ有効で、設定ファイルには書き込まれません。たとえば 1 つのセッションを Opus で、次のセッションを Sonnet でディスパッチするといった使い分けが、入力欄からその場で行えます。これに伴い、エージェントビュー自体で実行されるコマンド（ディスパッチではなく）の一覧に `/model` が加わり、スキルや自分のコマンド、`/init` などのプロンプト展開組み込みは従来どおり新規バックグラウンドセッションの最初のプロンプトとして送られる旨が整理されました。
+`enforceAvailableModels` による Default モデルの強制についても記述が詳細化されました。`availableModels` 単独では Default オプションは影響を受けず、`enforceAvailableModels: true` を空でない `availableModels` とともに管理設定に置くことで Default も許可リストに従わせられます（v2.1.175 以降）。アカウントタイプの既定モデルが許可リストにない場合、Default は許可リスト先頭の利用可能なエントリに解決されます。`availableModels` が空配列のときは強制が働かず Default は使える、許可リスト内に利用可能なエントリが 1 つも解決しない場合は `--debug` でのみ見える警告とともにアカウント既定へフォールバックする、といった縮退動作も明記されました。マージ動作も改められ、最高優先度の管理ソースが `availableModels` を定義するとそのリストがそのまま適用され、下位スコープは拡張できない旨が整理されています。
 
-- [エージェントビューで複数のエージェントを管理する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#set-the-model)
-- [Manage multiple agents with agent view - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#set-the-model)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#restrict-model-selection)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#surface-coverage)
 
-## 3. バックグラウンドセッションのプロバイダー設定とゲートウェイ変数
+## 3. sandbox.credentials によるサンドボックスの認証情報保護
 
-v2.1.174 を境に、バックグラウンドセッションがプロバイダー設定や認証情報をどこから読むかが明文化されました。バックグラウンドセッションは実行されるディレクトリから設定を読むため、プロジェクト設定の `env` 値に置いた `ANTHROPIC_MODEL` やプロバイダー変数がそのディレクトリのバックグラウンドセッションに適用されます。`CLAUDE_CODE_USE_BEDROCK` / `CLAUDE_CODE_USE_VERTEX` などのクラウドプロバイダー選択や `ANTHROPIC_DEFAULT_*_MODEL` エイリアスは、セッションをディスパッチしたシェルに従います。
+「サンドボックス化された Bash ツールを設定する」ページに「認証情報を保護する」セクションが追加されました。`sandbox.credentials` 設定は、サンドボックス化されたコマンドがアクセスしてはいけない認証情報ファイルと環境変数を宣言します。リストしたファイルパスにはサンドボックス内の読み取りに対して `filesystem.denyRead` と同じ遮断が適用され、リストした環境変数は各サンドボックスコマンドの実行前に unset されます。専用の `credentials` ブロックを設けることで、環境変数の unset とあわせて認証情報ルールを一般的なファイルシステムルールから分離してグループ化できます。Claude Code v2.1.187 以降が必要です。
 
-一方で `ANTHROPIC_BASE_URL` とそのペアの `ANTHROPIC_AUTH_TOKEN`、Bedrock・Vertex・Foundry の各ベース URL 変数といったゲートウェイエンドポイント変数は、スーパーバイザーの起動シェルからもディスパッチシェルからも継承されなくなりました。プロジェクト内のバックグラウンドセッションを LLM ゲートウェイへ向けるには、シェルでエクスポートするのではなく、そのプロジェクトの `.claude/settings.json` の `env` ブロックに `ANTHROPIC_BASE_URL` を設定します。v2.1.174 より前は、これらの変数をスーパーバイザーの起動シェルから継承していたため、プロジェクト用に設定したゲートウェイではなくそのシェルで設定したゲートウェイが使われることがありました。
+各エントリは `"mode": "deny"` を持ち、これが唯一サポートされる値です（明示的な `mode` フィールドにより将来のモード追加にスキーマを前方互換に保ちます）。ファイルパスは `sandbox.filesystem.*` と同じプレフィックスルールに従い、全設定スコープのエントリがマージされます。モードが `deny` のみであるため、どのスコープも制限を追加できますが、削除はできません。組み込みの認証情報拒否リストは無く、リストしたファイルと変数だけが制限される点、影響対象はサンドボックス化された Bash コマンドのみである点も明記されました。設定リファレンスにも `credentials.files` / `credentials.envVars` の各キーが追加されています。
 
-- [エージェントビューで複数のエージェントを管理する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#the-supervisor-process)
-- [Manage multiple agents with agent view - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#the-supervisor-process)
+- [サンドボックス化された Bash ツールを設定する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/sandboxing#protect-credentials)
+- [Configure the sandboxed Bash tool - Claude Code Docs (English)](https://code.claude.com/docs/en/sandboxing#protect-credentials)
 
-## 4. 認証エラー Could not resolve authentication method のトラブルシューティング
+## 4. サーバー管理設定の配信条件の明確化
 
-v2.1.174 以降の挙動として、エージェントビューのトラブルシューティングに「ディスパッチが `Could not resolve authentication method` で失敗する」節が新設されました。インタラクティブセッションは正常に認証できるのにバックグラウンドディスパッチがこのエラーで失敗する場合、ディスパッチを受け取ったワーカーが認証情報を取得できていません。v2.1.174 以降はスーパーバイザーがワーカー割り当て時に新しい認証情報スナップショットを渡すため、このエラーはスーパーバイザープロセス自体に保存済み認証情報が無いことを意味します。`/login` 済みか API キー設定済みかを確認したうえで `claude daemon stop --any --keep-workers` でスーパーバイザーを停止し、次の `claude agents` / `claude --bg` で保存済み認証情報を読む新しいスーパーバイザーを起動して復旧します。
+「サーバー管理設定を構成する」ページで、設定が配信される条件が明確化されました。Claude Code クライアントがサーバー管理設定を受け取るには、セッションが組織の OAuth ログインまたは直接設定された API キーで認証されている必要があり、`apiKeyHelper` スクリプトが返すキーは設定フェッチをトリガーしません。キーをスクリプト経由でのみ生成するフリートでは、許可リストを MDM または管理設定ファイルで配信するよう案内されています。
 
-この節とあわせて、スーパーバイザーがコールドローンチの遅延を避けるために事前ウォームしたワーカープロセスを 1 つ準備しておき、ディスパッチ時にそれをセッションへ割り当てて次の置き換えを起動する、という仕組みの説明も追加されました。`ANTHROPIC_API_KEY` などの環境変数で認証している場合は、その変数が設定されたシェルから次のコマンドを実行する必要があります。
+あわせて、サーバー管理設定が利用できない非対応プロバイダーの一覧に Claude Platform on AWS が追加され、`CLAUDE_CODE_USE_ANTHROPIC_AWS` がサーバー管理設定をバイパスする条件にも加えられました。エンドポイント管理設定はクラウドセッション（Claude Code on the web 等）に届かないため、Web で Claude Code を使う組織はサーバー管理設定も構成する必要がある旨も補足されています。スコープ表も更新され、サーバー管理配信は全組織メンバー、plist・HKLM レジストリ・ファイル配信はマシンの全ユーザー、HKCU レジストリは現在のユーザー、と配信経路ごとの影響範囲が整理されました。
 
-- [エージェントビューで複数のエージェントを管理する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#dispatch-fails-with-could-not-resolve-authentication-method)
-- [Manage multiple agents with agent view - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#dispatch-fails-with-could-not-resolve-authentication-method)
+- [サーバー管理設定を構成する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/server-managed-settings#platform-availability)
+- [Configure server-managed settings - Claude Code Docs (English)](https://code.claude.com/docs/en/server-managed-settings#platform-availability)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-（今回の対象期間に新規追加されたリファレンスページはありません）
+LLM ゲートウェイのドキュメントが再編され、従来の単一ページ（「LLM gateways」に改称）に加えて、用途別に 3 ページが新規追加されました。いずれも現時点では英語ページのみで、日本語ページは未提供です。
+
+- [**LLM ゲートウェイへの接続**](#1-llm-ゲートウェイへの接続) ([English](https://code.claude.com/docs/en/llm-gateway-connect)):  
+  組織の LLM ゲートウェイに Claude Code を向ける手順。管理者が既に設定済みかの確認方法、CLI・VS Code・GitHub Actions・Agent SDK でベース URL と認証情報を自分で設定する方法、接続の検証とゲートウェイエラーの修正を扱う。
+- [**ゲートウェイプロトコルリファレンス**](#2-ゲートウェイプロトコルリファレンス) ([English](https://code.claude.com/docs/en/llm-gateway-protocol)):  
+  Claude Code と LLM ゲートウェイ間の API 契約。転送すべきエンドポイント・ヘッダー・ボディフィールド、フィールド除去時の機能縮退、コスト追跡用の属性ヘッダー、モデルディスカバリーを規定する。
+- [**組織向け LLM ゲートウェイの展開**](#3-組織向け-llm-ゲートウェイの展開) ([English](https://code.claude.com/docs/en/llm-gateway-rollout)):  
+  Claude Code 向けにゲートウェイ製品をデプロイする方法。Claude Code の送信内容を転送するための設定、開発者向け認証情報の発行、管理設定を通じた構成配布、ロールアウトの検証を扱う。
 <!-- light:new-pages:end -->
+
+## 1. LLM ゲートウェイへの接続
+
+組織の LLM ゲートウェイに Claude Code を向けるための手順をまとめた新規ページです。まず管理者が既にゲートウェイを設定済みかどうかを確認し、未設定なら CLI・VS Code・GitHub Actions・Agent SDK のそれぞれでベース URL と認証情報を自分で設定する方法を案内します。その後、接続が成立しているかの検証と、ゲートウェイ起因のエラーの修正までを扱います。
+
+本ページの本文は現時点で `llms-full.txt`（全文展開）にはまだ取り込まれておらず、英語ページのみの提供です。日本語ページは未提供のため、リンクは英語のみとしています。
+
+- [Connect Claude Code to an LLM gateway - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-connect)
+
+## 2. ゲートウェイプロトコルリファレンス
+
+Claude Code と LLM ゲートウェイの間の API 契約を定めた新規リファレンスページです。ゲートウェイが転送すべきエンドポイント、ヘッダーおよびボディのフィールド、フィールドが除去された場合に発生する機能縮退、コスト追跡のための属性（attribution）ヘッダー、モデルディスカバリーの仕様を規定します。ゲートウェイ製品を実装・運用する側が参照する技術リファレンスにあたります。
+
+本ページも全文展開にはまだ取り込まれておらず、英語ページのみの提供です。
+
+- [Gateway protocol reference - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-protocol)
+
+## 3. 組織向け LLM ゲートウェイの展開
+
+Claude Code 向けにゲートウェイ製品を組織展開する方法をまとめた新規ページです。Claude Code が送信する内容を転送するためのゲートウェイ設定、開発者へ配る認証情報の発行、管理設定を通じた構成の配布、そしてロールアウトの検証という運用フローを扱います。前述の「接続」ページがエンドユーザー視点なのに対し、こちらは管理者・運用者視点の展開手順という位置づけです。
+
+本ページも全文展開にはまだ取り込まれておらず、英語ページのみの提供です。
+
+- [Roll out an LLM gateway for your organization - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-rollout)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-（今回の対象期間に、単一ページで 50 行以上の大幅更新に該当したページはありません。主要な更新はハイライト、その他はいずれも下記「軽微な更新」に整理しています）
+今回の主要な大幅更新（モデル設定 / サーバー管理設定 / サンドボックス）は、いずれも上記ハイライトに整理しました。これら以外で単一ページ 50 行以上に該当する独立した大幅更新はありません。その他の小規模な変更は下記「軽微な更新」にまとめています。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、Claude Code v2.1.187（2026年06月23日）の changelog 追加と、Slack・エージェントビュー等のドキュメント加筆が中心です。以下に分類して整理します（バージョンは単一リリースのため、各 bullet への併記は省略します）。
+今回の軽微な更新は、changelog で先行告知されていた Claude Code v2.1.187 系の機能について、各リファレンスページ本文へ説明が追記されたものが中心です（多くは前回サマリで changelog 項目として既出のため、ここではドキュメント化された点を簡潔に挙げます）。以下に分類して整理します。
 
 **新機能**
 
-- `sandbox.credentials` 設定が追加された。サンドボックスで実行されるコマンドが認証情報ファイルやシークレットの環境変数を読み取るのをブロックする。
-- 組織が設定したモデル制限が、モデルピッカー・`--model`・`/model`・`ANTHROPIC_MODEL` に反映されるようになった。制限対象のモデルを選ぶと「組織の設定により制限されています」というメッセージが表示される。
-- フルスクリーンモードの選択メニュー（権限プロンプト・`/model`・`/config` など）で、マウスクリックによる選択がサポートされた。
-- Slack 連携のトラブルシューティングに「Claude Code がアカウントで有効になっていません」の節が追加された。管理者の有効化操作は不要で、claude.ai/code に一度サインインすればクラウド環境が作成されエラーが解消する旨を案内する — [日本語](https://code.claude.com/docs/ja/slack#claude-code-is-not-enabled-for-your-account) / [English](https://code.claude.com/docs/en/slack#claude-code-is-not-enabled-for-your-account)
-- エージェントビューの入力欄で `/model` がディスパッチモデルの切り替えコマンドとして扱われるようになった（詳細はハイライト 2 参照） — [日本語](https://code.claude.com/docs/ja/agent-view#set-the-model) / [English](https://code.claude.com/docs/en/agent-view#set-the-model)
+- リモート MCP ツール呼び出しのアイドルタイムアウトを制御する `CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT` 環境変数が文書化された（HTTP/SSE/WebSocket/claude.ai コネクタ向け、既定 300000 ミリ秒＝5 分、`0` で無効化。v2.1.187） — [English](https://code.claude.com/docs/en/mcp)
+- フルスクリーンレンダリングで、権限プロンプト・`/model`・`/config` などの選択メニューをマウスクリックで選べる旨が追記された（v2.1.187） — [English](https://code.claude.com/docs/en/fullscreen)
+- 認証エラー「Model is restricted by your organization's settings」のトラブルシューティング節が追加された（詳細はハイライト 1 参照）
 
 **機能改善**
 
-- バックグラウンドセッションのプロバイダー設定・ゲートウェイ変数の解決方法が整理された（詳細はハイライト 3 参照） — [日本語](https://code.claude.com/docs/ja/agent-view#the-supervisor-process) / [English](https://code.claude.com/docs/en/agent-view#the-supervisor-process)
-- スーパーバイザーが事前ウォームしたワーカーを 1 つ保持して起動遅延を抑えるようになり、認証エラーのトラブルシューティングも追加された（詳細はハイライト 4 参照）
-- Slack 連携で、各セッションが自分の Claude アカウントで実行され、接続済みリポジトリと自分のプラン上限を使う点が本文に明記された — [日本語](https://code.claude.com/docs/ja/slack) / [English](https://code.claude.com/docs/en/slack)
-- `/install-github-app` が改善され、GitHub Actions ワークフローのセットアップが任意になった。GitHub App のインストールだけ行い、ワークフロー／シークレットの手順をスキップできる。
-- `/btw` で ←/→ の矢印キーによるナビゲーションが追加され、過去の回答をたどれるようになった。
-- `/plugin` が、最近使っていないプラグインを表に出して整理を促すようになった。
-
-**バグ修正**
-
-v2.1.187 で多数のバグ修正が行われました。主なものは以下のとおりです（いずれも changelog のみの言及で、対応する通常ドキュメントページはないためリンクは付しません）。
-
-- `--resume` が、元の `-p` 実行がモデルのターンを生成しなかった場合に「No conversation found」で失敗する問題を修正
-- `--json-schema` と Workflow の `agent({schema})` の構造化出力で、成功後もモデルが `StructuredOutput` を無限に再呼び出しできてしまう問題を修正し、後続ターンが確実に構造化出力を返すようにした
-- リモート MCP ツール呼び出しが応答なしで 5 分間ハングする問題を修正し、無期限にブロックせずエラーで中断するようにした（`CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT` で調整可）
-- エージェントプロキシの CA システム信頼インストール追加後、Claude Code Remote セッションの起動が約 2.7 秒遅くなる問題を修正
-- per-byte の拡張キーイベントとして貼り付けを受け取るターミナルで、貼り付けた韓国語／CJK テキストが文字化けする問題を修正
-- リモートコントロール経由の `/update` が、起動時の信頼ダイアログが表示されるべき場面でハングする問題を修正
-- エージェントがターンを構造化出力なしで終えたとき、エージェントビューのバックグラウンドジョブが「working」のまま止まる問題を修正
-- エージェントビューへ移動して戻った後、および `/bg`・`/tui`・`/update` の後にチャンネル接続が切れる問題を修正
-- エージェント停止通知が誰が停止したかを正しく示さない問題を修正し、文言も改善した（"came to rest" の代わりに "finished"／"stopped"）
-- サブエージェントの深さ追跡を修正（再開したサブエージェントは元の生成深さを復元し、フォークしたサブエージェントは深さ上限にカウントされる）
-- 強制終了したエージェントの worktree 登録のリークを修正（ロックされた `.git/worktrees/` エントリを自動でクリーンアップ）
-- macOS の Ghostty でフルスクリーンモード時に Cmd+クリックで URL が開かない問題を修正
-- `claude --help` が `--bg`／`--background` フラグを一覧表示しない問題を修正
-- `/share` のアップロード中に Esc・Ctrl-C・Ctrl-D が効かない問題を修正
-- [VSCode] 大きなセッションの再開時に拡張機能が応答しなくなる問題を修正
+- `/btw` の回答オーバーレイに ←/→ キーが追加され、セッション内の過去の `/btw` 回答をたどれる旨がキー一覧に明記された（v2.1.187） — [English](https://code.claude.com/docs/en/interactive-mode)
+- `/plugin`（プラグイン一覧）の Installed タブに、自分で入れたが最近使っていないプラグインをまとめる「Not used recently」グループと各プラグインの「Last used」行の説明が追記された（v2.1.187） — [English](https://code.claude.com/docs/en/plugins)
+- `/install-github-app` で GitHub Actions のセットアップが任意になり、App のインストールだけ行って「Skip for now」で止め、後から再実行できる旨が Quick setup に追記された（v2.1.187） — [English](https://code.claude.com/docs/en/github-actions#quick-setup)
+- バックグラウンドサブエージェントの深さが初回スポーン時に固定され、後から再開しても深さが変わらない旨が追記された（v2.1.187） — [English](https://code.claude.com/docs/en/sub-agents)
+- `Ctrl+R` のコマンド履歴検索が、選択スコープの「直近 100 件の一意なプロンプト」を読み込む（重複は最新のものに集約）旨が明記された — [English](https://code.claude.com/docs/en/interactive-mode)
+- `availableModels` 許可リストの適用先が skills・commands・サブエージェントのモデル指定にも及ぶ旨が各ページに反映された（詳細はハイライト 2 参照）
+- Claude Code Desktop の「Managed settings」節が更新され、ローカル/クラウド/SSH の各セッションへ管理設定がどの経路で届くかが箇条書きで整理された。あわせて `managedMcpServers` キーの説明に、サードパーティ（3P）デプロイメントでは管理設定ファイルまたは MDM 経由で配信する必要がある旨の注記が加わった（詳細はハイライト 4 参照） — [English](https://code.claude.com/docs/en/desktop#managed-settings)
+- 管理コントロール一覧（admin-setup）に、`availableModels`・`enforceAvailableModels` を使う「Model restrictions」行が追加された（詳細はハイライト 2 参照） — [English](https://code.claude.com/docs/en/admin-setup)
 
 **その他**
 
-- changelog ページに v2.1.187（2026年06月23日）のリリースエントリが追加された（changelog リンク不使用ポリシーによりリンクは付しません）。
-- 「ウェブ上の Claude Code」ページの関連リソースに、同じクラウド環境で動く Claude Tag への外部リンクが追加された — [日本語](https://code.claude.com/docs/ja/claude-code-on-the-web) / [English](https://code.claude.com/docs/en/claude-code-on-the-web)
-- 「スキル」ページの関連リソースに、リポジトリにコミットしたプロジェクトスキルが Claude Tag チャンネルでも読み込まれる旨の Claude Tag skills への外部リンクが追加された — [日本語](https://code.claude.com/docs/ja/skills) / [English](https://code.claude.com/docs/en/skills)
+- changelog ページに v2.1.190（2026年06月24日）「バグ修正と信頼性の改善」のリリースエントリが追加された（changelog リンク不使用ポリシーによりリンクは付しません）。
+- 音声入力ヘルプの表記が `Space` から小文字の `space` に統一されるなどの字句修正が入った。
+- ドキュメントマップ上で「Eliminate prompts with auto mode」の見出しが「Eliminate permission prompts with auto mode」に改称された。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -136,11 +146,11 @@ v2.1.187 で多数のバグ修正が行われました。主なものは以下�
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-22.md](./archives/latest/2026-06-22.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-22.md](./archives/latest-detail/2026-06-22.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-23.md](./archives/latest/2026-06-23.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-23.md](./archives/latest-detail/2026-06-23.md)
 
 <!--
-base_commit: db1b606290c053b1530a48339df97fa7fdaba745
-head_commit: a8b1232abacba9353171c44560e7a6a4bfd70a63
-generated_at_full: 2026-06-24T15:00:50+09:00
+base_commit: a8b1232abacba9353171c44560e7a6a4bfd70a63
+head_commit: 01b0ad7141ef8c6ea3006c5c4ecabc1e8aec69c0
+generated_at_full: 2026-06-25T15:03:55+09:00
 -->
