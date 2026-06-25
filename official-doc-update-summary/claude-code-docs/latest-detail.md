@@ -71,11 +71,11 @@
 <!-- light:new-pages:start -->
 LLM ゲートウェイのドキュメントが再編され、従来の単一ページ（「LLM gateways」に改称）に加えて、用途別に 3 ページが新規追加されました。いずれも現時点では英語ページのみで、日本語ページは未提供です。
 
-- [**LLM ゲートウェイへの接続**](#1-llm-ゲートウェイへの接続) ([English](https://code.claude.com/docs/en/llm-gateway-connect)):  
+- [**LLM ゲートウェイへの接続**](#1-llm-ゲートウェイへの接続) ([日本語](https://code.claude.com/docs/ja/llm-gateway-connect) / [English](https://code.claude.com/docs/en/llm-gateway-connect)):  
   組織の LLM ゲートウェイに Claude Code を向ける手順。管理者が既に設定済みかの確認方法、CLI・VS Code・GitHub Actions・Agent SDK でベース URL と認証情報を自分で設定する方法、接続の検証とゲートウェイエラーの修正を扱う。
-- [**ゲートウェイプロトコルリファレンス**](#2-ゲートウェイプロトコルリファレンス) ([English](https://code.claude.com/docs/en/llm-gateway-protocol)):  
+- [**ゲートウェイプロトコルリファレンス**](#2-ゲートウェイプロトコルリファレンス) ([日本語](https://code.claude.com/docs/ja/llm-gateway-protocol) / [English](https://code.claude.com/docs/en/llm-gateway-protocol)):  
   Claude Code と LLM ゲートウェイ間の API 契約。転送すべきエンドポイント・ヘッダー・ボディフィールド、フィールド除去時の機能縮退、コスト追跡用の属性ヘッダー、モデルディスカバリーを規定する。
-- [**組織向け LLM ゲートウェイの展開**](#3-組織向け-llm-ゲートウェイの展開) ([English](https://code.claude.com/docs/en/llm-gateway-rollout)):  
+- [**組織向け LLM ゲートウェイの展開**](#3-組織向け-llm-ゲートウェイの展開) ([日本語](https://code.claude.com/docs/ja/llm-gateway-rollout) / [English](https://code.claude.com/docs/en/llm-gateway-rollout)):  
   Claude Code 向けにゲートウェイ製品をデプロイする方法。Claude Code の送信内容を転送するための設定、開発者向け認証情報の発行、管理設定を通じた構成配布、ロールアウトの検証を扱う。
 <!-- light:new-pages:end -->
 
@@ -85,7 +85,7 @@ LLM ゲートウェイのドキュメントが再編され、従来の単一ペ�
 
 本ページの本文は現時点で `llms-full.txt`（全文展開）にはまだ取り込まれておらず、英語ページのみの提供です。日本語ページは未提供のため、リンクは英語のみとしています。
 
-- [Connect Claude Code to an LLM gateway - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-connect)
+- [日本語](https://code.claude.com/docs/ja/llm-gateway-connect) / [Connect Claude Code to an LLM gateway - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-connect)
 
 ## 2. ゲートウェイプロトコルリファレンス
 
@@ -93,7 +93,7 @@ Claude Code と LLM ゲートウェイの間の API 契約を定めた新規リ�
 
 本ページも全文展開にはまだ取り込まれておらず、英語ページのみの提供です。
 
-- [Gateway protocol reference - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-protocol)
+- [日本語](https://code.claude.com/docs/ja/llm-gateway-protocol) / [Gateway protocol reference - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-protocol)
 
 ## 3. 組織向け LLM ゲートウェイの展開
 
@@ -101,7 +101,7 @@ Claude Code 向けにゲートウェイ製品を組織展開する方法をま�
 
 本ページも全文展開にはまだ取り込まれておらず、英語ページのみの提供です。
 
-- [Roll out an LLM gateway for your organization - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-rollout)
+- [日本語](https://code.claude.com/docs/ja/llm-gateway-rollout) / [Roll out an LLM gateway for your organization - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-rollout)
 
 ## 大幅に更新されたページ
 
@@ -116,20 +116,20 @@ Claude Code 向けにゲートウェイ製品を組織展開する方法をま�
 
 **新機能**
 
-- リモート MCP ツール呼び出しのアイドルタイムアウトを制御する `CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT` 環境変数が文書化された（HTTP/SSE/WebSocket/claude.ai コネクタ向け、既定 300000 ミリ秒＝5 分、`0` で無効化。v2.1.187） — [English](https://code.claude.com/docs/en/mcp)
-- フルスクリーンレンダリングで、権限プロンプト・`/model`・`/config` などの選択メニューをマウスクリックで選べる旨が追記された（v2.1.187） — [English](https://code.claude.com/docs/en/fullscreen)
+- リモート MCP ツール呼び出しのアイドルタイムアウトを制御する `CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT` 環境変数が文書化された（HTTP/SSE/WebSocket/claude.ai コネクタ向け、既定 300000 ミリ秒＝5 分、`0` で無効化。v2.1.187） — [日本語](https://code.claude.com/docs/ja/mcp) / [English](https://code.claude.com/docs/en/mcp)
+- フルスクリーンレンダリングで、権限プロンプト・`/model`・`/config` などの選択メニューをマウスクリックで選べる旨が追記された（v2.1.187） — [日本語](https://code.claude.com/docs/ja/fullscreen) / [English](https://code.claude.com/docs/en/fullscreen)
 - 認証エラー「Model is restricted by your organization's settings」のトラブルシューティング節が追加された（詳細はハイライト 1 参照）
 
 **機能改善**
 
-- `/btw` の回答オーバーレイに ←/→ キーが追加され、セッション内の過去の `/btw` 回答をたどれる旨がキー一覧に明記された（v2.1.187） — [English](https://code.claude.com/docs/en/interactive-mode)
-- `/plugin`（プラグイン一覧）の Installed タブに、自分で入れたが最近使っていないプラグインをまとめる「Not used recently」グループと各プラグインの「Last used」行の説明が追記された（v2.1.187） — [English](https://code.claude.com/docs/en/plugins)
-- `/install-github-app` で GitHub Actions のセットアップが任意になり、App のインストールだけ行って「Skip for now」で止め、後から再実行できる旨が Quick setup に追記された（v2.1.187） — [English](https://code.claude.com/docs/en/github-actions#quick-setup)
-- バックグラウンドサブエージェントの深さが初回スポーン時に固定され、後から再開しても深さが変わらない旨が追記された（v2.1.187） — [English](https://code.claude.com/docs/en/sub-agents)
-- `Ctrl+R` のコマンド履歴検索が、選択スコープの「直近 100 件の一意なプロンプト」を読み込む（重複は最新のものに集約）旨が明記された — [English](https://code.claude.com/docs/en/interactive-mode)
+- `/btw` の回答オーバーレイに ←/→ キーが追加され、セッション内の過去の `/btw` 回答をたどれる旨がキー一覧に明記された（v2.1.187） — [日本語](https://code.claude.com/docs/ja/interactive-mode) / [English](https://code.claude.com/docs/en/interactive-mode)
+- `/plugin`（プラグイン一覧）の Installed タブに、自分で入れたが最近使っていないプラグインをまとめる「Not used recently」グループと各プラグインの「Last used」行の説明が追記された（v2.1.187） — [日本語](https://code.claude.com/docs/ja/plugins) / [English](https://code.claude.com/docs/en/plugins)
+- `/install-github-app` で GitHub Actions のセットアップが任意になり、App のインストールだけ行って「Skip for now」で止め、後から再実行できる旨が Quick setup に追記された（v2.1.187） — [日本語](https://code.claude.com/docs/ja/github-actions#quick-setup) / [English](https://code.claude.com/docs/en/github-actions#quick-setup)
+- バックグラウンドサブエージェントの深さが初回スポーン時に固定され、後から再開しても深さが変わらない旨が追記された（v2.1.187） — [日本語](https://code.claude.com/docs/ja/sub-agents) / [English](https://code.claude.com/docs/en/sub-agents)
+- `Ctrl+R` のコマンド履歴検索が、選択スコープの「直近 100 件の一意なプロンプト」を読み込む（重複は最新のものに集約）旨が明記された — [日本語](https://code.claude.com/docs/ja/interactive-mode) / [English](https://code.claude.com/docs/en/interactive-mode)
 - `availableModels` 許可リストの適用先が skills・commands・サブエージェントのモデル指定にも及ぶ旨が各ページに反映された（詳細はハイライト 2 参照）
-- Claude Code Desktop の「Managed settings」節が更新され、ローカル/クラウド/SSH の各セッションへ管理設定がどの経路で届くかが箇条書きで整理された。あわせて `managedMcpServers` キーの説明に、サードパーティ（3P）デプロイメントでは管理設定ファイルまたは MDM 経由で配信する必要がある旨の注記が加わった（詳細はハイライト 4 参照） — [English](https://code.claude.com/docs/en/desktop#managed-settings)
-- 管理コントロール一覧（admin-setup）に、`availableModels`・`enforceAvailableModels` を使う「Model restrictions」行が追加された（詳細はハイライト 2 参照） — [English](https://code.claude.com/docs/en/admin-setup)
+- Claude Code Desktop の「Managed settings」節が更新され、ローカル/クラウド/SSH の各セッションへ管理設定がどの経路で届くかが箇条書きで整理された。あわせて `managedMcpServers` キーの説明に、サードパーティ（3P）デプロイメントでは管理設定ファイルまたは MDM 経由で配信する必要がある旨の注記が加わった（詳細はハイライト 4 参照） — [日本語](https://code.claude.com/docs/ja/desktop#managed-settings) / [English](https://code.claude.com/docs/en/desktop#managed-settings)
+- 管理コントロール一覧（admin-setup）に、`availableModels`・`enforceAvailableModels` を使う「Model restrictions」行が追加された（詳細はハイライト 2 参照） — [日本語](https://code.claude.com/docs/ja/admin-setup) / [English](https://code.claude.com/docs/en/admin-setup)
 
 **その他**
 
