@@ -35,9 +35,9 @@ LLM ゲートウェイのドキュメントが大きく再編されました。�
 具体的な手順は、前回サマリで新規追加として告知済みの 3 サブページへ移され、今回それらの本文が公開されました。「LLM ゲートウェイへの接続」（`llm-gateway-connect`）は開発者向けに、既存設定の確認・ベース URL と認証情報の設定・各サーフェス（VS Code・Desktop・GitHub Actions・Agent SDK・Slack/Web/Remote Control）ごとの設定・モデル検出や `apiKeyHelper` などの追加設定・トラブルシューティング表までを扱います。「組織向け LLM ゲートウェイの展開」（`llm-gateway-rollout`）は管理者向けのデプロイ・認証情報発行・管理設定配布のチェックリスト、「ゲートウェイプロトコルリファレンス」（`llm-gateway-protocol`）は API 形式・転送すべきヘッダー・属性ブロック・機能パススルー・モデルディスカバリーを規定する技術リファレンスです。これらの再編に伴い、各ページ（errors・third-party-integrations・model-config・costs など）から旧ページを指していた参照リンクも新しいページ群へ更新されています。
 
 - [LLM ゲートウェイ - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/llm-gateway)
-- [LLM gateways - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway)
+- [日本語](https://code.claude.com/docs/ja/llm-gateway) / [LLM gateways - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway)
 - [Claude Code を LLM ゲートウェイに接続する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/llm-gateway-connect)
-- [Connect Claude Code to an LLM gateway - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-connect)
+- [日本語](https://code.claude.com/docs/ja/llm-gateway-connect) / [Connect Claude Code to an LLM gateway - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-connect)
 
 ## 2. Remote Control の Trusted Devices
 
@@ -73,7 +73,7 @@ LLM ゲートウェイのドキュメントが大きく再編されました。�
 本ページの本文は現時点で `llms-full.txt` にはまだ取り込まれていませんが、公式サイトでは日本語・英語ページとも公開済みです。
 
 - [機能の利用可能性 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/feature-availability)
-- [Feature availability - Claude Code Docs (English)](https://code.claude.com/docs/en/feature-availability)
+- [日本語](https://code.claude.com/docs/ja/feature-availability) / [Feature availability - Claude Code Docs (English)](https://code.claude.com/docs/en/feature-availability)
 
 ## 大幅に更新されたページ
 
