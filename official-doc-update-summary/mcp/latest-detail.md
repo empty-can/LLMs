@@ -1,64 +1,92 @@
 ---
-対象期間: 2026年06月22日 〜 2026年06月24日
-作成日: 2026-06-24
+対象期間: 2026年06月24日 〜 2026年06月25日
+作成日: 2026-06-25
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、MCP コミュニティに新設された「Primitive Grouping インタレストグループ」の憲章ページが新規追加されたのが主な変更です。ほかに既存憲章のリンク先変更が1件あります。
+今回の対象期間は MCP のセキュリティ関連ドキュメントの拡充が中心で、攻撃手法を詳述する Security Best Practices の大幅更新と、脆弱性報告プロセスを定める Security Policy ページの新設が主な変更です。ほかに新インタレストグループ憲章の追加や軽微な記述修正があります。
 
 主要なものを以下に挙げます。
 
-1. Primitive Grouping インタレストグループの憲章ページが新規公開され、MCP プリミティブ（Tools / Resources / Prompts / Tasks）のグルーピング手法を検討する新グループの目的・スコープ・体制が示された
+1. Security Best Practices ページに、OAuth 認可 URL の検証と stdio プロキシ経由の権限昇格に関する攻撃手法・リスク・緩和策の新セクションが追加された
+2. 脆弱性報告プロセスとスコープ、SDK 横断の協調開示を定めた Security Policy ページが新設された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Primitive Grouping インタレストグループ憲章を新規追加**](#1-primitive-grouping-インタレストグループ憲章を新規追加):  
-  MCP プリミティブ（Tools / Resources / Prompts / Tasks）をフラットなリスト以上にどう整理するかを探求する新インタレストグループの憲章が公開された。単一の標準パターンを早期に決め打ちせず、要件収集・パターン検証・リファレンス実装を通じて知見を SEP プロセスへ還元する位置づけ。
+1. [**Security Best Practices に OAuth URL 検証・stdio プロキシ昇格対策を追加**](#1-security-best-practices-に-oauth-url-検証と-stdio-プロキシ昇格対策を追加):  
+  悪意ある MCP サーバーが渡す OAuth 認可 URL を悪用した XSS / RCE と、プロキシ構成下での stdio 経由の権限昇格について、攻撃手法・リスク・緩和策（URL スキーム検証、シェル実行回避、CSP 等）を詳述する 2 セクションが追加された。
+2. [**Security Policy ページを新設**](#2-security-policy-ページを新設):  
+  MCP 仕様・公式 SDK の脆弱性をどう報告し、何がスコープ内／外か、SDK メンテナー間でどう協調開示するかをまとめた公式セキュリティポリシーページが公開された。
 <!-- light:highlight-list:end -->
 
-## 1. Primitive Grouping インタレストグループ憲章を新規追加
+## 1. Security Best Practices に OAuth URL 検証と stdio プロキシ昇格対策を追加
 
-MCP コミュニティに **Primitive Grouping インタレストグループ（Primitive Grouping Interest Group）** が新設され、その憲章ページが新規公開されました。MCP のプリミティブ（Tools / Resources / Prompts / Tasks）はプロトコルが管理するフラットなリストとして提供されますが、本グループはそれを超えてプリミティブを**どう整理（グルーピング）すべきか**、そしてその整理がサーバー・クライアント双方にどのような利益をもたらすかを探求します。憲章は、グループ種別を **Interest Group**、ファシリテーターを **Tapan Chugh 氏（University of Washington、`@chughtapan`）** と **Sam Morrow 氏（GitHub、`@SamMorrowDrums`）** の 2 名、メンテナーに **Cliff Hall 氏（Futurescale、`@cliffhall`）** を挙げています。
+**Security Best Practices** ページに、攻撃ベクトルと緩和策を扱う 2 つの新セクションが追加されました（約 150 行の追記）。1 つ目の **OAuth Authorization URL Validation** は、悪意ある MCP サーバーが OAuth 認可フローで渡す認可 URL を悪用する攻撃を扱います。具体的には、認可エンドポイントに `javascript:` URL を仕込んでクライアントの `window.open()` 等で実行させる JavaScript インジェクション（XSS）と、URL をシェル経由（`cmd.exe` / PowerShell 等）で開く実装に対するコマンドインジェクションを攻撃手法として挙げ、XSS が `stdio` トランスポートと組み合わさると完全なシステム侵害（権限昇格）に至りうると警告します。緩和策として、認可 URL は `http://`／`https://` のみ許可し（`http://` はローカル開発時のループバックアドレスに限る）、`javascript:`・`data:`・`file:`・`vbscript:` 等の危険なスキームを拒否すること、シェル実行ではなくプラットフォーム固有の非シェル URL オープン機構を使うこと、Web 系クライアントは CSP（`script-src 'self'` 等）を設定すること、サーバー由来の全 URL を厳格にパース・サニタイズすることを **MUST**／**SHOULD** で規定しています。
 
-グループの基本姿勢は「単一の正解パターンを早期に決め打ちしない」ことにあり、クライアント・サーバー・ゲートウェイそれぞれの多様な要件を文書化し、グルーピング・ツール検索・コードモードなど複数の整理戦略のリファレンス拡張を維持しながら、その知見を [SEP プロセス](https://modelcontextprotocol.io/community/sep-guidelines) へ還元します。憲章は、フラットなプリミティブ一覧がもたらす課題（LLM のコンテキスト過負荷、トークン消費によるコスト・レイテンシ増、管理しづらさ）をスコープ内とする一方、セキュリティ目的の整理や MCP サーバー自体の整理（Registry / MCP-and-Skills グループの領域）はスコープ外と明記しています。ライフサイクル上の現在地は「Active Exploration」で、合意が固まればワーキンググループへの昇格（IG → WG）を提案しうるとされています（憲章 Changelog の初版は 2026 年 06 月 18 日）。
+2 つ目の **stdio Transport Security in Proxy Scenarios** は、`stdio` トランスポート自体は本質的に脆弱ではないものの、プロキシサービスが `stdio` 接続を仲介し MCP サーバーを子プロセスとして spawn するプロキシ型アーキテクチャでは、Web ベースの攻撃から完全なシステム侵害への昇格経路になりうる点を解説します。攻撃者が XSS 等でクライアント側のコード実行を獲得し、クライアントとプロキシ間のプロキシ認証トークンを窃取してプロキシに認証付きリクエストを送ると、プロキシが任意コマンドを `stdio` 経由で実行してしまう、という流れです。緩和策として、まず OAuth URL 検証や CSP で前段の脆弱性自体を防ぐこと、その上で spawn するプロセスのサンドボックス化／コンテナ化やファイルシステムアクセス制限、`stdio` 利用のロギング、危険なコマンドへの追加認可といった多層防御を **SHOULD** で示しています。
 
-- [Primitive Grouping 憲章（Primitive Grouping Charter） - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/primitive-grouping)
+- [Security Best Practices - MCP Docs](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices#oauth-authorization-url-validation)
+
+## 2. Security Policy ページを新設
+
+MCP プロジェクト全体のセキュリティ報告手順を定める **Security Policy**（`community/security`）ページが新規公開されました。脆弱性は GitHub Security Advisories を通じて該当リポジトリに報告し、公開 Issue・Discussion・Pull Request では報告しないこと、Private vulnerability reporting が仕様リポジトリと [modelcontextprotocol](https://github.com/modelcontextprotocol) organization 配下の全公式 SDK リポジトリで有効化されていることを案内します。完全なポリシー（トラストモデルと、脆弱性に該当しない意図的な挙動の一覧）は仕様リポジトリの `SECURITY.md` にあるとしています。
+
+特徴的なのは **SDK 横断の協調開示** の説明で、ある SDK に報告が来た場合、受領したメンテナーが同じ問題が他の公式 SDK に影響するかを評価し、影響範囲を見極めた上で修正とアドバイザリを足並みを揃えてリリースする、という運用が明記されています。根本原因が仕様自体の欠陥であれば仕様メンテナーと協議し、CVE は GitHub の CNA を通じて GHSA ワークフローの一部として採番されます。スコープとしてプロトコルレベルの脆弱性・認証/認可バイパス・インジェクションやメモリ安全性の不具合・サンドボックス脱出・セッションハイジャック・トークン漏洩・クロステナントアクセスを挙げる一方、`stdio` トランスポートのトラストバウンダリ（クライアントとサーバーが同等権限で動くため、一方が他方を DoS する類の報告はスコープ外）を意図的な非脆弱性の代表例として説明しています。
+
+- [Security Policy - MCP Docs](https://modelcontextprotocol.io/community/security)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Primitive Grouping 憲章（Primitive Grouping Charter）**](#1-primitive-grouping-インタレストグループ憲章を新規追加) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/primitive-grouping)):  
-  MCP プリミティブのグルーピング手法を検討する新インタレストグループの憲章ページ（詳細はハイライト1参照）。
+- [**Security Policy**](#2-security-policy-ページを新設) ([MCP Docs](https://modelcontextprotocol.io/community/security)):  
+  MCP 仕様・公式 SDK の脆弱性報告プロセスとスコープ、SDK 横断の協調開示を定めた新ページ（詳細はハイライト2参照）。
+- [**Financial Services 憲章（Financial Services Charter）**](#1-financial-services-憲章を新規追加) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)):  
+  MCP の金融サービス向けインタレストグループの憲章ページが llms.txt に新規追加された。
 <!-- light:new-pages:end -->
+
+## 1. Financial Services 憲章を新規追加
+
+MCP コミュニティに **金融サービス向けインタレストグループ（Financial Services Interest Group）** が新設され、その憲章ページが `llms.txt` のインデックスに追加されました（公式の 1 行説明は「Charter for the MCP Financial Services Interest Group.」）。本サマリが参照する取得済み全文データ（`llms-full.txt`）には現時点で本ページの本文が含まれていないため、グループの目的・スコープ・体制等の詳細は下記の原ページを参照してください。
+
+- [Financial Services 憲章（Financial Services Charter） - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-*(大幅に更新されたページはありません)*
+- [**Security Best Practices**](#1-security-best-practices-に-oauth-url-検証と-stdio-プロキシ昇格対策を追加) ([MCP Docs](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices#oauth-authorization-url-validation)):  
+  OAuth 認可 URL 検証と stdio プロキシ昇格対策の 2 セクション（約 150 行）が追加された（詳細はハイライト1参照）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、既存憲章ページのリンク先変更 1 件です。
+今回の軽微な更新は、既存ページの記述修正・更新が中心です。
+
+**機能改善**
+- Enterprise-Managed Authorization の「Handle Account Linking」手順に説明が補完され、ID-JAG トークンの subject claim を利用者の安定した主識別子として用い、email claim はエンタープライズ管理認可の設定前に作成された既存アカウントとの突合用フォールバックとして使う旨が明記された。 — [Enterprise-Managed Authorization - MCP Docs](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#for-mcp-authorization-servers)
+
+**バグ修正**
+- Understanding MCP clients の Elicitation 例で、リクエストスキーマのフィールド名が `schema` から `requestedSchema` に修正された（実際のプロトコルのフィールド名に整合）。 — [Understanding MCP clients - MCP Docs](https://modelcontextprotocol.io/docs/learn/client-concepts#elicitation)
 
 **その他**
-- Enterprise-Managed Authorization 憲章の「Related resources」内「Full specification」リンクの参照先が、仕様リポジトリの `draft` ブランチから `stable` ブランチへ変更された（仕様の安定版化を反映）。 — [Enterprise-Managed Authorization 憲章（Enterprise-Managed Authorization Charter） - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization#related-resources)
+- SDKs ページの SDK 一覧で、Kotlin SDK の Tier バッジが「TBD」から「Tier 3」に更新された。 — [SDKs - MCP Docs](https://modelcontextprotocol.io/docs/sdk#available-sdks)
+- Contributing to MCP の AI コントリビューションに関する参照先が、`CONTRIBUTING.md#ai-contributions` から専用の `AI_POLICY.md` へ変更された。 — [Contributing to MCP - MCP Docs](https://modelcontextprotocol.io/community/contributing#ai-contributions)
+- Antitrust Policy ページは集約ファイル内での掲載位置が変わったのみで、ページ内容に差分はない。
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-22.md](./archives/latest/2026-06-22.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-22.md](./archives/latest-detail/2026-06-22.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-24.md](./archives/latest/2026-06-24.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-24.md](./archives/latest-detail/2026-06-24.md)
 
 <!--
-base_commit: db1b606290c053b1530a48339df97fa7fdaba745
-head_commit: 01b0ad7141ef8c6ea3006c5c4ecabc1e8aec69c0
-generated_at_full: 2026-06-25T15:19:52+09:00
+base_commit: 01b0ad7141ef8c6ea3006c5c4ecabc1e8aec69c0
+head_commit: 5c948aaefc1e28588e1f2e87aacec146ee8128ac
+generated_at_full: 2026-06-26T15:22:40+09:00
 -->
