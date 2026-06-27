@@ -56,7 +56,7 @@ Fast mode（高速モード）のドキュメントから Opus 4.6 への言及�
 これに伴い、価格表は「Opus 4.8: 入力 $10 / 出力 $50」「Opus 4.7: 入力 $30 / 出力 $150」の 2 行に整理され（旧表の「Opus 4.7 and Opus 4.6」の行が「Opus 4.7」のみに）、レート制限プールの説明も「Opus 4.8 と Opus 4.7 が同じレート制限プールを共有」に改められました。組織での有効化案内も「Console は管理者、Claude AI（Team/Enterprise）は Owner が有効化」とロール表記が更新されています。環境変数ページでも `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` の説明から「Opus 4.6 で Fast mode を使う方法」の案内が削除されました。日本語ページもこの変更を反映済みです。
 
 - [高速モードでレスポンスを高速化 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/fast-mode)
-- [Get faster Opus responses with fast mode - Claude Code Docs (English)](https://code.claude.com/docs/en/fast-mode)
+- [日本語](https://code.claude.com/docs/ja/fast-mode) / [Get faster Opus responses with fast mode - Claude Code Docs (English)](https://code.claude.com/docs/en/fast-mode)
 
 ## 4. セッションのスクリプト連携とトランスクリプト保存の整理
 
@@ -88,7 +88,7 @@ Fast mode（高速モード）のドキュメントから Opus 4.6 への言及�
 
 **新機能**
 
-- `--bg` に長形式 `--background` のエイリアスが追加された（バックグラウンドエージェントとしてセッションを開始） — [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- `--bg` に長形式 `--background` のエイリアスが追加された（バックグラウンドエージェントとしてセッションを開始） — [日本語](https://code.claude.com/docs/ja/cli-reference#cli-flags) / [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
 - `autoMode.classifyAllShell` 設定が追加され、すべての Bash／PowerShell コマンドを（任意コード実行パターンだけでなく）auto-mode 分類器に通せるようになった。あわせて auto-mode の拒否理由が transcript・拒否トースト・`/permissions` の最近の拒否に表示されるようになった
 - `claude_code.assistant_response` という OpenTelemetry ログイベントが追加され、モデルの応答テキストを記録できるようになった。既定ではリダクトされ、`OTEL_LOG_ASSISTANT_RESPONSES=1` で記録。同変数が未設定のときは `OTEL_LOG_USER_PROMPTS` に従うため、既にプロンプト内容を記録している環境はアップグレード時に応答内容も記録され始める点に注意（プロンプトのみに留めるには `OTEL_LOG_ASSISTANT_RESPONSES=0`）
 - bash モード（`!`）にライブのファイルパス補完が追加された
@@ -98,10 +98,10 @@ Fast mode（高速モード）のドキュメントから Opus 4.6 への言及�
 
 **機能改善**
 
-- 設定リファレンス（settings.md）の各設定説明が、既定値を先頭に `**Default**: …` として明示する書式に統一された。あわせて `autoUpdatesChannel`（既定 `"latest"`）・`defaultShell`（既定 `"bash"`、Windows で Bash 不在時は `"powershell"`）など一部の既定値も明確化された — [English](https://code.claude.com/docs/en/settings#available-settings)
-- エージェントチームの teammate が、リードの effort level を継承するようになった（split-pane 表示では v2.1.186 以降に適用） — [English](https://code.claude.com/docs/en/agent-teams)
-- OpenTelemetry の `start_type` 属性に `"agents_view"` 値が追加され、`claude agents` ダッシュボードのプロセス（ユーザーが起動するローカル UI）を会話セッションと区別できるようになった — [English](https://code.claude.com/docs/en/monitoring-usage)
-- 監視ドキュメントに、コミットのモデル別内訳を出す際は token／cost 側を `query_source="main"` でフィルタし、補助・サブエージェントのリクエストを混入させないよう案内が追記された — [English](https://code.claude.com/docs/en/monitoring-usage)
+- 設定リファレンス（settings.md）の各設定説明が、既定値を先頭に `**Default**: …` として明示する書式に統一された。あわせて `autoUpdatesChannel`（既定 `"latest"`）・`defaultShell`（既定 `"bash"`、Windows で Bash 不在時は `"powershell"`）など一部の既定値も明確化された — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
+- エージェントチームの teammate が、リードの effort level を継承するようになった（split-pane 表示では v2.1.186 以降に適用） — [日本語](https://code.claude.com/docs/ja/agent-teams) / [English](https://code.claude.com/docs/en/agent-teams)
+- OpenTelemetry の `start_type` 属性に `"agents_view"` 値が追加され、`claude agents` ダッシュボードのプロセス（ユーザーが起動するローカル UI）を会話セッションと区別できるようになった — [日本語](https://code.claude.com/docs/ja/monitoring-usage) / [English](https://code.claude.com/docs/en/monitoring-usage)
+- 監視ドキュメントに、コミットのモデル別内訳を出す際は token／cost 側を `query_source="main"` でフィルタし、補助・サブエージェントのリクエストを混入させないよう案内が追記された — [日本語](https://code.claude.com/docs/ja/monitoring-usage) / [English](https://code.claude.com/docs/en/monitoring-usage)
 - インストール手順に、`syntax error near unexpected token '<'`・`403` などの curl エラー時は「インストールのトラブルシュート」を参照するよう誘導が追記された（複数の quickstart／setup ページ） — [English](https://code.claude.com/docs/en/troubleshoot-install#find-your-error)
 - MCP サーバーが提供するツールを確認するコード例に、TypeScript に加えて Python 版が `CodeGroup` で併記された
 - MCP `headersHelper` 認証が、ツール呼び出しで 401／403 が返ったときに自動で再実行・再接続するようになった
