@@ -1,92 +1,63 @@
 ---
-対象期間: 2026年06月24日 〜 2026年06月25日
-作成日: 2026-06-25
+対象期間: 2026年06月25日 〜 2026年06月26日
+作成日: 2026-06-26
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は MCP のセキュリティ関連ドキュメントの拡充が中心で、攻撃手法を詳述する Security Best Practices の大幅更新と、脆弱性報告プロセスを定める Security Policy ページの新設が主な変更です。ほかに新インタレストグループ憲章の追加や軽微な記述修正があります。
+今回の対象期間の差分は 1 件のみで、前回は llms.txt インデックスへの追加だけが検出されていた金融サービス向けインタレストグループ（Financial Services Interest Group）の憲章ページについて、その本文全体が取得データに反映されました。
 
 主要なものを以下に挙げます。
 
-1. Security Best Practices ページに、OAuth 認可 URL の検証と stdio プロキシ経由の権限昇格に関する攻撃手法・リスク・緩和策の新セクションが追加された
-2. 脆弱性報告プロセスとスコープ、SDK 横断の協調開示を定めた Security Policy ページが新設された
+1. 規制下の金融機関向けに MCP のコンプライアンス・監査性・データ来歴・ガードレール等を扱う金融サービス向けインタレストグループの憲章（ミッション・スコープ・体制・運営方針）が全文公開された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Security Best Practices に OAuth URL 検証・stdio プロキシ昇格対策を追加**](#1-security-best-practices-に-oauth-url-検証と-stdio-プロキシ昇格対策を追加):  
-  悪意ある MCP サーバーが渡す OAuth 認可 URL を悪用した XSS / RCE と、プロキシ構成下での stdio 経由の権限昇格について、攻撃手法・リスク・緩和策（URL スキーム検証、シェル実行回避、CSP 等）を詳述する 2 セクションが追加された。
-2. [**Security Policy ページを新設**](#2-security-policy-ページを新設):  
-  MCP 仕様・公式 SDK の脆弱性をどう報告し、何がスコープ内／外か、SDK メンテナー間でどう協調開示するかをまとめた公式セキュリティポリシーページが公開された。
+1. [**金融サービス向けインタレストグループ憲章が全文公開**](#1-金融サービス向けインタレストグループ憲章が全文公開):  
+  規制対象の金融機関のステークホルダーが集い、コンプライアンス・監査性・データ来歴・ガードレール等の観点で MCP に必要な適応を特定するインタレストグループの憲章。前回はインデックス追加のみだった本ページの本文（ミッション・スコープ・関連グループ・体制・運営）が今回取得データに反映された。
 <!-- light:highlight-list:end -->
 
-## 1. Security Best Practices に OAuth URL 検証と stdio プロキシ昇格対策を追加
+## 1. 金融サービス向けインタレストグループ憲章が全文公開
 
-**Security Best Practices** ページに、攻撃ベクトルと緩和策を扱う 2 つの新セクションが追加されました（約 150 行の追記）。1 つ目の **OAuth Authorization URL Validation** は、悪意ある MCP サーバーが OAuth 認可フローで渡す認可 URL を悪用する攻撃を扱います。具体的には、認可エンドポイントに `javascript:` URL を仕込んでクライアントの `window.open()` 等で実行させる JavaScript インジェクション（XSS）と、URL をシェル経由（`cmd.exe` / PowerShell 等）で開く実装に対するコマンドインジェクションを攻撃手法として挙げ、XSS が `stdio` トランスポートと組み合わさると完全なシステム侵害（権限昇格）に至りうると警告します。緩和策として、認可 URL は `http://`／`https://` のみ許可し（`http://` はローカル開発時のループバックアドレスに限る）、`javascript:`・`data:`・`file:`・`vbscript:` 等の危険なスキームを拒否すること、シェル実行ではなくプラットフォーム固有の非シェル URL オープン機構を使うこと、Web 系クライアントは CSP（`script-src 'self'` 等）を設定すること、サーバー由来の全 URL を厳格にパース・サニタイズすることを **MUST**／**SHOULD** で規定しています。
+MCP コミュニティに新設された **金融サービス向けインタレストグループ（Financial Services Interest Group, FSIG）** の憲章ページが、前回（インデックスへの 1 行追加のみ）に続いて本文全体まで取得データ（`llms-full.txt`）に反映され、グループの目的・活動範囲・体制が確認できるようになりました。ミッションとして、規制対象の金融機関のステークホルダーが集まり、コンプライアンス・監査性・リスク統制下のデプロイの観点で MCP がどこを適応させる必要があるかを特定すること、金融セクターのユースケースと要件を収集してドメイン固有の拡張を開発・検証すること、広く適用可能な課題を [SEP](https://modelcontextprotocol.io/community/sep-guidelines) やワーキンググループへとスコープ化し、規制環境で実証されたイノベーションを MCP エコシステム全体に還元することを掲げています。
 
-2 つ目の **stdio Transport Security in Proxy Scenarios** は、`stdio` トランスポート自体は本質的に脆弱ではないものの、プロキシサービスが `stdio` 接続を仲介し MCP サーバーを子プロセスとして spawn するプロキシ型アーキテクチャでは、Web ベースの攻撃から完全なシステム侵害への昇格経路になりうる点を解説します。攻撃者が XSS 等でクライアント側のコード実行を獲得し、クライアントとプロキシ間のプロキシ認証トークンを窃取してプロキシに認証付きリクエストを送ると、プロキシが任意コマンドを `stdio` 経由で実行してしまう、という流れです。緩和策として、まず OAuth URL 検証や CSP で前段の脆弱性自体を防ぐこと、その上で spawn するプロセスのサンドボックス化／コンテナ化やファイルシステムアクセス制限、`stdio` 利用のロギング、危険なコマンドへの追加認可といった多層防御を **SHOULD** で示しています。
+スコープ（In Scope）には、ツール呼び出しが「何を・どの権限で・どのポリシーに照らして」行ったかを改ざん検知可能かつ可搬な形で記録するコンプライアンス・監査性、データの出所・引用・同意メタデータを扱うデータ来歴（lineage / provenance）、サーバー同一性やツール挙動・応答の完全性を実行前に保証するためのガードレールと暗号学的アテステーション、ツール利用とデータ取り扱いに関する宣言的ポリシーの強制、FSIG リポジトリでの金融特化拡張の開発・保守、機関横断の相互運用、コア仕様への SEP 昇格、規制当局・業界団体との連絡（regulatory liaison）が含まれます。一方、価格・コスト・顧客リスト等の競争上機微な非公開情報（[MCP Antitrust Policy](https://modelcontextprotocol.io/community/antitrust) に基づく）、MCP 全体の脅威モデリング（[Security IG](https://modelcontextprotocol.io/community/interest-groups/security) の担当）、OAuth フロー等の認可プロトコルの機構（[Authorization IG](https://modelcontextprotocol.io/community/interest-groups/auth) の担当）、製品固有のコンプライアンスガイド、非技術的なビジネス議論は Out of Scope として明確に切り分けられています。
 
-- [Security Best Practices - MCP Docs](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices#oauth-authorization-url-validation)
+体制面では、ファシリテーターを Bloomberg の Sambhav Kothari 氏と Saxo Bank の Peder Holdgaard Pedersen 氏が務め、参加は誰でも可能で Discord の `#financial-services-ig` チャンネルで活動します。運営は隔週 60 分のワーキングセッション（ロンドン時間 16:00–17:00, BST/GMT）で、規制監査・アテステーション、データ来歴・引用、ガードレール・セキュリティ、ポリシー強制の 4 つが現在のアジェンダ項目（いずれも Open）として挙げられています。憲章の Changelog には 2026年06月25日 に Initial charter が記録されています。
 
-## 2. Security Policy ページを新設
-
-MCP プロジェクト全体のセキュリティ報告手順を定める **Security Policy**（`community/security`）ページが新規公開されました。脆弱性は GitHub Security Advisories を通じて該当リポジトリに報告し、公開 Issue・Discussion・Pull Request では報告しないこと、Private vulnerability reporting が仕様リポジトリと [modelcontextprotocol](https://github.com/modelcontextprotocol) organization 配下の全公式 SDK リポジトリで有効化されていることを案内します。完全なポリシー（トラストモデルと、脆弱性に該当しない意図的な挙動の一覧）は仕様リポジトリの `SECURITY.md` にあるとしています。
-
-特徴的なのは **SDK 横断の協調開示** の説明で、ある SDK に報告が来た場合、受領したメンテナーが同じ問題が他の公式 SDK に影響するかを評価し、影響範囲を見極めた上で修正とアドバイザリを足並みを揃えてリリースする、という運用が明記されています。根本原因が仕様自体の欠陥であれば仕様メンテナーと協議し、CVE は GitHub の CNA を通じて GHSA ワークフローの一部として採番されます。スコープとしてプロトコルレベルの脆弱性・認証/認可バイパス・インジェクションやメモリ安全性の不具合・サンドボックス脱出・セッションハイジャック・トークン漏洩・クロステナントアクセスを挙げる一方、`stdio` トランスポートのトラストバウンダリ（クライアントとサーバーが同等権限で動くため、一方が他方を DoS する類の報告はスコープ外）を意図的な非脆弱性の代表例として説明しています。
-
-- [Security Policy - MCP Docs](https://modelcontextprotocol.io/community/security)
+- [Financial Services Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Security Policy**](#2-security-policy-ページを新設) ([MCP Docs](https://modelcontextprotocol.io/community/security)):  
-  MCP 仕様・公式 SDK の脆弱性報告プロセスとスコープ、SDK 横断の協調開示を定めた新ページ（詳細はハイライト2参照）。
-- [**Financial Services 憲章（Financial Services Charter）**](#1-financial-services-憲章を新規追加) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)):  
-  MCP の金融サービス向けインタレストグループの憲章ページが llms.txt に新規追加された。
+- [**Financial Services 憲章（Financial Services Charter）**](#1-金融サービス向けインタレストグループ憲章が全文公開) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)):  
+  前回はインデックス追加のみだった金融サービス向けインタレストグループの憲章ページの本文が取得データに反映された（詳細はハイライト1参照）。
 <!-- light:new-pages:end -->
-
-## 1. Financial Services 憲章を新規追加
-
-MCP コミュニティに **金融サービス向けインタレストグループ（Financial Services Interest Group）** が新設され、その憲章ページが `llms.txt` のインデックスに追加されました（公式の 1 行説明は「Charter for the MCP Financial Services Interest Group.」）。本サマリが参照する取得済み全文データ（`llms-full.txt`）には現時点で本ページの本文が含まれていないため、グループの目的・スコープ・体制等の詳細は下記の原ページを参照してください。
-
-- [Financial Services 憲章（Financial Services Charter） - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Security Best Practices**](#1-security-best-practices-に-oauth-url-検証と-stdio-プロキシ昇格対策を追加) ([MCP Docs](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices#oauth-authorization-url-validation)):  
-  OAuth 認可 URL 検証と stdio プロキシ昇格対策の 2 セクション（約 150 行）が追加された（詳細はハイライト1参照）。
+（今回の対象期間に大幅更新されたページはありません）
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、既存ページの記述修正・更新が中心です。
-
-**機能改善**
-- Enterprise-Managed Authorization の「Handle Account Linking」手順に説明が補完され、ID-JAG トークンの subject claim を利用者の安定した主識別子として用い、email claim はエンタープライズ管理認可の設定前に作成された既存アカウントとの突合用フォールバックとして使う旨が明記された。 — [Enterprise-Managed Authorization - MCP Docs](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#for-mcp-authorization-servers)
-
-**バグ修正**
-- Understanding MCP clients の Elicitation 例で、リクエストスキーマのフィールド名が `schema` から `requestedSchema` に修正された（実際のプロトコルのフィールド名に整合）。 — [Understanding MCP clients - MCP Docs](https://modelcontextprotocol.io/docs/learn/client-concepts#elicitation)
-
-**その他**
-- SDKs ページの SDK 一覧で、Kotlin SDK の Tier バッジが「TBD」から「Tier 3」に更新された。 — [SDKs - MCP Docs](https://modelcontextprotocol.io/docs/sdk#available-sdks)
-- Contributing to MCP の AI コントリビューションに関する参照先が、`CONTRIBUTING.md#ai-contributions` から専用の `AI_POLICY.md` へ変更された。 — [Contributing to MCP - MCP Docs](https://modelcontextprotocol.io/community/contributing#ai-contributions)
-- Antitrust Policy ページは集約ファイル内での掲載位置が変わったのみで、ページ内容に差分はない。
+（今回の対象期間に軽微な更新はありません）
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-24.md](./archives/latest/2026-06-24.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-24.md](./archives/latest-detail/2026-06-24.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-25.md](./archives/latest/2026-06-25.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-25.md](./archives/latest-detail/2026-06-25.md)
 
 <!--
-base_commit: 01b0ad7141ef8c6ea3006c5c4ecabc1e8aec69c0
-head_commit: 5c948aaefc1e28588e1f2e87aacec146ee8128ac
-generated_at_full: 2026-06-26T15:22:40+09:00
+base_commit: 5c948aaefc1e28588e1f2e87aacec146ee8128ac
+head_commit: f8479a4b550c9535b7213945696494c0dca75fc8
+generated_at_full: 2026-06-27T15:18:41+09:00
 -->

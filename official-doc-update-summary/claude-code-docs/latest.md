@@ -1,92 +1,99 @@
 ---
-対象期間: 2026年06月24日 〜 2026年06月25日
-作成日: 2026-06-25
+対象期間: 2026年06月25日 〜 2026年06月26日
+作成日: 2026-06-26
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、Claude Code v2.1.191（2026年06月24日）のリリースに伴うドキュメント整備が中心です。LLM ゲートウェイのドキュメント群が再編されて各サブページの本文が出揃い、Remote Control にデバイス検証の仕組み（Trusted Devices）が追加されました。
+今回の対象期間は、Claude Code v2.1.193（2026年06月25日）のリリースに伴うドキュメント整備に加え、複数ページにまたがる編集が中心です。組織管理者を指す用語が「admin」から「Owner / Primary Owner」へ全面的に置き換えられ、前回新規追加として告知済みの「機能の利用可能性」ページの本文が公開されました。
 
 主要なものを以下に挙げます。
 
-1. LLM ゲートウェイのドキュメントが、単一の設定ページ（LiteLLM 中心）から概要ハブ + 接続・展開・プロトコルの 3 サブページ構成へ再編され、各サブページの本文が公開された
-2. Remote Control に組織全体の「Trusted Devices（信頼できるデバイス）」が追加され、デバイス登録と 18 時間以内のサインイン（生体認証によるステップアップ）を必須化できるようになった（ベータ、Team/Enterprise）
-3. フックの tool 名 matcher が `|` に加えてカンマ区切りに対応し、`Edit, Write` のように書けるようになった（v2.1.191）
+1. 多数のページで、組織レベルの操作を行う役割の表記が「admin（管理者）」から「Owner / Primary Owner（オーナー）」へ統一された
+2. 「機能の利用可能性（Feature availability）」ページの本文が公開され、プロバイダー別・プラン別の機能対応表が全文で参照できるようになった
+3. Fast mode の対応モデルが整理され、Opus 4.6 が記載から外れ、Opus 4.7 の Fast mode が 2026年06月25日付で非推奨（2026年07月24日に削除予定）になった
+4. セッションドキュメントに「スクリプトから会話にアクセスする」節が新設され、トランスクリプトの保存仕様も整理された
 ```
 
 ## ハイライト
 
-1. [**LLM ゲートウェイ ドキュメントの再編**](./latest-detail.md#1-llm-ゲートウェイ-ドキュメントの再編):  
-  従来 LiteLLM 設定を中心とした単一ページだった「LLM gateway configuration」が、概要ハブ「LLM gateways」へ書き換えられた。ゲートウェイが提供する価値・ルーティングと認証情報の仕組み・ロールアウト手順・サブスクリプションとの関係を解説する案内役となり、具体的な手順は前回新規追加として告知済みの 3 サブページ（接続 / 展開 / プロトコル）へ移された。今回それらサブページの本文が公開された。
-2. [**Remote Control の Trusted Devices**](./latest-detail.md#2-remote-control-の-trusted-devices):  
-  Remote Control に組織全体設定「Trusted Devices（信頼できるデバイス）」が追加された。メンバーが claude.ai・モバイルアプリ・Desktop から Remote Control セッションを表示・操作するには、登録済みデバイスと 18 時間以内のサインイン（Face ID / Touch ID / Windows Hello / パスキーによる生体認証ステップアップ）の両方を必須にできる。ベータで Team/Enterprise 向け、既定はオフ。
-3. [**フック matcher のカンマ区切り対応**](./latest-detail.md#3-フック-matcher-のカンマ区切り対応):  
-  フックの tool 名 matcher が、区切り文字として `|` に加えてカンマ（`,`）を受け付けるようになった。`Edit|Write` と `Edit, Write` が同義になり、前後の空白も許容される。Claude Code v2.1.191 以降が必要。あわせて、カンマ区切り matcher が無言で発火しなかった不具合も修正された。
+1. [**admin から Owner へのロール用語統一**](./latest-detail.md#1-admin-から-owner-へのロール用語統一):  
+  Code Review・Remote Control・Channels・Routines・Fast mode・GitHub Enterprise Server・サーバー管理設定・自動モードなど多数のページで、組織レベルの設定を行う役割の表記が「admin（管理者）」から「Owner / Primary Owner（オーナー）」へ置き換えられた。サーバー管理設定では「Admin など Owner 以外のロールは管理設定を表示・編集できない」と明記され、必要ロールが Owner / Primary Owner であることが具体化された。
+2. [**機能の利用可能性ページの本文公開**](./latest-detail.md#2-機能の利用可能性ページの本文公開):  
+  前回サマリで新規追加として告知済みの「機能の利用可能性（Feature availability）」ページの本文が `llms-full.txt` に取り込まれ、全文で参照できるようになった。モデルプロバイダー別・サブスクリプションプラン別の機能対応を ✓／✗／脚注付きの表で比較し、プロバイダーごとに不足機能と代替手段をタブでまとめている。日本語ページも完訳済み。
+3. [**Fast mode の対応モデル整理**](./latest-detail.md#3-fast-mode-の対応モデル整理):  
+  Fast mode の説明から Opus 4.6 が外れ、対応は Opus 4.8 と Opus 4.7 のみになった。さらに Opus 4.7 の Fast mode は 2026年06月25日付で非推奨となり、2026年07月24日に削除予定（削除後はエラーを返し標準速度にフォールバックしない）であることが明記された。価格表・レート制限プールの記述も 2 モデルに整理されている。
+4. [**セッションのスクリプト連携とトランスクリプト保存の整理**](./latest-detail.md#4-セッションのスクリプト連携とトランスクリプト保存の整理):  
+  「セッションの管理」ページに「スクリプトから会話にアクセスする」節が新設され、`claude -p` の JSON 出力・`--resume` でのフォローアップ・hooks の `transcript_path`・Agent SDK という 4 つの構造化データ取得手段が整理された。あわせて「トランスクリプトが保存される場所」節で保存先・保持期間・書き込み抑制を表にまとめ、JSONL を直接解析せず `/export` かスクリプトインターフェースを使うよう案内が加わった。
 
 ## 新規追加されたページ
 
-リファレンスに「機能の利用可能性（Feature availability）」ページが新規追加されました。本文は現時点で `llms-full.txt`（全文展開）にはまだ取り込まれていませんが、公式サイトでは日本語・英語とも公開済みのため、ja/en を併記します。
-
-- [**機能の利用可能性**](./latest-detail.md#1-機能の利用可能性) ([日本語](https://code.claude.com/docs/ja/feature-availability) / [English](https://code.claude.com/docs/en/feature-availability)):  
-  Claude Code の各機能が、モデルプロバイダー（Claude サブスクリプション / Anthropic Console / Amazon Bedrock / Claude Platform on AWS / Google Vertex AI / Microsoft Foundry）別、およびサブスクリプションプラン（Pro / Max / Team / Enterprise）別にどこで利用できるかを表で比較する新しいリファレンスページ。
+今回、リファレンス系で完全に新規追加されたページはありません。「機能の利用可能性（Feature availability）」ページは前回サマリで新規追加として告知済みで、今回その本文が公開されました（詳細はハイライト 2 参照）。
 
 ## 大幅に更新されたページ
 
-今回の主要な大幅更新（LLM ゲートウェイ ドキュメントの再編、Remote Control の Trusted Devices）は、いずれも上記ハイライトに整理しました。`llm-gateway-connect` / `llm-gateway-protocol` / `llm-gateway-rollout` の 3 ページは前回サマリで新規追加として告知済みで、今回その本文が公開されています（詳細はハイライト 1 参照）。これら以外で単一ページ 50 行以上に該当する独立した大幅更新はありません。その他の小規模な変更は下記「軽微な更新」にまとめています。
+今回の主要な大幅更新（admin → Owner のロール用語統一、機能の利用可能性ページの本文公開、Fast mode の対応モデル整理、セッションのスクリプト連携）は、いずれも上記ハイライトに整理しました。これら以外で単一ページ 50 行以上に該当するのは設定リファレンス（settings.md）ですが、その変更の大半は各設定の既定値を先頭に `**Default**: …` として明示する書式統一で、内容面の変更は一部の既定値の明確化にとどまります（詳細は下記「軽微な更新」の機能改善を参照）。なお CLI リファレンスページは `llms-full.txt` 内で末尾へ再配置されましたが、本文の実質的な変更は `--background` エイリアスの追記のみです。
 
 ## 軽微な更新
 
-今回の軽微な更新は、Claude Code v2.1.191（2026年06月24日）リリースの各機能・修正が各リファレンスページ本文へ追記されたものが中心です。以下に分類して整理します（バージョンは v2.1.191 を指します）。
+今回の軽微な更新は、Claude Code v2.1.193（2026年06月25日）リリースの各機能・修正と、複数ページにまたがる書式・字句の整備が中心です。以下に分類して整理します（特記なき限りバージョンは v2.1.193 を指します）。
 
 **新機能**
 
-- `/rewind` が `/clear` 後の会話復帰に対応した。同じ Claude Code プロセス内で `/clear` を実行済みの場合、巻き戻しメニュー最上部に `/resume <session-id>（前のセッション）` エントリが表示され、`/clear` 前にアクティブだった会話を再開できる（Claude Code 終了または別セッション再開まで有効） — [日本語](https://code.claude.com/docs/ja/checkpointing#rewind-past-a-cleared-conversation) / [English](https://code.claude.com/docs/en/checkpointing#rewind-past-a-cleared-conversation)
-- フックの tool 名 matcher がカンマ区切りに対応した（詳細はハイライト 3 参照）
+- `--bg` に長形式 `--background` のエイリアスが追加された（バックグラウンドエージェントとしてセッションを開始） — [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- `autoMode.classifyAllShell` 設定が追加され、すべての Bash／PowerShell コマンドを（任意コード実行パターンだけでなく）auto-mode 分類器に通せるようになった。あわせて auto-mode の拒否理由が transcript・拒否トースト・`/permissions` の最近の拒否に表示されるようになった
+- `claude_code.assistant_response` という OpenTelemetry ログイベントが追加され、モデルの応答テキストを記録できるようになった。既定ではリダクトされ、`OTEL_LOG_ASSISTANT_RESPONSES=1` で記録。同変数が未設定のときは `OTEL_LOG_USER_PROMPTS` に従うため、既にプロンプト内容を記録している環境はアップグレード時に応答内容も記録され始める点に注意（プロンプトのみに留めるには `OTEL_LOG_ASSISTANT_RESPONSES=0`）
+- bash モード（`!`）にライブのファイルパス補完が追加された
+- MCP サーバーが認証を要するときに起動時通知が出るようになった（`/mcp` を案内）
+- アイドル状態のバックグラウンドシェルコマンドに対する自動メモリ逼迫リーピングが追加された（`CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP=1` で無効化）
+- `/tui default` で classic レンダラーへ明示的に戻せるようになった — [English](https://code.claude.com/docs/en/fullscreen#enable-fullscreen-rendering)
 
 **機能改善**
 
-- MCP の接続成功後に走る機能検出リクエスト（`tools/list`・`prompts/list`・`resources/list` など）も、一時的なネットワーク/サーバーエラーを短いバックオフで最大 3 回再試行するようになった（認証エラー・4xx・タイムアウトは再試行しない） — [日本語](https://code.claude.com/docs/ja/mcp#automatic-reconnection) / [English](https://code.claude.com/docs/en/mcp#automatic-reconnection)
-- `claude mcp login` が、SSH セッションやディスプレイサーバーの無い Linux などローカルブラウザを使えない環境を検出し、ブラウザを開く代わりに認可 URL を出力するようになった。ブラウザ検出時でも `--no-browser` で URL プロンプトを強制できる。あわせて MCP OAuth のディスカバリーとトークンリクエストが一時的なネットワークエラーで 1 回再試行するようになった — [日本語](https://code.claude.com/docs/ja/mcp#authenticate-from-the-command-line) / [English](https://code.claude.com/docs/en/mcp#authenticate-from-the-command-line)
-- `/mcp` で HTTP サーバーが 404 を返したときのエラーが、試行した URL を含む `MCP endpoint not found at <url>. Check the URL in your MCP config.` に改善された（以前は URL なしの汎用メッセージ） — [日本語](https://code.claude.com/docs/ja/mcp-quickstart#troubleshooting) / [English](https://code.claude.com/docs/en/mcp-quickstart#troubleshooting)
-- サンドボックスのネットワークドメイン許可プロンプトで「はい」を選ぶと、そのホストが現在のセッションの間記憶され、同じホストへの後続接続では再プロンプトされなくなった — [日本語](https://code.claude.com/docs/ja/sandboxing#network-isolation) / [English](https://code.claude.com/docs/en/sandboxing#network-isolation)
-- サーバー管理設定の `forceRemoteSettingsRefresh` が優先順位ルールの例外となり、キャッシュ済みのサーバー管理ペイロードが存在しても任意の管理ソース（MDM/ファイルポリシー）で設定すれば尊重されるようになった。設定フェッチは `Cache-Control: no-cache` ヘッダーも送る — [日本語](https://code.claude.com/docs/ja/server-managed-settings#enforce-fail-closed-startup) / [English](https://code.claude.com/docs/en/server-managed-settings#enforce-fail-closed-startup)
-- vim モードの `/`（逆順履歴検索）で、空の検索プロンプト時に「`Esc` → `i` → `/` でコマンドメニューを開ける」ヒントが表示されるようになった — [日本語](https://code.claude.com/docs/ja/interactive-mode#navigation-normal-mode) / [English](https://code.claude.com/docs/en/interactive-mode#navigation-normal-mode)
-- `apiKeyHelper` の説明が、システムシェル（macOS/Linux は `/bin/sh`、Windows は `cmd`）を通じて実行される旨に更新された — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
-- `apiKeyHelper`・`ANTHROPIC_API_KEY`・`ANTHROPIC_AUTH_TOKEN` の適用範囲が、CLI とそれをラップするサーフェス（VS Code 拡張・Agent SDK・GitHub Actions）に及ぶ旨が明記された。Desktop は OAuth だが、組織配布のサードパーティ推論設定で動くセッションはその認証情報を使う例外も追記された — [日本語](https://code.claude.com/docs/ja/authentication#credential-management) / [English](https://code.claude.com/docs/en/authentication#credential-management)
-- 管理設定の無効値挙動を示す表に `sandbox.credentials` の行が追加された（`files`/`envVars` の無効エントリは警告付きで除去し有効分のみ適用、v2.1.191 以降） — [日本語](https://code.claude.com/docs/ja/settings#invalid-entries-in-managed-settings) / [English](https://code.claude.com/docs/en/settings#invalid-entries-in-managed-settings)
-- Bedrock の Mantle モデルを `availableModels` でピッカーに出す説明に、Mantle ID と `haiku` エイリアスは同じモデルファミリに解決されるためマージでは具体的なエントリのみが残る、という一文が追記された — [日本語](https://code.claude.com/docs/ja/amazon-bedrock#run-mantle-alongside-the-invoke-api) / [English](https://code.claude.com/docs/en/amazon-bedrock#run-mantle-alongside-the-invoke-api)
-- ストリーミング応答中の CPU 使用量を約 37% 削減し（テキスト更新を 100ms 単位に集約）、長時間セッションでのメモリ増加を抑制した（changelog のみのためリンクは付しません）
+- 設定リファレンス（settings.md）の各設定説明が、既定値を先頭に `**Default**: …` として明示する書式に統一された。あわせて `autoUpdatesChannel`（既定 `"latest"`）・`defaultShell`（既定 `"bash"`、Windows で Bash 不在時は `"powershell"`）など一部の既定値も明確化された — [English](https://code.claude.com/docs/en/settings#available-settings)
+- エージェントチームの teammate が、リードの effort level を継承するようになった（split-pane 表示では v2.1.186 以降に適用） — [English](https://code.claude.com/docs/en/agent-teams)
+- OpenTelemetry の `start_type` 属性に `"agents_view"` 値が追加され、`claude agents` ダッシュボードのプロセス（ユーザーが起動するローカル UI）を会話セッションと区別できるようになった — [English](https://code.claude.com/docs/en/monitoring-usage)
+- 監視ドキュメントに、コミットのモデル別内訳を出す際は token／cost 側を `query_source="main"` でフィルタし、補助・サブエージェントのリクエストを混入させないよう案内が追記された — [English](https://code.claude.com/docs/en/monitoring-usage)
+- インストール手順に、`syntax error near unexpected token '<'`・`403` などの curl エラー時は「インストールのトラブルシュート」を参照するよう誘導が追記された（複数の quickstart／setup ページ） — [English](https://code.claude.com/docs/en/troubleshoot-install#find-your-error)
+- MCP サーバーが提供するツールを確認するコード例に、TypeScript に加えて Python 版が `CodeGroup` で併記された
+- MCP `headersHelper` 認証が、ツール呼び出しで 401／403 が返ったときに自動で再実行・再接続するようになった
+- プラグインの自動リネームが、marketplace の `renames` マップを自動追従して設定を新名へ更新するようになった
+- バックグラウンドエージェントの起動結果が「end your response」と指示しなくなり、エージェント実行中も他タスクの作業を継続するようになった
+- `/add-dir` で対象が既に作業ディレクトリの場合のメッセージが改善された
 
 **バグ修正**
 
-- 停止後にバックグラウンドエージェントが復活する問題を修正（タスクパネルからの停止が恒久化）
-- `/voice` が組織ポリシーで無効化されているとき、汎用の「利用不可」表示ではなく制限理由を説明するよう修正
-- `/permissions` の Recently-denied タブで、承認した拒否がパネルを閉じると破棄されていたのを、永続化されるよう修正
-- ストリーミング応答中に過去の出力を読んでいるとスクロール位置が最下部へ飛ぶ問題を修正
-- Windows Terminal で折り返した `/login` URL が切れて開く問題を修正
-- Ghostty（ssh/tmux 経由）のフルスクリーンモードでリンクの Cmd+click を修正
-- `claude agents` が `/usage` などの組み込みスラッシュコマンドをバックグラウンドセッションへプロンプト文として送っていた問題を修正
-- `claude agents` のジョブ行で、貼り付け画像が `[Image #N]` プレースホルダではなくフルパス表示されていた問題を修正
+- `/login` 直後に `/model` などクライアントデータに依存する UI が、古い／空の状態を表示する不具合を修正
+- バックグラウンド化（←←）が、実行中タスクがすべて新セッションへ引き継がれる場合でも「N background tasks would be abandoned」で誤ってキャンセルされる不具合を修正
+- ピン留めしたバックグラウンドエージェントが、自動更新のたびに「Continue from where you left off」と再プロンプトされる不具合を修正
+- メインターンのバックグラウンド化が、会話を再実行する幻の「general-purpose (resumed)」サブエージェントを生成する不具合を修正
+- エージェントパネルでサブエージェントを表示すると兄弟エージェントが隠れる不具合を修正
 
 **その他**
 
-- changelog ページに v2.1.190（2026年06月24日）「バグ修正と信頼性の改善」と v2.1.191（2026年06月24日）のリリースエントリが追加された（changelog リンク不使用ポリシーによりリンクは付しません）。
-- ドキュメント上で、`/web-setup`（web-quickstart）と `/schedule`（routines）のトラブルシューティング見出しが、実際の CLI メッセージ変更を反映して「`No commands match` または `Unknown command`」表記に更新された — `/web-setup`: [日本語](https://code.claude.com/docs/ja/web-quickstart#troubleshooting) / [English](https://code.claude.com/docs/en/web-quickstart#troubleshooting)、`/schedule`: [日本語](https://code.claude.com/docs/ja/routines) / [English](https://code.claude.com/docs/en/routines)
-- glossary の管理設定の説明が、「ユーザーは低優先度スコープから上書きできない」から「ユーザー設定とプロジェクト設定は上書きできない」に明確化された。
-- model-config の `enforceAvailableModels` の縮退動作（許可リスト内に利用可能なエントリが無い場合）の表現が「degrades」から「強制をスキップして既定にフォールバック」に整理されるなど、字句レベルの調整が複数ページ（fast-mode・discover-plugins・admin-setup・env-vars・agent-sdk 系など）に入った。
+- 多数のリファレンス／ガイドページから「This page covers:」の目次ブロックが削除された（agent-teams・artifacts・channels・dev-containers・llm-gateway・sandbox-environments・sandboxing・sessions・sub-agents・workflows・scheduled-tasks・fast-mode・code-review・MCP tool search など）。
+- CLI リファレンスページが `llms-full.txt` 内で末尾へ再配置された（本文の実質的な変更は `--background` エイリアスの追記のみ）。
+- changelog ページに v2.1.193（2026年06月25日）のリリースエントリが追加された（changelog リンク不使用ポリシーによりリンクは付しません）。
+- 見出しの字句修正が複数入った（docs_map 反映: 「Claude.ai」→「claude.ai」、「MCP Tool Search」→「MCP tool search」、「Excluding sensitive files」→「Exclude sensitive files」、「Managing plugins」→「Manage plugins」、「Background bash commands」→「Background Bash commands」、「Code Review Command」→「Pull Request Review Command」）。
+- 環境変数 `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` の説明から「Opus 4.6 で Fast mode を使う方法」の案内が削除された（Opus 4.6 の Fast mode 廃止に伴う。詳細はハイライト 3 参照）。
 
 ## 新着情報
 
-（今回の対象期間に新着情報ページの更新はありません）
+今回、週刊ダイジェスト「新着情報」に 2 ページ（Week 25・Week 26）が追加されました。いずれも対応する日本語ページは未公開のため、英語リンクのみを記載します。
+
+- [**2026年06月15日～19日(Week 25)**](./latest-detail.md#2026年06月15日19日week-25) ([English](https://code.claude.com/docs/en/whats-new/2026-w25)):  
+  Artifacts（セッションから共有可能なライブページを公開、Team/Enterprise ベータ）、deny／ask ルールでのツール入力パラメータ一致（`Tool(param:value)` 構文）、`/config key=value` でプロンプトから任意の設定を変更、の 3 機能を紹介（リリース v2.1.178〜v2.1.183）。
+- [**2026年06月22日～26日(Week 26)**](./latest-detail.md#2026年06月22日26日week-26) ([English](https://code.claude.com/docs/en/whats-new/2026-w26)):  
+  `claude mcp login`／`logout` によるシェルからの MCP サーバー認証、`!` プレフィックスのシェルモードでコマンド出力への応答が得られるようになった点、の 2 機能を紹介（リリース v2.1.185〜v2.1.193）。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-24.md](./archives/latest/2026-06-24.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-24.md](./archives/latest-detail/2026-06-24.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-25.md](./archives/latest/2026-06-25.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-25.md](./archives/latest-detail/2026-06-25.md)
 
 <!--
-base_commit: 01b0ad7141ef8c6ea3006c5c4ecabc1e8aec69c0
-head_commit: 5c948aaefc1e28588e1f2e87aacec146ee8128ac
-generated_at_full: 2026-06-26T15:06:34+09:00
+base_commit: 5c948aaefc1e28588e1f2e87aacec146ee8128ac
+head_commit: f8479a4b550c9535b7213945696494c0dca75fc8
+generated_at_full: 2026-06-27T15:02:44+09:00
 -->
