@@ -1,99 +1,85 @@
 ---
-対象期間: 2026年06月25日 〜 2026年06月26日
-作成日: 2026-06-26
+対象期間: 2026年06月26日 〜 2026年06月27日
+作成日: 2026-06-27
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、Claude Code v2.1.193（2026年06月25日）のリリースに伴うドキュメント整備に加え、複数ページにまたがる編集が中心です。組織管理者を指す用語が「admin」から「Owner / Primary Owner」へ全面的に置き換えられ、前回新規追加として告知済みの「機能の利用可能性」ページの本文が公開されました。
+今回の対象期間は、Claude Code v2.1.195（2026年06月26日）のリリースと、Agent SDK 各ガイドのコード例・セットアップ手順の整備が中心です。あわせて、ドキュメント全体で英語表現を短縮形へ統一する編集が広範に入りました。
 
 主要なものを以下に挙げます。
 
-1. 多数のページで、組織レベルの操作を行う役割の表記が「admin（管理者）」から「Owner / Primary Owner（オーナー）」へ統一された
-2. 「機能の利用可能性（Feature availability）」ページの本文が公開され、プロバイダー別・プラン別の機能対応表が全文で参照できるようになった
-3. Fast mode の対応モデルが整理され、Opus 4.6 が記載から外れ、Opus 4.7 の Fast mode が 2026年06月25日付で非推奨（2026年07月24日に削除予定）になった
-4. セッションドキュメントに「スクリプトから会話にアクセスする」節が新設され、トランスクリプトの保存仕様も整理された
+1. Agent SDK のクイックスタート・スラッシュコマンド・サブエージェントの各ガイドに、エラーハンドリング例とセットアップ手順の明確化が一斉に入った
+2. changelog に v2.1.195（2026年06月26日）のエントリが追加され、hook matcher や音声ディクテーションなどのバグ修正が中心となった
+3. 多数のページで「do not → don't」などの短縮形への文体統一が行われた（文意の変更なし）
 ```
 
 ## ハイライト
 
-1. [**admin から Owner へのロール用語統一**](./latest-detail.md#1-admin-から-owner-へのロール用語統一):  
-  Code Review・Remote Control・Channels・Routines・Fast mode・GitHub Enterprise Server・サーバー管理設定・自動モードなど多数のページで、組織レベルの設定を行う役割の表記が「admin（管理者）」から「Owner / Primary Owner（オーナー）」へ置き換えられた。サーバー管理設定では「Admin など Owner 以外のロールは管理設定を表示・編集できない」と明記され、必要ロールが Owner / Primary Owner であることが具体化された。
-2. [**機能の利用可能性ページの本文公開**](./latest-detail.md#2-機能の利用可能性ページの本文公開):  
-  前回サマリで新規追加として告知済みの「機能の利用可能性（Feature availability）」ページの本文が `llms-full.txt` に取り込まれ、全文で参照できるようになった。モデルプロバイダー別・サブスクリプションプラン別の機能対応を ✓／✗／脚注付きの表で比較し、プロバイダーごとに不足機能と代替手段をタブでまとめている。日本語ページも完訳済み。
-3. [**Fast mode の対応モデル整理**](./latest-detail.md#3-fast-mode-の対応モデル整理):  
-  Fast mode の説明から Opus 4.6 が外れ、対応は Opus 4.8 と Opus 4.7 のみになった。さらに Opus 4.7 の Fast mode は 2026年06月25日付で非推奨となり、2026年07月24日に削除予定（削除後はエラーを返し標準速度にフォールバックしない）であることが明記された。価格表・レート制限プールの記述も 2 モデルに整理されている。
-4. [**セッションのスクリプト連携とトランスクリプト保存の整理**](./latest-detail.md#4-セッションのスクリプト連携とトランスクリプト保存の整理):  
-  「セッションの管理」ページに「スクリプトから会話にアクセスする」節が新設され、`claude -p` の JSON 出力・`--resume` でのフォローアップ・hooks の `transcript_path`・Agent SDK という 4 つの構造化データ取得手段が整理された。あわせて「トランスクリプトが保存される場所」節で保存先・保持期間・書き込み抑制を表にまとめ、JSONL を直接解析せず `/export` かスクリプトインターフェースを使うよう案内が加わった。
+1. [**Agent SDK ドキュメントのエラーハンドリングとセットアップ整備**](./latest-detail.md#1-agent-sdk-ドキュメントのエラーハンドリングとセットアップ整備):  
+  クイックスタート・スラッシュコマンド・サブエージェントの各 Agent SDK ガイドで、`query()` がエラー結果を返した後に例外を送出する挙動に備えた try/except（try/catch）例が一斉に追加された。クイックスタートは TypeScript の新規／既存プロジェクト別セットアップ（`tsx`・`.mts`）、API キーの環境変数設定（Windows PowerShell タブ）に書き換えられ、権限モード表に `plan` モードが追加された。新しい API・機能の追加ではなく、コード例の堅牢化と手順の明確化が主旨。
+2. [**v2.1.195（2026年06月26日）のリリースと修正**](./latest-detail.md#2-v21195-のリリースと修正):  
+  changelog に v2.1.195 のエントリが追加された。ハイフンを含む識別子の hook matcher を完全一致へ修正、日本語・中国語・タイ語など分かち書きしない言語での音声ディクテーション自動送信の修正、バックグラウンドジョブ／エージェントの安定化など、バグ修正が中心。`CLAUDE_CODE_DISABLE_MOUSE_CLICKS` 環境変数の追加などの小さな機能追加もある（個別項目は「軽微な更新」に整理）。
+3. [**ドキュメント全体の短縮形への文体統一**](./latest-detail.md#3-ドキュメント全体の短縮形への文体統一):  
+  多数のページで「do not → don't」「cannot → can't」などの短縮形への統一と、長い段落・箇条書きの整形が行われた。文意の変更を伴わない編集だが対象ページが広く、今回の原文差分の大半を占める。
 
 ## 新規追加されたページ
 
-今回、リファレンス系で完全に新規追加されたページはありません。「機能の利用可能性（Feature availability）」ページは前回サマリで新規追加として告知済みで、今回その本文が公開されました（詳細はハイライト 2 参照）。
+今回、リファレンス系で完全に新規追加されたページはありません。
 
 ## 大幅に更新されたページ
 
-今回の主要な大幅更新（admin → Owner のロール用語統一、機能の利用可能性ページの本文公開、Fast mode の対応モデル整理、セッションのスクリプト連携）は、いずれも上記ハイライトに整理しました。これら以外で単一ページ 50 行以上に該当するのは設定リファレンス（settings.md）ですが、その変更の大半は各設定の既定値を先頭に `**Default**: …` として明示する書式統一で、内容面の変更は一部の既定値の明確化にとどまります（詳細は下記「軽微な更新」の機能改善を参照）。なお CLI リファレンスページは `llms-full.txt` 内で末尾へ再配置されましたが、本文の実質的な変更は `--background` エイリアスの追記のみです。
+今回、単一ページで 50 行以上の変更があった主なページは Agent SDK の各ガイド（クイックスタート／SDK のスラッシュコマンド／SDK のサブエージェント）で、いずれも上記ハイライト 1 に整理しました。これらの変更はコード例へのエラーハンドリング追加とセットアップ手順の明確化が中心で、新しい API・機能の追加ではありません。
 
 ## 軽微な更新
 
-今回の軽微な更新は、Claude Code v2.1.193（2026年06月25日）リリースの各機能・修正と、複数ページにまたがる書式・字句の整備が中心です。以下に分類して整理します（特記なき限りバージョンは v2.1.193 を指します）。
+今回の軽微な更新は、Claude Code v2.1.195（2026年06月26日）リリースの各機能・修正（全体像はハイライト 2 参照）と、ドキュメントの記述明確化・文体整形が中心です。以下に分類して整理します（特記なき限りバージョンは v2.1.195 を指します）。
 
 **新機能**
 
-- `--bg` に長形式 `--background` のエイリアスが追加された（バックグラウンドエージェントとしてセッションを開始） — [日本語](https://code.claude.com/docs/ja/cli-reference#cli-flags) / [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
-- `autoMode.classifyAllShell` 設定が追加され、すべての Bash／PowerShell コマンドを（任意コード実行パターンだけでなく）auto-mode 分類器に通せるようになった。あわせて auto-mode の拒否理由が transcript・拒否トースト・`/permissions` の最近の拒否に表示されるようになった
-- `claude_code.assistant_response` という OpenTelemetry ログイベントが追加され、モデルの応答テキストを記録できるようになった。既定ではリダクトされ、`OTEL_LOG_ASSISTANT_RESPONSES=1` で記録。同変数が未設定のときは `OTEL_LOG_USER_PROMPTS` に従うため、既にプロンプト内容を記録している環境はアップグレード時に応答内容も記録され始める点に注意（プロンプトのみに留めるには `OTEL_LOG_ASSISTANT_RESPONSES=0`）
-- bash モード（`!`）にライブのファイルパス補完が追加された
-- MCP サーバーが認証を要するときに起動時通知が出るようになった（`/mcp` を案内）
-- アイドル状態のバックグラウンドシェルコマンドに対する自動メモリ逼迫リーピングが追加された（`CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP=1` で無効化）
-- `/tui default` で classic レンダラーへ明示的に戻せるようになった — [English](https://code.claude.com/docs/en/fullscreen#enable-fullscreen-rendering)
+- `CLAUDE_CODE_DISABLE_MOUSE_CLICKS` 環境変数が追加され、フルスクリーンモードでホイールスクロールを維持したままマウスのクリック・ドラッグ・ホバーを無効化できるようになった（対応する通常ページへの記述は無く changelog のみのためリンクは付さない）。
 
 **機能改善**
 
-- 設定リファレンス（settings.md）の各設定説明が、既定値を先頭に `**Default**: …` として明示する書式に統一された。あわせて `autoUpdatesChannel`（既定 `"latest"`）・`defaultShell`（既定 `"bash"`、Windows で Bash 不在時は `"powershell"`）など一部の既定値も明確化された — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
-- エージェントチームの teammate が、リードの effort level を継承するようになった（split-pane 表示では v2.1.186 以降に適用） — [日本語](https://code.claude.com/docs/ja/agent-teams) / [English](https://code.claude.com/docs/en/agent-teams)
-- OpenTelemetry の `start_type` 属性に `"agents_view"` 値が追加され、`claude agents` ダッシュボードのプロセス（ユーザーが起動するローカル UI）を会話セッションと区別できるようになった — [日本語](https://code.claude.com/docs/ja/monitoring-usage) / [English](https://code.claude.com/docs/en/monitoring-usage)
-- 監視ドキュメントに、コミットのモデル別内訳を出す際は token／cost 側を `query_source="main"` でフィルタし、補助・サブエージェントのリクエストを混入させないよう案内が追記された — [日本語](https://code.claude.com/docs/ja/monitoring-usage) / [English](https://code.claude.com/docs/en/monitoring-usage)
-- インストール手順に、`syntax error near unexpected token '<'`・`403` などの curl エラー時は「インストールのトラブルシュート」を参照するよう誘導が追記された（複数の quickstart／setup ページ） — [English](https://code.claude.com/docs/en/troubleshoot-install#find-your-error)
-- MCP サーバーが提供するツールを確認するコード例に、TypeScript に加えて Python 版が `CodeGroup` で併記された
-- MCP `headersHelper` 認証が、ツール呼び出しで 401／403 が返ったときに自動で再実行・再接続するようになった
-- プラグインの自動リネームが、marketplace の `renames` マップを自動追従して設定を新名へ更新するようになった
-- バックグラウンドエージェントの起動結果が「end your response」と指示しなくなり、エージェント実行中も他タスクの作業を継続するようになった
-- `/add-dir` で対象が既に作業ディレクトリの場合のメッセージが改善された
+- Linux の音声モードが、SoX はインストール済みだが録音デバイスが存在しない場合に「マイクなし」と「SoX 未インストール」を区別するようになった。
+- `claude agents` の完了済みリストが利用可能な縦方向スペースを埋めるようになり、画面の小さい端末ではヘッダーをコンパクト化してライブセッションを表示し続けるようになった。
+- Remote セッションの起動時に、コンテナ起動中の進捗をプロビジョニングチェックリストとして表示するようになった。
+- トラブルシュート（エラーリファレンス）の「`thinking.type.enabled` はこのモデルではサポートされていない」エラー説明で、Agent SDK 利用時の案内が「SDK パッケージを更新する」へ変更され、Opus 4.8 には TypeScript SDK v0.3.154 以上・Python SDK v0.2.88 以上が必要である旨が追記された（日本語ページは未反映のため英語のみ） — [English](https://code.claude.com/docs/en/errors#thinkingtypeenabled-is-not-supported-for-this-model)。
 
 **バグ修正**
 
-- `/login` 直後に `/model` などクライアントデータに依存する UI が、古い／空の状態を表示する不具合を修正
-- バックグラウンド化（←←）が、実行中タスクがすべて新セッションへ引き継がれる場合でも「N background tasks would be abandoned」で誤ってキャンセルされる不具合を修正
-- ピン留めしたバックグラウンドエージェントが、自動更新のたびに「Continue from where you left off」と再プロンプトされる不具合を修正
-- メインターンのバックグラウンド化が、会話を再実行する幻の「general-purpose (resumed)」サブエージェントを生成する不具合を修正
-- エージェントパネルでサブエージェントを表示すると兄弟エージェントが隠れる不具合を修正
+- ハイフンを含む識別子（`code-reviewer`、`mcp__brave-search` など）の hook matcher が誤って部分一致していた不具合を修正し、完全一致になった（ハイフン入り MCP サーバーの全ツールに一致させるには `mcp__brave-search__.*` を使う）。
+- macOS の音声ディクテーションが、既定の入力デバイス変更後に長時間セッションで無音を録音し続ける不具合を修正。
+- 日本語・中国語・タイ語など分かち書きしない言語で、音声ディクテーションの自動送信が発火しない不具合を修正。
+- プロジェクトの `.claude/settings.json` のみで有効化された外部プラグインが、一部のローダー経路で明示的なインストール同意を要求しない不具合を修正。
+- プラグインの `plugin.json` の `name` が marketplace エントリ名と異なる場合に、`/plugin` の有効化／無効化が機能しない不具合を修正。
+- 新しいバージョンの Claude Code が書き込んだバックグラウンドジョブが、`claude agents` から消えたりデータを失ったりする不具合を修正。
+- クラッシュしたバックグラウンドタスクの再オープン時に、再起動画面ではなく最大 5 秒間の空白画面が表示される不具合を修正。
+- コントロールソケットの起動に失敗したバックグラウンドエージェントのデーモンが、到達不能なまま動き続けて再起動を妨げる不具合を修正。
 
 **その他**
 
-- 多数のリファレンス／ガイドページから「This page covers:」の目次ブロックが削除された（agent-teams・artifacts・channels・dev-containers・llm-gateway・sandbox-environments・sandboxing・sessions・sub-agents・workflows・scheduled-tasks・fast-mode・code-review・MCP tool search など）。
-- CLI リファレンスページが `llms-full.txt` 内で末尾へ再配置された（本文の実質的な変更は `--background` エイリアスの追記のみ）。
-- changelog ページに v2.1.193（2026年06月25日）のリリースエントリが追加された（changelog リンク不使用ポリシーによりリンクは付しません）。
-- 見出しの字句修正が複数入った（docs_map 反映: 「Claude.ai」→「claude.ai」、「MCP Tool Search」→「MCP tool search」、「Excluding sensitive files」→「Exclude sensitive files」、「Managing plugins」→「Manage plugins」、「Background bash commands」→「Background Bash commands」、「Code Review Command」→「Pull Request Review Command」）。
-- 環境変数 `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` の説明から「Opus 4.6 で Fast mode を使う方法」の案内が削除された（Opus 4.6 の Fast mode 廃止に伴う。詳細はハイライト 3 参照）。
+- ドキュメント全体で「do not → don't」「cannot → can't」などの短縮形への統一と、長い段落・箇条書きの整形が広範に行われた（文意の変更なし。詳細はハイライト 3 参照）。
+- 自動モードの「ブロック／許可ルールの上書き」節で、`autoMode.hard_deny`／`soft_deny`／`allow` の説明が箇条書きに整理され、4 つのリスト全てに既定値を残したまま組織独自ルールを追加する例の導入文が追加された（文体整形）。
+- hooks リファレンスで、一致する全 hook が並列実行され同一ハンドラが自動的に重複排除されること（コマンド hook は command 文字列と `args`、HTTP hook は URL で判定）、およびハンドラが Claude Code の環境・カレントディレクトリで実行され、リモートの web 環境では `$CLAUDE_CODE_REMOTE` が `"true"` に設定される（ローカル CLI では未設定）ことを述べた段落が、より目立つ位置へ再配置・分割整形された（記述内容の変更はなし）。
 
 ## 新着情報
 
-今回、週刊ダイジェスト「新着情報」に 2 ページ（Week 25・Week 26）が追加されました。いずれも対応する日本語ページは未公開のため、英語リンクのみを記載します。
+今回、週刊ダイジェスト「新着情報」の Week 25・Week 26 の本文が全文（`llms-full.txt`）に取り込まれ、トップページにも両週のエントリが追加されました。いずれも内容は前回サマリで既報で、本文を照合しても新規の独自情報はありませんでした。対応する日本語ページは未公開のため、英語リンクのみを記載します。
 
 - [**2026年06月15日～19日(Week 25)**](./latest-detail.md#2026年06月15日19日week-25) ([English](https://code.claude.com/docs/en/whats-new/2026-w25)):  
-  Artifacts（セッションから共有可能なライブページを公開、Team/Enterprise ベータ）、deny／ask ルールでのツール入力パラメータ一致（`Tool(param:value)` 構文）、`/config key=value` でプロンプトから任意の設定を変更、の 3 機能を紹介（リリース v2.1.178〜v2.1.183）。
+  Artifacts、deny／ask ルールの入力パラメータ一致（`Tool(param:value)`）、`/config key=value` の 3 機能（リリース v2.1.178〜v2.1.183）。本文が全文に取り込まれた（内容は前回サマリで既報）。
 - [**2026年06月22日～26日(Week 26)**](./latest-detail.md#2026年06月22日26日week-26) ([English](https://code.claude.com/docs/en/whats-new/2026-w26)):  
-  `claude mcp login`／`logout` によるシェルからの MCP サーバー認証、`!` プレフィックスのシェルモードでコマンド出力への応答が得られるようになった点、の 2 機能を紹介（リリース v2.1.185〜v2.1.193）。
+  `claude mcp login`／`logout` によるシェルからの MCP サーバー認証、`!` シェルモードのコマンド出力への応答の 2 機能（リリース v2.1.185〜v2.1.193）。本文が全文に取り込まれた（内容は前回サマリで既報）。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-25.md](./archives/latest/2026-06-25.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-25.md](./archives/latest-detail/2026-06-25.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-26.md](./archives/latest/2026-06-26.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-26.md](./archives/latest-detail/2026-06-26.md)
 
 <!--
-base_commit: 5c948aaefc1e28588e1f2e87aacec146ee8128ac
-head_commit: f8479a4b550c9535b7213945696494c0dca75fc8
-generated_at_full: 2026-06-27T15:02:44+09:00
+base_commit: f8479a4b550c9535b7213945696494c0dca75fc8
+head_commit: 6ae9724bb9478f04b977e3b1d2f33a8a9d35544f
+generated_at_full: 2026-06-28T15:00:36+09:00
 -->
