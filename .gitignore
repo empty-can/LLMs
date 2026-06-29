@@ -1,5 +1,6 @@
-# 無人パイプラインのラン毎ログ（run-doc-summary.ps1 が書き出す）
+# 無人パイプラインのラン毎ログ（各 bot が書き出す）
 work/doc-summary-bot/
+work/ja-follow-watch/
 
 # Python キャッシュ
 __pycache__/
