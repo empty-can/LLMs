@@ -1,0 +1,324 @@
+# Amazon Bedrock AgentCore Data Plane API Reference
+
+> Welcome to the Amazon Bedrock AgentCore Data Plane API reference. Data Plane actions process and handle data or workloads within AWS services.
+
+- [Welcome](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/Welcome.md)
+- [Common Parameters](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/CommonParameters.md)
+- [Common Error Types](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/CommonErrors.md)
+
+## [Actions](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Operations.md)
+
+- [BatchCreateMemoryRecords](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BatchCreateMemoryRecords.md): Creates multiple memory records in a single batch operation for the specified memory with custom content.
+- [BatchDeleteMemoryRecords](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BatchDeleteMemoryRecords.md): Deletes multiple memory records in a single batch operation from the specified memory.
+- [BatchUpdateMemoryRecords](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BatchUpdateMemoryRecords.md): Updates multiple memory records with custom content in a single batch operation within the specified memory.
+- [CompleteResourceTokenAuth](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CompleteResourceTokenAuth.md): Confirms the user authentication session for obtaining OAuth2.0 tokens for a resource.
+- [CreateABTest](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CreateABTest.md): Creates an A/B test for comparing agent configurations.
+- [CreateEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CreateEvent.md): Creates an event in an AgentCore Memory resource.
+- [CreatePaymentInstrument](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CreatePaymentInstrument.md): Create a new payment instrument for a connector.
+- [CreatePaymentSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CreatePaymentSession.md): Create a new payment session.
+- [DeleteABTest](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DeleteABTest.md): Deletes an A/B test and its associated gateway rules.
+- [DeleteBatchEvaluation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DeleteBatchEvaluation.md): Deletes a batch evaluation and its associated results.
+- [DeleteEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DeleteEvent.md): Deletes an event from an AgentCore Memory resource.
+- [DeleteMemoryRecord](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DeleteMemoryRecord.md): Deletes a memory record from an AgentCore Memory resource.
+- [DeletePaymentInstrument](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DeletePaymentInstrument.md): Deletes a payment instrument.
+- [DeletePaymentSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DeletePaymentSession.md): Deletes a payment session.
+- [DeleteRecommendation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DeleteRecommendation.md): Deletes a recommendation and its associated results.
+- [Evaluate](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Evaluate.md): Performs on-demand evaluation of agent traces using a specified evaluator.
+- [GetABTest](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetABTest.md): Retrieves detailed information about an A/B test, including its configuration, status, and statistical results.
+- [GetAgentCard](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetAgentCard.md): Retrieves the A2A agent card associated with an AgentCore Runtime agent.
+- [GetBatchEvaluation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBatchEvaluation.md): Retrieves detailed information about a batch evaluation, including its status, configuration, results, and any error details.
+- [GetBrowserSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.md): Retrieves detailed information about a specific browser session in Amazon Bedrock AgentCore.
+- [GetCodeInterpreterSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.md): Retrieves detailed information about a specific code interpreter session in Amazon Bedrock AgentCore.
+- [GetEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetEvent.md): Retrieves information about a specific event in an AgentCore Memory resource.
+- [GetMemoryRecord](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetMemoryRecord.md): Retrieves a specific memory record from an AgentCore Memory resource.
+- [GetPaymentInstrument](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetPaymentInstrument.md): Get a payment instrument by ID.
+- [GetPaymentInstrumentBalance](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetPaymentInstrumentBalance.md): Get the balance of a payment instrument.
+- [GetPaymentSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetPaymentSession.md): Get a payment session.
+- [GetRecommendation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetRecommendation.md): Retrieves detailed information about a recommendation, including its configuration, status, and results.
+- [GetResourceApiKey](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetResourceApiKey.md): Retrieves the API key associated with an API key credential provider.
+- [GetResourceOauth2Token](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetResourceOauth2Token.md): Returns the OAuth 2.0 token of the provided resource.
+- [GetResourcePaymentToken](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetResourcePaymentToken.md): Generates authentication tokens for payment providers that use vendor-specific authentication mechanisms.
+- [GetWorkloadAccessToken](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetWorkloadAccessToken.md): Obtains a workload access token for agentic workloads not acting on behalf of a user.
+- [GetWorkloadAccessTokenForJWT](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetWorkloadAccessTokenForJWT.md): Obtains a workload access token for agentic workloads acting on behalf of a user, using a JWT token.
+- [GetWorkloadAccessTokenForUserId](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetWorkloadAccessTokenForUserId.md): Obtains a workload access token for agentic workloads acting on behalf of a user, using the user's ID.
+- [InvokeAgentRuntime](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeAgentRuntime.md): Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time.
+- [InvokeAgentRuntimeCommand](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeAgentRuntimeCommand.md): Executes a command in a runtime session container and streams the output back to the caller.
+- [InvokeBrowser](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeBrowser.md): Invokes an operating system-level action on a browser session in Amazon Bedrock AgentCore.
+- [InvokeCodeInterpreter](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeCodeInterpreter.md): Executes code within an active code interpreter session in Amazon Bedrock AgentCore.
+- [InvokeHarness](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeHarness.md): Operation to invoke a Harness.
+- [ListABTests](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListABTests.md): Lists all A/B tests in the account.
+- [ListActors](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListActors.md): Lists all actors in an AgentCore Memory resource.
+- [ListBatchEvaluations](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListBatchEvaluations.md): Lists all batch evaluations in the account, providing summary information about each evaluation's status and configuration.
+- [ListBrowserSessions](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListBrowserSessions.md): Retrieves a list of browser sessions in Amazon Bedrock AgentCore that match the specified criteria.
+- [ListCodeInterpreterSessions](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListCodeInterpreterSessions.md): Retrieves a list of code interpreter sessions in Amazon Bedrock AgentCore that match the specified criteria.
+- [ListEvents](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListEvents.md): Lists events in an AgentCore Memory resource based on specified criteria.
+- [ListMemoryExtractionJobs](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListMemoryExtractionJobs.md): Lists all long-term memory extraction jobs that are eligible to be started with optional filtering.
+- [ListMemoryRecords](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListMemoryRecords.md): Lists memory records in an AgentCore Memory resource based on specified criteria.
+- [ListPaymentInstruments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListPaymentInstruments.md): List payment instruments for a manager.
+- [ListPaymentSessions](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListPaymentSessions.md): List payment sessions.
+- [ListRecommendations](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListRecommendations.md): Lists all recommendations in the account, with optional filtering by status.
+- [ListSessions](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListSessions.md): Lists sessions in an AgentCore Memory resource based on specified criteria.
+- [ProcessPayment](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ProcessPayment.md): Processes a payment using a payment instrument within a payment session.
+- [RetrieveMemoryRecords](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RetrieveMemoryRecords.md): Searches for and retrieves memory records from an AgentCore Memory resource based on specified search criteria.
+- [SaveBrowserSessionProfile](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.md): Saves the current state of a browser session as a reusable profile in Amazon Bedrock AgentCore.
+- [SearchRegistryRecords](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SearchRegistryRecords.md): Searches for registry records using semantic, lexical, or hybrid queries.
+- [StartBatchEvaluation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBatchEvaluation.md): Starts a batch evaluation job that evaluates agent performance across multiple sessions.
+- [StartBrowserSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.md): Creates and initializes a browser session in Amazon Bedrock AgentCore.
+- [StartCodeInterpreterSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.md): Creates and initializes a code interpreter session in Amazon Bedrock AgentCore.
+- [StartMemoryExtractionJob](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartMemoryExtractionJob.md): Starts a memory extraction job that processes events that failed extraction previously in an AgentCore Memory resource and produces structured memory records.
+- [StartRecommendation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartRecommendation.md): Starts a recommendation job that analyzes agent traces and generates optimization suggestions for system prompts or tool descriptions to improve agent performance.
+- [StopBatchEvaluation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBatchEvaluation.md): Stops a running batch evaluation.
+- [StopBrowserSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.md): Terminates an active browser session in Amazon Bedrock AgentCore.
+- [StopCodeInterpreterSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopCodeInterpreterSession.md): Terminates an active code interpreter session in Amazon Bedrock AgentCore.
+- [StopRuntimeSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopRuntimeSession.md): Stops a session that is running in an running AgentCore Runtime agent.
+- [UpdateABTest](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateABTest.md): Updates an A/B test's configuration, including variants, traffic allocation, evaluation settings, or execution status.
+- [UpdateBrowserStream](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.md): Updates a browser stream.
+
+
+## [Data Types](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Types.md)
+
+- [A2aDescriptor](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_A2aDescriptor.md): The A2A (Agent-to-Agent) descriptor configuration for a registry record.
+- [ABTestEvaluationConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ABTestEvaluationConfig.md): The evaluation configuration for an A/B test, specifying which online evaluation configurations to use for measuring variant performance.
+- [ABTestResults](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ABTestResults.md): The statistical results of an A/B test.
+- [ABTestSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ABTestSummary.md): Summary information about an A/B test.
+- [ActorSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ActorSummary.md): Contains summary information about an actor in an AgentCore Memory resource.
+- [AffectedSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_AffectedSession.md): A session affected by a detected failure pattern, including root cause details.
+- [AgentCardDefinition](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_AgentCardDefinition.md): The agent card definition for A2A descriptors, including the schema version and inline content that describes the agent's capabilities.
+- [AgentSkillsDescriptor](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_AgentSkillsDescriptor.md): The agent skills descriptor configuration for a registry record.
+- [AgentTracesConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_AgentTracesConfig.md): The configuration specifying where to read agent traces from for recommendation analysis.
+- [Amount](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Amount.md): Represents a monetary amount with a currency.
+- [AutomationStream](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_AutomationStream.md): The configuration for a stream that enables programmatic control of a browser session in Amazon Bedrock AgentCore.
+- [AutomationStreamUpdate](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_AutomationStreamUpdate.md): Contains information about an update to an automation stream.
+- [AvailableLimits](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_AvailableLimits.md): The available spending limits for a payment session.
+- [BasicAuth](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BasicAuth.md): Configuration for HTTP Basic Authentication using credentials stored in AWS Secrets Manager.
+- [BatchEvaluationSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BatchEvaluationSummary.md): Summary representation for list responses.
+- [BatchEvaluationTraceConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BatchEvaluationTraceConfig.md): Configuration for using a batch evaluation as the source of agent traces for recommendations.
+- [Branch](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Branch.md): Contains information about a branch in an AgentCore Memory resource.
+- [BranchFilter](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BranchFilter.md): Contains filter criteria for branches when listing events.
+- [BrowserAction](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BrowserAction.md): The browser action to perform.
+- [BrowserActionResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BrowserActionResult.md): The result of a browser action execution.
+- [BrowserEnterprisePolicy](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BrowserEnterprisePolicy.md): Browser enterprise policy configuration.
+- [BrowserExtension](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BrowserExtension.md): Browser extension configuration.
+- [BrowserProfileConfiguration](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BrowserProfileConfiguration.md): The configuration for a browser profile in Amazon Bedrock AgentCore.
+- [BrowserSessionStream](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BrowserSessionStream.md): The collection of streams associated with a browser session in Amazon Bedrock AgentCore.
+- [BrowserSessionSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_BrowserSessionSummary.md): A condensed representation of a browser session in Amazon Bedrock AgentCore.
+- [Certificate](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Certificate.md): A certificate to install in the browser or code interpreter session.
+- [CertificateLocation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CertificateLocation.md): The location from which to retrieve a certificate.
+- [CloudWatchFilterConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CloudWatchFilterConfig.md): Filter configuration for narrowing down CloudWatch Logs sessions for evaluation.
+- [CloudWatchLogsFilter](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CloudWatchLogsFilter.md): A filter for narrowing down agent traces from CloudWatch Logs based on key-value comparisons.
+- [CloudWatchLogsRule](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CloudWatchLogsRule.md): A rule configuration for filtering agent traces from CloudWatch Logs.
+- [CloudWatchLogsSource](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CloudWatchLogsSource.md): The configuration for reading agent traces from CloudWatch Logs.
+- [CloudWatchLogsTraceConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CloudWatchLogsTraceConfig.md): Configuration for reading agent traces from CloudWatch Logs for recommendation analysis.
+- [CloudWatchOutputConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CloudWatchOutputConfig.md): CloudWatch Logs destination for batch evaluation results.
+- [CodeInterpreterResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CodeInterpreterResult.md): The output produced by executing code in a code interpreter session in Amazon Bedrock AgentCore.
+- [CodeInterpreterSessionSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CodeInterpreterSessionSummary.md): A condensed representation of a code interpreter session in Amazon Bedrock AgentCore.
+- [CodeInterpreterStreamOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CodeInterpreterStreamOutput.md): Contains output from a code interpreter stream.
+- [CoinbaseCdpTokenRequestInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CoinbaseCdpTokenRequestInput.md): Coinbase CDP token request parameters.
+- [CoinbaseCdpTokenResponseOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CoinbaseCdpTokenResponseOutput.md): Coinbase CDP token response.
+- [ConfidenceInterval](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ConfidenceInterval.md): A confidence interval for a statistical measurement.
+- [ConfigurationBundleRef](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ConfigurationBundleRef.md): A reference to a specific version of a configuration bundle.
+- [ConfigurationBundleToolEntry](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ConfigurationBundleToolEntry.md): Maps a tool name to its JSON path within a configuration bundle.
+- [Content](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Content.md): Contains the content of a memory item.
+- [ContentBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ContentBlock.md): A block of content in a response.
+- [ContentDeltaEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ContentDeltaEvent.md): An event that contains incremental output from a command execution.
+- [ContentStartEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ContentStartEvent.md): An event that signals the start of content streaming from a command execution.
+- [ContentStopEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ContentStopEvent.md): An event that signals the completion of a command execution.
+- [Context](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Context.md): The contextual information associated with an evaluation, including span context details that identify the specific traces and sessions being evaluated within the agent's execution flow.
+- [ControlStats](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ControlStats.md): Statistics for the control variant in an A/B test.
+- [Conversational](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Conversational.md): Contains conversational content for an event payload.
+- [CryptoX402PaymentInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CryptoX402PaymentInput.md): The input for a crypto X402 payment.
+- [CryptoX402PaymentOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CryptoX402PaymentOutput.md): The output from a crypto X402 payment.
+- [CustomDescriptor](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_CustomDescriptor.md): A custom descriptor configuration for a registry record.
+- [DataSourceConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_DataSourceConfig.md): Configuration for the data source used in evaluation.
+- [Descriptors](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Descriptors.md): Contains the descriptor configuration for a registry record.
+- [EmbeddedCryptoWallet](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EmbeddedCryptoWallet.md): Embedded crypto wallet instrument details.
+- [EvaluationContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationContent.md): A content block for ground truth data in evaluation reference inputs.
+- [EvaluationExpectedTrajectory](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationExpectedTrajectory.md): The expected tool call trajectory for trajectory-based evaluation.
+- [EvaluationInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationInput.md): The input data structure containing agent session spans in OpenTelemetry format.
+- [EvaluationJobResults](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationJobResults.md): Aggregated results from a batch evaluation, including session completion counts and evaluator score summaries.
+- [EvaluationMetadata](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationMetadata.md): Metadata for the evaluation, including session-specific ground truth data.
+- [EvaluationReferenceInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationReferenceInput.md): A reference input containing ground truth data for evaluation, scoped to a specific context level (session or trace) through its span context.
+- [EvaluationResultContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationResultContent.md): The comprehensive result of an evaluation containing the score, explanation, evaluator metadata, and execution details.
+- [EvaluationTarget](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluationTarget.md): The specification of which trace or span IDs to evaluate within the provided input data.
+- [Evaluator](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Evaluator.md): An evaluator to run against sessions during batch evaluation.
+- [EvaluatorMetric](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluatorMetric.md): Statistical metrics for a single evaluator comparing control and treatment variants.
+- [EvaluatorStatistics](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluatorStatistics.md): Aggregated statistics for an evaluator.
+- [EvaluatorSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EvaluatorSummary.md): Summary statistics for a single evaluator within a batch evaluation.
+- [Event](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Event.md): Contains information about an event in an AgentCore Memory resource.
+- [EventMetadataFilterExpression](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_EventMetadataFilterExpression.md): Filter expression for retrieving events based on metadata associated with an event.
+- [ExecutionSummaryAffectedSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExecutionSummaryAffectedSession.md): A session associated with an execution summary cluster.
+- [ExecutionSummaryCluster](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExecutionSummaryCluster.md): A cluster of similar execution patterns identified across sessions.
+- [ExecutionSummaryClusteringResultContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExecutionSummaryClusteringResultContent.md): The execution summary clustering result containing grouped execution patterns identified across evaluated sessions.
+- [ExternalProxy](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExternalProxy.md): Configuration for a customer-managed external proxy server.
+- [ExtractionJob](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExtractionJob.md): Represents the metadata of a memory extraction job such as the message identifiers that compose this job.
+- [ExtractionJobFilterInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExtractionJobFilterInput.md): Filters for querying memory extraction jobs based on various criteria.
+- [ExtractionJobMessages](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExtractionJobMessages.md): The list of messages that compose this extraction job.
+- [ExtractionJobMetadata](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ExtractionJobMetadata.md): Metadata information associated with this extraction job.
+- [FailureAnalysisResultContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_FailureAnalysisResultContent.md): The failure analysis clustering result containing categorized failure clusters with root causes and remediation recommendations.
+- [FailureCategoryCluster](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_FailureCategoryCluster.md): A top-level failure category identified by clustering similar failure patterns across sessions.
+- [FailureSpanDetail](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_FailureSpanDetail.md): Details about a specific span where a failure was detected.
+- [FailureSubCategoryCluster](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_FailureSubCategoryCluster.md): A subcategory of failures within a top-level failure category.
+- [FilterInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_FilterInput.md): Contains filter criteria for listing events.
+- [FilterValue](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_FilterValue.md): A value used in filter comparisons, supporting different data types.
+- [GatewayFilter](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GatewayFilter.md): A filter to restrict which gateway target paths are included in the A/B test.
+- [GroundTruthSource](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GroundTruthSource.md): Where to pull ground truth from.
+- [GroundTruthTurn](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GroundTruthTurn.md): Ground truth data for a single conversation turn.
+- [GroundTruthTurnInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GroundTruthTurnInput.md): The input for a ground truth conversation turn.
+- [HarnessAgentCoreBrowserConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessAgentCoreBrowserConfig.md): Configuration for AgentCore Browser.
+- [HarnessAgentCoreCodeInterpreterConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessAgentCoreCodeInterpreterConfig.md): Configuration for AgentCore Code Interpreter.
+- [HarnessAgentCoreGatewayConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessAgentCoreGatewayConfig.md): Configuration for AgentCore Gateway.
+- [HarnessBedrockModelConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessBedrockModelConfig.md): Configuration for an Amazon Bedrock model provider.
+- [HarnessContentBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessContentBlock.md): A content block within a message.
+- [HarnessContentBlockDelta](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessContentBlockDelta.md): A delta update to a content block.
+- [HarnessContentBlockDeltaEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessContentBlockDeltaEvent.md): Event containing a delta update to a content block.
+- [HarnessContentBlockStart](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessContentBlockStart.md): The start payload for a content block.
+- [HarnessContentBlockStartEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessContentBlockStartEvent.md): Event indicating the start of a content block.
+- [HarnessContentBlockStopEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessContentBlockStopEvent.md): Event indicating the end of a content block.
+- [HarnessGatewayOutboundAuth](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessGatewayOutboundAuth.md): Authentication method for calling a Gateway.
+- [HarnessGeminiModelConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessGeminiModelConfig.md): Configuration for a Google Gemini model provider.
+- [HarnessInlineFunctionConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessInlineFunctionConfig.md): Configuration for an inline function tool.
+- [HarnessLiteLlmModelConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessLiteLlmModelConfig.md): Configuration for a LiteLLM model provider, enabling connection to third-party model providers.
+- [HarnessMessage](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessMessage.md): A message in the conversation.
+- [HarnessMessageStartEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessMessageStartEvent.md): Event indicating the start of a message.
+- [HarnessMessageStopEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessMessageStopEvent.md): Event indicating the end of a message.
+- [HarnessMetadataEvent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessMetadataEvent.md): Token usage and latency metrics for the invocation.
+- [HarnessModelConfiguration](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessModelConfiguration.md): Specification of which model to use.
+- [HarnessOpenAiModelConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessOpenAiModelConfig.md): Configuration for an OpenAI model provider.
+- [HarnessReasoningContentBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessReasoningContentBlock.md): Reasoning content from the model.
+- [HarnessReasoningContentBlockDelta](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessReasoningContentBlockDelta.md): A delta update to a reasoning content block.
+- [HarnessReasoningTextBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessReasoningTextBlock.md): A block of reasoning text from the model.
+- [HarnessRemoteMcpConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessRemoteMcpConfig.md): Configuration for connecting to a remote MCP server.
+- [HarnessSkill](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessSkill.md): A skill available to the agent.
+- [HarnessSkillAwsSkillsSource](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessSkillAwsSkillsSource.md): Passed to show that AWS Skills should be included.
+- [HarnessSkillGitAuth](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessSkillGitAuth.md): Authentication configuration for accessing a private git repository.
+- [HarnessSkillGitSource](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessSkillGitSource.md): A git repository source for a skill.
+- [HarnessSkillS3Source](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessSkillS3Source.md): An S3 source for a skill.
+- [HarnessStreamMetrics](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessStreamMetrics.md): Latency metrics for the invocation.
+- [HarnessSystemContentBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessSystemContentBlock.md): A content block in the system prompt.
+- [HarnessTokenUsage](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessTokenUsage.md): Token usage counts for the invocation.
+- [HarnessTool](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessTool.md): A tool available to the agent loop.
+- [HarnessToolConfiguration](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolConfiguration.md): Configuration union for different tool types.
+- [HarnessToolResultBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolResultBlock.md): The result of a tool execution.
+- [HarnessToolResultBlockDelta](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolResultBlockDelta.md): A delta update to a tool result content block.
+- [HarnessToolResultBlockStart](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolResultBlockStart.md): Start payload for a tool result content block.
+- [HarnessToolResultContentBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolResultContentBlock.md): A content block within a tool result.
+- [HarnessToolUseBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolUseBlock.md): A tool use request from the model.
+- [HarnessToolUseBlockDelta](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolUseBlockDelta.md): Delta payload for tool use input.
+- [HarnessToolUseBlockStart](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_HarnessToolUseBlockStart.md): Start payload for a tool use content block.
+- [InlineGroundTruth](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InlineGroundTruth.md): Inline ground truth data containing assertions, expected trajectories, and per-turn expected responses.
+- [InputContentBlock](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InputContentBlock.md): A block of input content.
+- [Insight](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Insight.md): A reference to an insight analysis to run against sessions during batch evaluation.
+- [InsightsFailureSignal](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InsightsFailureSignal.md): A signal indicating a detected failure within a span.
+- [InvokeAgentRuntimeCommandRequestBody](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeAgentRuntimeCommandRequestBody.md): The request body structure for the InvokeAgentRuntimeCommand operation, containing the command to execute and optional configuration parameters.
+- [InvokeAgentRuntimeCommandStreamOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeAgentRuntimeCommandStreamOutput.md): The streaming output union for the InvokeAgentRuntimeCommand operation.
+- [InvokeHarnessStreamOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeHarnessStreamOutput.md): The streaming events returned by a harness invocation.
+- [KeyPressArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_KeyPressArguments.md): Arguments for a key press action.
+- [KeyPressResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_KeyPressResult.md): The result of a key press action.
+- [KeyShortcutArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_KeyShortcutArguments.md): Arguments for a key shortcut action.
+- [KeyShortcutResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_KeyShortcutResult.md): The result of a key shortcut action.
+- [KeyTypeArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_KeyTypeArguments.md): Arguments for a key type action.
+- [KeyTypeResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_KeyTypeResult.md): The result of a key type action.
+- [LeftExpression](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_LeftExpression.md): Left expression of the event metadata filter.
+- [LinkedAccount](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_LinkedAccount.md): Represents different linked accounts that can be linked to an embedded wallet.
+- [LinkedAccountDeveloperJwt](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_LinkedAccountDeveloperJwt.md): Authentication method using JWT with key ID and subject claims.
+- [LinkedAccountEmail](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_LinkedAccountEmail.md): Linked account using an email address.
+- [LinkedAccountOAuth2](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_LinkedAccountOAuth2.md): Authentication method using OAuth2 providers.
+- [LinkedAccountSms](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_LinkedAccountSms.md): Linked account using a phone number in E.164 format.
+- [LiveViewStream](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_LiveViewStream.md): The configuration for a stream that provides a visual representation of a browser session in Amazon Bedrock AgentCore.
+- [McpDescriptor](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_McpDescriptor.md): The MCP (Model Context Protocol) descriptor configuration for a registry record.
+- [MemoryContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryContent.md): Contains the content of a memory record.
+- [MemoryMetadataFilterExpression](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryMetadataFilterExpression.md): Filters to apply to metadata associated with a memory.
+- [MemoryRecord](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecord.md): Contains information about a memory record in an AgentCore Memory resource.
+- [MemoryRecordCreateInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordCreateInput.md): Input structure to create a new memory record.
+- [MemoryRecordDeleteInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordDeleteInput.md): Input structure to delete an existing memory record.
+- [MemoryRecordLeftExpression](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordLeftExpression.md): The left-hand side of a memory record metadata filter expression.
+- [MemoryRecordMetadataValue](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordMetadataValue.md): The value of a memory record metadata entry.
+- [MemoryRecordOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordOutput.md): Output information returned after processing a memory record operation.
+- [MemoryRecordRightExpression](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordRightExpression.md): The right-hand side of a memory record metadata filter expression.
+- [MemoryRecordSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordSummary.md): Contains summary information about a memory record.
+- [MemoryRecordUpdateInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MemoryRecordUpdateInput.md): Input structure to update an existing memory record.
+- [MessageMetadata](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MessageMetadata.md): Metadata information associated with this message.
+- [MetadataValue](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MetadataValue.md): Value associated with the eventMetadata key.
+- [MouseClickArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseClickArguments.md): Arguments for a mouse click action.
+- [MouseClickResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseClickResult.md): The result of a mouse click action.
+- [MouseDragArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseDragArguments.md): Arguments for a mouse drag action.
+- [MouseDragResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseDragResult.md): The result of a mouse drag action.
+- [MouseMoveArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseMoveArguments.md): Arguments for a mouse move action.
+- [MouseMoveResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseMoveResult.md): The result of a mouse move action.
+- [MouseScrollArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseScrollArguments.md): Arguments for a mouse scroll action.
+- [MouseScrollResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_MouseScrollResult.md): The result of a mouse scroll action.
+- [OAuth2Authentication](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_OAuth2Authentication.md): OAuth2 authentication information for third-party providers.
+- [OAuthCredentialProvider](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_OAuthCredentialProvider.md): Configuration for an OAuth 2.0 credential provider used to authenticate tool calls.
+- [OnlineEvaluationConfigSource](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_OnlineEvaluationConfigSource.md): A reference to an existing online evaluation configuration to use as the data source for batch evaluation.
+- [OutputConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_OutputConfig.md): Output destination configuration.
+- [PayloadType](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PayloadType.md): Contains the payload content for an event.
+- [PaymentInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentInput.md): The payment input details, which vary by payment type.
+- [PaymentInstrument](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentInstrument.md): Represents a payment instrument.
+- [PaymentInstrumentDetails](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentInstrumentDetails.md): Details specific to the instrument type.
+- [PaymentInstrumentSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentInstrumentSummary.md): Summary of a payment instrument for list operations.
+- [PaymentOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentOutput.md): The payment output details, which vary by payment type.
+- [PaymentSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentSession.md): A payment session for managing payment transactions.
+- [PaymentSessionSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentSessionSummary.md): Summary information about a payment session.
+- [PaymentTokenRequestInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentTokenRequestInput.md): Vendor-specific token request configuration.
+- [PaymentTokenResponseOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PaymentTokenResponseOutput.md): Vendor-specific token response configuration.
+- [PerVariantOnlineEvaluationConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_PerVariantOnlineEvaluationConfig.md): An online evaluation configuration associated with a specific A/B test variant.
+- [Proxy](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Proxy.md): Union type representing different proxy configurations.
+- [ProxyBypass](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ProxyBypass.md): Configuration for domains that should bypass all proxies and connect directly to the internet.
+- [ProxyConfiguration](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ProxyConfiguration.md): Configuration for routing browser traffic through customer-managed proxy servers.
+- [ProxyCredentials](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ProxyCredentials.md): Union type representing different proxy authentication methods.
+- [RecommendationConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RecommendationConfig.md): The configuration for a recommendation, varying by recommendation type.
+- [RecommendationEvaluationConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RecommendationEvaluationConfig.md): The evaluation configuration for assessing recommendation quality.
+- [RecommendationEvaluatorReference](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RecommendationEvaluatorReference.md): A reference to an evaluator used for recommendation assessment.
+- [RecommendationResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RecommendationResult.md): The result of a recommendation, containing the optimized output.
+- [RecommendationResultConfigurationBundle](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RecommendationResultConfigurationBundle.md): A configuration bundle reference in a recommendation result.
+- [RecommendationSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RecommendationSummary.md): Summary information about a recommendation.
+- [RegistryRecordSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RegistryRecordSummary.md): Summary information about a registry record.
+- [ResourceContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ResourceContent.md): Contains information about resource content.
+- [ResourceLocation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ResourceLocation.md): The location of the browser extension.
+- [ResponseChunk](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ResponseChunk.md): A structure representing a response chunk that contains exactly one of the possible event types: contentStart, contentDelta, or contentStop.
+- [RightExpression](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RightExpression.md): Right expression of the eventMetadatafilter.
+- [RootCauseCluster](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_RootCauseCluster.md): A cluster of similar root causes identified within a failure subcategory.
+- [S3Location](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_S3Location.md): The Amazon S3 location configuration of a resource.
+- [ScreenshotArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ScreenshotArguments.md): Arguments for a screenshot action.
+- [ScreenshotResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ScreenshotResult.md): The result of a screenshot action.
+- [SearchCriteria](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SearchCriteria.md): Contains search criteria for retrieving memory records.
+- [SecretsManagerLocation](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SecretsManagerLocation.md): The AWS Secrets Manager location configuration.
+- [ServerDefinition](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ServerDefinition.md): The MCP server definition with a schema version and inline content.
+- [SessionFilter](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SessionFilter.md): Contains filter criteria for listing sessions.
+- [SessionFilterConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SessionFilterConfig.md): A time range filter for selecting sessions.
+- [SessionLimits](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SessionLimits.md): The spending limits configuration for a payment session.
+- [SessionMetadataShape](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SessionMetadataShape.md): Metadata for a specific session in a batch evaluation, including ground truth data and test scenario identifiers.
+- [SessionSummary](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SessionSummary.md): Contains summary information about a session in an AgentCore Memory resource.
+- [SkillDefinition](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SkillDefinition.md): The structured skill definition with a schema version and inline content.
+- [SkillMdDefinition](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SkillMdDefinition.md): The skill markdown definition for agent skills descriptors.
+- [SpanContext](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SpanContext.md): The contextual information that uniquely identifies a span within the distributed tracing system.
+- [StreamUpdate](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StreamUpdate.md): Contains information about an update to a stream.
+- [StripePrivyTokenRequestInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StripePrivyTokenRequestInput.md): Stripe Privy token request parameters.
+- [StripePrivyTokenResponseOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StripePrivyTokenResponseOutput.md): Stripe Privy token response containing appId, basicAuthToken, and optionally authorizationSignature.
+- [SystemPromptConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SystemPromptConfig.md): The system prompt input, either as inline text or from a configuration bundle.
+- [SystemPromptConfigurationBundle](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SystemPromptConfigurationBundle.md): A system prompt sourced from a configuration bundle version.
+- [SystemPromptRecommendationConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SystemPromptRecommendationConfig.md): Configuration for generating system prompt optimization recommendations.
+- [SystemPromptRecommendationResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SystemPromptRecommendationResult.md): The result of a system prompt recommendation, containing the optimized prompt.
+- [TargetRef](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_TargetRef.md): A reference to a gateway target.
+- [TokenBalance](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_TokenBalance.md): A single token balance entry.
+- [TokenUsage](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_TokenUsage.md): The token consumption statistics for language model operations during evaluation.
+- [ToolArguments](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolArguments.md): The collection of arguments that specify the operation to perform and its parameters when invoking a tool in Amazon Bedrock AgentCore.
+- [ToolDescriptionConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionConfig.md): The tool description content.
+- [ToolDescriptionConfigurationBundle](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionConfigurationBundle.md): Tool descriptions sourced from a configuration bundle version.
+- [ToolDescriptionInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionInput.md): A tool description input containing the tool name and its current description.
+- [ToolDescriptionOutput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionOutput.md): The output for a single tool description recommendation.
+- [ToolDescriptionRecommendationConfig](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionRecommendationConfig.md): Configuration for generating tool description optimization recommendations.
+- [ToolDescriptionRecommendationResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionRecommendationResult.md): The result of a tool description recommendation, containing optimized descriptions.
+- [ToolDescriptionSource](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionSource.md): The source of tool descriptions, either inline text or from a configuration bundle.
+- [ToolDescriptionTextInput](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolDescriptionTextInput.md): Inline tool description input containing a list of tools.
+- [ToolResultStructuredContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolResultStructuredContent.md): Contains structured content from a tool result.
+- [ToolsDefinition](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ToolsDefinition.md): The MCP tools definition with a protocol version and inline content.
+- [UserIdentifier](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UserIdentifier.md): The OAuth2.0 token or user ID that was used to generate the workload access token used for initiating the user authorization flow to retrieve OAuth2.0 tokens.
+- [UserIntentAffectedSession](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UserIntentAffectedSession.md): A session associated with a user intent cluster.
+- [UserIntentCluster](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UserIntentCluster.md): A cluster of similar user intents identified across sessions.
+- [UserIntentClusteringResultContent](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UserIntentClusteringResultContent.md): The user intent clustering result containing grouped user intents identified across evaluated sessions.
+- [ValidationExceptionField](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ValidationExceptionField.md): Stores information about a field passed inside a request that resulted in an exception.
+- [Variant](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_Variant.md): A variant in an A/B test, representing either the control (C) or treatment (T1) configuration.
+- [VariantConfiguration](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_VariantConfiguration.md): The configuration for an A/B test variant.
+- [VariantResult](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_VariantResult.md): Statistical results for a treatment variant compared against the control.
+- [ViewPort](https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ViewPort.md): The configuration that defines the dimensions of a browser viewport in a browser session.

@@ -1,0 +1,37 @@
+
+
+# BlueprintItem
+<a name="API_data-automation_BlueprintItem"></a>
+
+An abbreviated summary of a blueprint.
+
+## Contents
+<a name="API_data-automation_BlueprintItem_Contents"></a>
+
+ ** blueprintArn **   <a name="bedrock-Type-data-automation_BlueprintItem-blueprintArn"></a>
+The blueprint's ARN.  
+Type: String  
+Length Constraints: Minimum length of 0. Maximum length of 128.  
+Pattern: `arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):blueprint/(bedrock-data-automation-public-[a-zA-Z0-9-_]{1,30}|[a-zA-Z0-9-]{12,36})`   
+Required: Yes
+
+ ** blueprintStage **   <a name="bedrock-Type-data-automation_BlueprintItem-blueprintStage"></a>
+The blueprint's stage.  
+Type: String  
+Valid Values: `DEVELOPMENT | LIVE`   
+Required: No
+
+ ** blueprintVersion **   <a name="bedrock-Type-data-automation_BlueprintItem-blueprintVersion"></a>
+The blueprint's version.  
+Type: String  
+Length Constraints: Minimum length of 1. Maximum length of 128.  
+Pattern: `[0-9]*`   
+Required: No
+
+## See Also
+<a name="API_data-automation_BlueprintItem_SeeAlso"></a>
+
+For more information about using this API in one of the language-specific AWS SDKs, see the following:
++  [AWS SDK for C\+\+](https://docs.aws.amazon.com/goto/SdkForCpp/bedrock-data-automation-2023-07-26/BlueprintItem) 
++  [AWS SDK for Java V2](https://docs.aws.amazon.com/goto/SdkForJavaV2/bedrock-data-automation-2023-07-26/BlueprintItem) 
++  [AWS SDK for Ruby V3](https://docs.aws.amazon.com/goto/SdkForRubyV3/bedrock-data-automation-2023-07-26/BlueprintItem) 

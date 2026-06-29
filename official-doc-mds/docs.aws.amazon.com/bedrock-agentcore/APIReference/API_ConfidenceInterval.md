@@ -1,0 +1,27 @@
+
+
+# ConfidenceInterval
+<a name="API_ConfidenceInterval"></a>
+
+A confidence interval for a statistical measurement.
+
+## Contents
+<a name="API_ConfidenceInterval_Contents"></a>
+
+ ** lower **   <a name="BedrockAgentCore-Type-ConfidenceInterval-lower"></a>
+The lower bound of the confidence interval.  
+Type: Double  
+Required: No
+
+ ** upper **   <a name="BedrockAgentCore-Type-ConfidenceInterval-upper"></a>
+The upper bound of the confidence interval.  
+Type: Double  
+Required: No
+
+## See Also
+<a name="API_ConfidenceInterval_SeeAlso"></a>
+
+For more information about using this API in one of the language-specific AWS SDKs, see the following:
++  [AWS SDK for C\+\+](https://docs.aws.amazon.com/goto/SdkForCpp/bedrock-agentcore-2024-02-28/ConfidenceInterval) 
++  [AWS SDK for Java V2](https://docs.aws.amazon.com/goto/SdkForJavaV2/bedrock-agentcore-2024-02-28/ConfidenceInterval) 
++  [AWS SDK for Ruby V3](https://docs.aws.amazon.com/goto/SdkForRubyV3/bedrock-agentcore-2024-02-28/ConfidenceInterval) 

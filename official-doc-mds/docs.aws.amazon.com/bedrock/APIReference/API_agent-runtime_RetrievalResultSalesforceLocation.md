@@ -1,0 +1,22 @@
+
+
+# RetrievalResultSalesforceLocation
+<a name="API_agent-runtime_RetrievalResultSalesforceLocation"></a>
+
+The Salesforce data source location.
+
+## Contents
+<a name="API_agent-runtime_RetrievalResultSalesforceLocation_Contents"></a>
+
+ ** url **   <a name="bedrock-Type-agent-runtime_RetrievalResultSalesforceLocation-url"></a>
+The Salesforce host URL for the data source location.  
+Type: String  
+Required: No
+
+## See Also
+<a name="API_agent-runtime_RetrievalResultSalesforceLocation_SeeAlso"></a>
+
+For more information about using this API in one of the language-specific AWS SDKs, see the following:
++  [AWS SDK for C\+\+](https://docs.aws.amazon.com/goto/SdkForCpp/bedrock-agent-runtime-2023-07-26/RetrievalResultSalesforceLocation) 
++  [AWS SDK for Java V2](https://docs.aws.amazon.com/goto/SdkForJavaV2/bedrock-agent-runtime-2023-07-26/RetrievalResultSalesforceLocation) 
++  [AWS SDK for Ruby V3](https://docs.aws.amazon.com/goto/SdkForRubyV3/bedrock-agent-runtime-2023-07-26/RetrievalResultSalesforceLocation) 

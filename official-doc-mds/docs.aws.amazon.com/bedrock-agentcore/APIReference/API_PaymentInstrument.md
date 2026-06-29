@@ -1,0 +1,72 @@
+
+
+# PaymentInstrument
+<a name="API_PaymentInstrument"></a>
+
+Represents a payment instrument.
+
+## Contents
+<a name="API_PaymentInstrument_Contents"></a>
+
+ ** createdAt **   <a name="BedrockAgentCore-Type-PaymentInstrument-createdAt"></a>
+The timestamp when this payment instrument was created.  
+Type: Timestamp  
+Required: Yes
+
+ ** paymentConnectorId **   <a name="BedrockAgentCore-Type-PaymentInstrument-paymentConnectorId"></a>
+The ID of the payment connector associated with this instrument.  
+Type: String  
+Length Constraints: Minimum length of 12. Maximum length of 211.  
+Pattern: `([0-9a-z][-]?){1,100}-[0-9a-z]{10}`   
+Required: Yes
+
+ ** paymentInstrumentDetails **   <a name="BedrockAgentCore-Type-PaymentInstrument-paymentInstrumentDetails"></a>
+The details specific to the payment instrument type.  
+Type: [PaymentInstrumentDetails](API_PaymentInstrumentDetails.md) object  
+ **Note: **This object is a Union. Only one member of this object can be specified or returned.  
+Required: Yes
+
+ ** paymentInstrumentId **   <a name="BedrockAgentCore-Type-PaymentInstrument-paymentInstrumentId"></a>
+The unique identifier for this payment instrument.  
+Type: String  
+Length Constraints: Fixed length of 34.  
+Pattern: `payment-instrument-[0-9a-zA-Z-]{15}`   
+Required: Yes
+
+ ** paymentInstrumentType **   <a name="BedrockAgentCore-Type-PaymentInstrument-paymentInstrumentType"></a>
+The type of payment instrument (e.g., EMBEDDED\_CRYPTO\_WALLET).  
+Type: String  
+Valid Values: `EMBEDDED_CRYPTO_WALLET`   
+Required: Yes
+
+ ** paymentManagerArn **   <a name="BedrockAgentCore-Type-PaymentInstrument-paymentManagerArn"></a>
+The ARN of the payment manager that owns this payment instrument.  
+Type: String  
+Length Constraints: Minimum length of 66. Maximum length of 2048.  
+Pattern: `arn:(aws|aws-[a-z0-9-]+):bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:payment-manager/[a-z0-9]([a-z0-9-]{0,47}[a-z0-9])?-[a-z0-9]{10}`   
+Required: Yes
+
+ ** status **   <a name="BedrockAgentCore-Type-PaymentInstrument-status"></a>
+The current status of this payment instrument.  
+Type: String  
+Valid Values: `INITIATED | ACTIVE | FAILED | DELETED`   
+Required: Yes
+
+ ** updatedAt **   <a name="BedrockAgentCore-Type-PaymentInstrument-updatedAt"></a>
+The timestamp when this payment instrument was last updated.  
+Type: Timestamp  
+Required: Yes
+
+ ** userId **   <a name="BedrockAgentCore-Type-PaymentInstrument-userId"></a>
+The user ID associated with this payment instrument.  
+Type: String  
+Length Constraints: Minimum length of 0. Maximum length of 120.  
+Required: Yes
+
+## See Also
+<a name="API_PaymentInstrument_SeeAlso"></a>
+
+For more information about using this API in one of the language-specific AWS SDKs, see the following:
++  [AWS SDK for C\+\+](https://docs.aws.amazon.com/goto/SdkForCpp/bedrock-agentcore-2024-02-28/PaymentInstrument) 
++  [AWS SDK for Java V2](https://docs.aws.amazon.com/goto/SdkForJavaV2/bedrock-agentcore-2024-02-28/PaymentInstrument) 
++  [AWS SDK for Ruby V3](https://docs.aws.amazon.com/goto/SdkForRubyV3/bedrock-agentcore-2024-02-28/PaymentInstrument) 
