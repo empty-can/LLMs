@@ -2,6 +2,9 @@
 work/doc-summary-bot/
 work/ja-follow-watch/
 
+# work/ 直下の一時スクラッチ（差分ダンプ・一時コミットメッセージ等）
+work/*.txt
+
 # Python キャッシュ
 __pycache__/
 *.pyc
