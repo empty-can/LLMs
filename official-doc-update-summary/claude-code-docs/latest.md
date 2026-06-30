@@ -51,18 +51,18 @@
 
 **新機能**
 
-- `claude gateway` サブコマンドが CLI リファレンスに追加され、管理者が SSO とポリシーを前段に置く自己ホスト型 Claude apps gateway サーバーを起動できるようになった — [English](https://code.claude.com/docs/en/cli-reference)。
-- managed settings に `forceLoginMethod: "gateway"` と `forceLoginGatewayUrl` が追加され、`/login` を「Cloud gateway」画面に固定し、ゲートウェイ URL を事前入力・ロックできるようになった（両キーとも管理者が配布するファイルに置く前提）— [English](https://code.claude.com/docs/en/settings)。
-- `authentication` のサインイン方式に「Cloud gateway」（自己ホスト Claude apps gateway への企業 SSO サインイン）が追加され、ゲートウェイセッションは Bedrock や Vertex のようなプロバイダー選択として他より優先される旨が明記された — [English](https://code.claude.com/docs/en/authentication)。
+- `claude gateway` サブコマンドが CLI リファレンスに追加され、管理者が SSO とポリシーを前段に置く自己ホスト型 Claude apps gateway サーバーを起動できるようになった — [日本語](https://code.claude.com/docs/ja/cli-reference) / [English](https://code.claude.com/docs/en/cli-reference)。
+- managed settings に `forceLoginMethod: "gateway"` と `forceLoginGatewayUrl` が追加され、`/login` を「Cloud gateway」画面に固定し、ゲートウェイ URL を事前入力・ロックできるようになった（両キーとも管理者が配布するファイルに置く前提）— [日本語](https://code.claude.com/docs/ja/settings) / [English](https://code.claude.com/docs/en/settings)。
+- `authentication` のサインイン方式に「Cloud gateway」（自己ホスト Claude apps gateway への企業 SSO サインイン）が追加され、ゲートウェイセッションは Bedrock や Vertex のようなプロバイダー選択として他より優先される旨が明記された — [日本語](https://code.claude.com/docs/ja/authentication) / [English](https://code.claude.com/docs/en/authentication)。
 
 **機能改善**
 
-- managed settings の優先順位が明確化され、`policyHelper` を設定すると、その出力が server-managed・MDM・ファイルベースを含む全 managed ソースに優先する唯一の管理構成になる旨が `settings`・`admin-setup`・`server-managed-settings` で明記された — [English](https://code.claude.com/docs/en/settings#compute-managed-settings-with-a-policy-helper)。
-- `monitoring-usage` に、Claude apps gateway にサインイン中は CLI が OTLP エクスポートへゲートウェイセッションの認証済み identity（IdP subject）を刻む旨が追記された — [English](https://code.claude.com/docs/en/monitoring-usage)。
+- managed settings の優先順位が明確化され、`policyHelper` を設定すると、その出力が server-managed・MDM・ファイルベースを含む全 managed ソースに優先する唯一の管理構成になる旨が `settings`・`admin-setup`・`server-managed-settings` で明記された — [日本語](https://code.claude.com/docs/ja/settings#compute-managed-settings-with-a-policy-helper) / [English](https://code.claude.com/docs/en/settings#compute-managed-settings-with-a-policy-helper)。
+- `monitoring-usage` に、Claude apps gateway にサインイン中は CLI が OTLP エクスポートへゲートウェイセッションの認証済み identity（IdP subject）を刻む旨が追記された — [日本語](https://code.claude.com/docs/ja/monitoring-usage) / [English](https://code.claude.com/docs/en/monitoring-usage)。
 - `permission-modes` の auto mode 対応プロバイダーに、サインイン済み Claude apps gateway セッションが追加された（第三者プロバイダー扱いで Opus 系のみ対象、`CLAUDE_CODE_ENABLE_AUTO_MODE=1` が必要）— [English](https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode)。
-- `admin-setup`・`costs` に、第三者クラウド上では Claude apps gateway が per-user の利用量帰属・OTLP メトリクス・支出上限を提供する旨が追記された — [English](https://code.claude.com/docs/en/admin-setup)。
-- `network-config` で、OS の証明書ストアを読み込むには `tls.getCACertificates` を備えるランタイム（ネイティブバイナリ）が必要である旨が明確化された — [English](https://code.claude.com/docs/en/network-config)。
-- `llm-gateway-rollout` で、managed settings にゲートウェイ認証情報と併せて `forceLoginMethod`／`forceLoginOrgUUID` を置くと（v2.1.146 以降は値に関わらず）`ANTHROPIC_API_KEY` 等がブロックされる旨が明確化された — [English](https://code.claude.com/docs/en/llm-gateway-rollout)。
+- `admin-setup`・`costs` に、第三者クラウド上では Claude apps gateway が per-user の利用量帰属・OTLP メトリクス・支出上限を提供する旨が追記された — [日本語](https://code.claude.com/docs/ja/admin-setup) / [English](https://code.claude.com/docs/en/admin-setup)。
+- `network-config` で、OS の証明書ストアを読み込むには `tls.getCACertificates` を備えるランタイム（ネイティブバイナリ）が必要である旨が明確化された — [日本語](https://code.claude.com/docs/ja/network-config) / [English](https://code.claude.com/docs/en/network-config)。
+- `llm-gateway-rollout` で、managed settings にゲートウェイ認証情報と併せて `forceLoginMethod`／`forceLoginOrgUUID` を置くと（v2.1.146 以降は値に関わらず）`ANTHROPIC_API_KEY` 等がブロックされる旨が明確化された — [日本語](https://code.claude.com/docs/ja/llm-gateway-rollout) / [English](https://code.claude.com/docs/en/llm-gateway-rollout)。
 
 **その他**
 
