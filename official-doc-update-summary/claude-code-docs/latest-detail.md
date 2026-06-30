@@ -1,130 +1,161 @@
 ---
-対象期間: 2026年06月26日 〜 2026年06月27日
-作成日: 2026-06-27
+対象期間: 2026年06月27日 〜 2026年06月29日
+作成日: 2026-06-29
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、Claude Code v2.1.195（2026年06月26日）のリリースと、Agent SDK 各ガイドのコード例・セットアップ手順の整備が中心です。あわせて、ドキュメント全体で英語表現を短縮形へ統一する編集が広範に入りました。
+今回の対象期間は、Claude Code に自己ホスト型ゲートウェイ「Claude apps gateway」が追加され、概要・本体・構成・デプロイ・支出上限・GCP 実例の 6 ページが新設されたことが中心です。あわせて既存の LLM ゲートウェイ文書が「Other LLM gateways」へ再編され、多数のページに横断的な参照が追加されました。今回 changelog（バージョンリリース）や新着情報の更新はありません。
 
 主要なものを以下に挙げます。
 
-1. Agent SDK のクイックスタート・スラッシュコマンド・サブエージェントの各ガイドに、エラーハンドリング例とセットアップ手順の明確化が一斉に入った
-2. changelog に v2.1.195（2026年06月26日）のエントリが追加され、hook matcher や音声ディクテーションなどのバグ修正が中心となった
-3. 多数のページで「do not → don't」などの短縮形への文体統一が行われた（文意の変更なし）
+1. 自己ホスト型ゲートウェイ「Claude apps gateway」が `claude` バイナリ同梱で追加され、IdP の SSO サインインで Amazon Bedrock／Google Cloud's Agent Platform／Microsoft Foundry／Anthropic API へ中継できるようになった（v2.1.195 以降が必須）
+2. IdP グループ単位のモデルアクセス制御・managed settings 配信・OTLP テレメトリに加え、開発者ごとの支出上限（spend limits）でガバナンスを効かせられる
+3. 既存の `llm-gateway` が「Other LLM gateways」へ改称・縮約され、ゲートウェイ概要ページの新設や「Google Vertex AI → Google Cloud's Agent Platform」改称、多数ページへの横断参照追加が行われた
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Agent SDK ドキュメントのエラーハンドリングとセットアップ整備**](#1-agent-sdk-ドキュメントのエラーハンドリングとセットアップ整備):  
-  クイックスタート・スラッシュコマンド・サブエージェントの各 Agent SDK ガイドで、`query()` がエラー結果を返した後に例外を送出する挙動に備えた try/except（try/catch）例が一斉に追加された。クイックスタートは TypeScript の新規／既存プロジェクト別セットアップ（`tsx`・`.mts`）、API キーの環境変数設定（Windows PowerShell タブ）に書き換えられ、権限モード表に `plan` モードが追加された。新しい API・機能の追加ではなく、コード例の堅牢化と手順の明確化が主旨。
-2. [**v2.1.195（2026年06月26日）のリリースと修正**](#2-v21195-のリリースと修正):  
-  changelog に v2.1.195 のエントリが追加された。ハイフンを含む識別子の hook matcher を完全一致へ修正、日本語・中国語・タイ語など分かち書きしない言語での音声ディクテーション自動送信の修正、バックグラウンドジョブ／エージェントの安定化など、バグ修正が中心。`CLAUDE_CODE_DISABLE_MOUSE_CLICKS` 環境変数の追加などの小さな機能追加もある（個別項目は「軽微な更新」に整理）。
-3. [**ドキュメント全体の短縮形への文体統一**](#3-ドキュメント全体の短縮形への文体統一):  
-  多数のページで「do not → don't」「cannot → can't」などの短縮形への統一と、長い段落・箇条書きの整形が行われた。文意の変更を伴わない編集だが対象ページが広く、今回の原文差分の大半を占める。
+1. [**Claude apps gateway の追加**](#1-claude-apps-gateway-の追加):  
+  開発者クライアントとモデルプロバイダーの間に立つ自己ホスト型ゲートウェイが `claude` バイナリに内蔵された。開発者は API キーやクラウド認証情報を持たず、企業 IdP の SSO（`/login`）でサインインする。ゲートウェイが上流の認証情報を保持し、Amazon Bedrock・Google Cloud's Agent Platform・Microsoft Foundry・Anthropic API のいずれかへフェイルオーバー付きで中継する。サーバー実行・サインインは v2.1.195 以降が必須。
+2. [**IdP グループ単位のガバナンスと支出上限**](#2-idp-グループ単位のガバナンスと支出上限):  
+  IdP グループごとにモデル許可リスト（`availableModels`）と managed settings ポリシーをサーバー側で強制し、未許可モデルへのリクエストは拒否される。OTLP メトリクスを自前の収集基盤へ送出でき、Admin API で開発者・グループ・組織単位の日次／週次／月次の支出上限を設定してリアルタイムに遮断できる。
+3. [**既存ゲートウェイ文書の再編と Agent Platform への改称**](#3-既存ゲートウェイ文書の再編と-agent-platform-への改称):  
+  既存の `llm-gateway` ページが「Other LLM gateways（組織が自前で運用する別製品のゲートウェイ向け）」へ改称・縮約され、ゲートウェイ全般の概念は新設の概要ページ `gateways` へ集約された。あわせてゲートウェイ文脈の複数ページで「Google Vertex AI」が「Google Cloud's Agent Platform」へ改称され、多数ページに Claude apps gateway への横断参照が追加された。
 <!-- light:highlight-list:end -->
 
-## 1. Agent SDK ドキュメントのエラーハンドリングとセットアップ整備
+## 1. Claude apps gateway の追加
 
-今回最も内容のある変更は、Agent SDK の複数ガイドに対する一斉整備です。スラッシュコマンドおよびサブエージェントのガイドでは、`query()` を使うコード例が `try`/`except`（Python）・`try`/`catch`（TypeScript）でループを囲む形に書き換えられました。これは、ワンショットの `query()` が `max_turns` 上限到達などでエラー結果（`is_error: true`、`error_max_turns` などのサブタイプ）を返したあと、CLI プロセスが非ゼロ終了するために SDK が例外を送出する、という挙動への対処です。スラッシュコマンドのガイドにはこの挙動を説明する Note が加わり、`/compact` の例は「コンパクト化には要約対象となる既存の会話履歴が必要」である点を踏まえ、まず会話を行ってから `continue_conversation=True`（`continue: true`）で同一会話のフォローアップとして `/compact` を送る形に作り直されました。要約対象が無い場合は例外ではなく `success` 結果として「Not enough messages to compact.」等の理由が返ることも明記されています。
+Claude apps gateway は、開発者の Claude Code クライアントとモデルプロバイダーの間に立つ自己ホスト型サービスです。`claude` バイナリに同梱されており、ノート PC で Claude Code を動かすのと同じ実行ファイルが `claude gateway --config gateway.yaml` でゲートウェイサーバーとして動作します。開発者は API キーやクラウド認証情報を持たず、企業の ID プロバイダー（IdP）の SSO で `/login` からサインインします。ゲートウェイ側が上流（upstream）の認証情報を保持し、Amazon Bedrock・Google Cloud's Agent Platform・Microsoft Foundry・Anthropic API のいずれかへ、フェイルオーバー付きで中継します。クライアントは Anthropic Messages API でゲートウェイと話し、ゲートウェイが各上流向けに変換するため、リージョン・プロバイダー・フェイルオーバー順序を開発者の再設定なしに変更できます。
 
-クイックスタートでは「セットアップ」節が刷新されました。TypeScript のインストールが「新規プロジェクト」（`npm init -y` / `npm pkg set type=module` / `tsx` 導入）と「既存プロジェクト」（CommonJS では `agent.mts` を使うとプロジェクト全体を ES モジュール化せずトップレベル `await` が使える）の 2 タブに分割され、API キーの設定は「`.env` を自動読み込みしないため、エージェントを実行するシェルの環境変数に直接設定する」方針へ変更され、macOS/Linux の `export` と Windows PowerShell の `$env:ANTHROPIC_API_KEY` のタブが追加されました。あわせて、旧バージョン向けの `thinking.type.enabled` に関するトラブルシュート節が削除され、権限モードの一覧表に `plan` モード（読み取り専用ツールのみ実行し、ファイル編集は自動承認されず `canUseTool` コールバックに渡る）の行が追加されました。なお日本語ページは既存ですが、これらの変更はまだ反映されていない（旧記述のまま）ため、参考リンクは英語のみとします。
+サーバー実行・サインインフローは Claude Code v2.1.195 以降が必須で、ゲートウェイサーバー側・各開発者側の双方が v2.1.195 以降である必要があります。サーバーは Linux ネイティブバイナリでのみ動作し（macOS はローカル開発用、Windows サーバーは非対応）、PostgreSQL 14 以降と OIDC 準拠 IdP（Okta／Microsoft Entra ID／Google Workspace／Keycloak／Dex 等。SAML・LDAP は非対応）を要します。あわせて、プライベートネットワーク上への配置が必須で、`/login` はゲートウェイのホスト名・IP がプライベートアドレスにのみ解決されることを要求します。これは、信頼されたゲートウェイが開発者マシンでコマンドを実行し得る設定を配信できるためのセキュリティガードです。
 
-- [Quickstart - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-sdk/quickstart#setup)
-- [Slash Commands in the SDK - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-sdk/slash-commands#sending-slash-commands)
+- [Run Claude Code through a gateway - Claude Code Docs (English)](https://code.claude.com/docs/en/gateways#how-a-gateway-works)
+- [Claude apps gateway for Amazon Bedrock, Google Cloud, and Microsoft Foundry - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway#quickstart)
 
-## 2. v2.1.195 のリリースと修正
+## 2. IdP グループ単位のガバナンスと支出上限
 
-changelog に v2.1.195（2026年06月26日）のリリースエントリが追加されました。内容はバグ修正が中心で、ハイフンを含む識別子（`code-reviewer`、`mcp__brave-search` など）の hook matcher が誤って部分一致していた問題の修正、macOS で既定入力デバイス変更後に音声ディクテーションが無音を録音し続ける問題の修正、そして日本語・中国語・タイ語など分かち書きしない言語で音声ディクテーションの自動送信が発火しない問題の修正などが含まれます。あわせて、バックグラウンドジョブ／バックグラウンドエージェントのデーモン周りの安定化や、プラグインの有効化・インストール同意に関する修正も入っています。機能追加としては `CLAUDE_CODE_DISABLE_MOUSE_CLICKS` 環境変数の追加などがあります。
+ゲートウェイは IdP のグループをモデル許可リストと managed settings ポリシーに対応づけ、サーバー側でモデルアクセスを強制します。ポリシーが許可しないモデルへのリクエストは 400 で拒否され、`/model` のピッカーはそのグループの `availableModels` 許可リストに絞り込まれます。managed settings は claude.ai 管理コンソールの server-managed settings に代わってゲートウェイがサインイン済みクライアントへ配信し、CLI は managed settings 階層で適用します。テレメトリは Datadog・Splunk・ClickHouse などの宛先ごとに OTLP メトリクス（トークン数・モデル・ユーザー識別子・レイテンシ）を既定で送出し、ログやトレースは宛先ごとのオプトインです。ゲートウェイはプロンプトや応答の内容は記録・保存しません。
 
-これらの個別項目は、対応する通常ドキュメントページ側への記述追加が今回の差分には含まれない（changelog エントリのみ）ため、下記「軽微な更新」に分類して整理しています。changelog リンク不使用ポリシーにより、本節および各項目には changelog ページの URL を付しません。
+支出上限（spend limits）は、共有された 1 つの上流認証情報に対する開発者ごとの「見える化」とサーキットブレーカーです。`gateway.yaml` に `admin` ブロックを設定すると `/v1/organizations/spend_limits` の Admin API が有効になり、`{scope, amount, period}` で user／rbac_group／organization 単位の日次・週次・月次の上限を設定できます。開発者が上限を超えると次のリクエストから `429` を返してブロックし、期間がリセットされるか管理者が上限を引き上げるまで遮断します。API は Anthropic の公開 Admin API の spend-limits エンドポイントとワイヤ形式を揃えており、ベース URL を変えるだけで既存の HTTP クライアントから利用できます。
 
-## 3. ドキュメント全体の短縮形への文体統一
+- [Claude apps gateway spend limits - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits#set-a-cap)
+- [Claude apps gateway configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway-config#managed)
 
-今回の原文差分は行数こそ多いものの、その大半は文意を変えない文体整形です。設定リファレンス・MCP・hooks・キーバインド・インタラクティブモード・監視・自動モードなど多数のページで、「do not → don't」「cannot → can't」「does not → doesn't」といった短縮形への統一と、長い 1 段落を複数段落に分けたり、列挙を箇条書きに整理したりする編集が広範に行われました。
+## 3. 既存ゲートウェイ文書の再編と Agent Platform への改称
 
-機能・仕様の変更は伴わないため個々のページ単位では取り上げませんが、対象ページが非常に広いため、原文差分を確認した際に「多数のページが変更されている」ように見える主因がこの編集である点を補足します。読者が参照すべき内容面の変化はありません。
+従来 `llm-gateway` ページが担っていた「ゲートウェイとは何か／どう動くか／別製品とどう使い分けるか」という概念説明は、新設の概要ページ `gateways` に集約されました。これに伴い `llm-gateway` ページは「Other LLM gateways（組織が既に運用している別製品のゲートウェイを使う場合）」へ改称・縮約され、説明が重複する「How a gateway works」「Configure separately from the gateway」などの節が削除されています。`gateways` 概要では、Claude apps gateway と自前運用のゲートウェイの選び方、claude.ai サブスクリプションとの関係、ゲートウェイとは別に設定する項目（モデル選択・他のネットワーク通信・企業プロキシ）が整理されました。
+
+あわせて、ゲートウェイ文脈の複数ページで「Google Vertex AI」が「Google Cloud's Agent Platform」へ改称されました（`llm-gateway-protocol` の API フォーマット表で "Vertex rawPredict" → "Agent Platform rawPredict"、`llm-gateway-connect` の見出し "Google Vertex AI" → "Google Cloud's Agent Platform" など）。`llm-gateway-protocol` には、稼働中の Claude apps gateway が同契約の機械可読版を `GET /protocol` で提供する旨や、モデルディスカバリで Fable に解決される ID の重複を除外する旨も追記されました。さらに `admin-setup`・`settings`・`permission-modes`・`authentication`・`monitoring-usage`・`network-config`・`costs`・`server-managed-settings`・`cli-reference`・`quickstart` など多数のページに Claude apps gateway への横断参照が追加されています（個別項目は「軽微な更新」に整理）。
+
+- [Other LLM gateways - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway)
+- [Gateway protocol reference - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-protocol#api-formats)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回、リファレンス系で完全に新規追加されたページはありません。
+今回、ゲートウェイ関連で 6 ページが新規追加されました。いずれも本日時点で日本語ページは未公開のため、参考リンクは英語のみとします。
+
+- [**ゲートウェイ概要ページ**](#1-ゲートウェイ概要ページ) ([English](https://code.claude.com/docs/en/gateways)):  
+  ゲートウェイとは何か、Claude apps gateway と自前運用のゲートウェイの選び方を説明する概要ページ。
+- [**Claude apps gateway 本体ページ**](#2-claude-apps-gateway-本体ページ) ([English](https://code.claude.com/docs/en/claude-apps-gateway)):  
+  なぜ使うか・クイックスタート・開発者の接続・対応状況と制限を扱う中心ページ（詳細はハイライト 1 参照）。
+- [**Claude apps gateway の構成リファレンス**](#3-claude-apps-gateway-の構成リファレンス) ([English](https://code.claude.com/docs/en/claude-apps-gateway-config)):  
+  `gateway.yaml` の全オプションのリファレンス。
+- [**Claude apps gateway のデプロイと運用**](#4-claude-apps-gateway-のデプロイと運用) ([English](https://code.claude.com/docs/en/claude-apps-gateway-deploy)):  
+  IdP 登録・コンテナ化・Kubernetes／Cloud Run へのデプロイ・運用・セキュリティを扱う。
+- [**Google Cloud への Claude apps gateway デプロイ実例**](#5-google-cloud-への-claude-apps-gateway-デプロイ実例) ([English](https://code.claude.com/docs/en/claude-apps-gateway-on-gcp)):  
+  Cloud Run／GKE・Cloud SQL・Secret Manager・Agent Platform を使った実例。
+- [**Claude apps gateway の支出上限**](#6-claude-apps-gateway-の支出上限) ([English](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits)):  
+  開発者ごとの支出上限と Admin API（詳細はハイライト 2 参照）。
 <!-- light:new-pages:end -->
+
+## 1. ゲートウェイ概要ページ
+
+ゲートウェイ（gateway）全般の概念を説明する新設の概要ページです。ゲートウェイが Claude Code とプロバイダーの間でどう機能するか（開発者の認証情報とプロバイダーの認証情報の 2 種類、フォワーディング）を図解し、Anthropic 製の Claude apps gateway と組織が既に運用している別製品のゲートウェイの選び方を示します。あわせて、claude.ai サブスクリプションとの関係（ゲートウェイ認証情報での接続時は組織のプロバイダーアカウントに API レートで課金される）や、ゲートウェイとは別に設定する項目（モデル選択・他のネットワーク通信・企業 HTTP プロキシ）を整理しています。
+
+- [Run Claude Code through a gateway - Claude Code Docs (English)](https://code.claude.com/docs/en/gateways#choose-a-gateway)
+
+## 2. Claude apps gateway 本体ページ
+
+Claude apps gateway の中心ページで、「なぜ使うか（資格情報・アクセス制御・設定配信・テレメトリ・上流ルーティング）」「クイックスタート（IdP への OAuth クライアント登録・`gateway.yaml` の 5 必須セクション・Docker Compose での起動・サインイン検証）」「開発者の接続（managed settings での `forceLoginMethod`／`forceLoginGatewayUrl` 配信、TLS フィンガープリントのピン留め、CI・リモートマシンでの扱い）」「対応状況と制限」を扱います。対応状況の表では、推論フォワーディング・IdP グループ別のモデルアクセス／managed settings・OTLP テレメトリ・支出上限などが利用可能、サーバー側 Web 検索・1 時間キャッシュ TTL・OTLP/gRPC・SAML/LDAP・マルチテナント・Windows サーバー・Helm チャート・Admin UI などが非対応として整理されています（詳細はハイライト 1 参照）。
+
+- [Claude apps gateway for Amazon Bedrock, Google Cloud, and Microsoft Foundry - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway#availability-and-limitations)
+
+## 3. Claude apps gateway の構成リファレンス
+
+ゲートウェイの挙動を定義する単一の YAML ファイル（慣例上 `gateway.yaml`）の全オプションを網羅するリファレンスです。必須 5 セクション（`listen`／`oidc`／`session`／`store`／`upstreams`）と任意セクション（`admin`／`enforcement`／`models`／`managed`／`telemetry`／HTTP チューニング）を扱い、上流ごと（Anthropic API／Amazon Bedrock／Google Cloud Agent Platform／Microsoft Foundry）の認証ブロックやモデルルーティング、IdP グループ別の managed ポリシー、テレメトリのファンアウトを定義します。設定はブート時にスキーマ検証され、未知のキーや不正な値は起動失敗（フィールド単位のエラー）になります。
+
+- [Claude apps gateway configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway-config#upstreams)
+
+## 4. Claude apps gateway のデプロイと運用
+
+Claude apps gateway を本番運用するための運用面のガイドです。IdP への OAuth クライアント登録（Okta／Entra／Google の個別注記つき）、ピン留めしたコンテナイメージのビルドと Kubernetes／Cloud Run／自前プラットフォームへのデプロイ、運用（ログ・ヘルスプローブ・障害時挙動・JWT シークレットのローテーション・アップグレード）、セキュリティ（データフロー・脅威モデル・コンプライアンス姿勢）、トラブルシューティングを順に扱います。コスト・バイパス・複数ゲートウェイ・サーバーレスといった意思決定もこのページで整理されています。
+
+- [Claude apps gateway deployment and operations - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway-deploy#deployment)
+
+## 5. Google Cloud への Claude apps gateway デプロイ実例
+
+Google Cloud 上で Claude apps gateway を動かす一例を通しで示すページです。Agent Platform を上流に、Cloud Run または GKE を計算基盤に用い、Artifact Registry（イメージ）、private IP の Cloud SQL for PostgreSQL（ストア）、Secret Manager（`gateway.yaml`・JWT 鍵・OIDC クライアントシークレット・Postgres URL）、`roles/aiplatform.user` を持つサービスアカウントといった構成要素を Terraform リファレンスとともに解説します。サポート対象の本番構成ではなく、各自の環境へ適応する前に全体像を掴むための動作例という位置づけです。
+
+- [Deploy Claude apps gateway on Google Cloud - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway-on-gcp#what-youll-build)
+
+## 6. Claude apps gateway の支出上限
+
+開発者ごとの支出上限を扱うページです。すべての推論が共有の上流認証情報を通るため、プロバイダーの請求は個々の開発者ではなくその認証情報に集約されます。支出上限は、その共有請求の上に開発者単位の見える化と遮断（サーキットブレーカー）を載せる仕組みで、`admin` ブロックを設定すると Admin API（`/v1/organizations/spend_limits`）が有効になり、user／rbac_group／organization 単位の日次・週次・月次の上限を設定できます。上限超過時は `429` でブロックされ、期間リセットか管理者の引き上げまで遮断されます（詳細はハイライト 2 参照）。
+
+- [Claude apps gateway spend limits - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits#set-a-cap)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回、単一ページで 50 行以上の変更があった主なページは Agent SDK の各ガイド（クイックスタート／SDK のスラッシュコマンド／SDK のサブエージェント）で、いずれも上記ハイライト 1 に整理しました。これらの変更はコード例へのエラーハンドリング追加とセットアップ手順の明確化が中心で、新しい API・機能の追加ではありません。
+今回、既存ページで規模の大きい変更があったのは、ゲートウェイ文書再編に伴う `llm-gateway`（「Other LLM gateways」へ改称・縮約。概念説明を新設の `gateways` へ移管）と `llm-gateway-protocol`（API フォーマット表の Agent Platform 改称、`GET /protocol` の言及追加、モデルディスカバリの重複除外）で、いずれも上記ハイライト 3 に整理しました。新 API・新機能の追加ではなく、Claude apps gateway 追加に伴う再編・用語整理です。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、Claude Code v2.1.195（2026年06月26日）リリースの各機能・修正（全体像はハイライト 2 参照）と、ドキュメントの記述明確化・文体整形が中心です。以下に分類して整理します（特記なき限りバージョンは v2.1.195 を指します）。
+今回の軽微な更新は、Claude apps gateway の追加に伴って既存の多数ページへ加えられた横断的な参照・記述追加が中心です（今回バージョンリリースはありません）。以下に分類して整理します。
 
 **新機能**
 
-- `CLAUDE_CODE_DISABLE_MOUSE_CLICKS` 環境変数が追加され、フルスクリーンモードでホイールスクロールを維持したままマウスのクリック・ドラッグ・ホバーを無効化できるようになった（対応する通常ページへの記述は無く changelog のみのためリンクは付さない）。
+- `claude gateway` サブコマンドが CLI リファレンスに追加され、管理者が SSO とポリシーを前段に置く自己ホスト型 Claude apps gateway サーバーを起動できるようになった — [English](https://code.claude.com/docs/en/cli-reference)。
+- managed settings に `forceLoginMethod: "gateway"` と `forceLoginGatewayUrl` が追加され、`/login` を「Cloud gateway」画面に固定し、ゲートウェイ URL を事前入力・ロックできるようになった（両キーとも管理者が配布するファイルに置く前提）— [English](https://code.claude.com/docs/en/settings)。
+- `authentication` のサインイン方式に「Cloud gateway」（自己ホスト Claude apps gateway への企業 SSO サインイン）が追加され、ゲートウェイセッションは Bedrock や Vertex のようなプロバイダー選択として他より優先される旨が明記された — [English](https://code.claude.com/docs/en/authentication)。
 
 **機能改善**
 
-- Linux の音声モードが、SoX はインストール済みだが録音デバイスが存在しない場合に「マイクなし」と「SoX 未インストール」を区別するようになった。
-- `claude agents` の完了済みリストが利用可能な縦方向スペースを埋めるようになり、画面の小さい端末ではヘッダーをコンパクト化してライブセッションを表示し続けるようになった。
-- Remote セッションの起動時に、コンテナ起動中の進捗をプロビジョニングチェックリストとして表示するようになった。
-- トラブルシュート（エラーリファレンス）の「`thinking.type.enabled` はこのモデルではサポートされていない」エラー説明で、Agent SDK 利用時の案内が「SDK パッケージを更新する」へ変更され、Opus 4.8 には TypeScript SDK v0.3.154 以上・Python SDK v0.2.88 以上が必要である旨が追記された（日本語ページは未反映のため英語のみ） — [English](https://code.claude.com/docs/en/errors#thinkingtypeenabled-is-not-supported-for-this-model)。
-
-**バグ修正**
-
-- ハイフンを含む識別子（`code-reviewer`、`mcp__brave-search` など）の hook matcher が誤って部分一致していた不具合を修正し、完全一致になった（ハイフン入り MCP サーバーの全ツールに一致させるには `mcp__brave-search__.*` を使う）。
-- macOS の音声ディクテーションが、既定の入力デバイス変更後に長時間セッションで無音を録音し続ける不具合を修正。
-- 日本語・中国語・タイ語など分かち書きしない言語で、音声ディクテーションの自動送信が発火しない不具合を修正。
-- プロジェクトの `.claude/settings.json` のみで有効化された外部プラグインが、一部のローダー経路で明示的なインストール同意を要求しない不具合を修正。
-- プラグインの `plugin.json` の `name` が marketplace エントリ名と異なる場合に、`/plugin` の有効化／無効化が機能しない不具合を修正。
-- 新しいバージョンの Claude Code が書き込んだバックグラウンドジョブが、`claude agents` から消えたりデータを失ったりする不具合を修正。
-- クラッシュしたバックグラウンドタスクの再オープン時に、再起動画面ではなく最大 5 秒間の空白画面が表示される不具合を修正。
-- コントロールソケットの起動に失敗したバックグラウンドエージェントのデーモンが、到達不能なまま動き続けて再起動を妨げる不具合を修正。
+- managed settings の優先順位が明確化され、`policyHelper` を設定すると、その出力が server-managed・MDM・ファイルベースを含む全 managed ソースに優先する唯一の管理構成になる旨が `settings`・`admin-setup`・`server-managed-settings` で明記された — [English](https://code.claude.com/docs/en/settings#compute-managed-settings-with-a-policy-helper)。
+- `monitoring-usage` に、Claude apps gateway にサインイン中は CLI が OTLP エクスポートへゲートウェイセッションの認証済み identity（IdP subject）を刻む旨が追記された — [English](https://code.claude.com/docs/en/monitoring-usage)。
+- `permission-modes` の auto mode 対応プロバイダーに、サインイン済み Claude apps gateway セッションが追加された（第三者プロバイダー扱いで Opus 系のみ対象、`CLAUDE_CODE_ENABLE_AUTO_MODE=1` が必要）— [English](https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode)。
+- `admin-setup`・`costs` に、第三者クラウド上では Claude apps gateway が per-user の利用量帰属・OTLP メトリクス・支出上限を提供する旨が追記された — [English](https://code.claude.com/docs/en/admin-setup)。
+- `network-config` で、OS の証明書ストアを読み込むには `tls.getCACertificates` を備えるランタイム（ネイティブバイナリ）が必要である旨が明確化された — [English](https://code.claude.com/docs/en/network-config)。
+- `llm-gateway-rollout` で、managed settings にゲートウェイ認証情報と併せて `forceLoginMethod`／`forceLoginOrgUUID` を置くと（v2.1.146 以降は値に関わらず）`ANTHROPIC_API_KEY` 等がブロックされる旨が明確化された — [English](https://code.claude.com/docs/en/llm-gateway-rollout)。
 
 **その他**
 
-- ドキュメント全体で「do not → don't」「cannot → can't」などの短縮形への統一と、長い段落・箇条書きの整形が広範に行われた（文意の変更なし。詳細はハイライト 3 参照）。
-- 自動モードの「ブロック／許可ルールの上書き」節で、`autoMode.hard_deny`／`soft_deny`／`allow` の説明が箇条書きに整理され、4 つのリスト全てに既定値を残したまま組織独自ルールを追加する例の導入文が追加された（文体整形）。
-- hooks リファレンスで、一致する全 hook が並列実行され同一ハンドラが自動的に重複排除されること（コマンド hook は command 文字列と `args`、HTTP hook は URL で判定）、およびハンドラが Claude Code の環境・カレントディレクトリで実行され、リモートの web 環境では `$CLAUDE_CODE_REMOTE` が `"true"` に設定される（ローカル CLI では未設定）ことを述べた段落が、より目立つ位置へ再配置・分割整形された（記述内容の変更はなし）。
+- ゲートウェイ文脈の複数ページで「Google Vertex AI」が「Google Cloud's Agent Platform」へ改称された（詳細はハイライト 3 参照）。
+- `settings`・`authentication`・`network-config`・`server-managed-settings`・`third-party-integrations`・`quickstart` など多数のページに、Claude apps gateway への横断参照リンクが追加された。
+- 一部ページで「do not → don't」「cannot → can't」などの短縮形への文体統一が継続して行われた（文意の変更なし）。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
 
 <!-- light:whats-new:start -->
-今回、週刊ダイジェスト「新着情報」の Week 25・Week 26 の本文が全文（`llms-full.txt`）に取り込まれ、トップページにも両週のエントリが追加されました。いずれも内容は前回サマリで既報で、本文を照合しても新規の独自情報はありませんでした。対応する日本語ページは未公開のため、英語リンクのみを記載します。
-
-- [**2026年06月15日～19日(Week 25)**](#2026年06月15日19日week-25) ([English](https://code.claude.com/docs/en/whats-new/2026-w25)):  
-  Artifacts、deny／ask ルールの入力パラメータ一致（`Tool(param:value)`）、`/config key=value` の 3 機能（リリース v2.1.178〜v2.1.183）。本文が全文に取り込まれた（内容は前回サマリで既報）。
-- [**2026年06月22日～26日(Week 26)**](#2026年06月22日26日week-26) ([English](https://code.claude.com/docs/en/whats-new/2026-w26)):  
-  `claude mcp login`／`logout` によるシェルからの MCP サーバー認証、`!` シェルモードのコマンド出力への応答の 2 機能（リリース v2.1.185〜v2.1.193）。本文が全文に取り込まれた（内容は前回サマリで既報）。
+今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの本文（`llms-full.txt`）の新規追加・更新はありません。なお、ドキュメントマップ（`claude_code_docs_map.md`）には `whats-new/2026-w25`・`whats-new/2026-w26` の 2 エントリが追加されましたが、いずれも「(No headings found)」で本文は収録されておらず、内容は前回サマリで既報のものです。
 <!-- light:whats-new:end -->
-
-## 2026年06月15日～19日(Week 25)
-
-Week 25（リリース v2.1.178〜v2.1.183、3 機能）の本文が今回全文に取り込まれました。主要機能（Artifacts、`Tool(param:value)` による入力パラメータ一致、`/config key=value`）および「Other wins」の内容は前回サマリで既報で、本文を照合しても新規の独自情報はありませんでした。詳細は前回サマリ（アーカイブ）を参照してください。
-
-- [Week 25 · June 15–19, 2026 - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/2026-w25)
-
-## 2026年06月22日～26日(Week 26)
-
-Week 26（リリース v2.1.185〜v2.1.193、2 機能）の本文が今回全文に取り込まれました。主要機能（`claude mcp login`／`logout`、`!` シェルモードのコマンド出力への応答）および「Other wins」の内容は前回サマリで既報で、本文を照合しても新規の独自情報はありませんでした。詳細は前回サマリ（アーカイブ）を参照してください。
-
-- [Week 26 · June 22–26, 2026 - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/2026-w26)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-26.md](./archives/latest/2026-06-26.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-26.md](./archives/latest-detail/2026-06-26.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-06-27.md](./archives/latest/2026-06-27.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-27.md](./archives/latest-detail/2026-06-27.md)
 
 <!--
-base_commit: f8479a4b550c9535b7213945696494c0dca75fc8
-head_commit: 6ae9724bb9478f04b977e3b1d2f33a8a9d35544f
-generated_at_full: 2026-06-28T15:00:36+09:00
+base_commit: 6ae9724bb9478f04b977e3b1d2f33a8a9d35544f
+head_commit: 0a3a35d4963888e7a9a90b6fb761cf22619631a9
+generated_at_full: 2026-06-30T15:04:06+09:00
 -->
