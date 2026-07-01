@@ -60,17 +60,17 @@ Claude apps gateway は、開発者の Claude Code クライアントとモデ�
 <!-- light:new-pages:start -->
 今回、ゲートウェイ関連で 6 ページが新規追加されました。いずれも本日時点で日本語ページは未公開のため、参考リンクは英語のみとします。
 
-- [**ゲートウェイ概要ページ**](#1-ゲートウェイ概要ページ) ([English](https://code.claude.com/docs/en/gateways)):  
+- [**ゲートウェイ概要ページ**](#1-ゲートウェイ概要ページ) ([日本語](https://code.claude.com/docs/ja/gateways) / [English](https://code.claude.com/docs/en/gateways)):  
   ゲートウェイとは何か、Claude apps gateway と自前運用のゲートウェイの選び方を説明する概要ページ。
-- [**Claude apps gateway 本体ページ**](#2-claude-apps-gateway-本体ページ) ([English](https://code.claude.com/docs/en/claude-apps-gateway)):  
+- [**Claude apps gateway 本体ページ**](#2-claude-apps-gateway-本体ページ) ([日本語](https://code.claude.com/docs/ja/claude-apps-gateway) / [English](https://code.claude.com/docs/en/claude-apps-gateway)):  
   なぜ使うか・クイックスタート・開発者の接続・対応状況と制限を扱う中心ページ（詳細はハイライト 1 参照）。
-- [**Claude apps gateway の構成リファレンス**](#3-claude-apps-gateway-の構成リファレンス) ([English](https://code.claude.com/docs/en/claude-apps-gateway-config)):  
+- [**Claude apps gateway の構成リファレンス**](#3-claude-apps-gateway-の構成リファレンス) ([日本語](https://code.claude.com/docs/ja/claude-apps-gateway-config) / [English](https://code.claude.com/docs/en/claude-apps-gateway-config)):  
   `gateway.yaml` の全オプションのリファレンス。
-- [**Claude apps gateway のデプロイと運用**](#4-claude-apps-gateway-のデプロイと運用) ([English](https://code.claude.com/docs/en/claude-apps-gateway-deploy)):  
+- [**Claude apps gateway のデプロイと運用**](#4-claude-apps-gateway-のデプロイと運用) ([日本語](https://code.claude.com/docs/ja/claude-apps-gateway-deploy) / [English](https://code.claude.com/docs/en/claude-apps-gateway-deploy)):  
   IdP 登録・コンテナ化・Kubernetes／Cloud Run へのデプロイ・運用・セキュリティを扱う。
-- [**Google Cloud への Claude apps gateway デプロイ実例**](#5-google-cloud-への-claude-apps-gateway-デプロイ実例) ([English](https://code.claude.com/docs/en/claude-apps-gateway-on-gcp)):  
+- [**Google Cloud への Claude apps gateway デプロイ実例**](#5-google-cloud-への-claude-apps-gateway-デプロイ実例) ([日本語](https://code.claude.com/docs/ja/claude-apps-gateway-on-gcp) / [English](https://code.claude.com/docs/en/claude-apps-gateway-on-gcp)):  
   Cloud Run／GKE・Cloud SQL・Secret Manager・Agent Platform を使った実例。
-- [**Claude apps gateway の支出上限**](#6-claude-apps-gateway-の支出上限) ([English](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits)):  
+- [**Claude apps gateway の支出上限**](#6-claude-apps-gateway-の支出上限) ([日本語](https://code.claude.com/docs/ja/claude-apps-gateway-spend-limits) / [English](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits)):  
   開発者ごとの支出上限と Admin API（詳細はハイライト 2 参照）。
 <!-- light:new-pages:end -->
 
