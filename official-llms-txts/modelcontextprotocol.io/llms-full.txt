@@ -24560,8 +24560,7 @@ export type TitledSingleSelectEnumSchema = {
 
 // Combined single selection enumeration
 export type SingleSelectEnumSchema =
-  | UntitledSingleSelectEnumSchema
-  | TitledSingleSelectEnumSchema;
+  UntitledSingleSelectEnumSchema | TitledSingleSelectEnumSchema;
 ```
 
 ### 3. Introduce Multiple Selection Enums (with Titled and Untitled varieties)
@@ -24599,8 +24598,7 @@ export type TitledMultiSelectEnumSchema = {
 
 // Combined Multiple select enumeration
 export type MultiSelectEnumSchema =
-  | UntitledMultiSelectEnumSchema
-  | TitledMultiSelectEnumSchema;
+  UntitledMultiSelectEnumSchema | TitledMultiSelectEnumSchema;
 ```
 
 ### 4. Combine All Varieties as `EnumSchema`
@@ -24610,9 +24608,7 @@ The final `EnumSchema` rolls up the legacy, multi-select, and single-select sche
 ```typescript theme={null}
 // Combined legacy, multiple, and single select enumeration
 export type EnumSchema =
-  | SingleSelectEnumSchema
-  | MultiSelectEnumSchema
-  | LegacyEnumSchema;
+  SingleSelectEnumSchema | MultiSelectEnumSchema | LegacyEnumSchema;
 ```
 
 ### 5. Extend ElicitResult
@@ -25037,15 +25033,9 @@ In the "Possible Follow ups" Section below, we give examples of features that we
   type SamplingMessage = UserMessage | AssistantMessage; // NEW
 
   type AssistantMessageContent =
-    | TextContent
-    | ImageContent
-    | AudioContent
-    | ToolUseContent;
+    TextContent | ImageContent | AudioContent | ToolUseContent;
   type UserMessageContent =
-    | TextContent
-    | ImageContent
-    | AudioContent
-    | ToolResultContent;
+    TextContent | ImageContent | AudioContent | ToolResultContent;
   interface AssistantMessage {
     // NEW
     role: "assistant";
@@ -29862,7 +29852,7 @@ When constructing a `tools/call` request via HTTP transport, the client MUST:
 4. Encode the values according to the rules in [Value Encoding](#value-encoding)
 5. Append a `Mcp-Param-{Name}: {Value}` header to the request:
 
-> **Implementation Note**: If the client does not have the tool's `inputSchema` (e.g., `tools/list` has not yet been called) or the cached schema is stale (e.g., its TTL has expired), the client SHOULD send the request without custom `Mcp-Param-*` headers. If the server rejects the request because required custom headers are missing, the client SHOULD call `tools/list` to obtain the current `inputSchema`, then retry the original request with the appropriate headers. Clients MAY pre-load tool definitions via other means (e.g., from a previous session or configuration) to enable header emission without a prior `tools/list` call.
+> **Implementation Note**: Clients MUST construct `Mcp-Param-*` headers using the most recently obtained `inputSchema` for the tool. A client that has never obtained the tool's `inputSchema` SHOULD send the request without `Mcp-Param-*` headers. If the server rejects the request because required `Mcp-Param-*` headers are missing or do not match the body, the client SHOULD call `tools/list` to obtain the current `inputSchema`, then retry the original request with the appropriate headers. Clients MAY pre-load tool definitions via other means (e.g., from a previous session or configuration) to enable header emission without a prior `tools/list` call.
 
 #### Server Behavior
 
@@ -30177,7 +30167,7 @@ This section defines edge cases that conformance tests MUST cover to ensure inte
 | Invalid Base64 characters | `=?base64?SGVs!!!bG8=?=` | Server MUST reject with 400 and error code `-32001`; Intermediary MAY reject with 400 status code |
 | Missing prefix            | `SGVsbG8=`               | Server treats as literal value, not Base64                                                        |
 | Missing suffix            | `=?base64?SGVsbG8=`      | Server treats as literal value, not Base64                                                        |
-| Malformed wrapper         | `=?BASE64?SGVsbG8=?=`    | Server MUST accept (case-insensitive prefix)                                                      |
+| Non-lowercase prefix      | `=?BASE64?SGVsbG8=?=`    | Server treats as literal value, not Base64                                                        |
 
 #### Null and Missing Values
 
@@ -30726,18 +30716,14 @@ how that would look in the typescript MCP schema:
 
 ```typescript theme={null}
 export type InputRequest =
-  | CreateMessageRequest
-  | ElicitRequest
-  | ListRootsRequest;
+  CreateMessageRequest | ElicitRequest | ListRootsRequest;
 
 export interface InputRequests {
   [key: string]: InputRequest;
 }
 
 export type InputResponse =
-  | CreateMessageResult
-  | ElicitResult
-  | ListRootsResult;
+  CreateMessageResult | ElicitResult | ListRootsResult;
 
 export interface InputResponses {
   [key: string]: InputResponse;
@@ -34545,11 +34531,7 @@ export interface CancelledTask extends Task {
  * including terminal results or pending input requests.
  */
 export type DetailedTask =
-  | WorkingTask
-  | InputRequiredTask
-  | CompletedTask
-  | FailedTask
-  | CancelledTask;
+  WorkingTask | InputRequiredTask | CompletedTask | FailedTask | CancelledTask;
 ```
 
 ### Task Creation
