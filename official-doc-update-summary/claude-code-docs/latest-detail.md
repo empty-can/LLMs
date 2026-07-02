@@ -76,7 +76,7 @@ Claude Code v2.1.195 以降、オートモードの分類器が既定でブロ�
 - [ツールリファレンス（WebSocket ソース） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference#websocket-source)
 - [Tools reference (WebSocket source) - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference#websocket-source)
 - [ツールリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference)
-- [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference)
+- [日本語](https://code.claude.com/docs/ja/tools-reference) / [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference)
 
 ## 5. MCP のセキュリティと認証まわりの強化
 
@@ -127,7 +127,7 @@ Ubuntu 22.04 以降・Debian 12 以降（x86\_64／arm64）を対象に、Claude
 既存変数では、`CLAUDE_ENABLE_STREAM_WATCHDOG` の既定が「全プロバイダーでオン」に変わった旨（v2.1.196、無効化は `=0`）、`CLAUDE_CODE_SHELL` が Bash ツール実行シェルの指定（`bash`/`zsh` のパス）である旨の明確化、`CLAUDE_CODE_SUBAGENT_MODEL` を `inherit` にすると未設定と同義になる旨（v2.1.196）、`ANTHROPIC_BASE_URL` を非 Anthropic ホストに向けると Remote Control が無効化される旨（v2.1.196）、Sonnet 5 のコンテキスト計算に関する `CLAUDE_CODE_AUTO_COMPACT_WINDOW`／`CLAUDE_CODE_DISABLE_1M_CONTEXT` の追記などが行われています。
 
 - [環境変数 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/env-vars)
-- [Environment variables - Claude Code Docs (English)](https://code.claude.com/docs/en/env-vars)
+- [日本語](https://code.claude.com/docs/ja/env-vars) / [Environment variables - Claude Code Docs (English)](https://code.claude.com/docs/en/env-vars)
 
 ## 2. フックのマッチャー仕様の拡張
 
