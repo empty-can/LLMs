@@ -59,7 +59,7 @@ v2.1.198 で、サブエージェントとバックグラウンドエージェ�
 
 v2.1.198 で **Claude in Chrome が一般提供（GA）** になりました。これに伴い `llms.txt` のページ説明・タイトルから「(beta)」表記が外れています（機能自体は Google Chrome・Microsoft Edge で動作し、Web アプリのテスト・コンソールログでのデバッグ・フォーム入力の自動化・データ抽出などをブラウザとコーディングを跨いで行えます）。あわせて v2.1.199 で、プランモード時に**状態変更を伴うブラウザツール呼び出しが確認を求める**ようになり、読み取り専用の `browser_batch` 呼び出しは正しく自動許可されるよう修正されました。ドキュメントマップには `chrome` ページへ「Browser tools in plan mode」節が追加されています。
 
-- [Use Claude Code with Chrome - Claude Code Docs (English)](https://code.claude.com/docs/en/chrome)
+- [日本語](https://code.claude.com/docs/ja/chrome) / [Use Claude Code with Chrome - Claude Code Docs (English)](https://code.claude.com/docs/en/chrome)
 
 > Chrome の GA・プランモード対応は changelog 由来です。日本語版 `chrome` ページは本サマリ作成時点でまだ「（ベータ版）」表記で GA・「Browser tools in plan mode」節を反映していないため、日本語リンクは省略しています。
 
@@ -128,9 +128,9 @@ v2.1.199 は信頼性とエラー処理の改善が中心のリリースです�
 **機能改善**
 
 - サブエージェントの既定バックグラウンド化、Explore のモデル継承、拡張思考設定の継承（詳細はハイライト 2 参照）。
-- ベストプラクティスの記述が複数明確化された。コンパクション指示を書く `CLAUDE.md` が「プロジェクトルートの `CLAUDE.md`」であること、拡張思考予算を下げる `MAX_THINKING_TOKENS` が環境変数であること、`filter-test-output` フックスクリプトの設置手順（`mkdir`／`chmod +x`）などが追記された — [English](https://code.claude.com/docs/en/best-practices)。
+- ベストプラクティスの記述が複数明確化された。コンパクション指示を書く `CLAUDE.md` が「プロジェクトルートの `CLAUDE.md`」であること、拡張思考予算を下げる `MAX_THINKING_TOKENS` が環境変数であること、`filter-test-output` フックスクリプトの設置手順（`mkdir`／`chmod +x`）などが追記された — [日本語](https://code.claude.com/docs/ja/best-practices) / [English](https://code.claude.com/docs/en/best-practices)。
 - `dontAsk` モードが有効な間、ステータスバーに `⏵⏵ don't ask on` を表示する旨が追記された — [English](https://code.claude.com/docs/en/permissions#allow-only-pre-approved-tools-with-dontask-mode)。
-- Agent SDK ドキュメントで、自動メモリが専用ツールではなく `Write`／`Edit` ツールで書き込まれる旨や、チェックポイント例・SDK サンプルの実行前提が明確化された — [English](https://code.claude.com/docs/en/agent-sdk/typescript)。
+- Agent SDK ドキュメントで、自動メモリが専用ツールではなく `Write`／`Edit` ツールで書き込まれる旨や、チェックポイント例・SDK サンプルの実行前提が明確化された — [日本語](https://code.claude.com/docs/ja/agent-sdk/typescript) / [English](https://code.claude.com/docs/en/agent-sdk/typescript)。
 - `CLAUDE_CODE_RETRY_WATCHDOG` の既定リトライ回数引き上げ・`CLAUDE_CODE_MAX_RETRIES` の上限撤廃（詳細はハイライト 5 参照）に加え、サブスクライバー向けに使用制限と無関係な一時的 429 を自動バックオフ再試行するようになった（v2.1.199）。
 - API リトライの UX が改善され、2 回目試行後にエラー理由を表示し、API 過負荷時はスピナーのヒントをステータスページへのリンクに置き換えるようになった（v2.1.198）。
 - コードブロック・差分・ファイルプレビューの構文ハイライトが highlight.js 11 へのアップグレードで改善された（v2.1.198）。
