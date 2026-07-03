@@ -1,216 +1,177 @@
 ---
-対象期間: 2026年06月29日 〜 2026年07月01日
-作成日: 2026-07-01
+対象期間: 2026年07月01日 〜 2026年07月02日
+作成日: 2026-07-02
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、Claude Code の新しいデフォルトモデル「Claude Sonnet 5」（v2.1.197）のリリースが中心で、あわせて v2.1.195／v2.1.196 の多数の機能追加・修正がドキュメント全体に反映されました。Linux 版デスクトップアプリのページが新設され、オートモード・エージェントビュー・MCP・フックなど広範囲のリファレンスが更新されています。今回、週刊ダイジェスト「新着情報」の実質的な更新はありません。
+今回の対象期間は、Artifacts が Pro・Max プランへ拡大したことと、v2.1.198／v2.1.199 の 2 リリースによるサブエージェント・バックグラウンドエージェントの刷新、および Claude in Chrome の一般提供が中心です。動的ワークフローには実践的な「ワークフロープロンプト例」節が新設され、エラー処理・信頼性の改善も広く入りました。今回、週刊ダイジェスト「新着情報」の更新はありません。
 
 主要なものを以下に挙げます。
 
-1. Claude Sonnet 5 が新デフォルトモデルとしてリリースされ（v2.1.197）、ネイティブ 1M トークンコンテキストと 8/31 までの割引価格（$2/$10 per Mtok）で提供される
-2. オートモードが v2.1.195 で既定のブロック／許可カテゴリを大幅に拡張し、`autoMode.classifyAllShell` で全シェルコマンドを分類器に通せるようになった
-3. エージェントビューで、バックグラウンド化時に進行中のシェルコマンド・ワークフロー・サブエージェントが新しいプロセスへ引き継がれるようになった（v2.1.195/196）
-4. 新ツール `ReportFindings`・`SendUserFile` が追加され、Monitor ツールが WebSocket ソースに対応した（v2.1.195/196）
-5. `claude mcp list`/`get` が信頼していないワークスペースの自己承認 `.mcp.json` を無視するようになり、OAuth まわりの認証も改善された（v2.1.193〜196）
+1. Artifacts が Pro・Max プランでも利用可能になった（従来は Team／Enterprise 限定。Pro・Max では自分のみに非公開で、組織共有機能は使えない）
+2. サブエージェントが v2.1.198 で既定のバックグラウンド実行として一般提供され、バックグラウンドエージェントは作業完了時に自動でコミット／push／ドラフト PR を作成し、完了・入力待ちで通知フックが発火するようになった
+3. Claude in Chrome が v2.1.198 で一般提供（GA）となり、プランモードでの状態変更ブラウザツールの確認・読み取り専用ツールの自動許可も修正された
+4. 動的ワークフローに「ワークフロープロンプト例」節が新設され、代表的なプロンプト例と、生成されるスクリプトの形が示された
+5. v2.1.199 でサブエージェントの部分結果返却・API エラーの親への報告、ストリーミング応答の部分保持、スタックした slash-skill の複数ロードなど、エラー処理と信頼性が広く改善された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Claude Sonnet 5 のリリース**](#1-claude-sonnet-5-のリリース):  
-  Claude Code の新しいデフォルトモデルとして Claude Sonnet 5 がリリースされた（v2.1.197）。Anthropic API では `sonnet` エイリアスが Sonnet 5 に解決され、Pro／Team Standard／Enterprise シートの既定モデルになる。ネイティブの 1M トークンコンテキストウィンドウを持ち（`[1m]` サフィックス不要・使用クレジット不要）、8 月 31 日まで $2/$10 per Mtok の割引価格で提供される。
-2. [**オートモードの保護範囲拡大と全シェルコマンドの分類**](#2-オートモードの保護範囲拡大と全シェルコマンドの分類):  
-  v2.1.195 でオートモードの分類器が既定でブロック／許可するカテゴリが大幅に拡張され（シークレットマネージャー書き込み・未承認 PR マージ・本番フィーチャーフラグ操作・PII/規制データアクセスなど）、`environment` に「感度スロット」（機密リモートターゲット・保護 IaC スコープ等）が加わった。あわせて `autoMode.classifyAllShell` で、狭い Bash/PowerShell 許可ルールも含め全シェルコマンドを分類器に通せるようになった。
-3. [**進行中の作業をバックグラウンドセッションへ引き継ぐエージェントビュー**](#3-進行中の作業をバックグラウンドセッションへ引き継ぐエージェントビュー):  
-  セッションをバックグラウンド化すると、実行中のバックグラウンドシェルコマンド・動的ワークフロー・サブエージェント・`/loop` のスケジュールタスクが新しいプロセスへ引き継がれて走り続けるようになった（Windows を含む）。引き継げない作業（Monitor 等）がある場合は `Background this session?` ダイアログで確認する。フォアグラウンドセッションのバックグラウンド化は 1 回の `←` 押下になり、ページ末尾に「バージョン履歴」節が追加された。
-4. [**新ツール ReportFindings と SendUserFile および Monitor の WebSocket ソース**](#4-新ツール-reportfindings-と-senduserfile-および-monitor-の-websocket-ソース):  
-  コードレビュー結果を構造化リストで報告する `ReportFindings`（v2.1.196）と、生成物をユーザーのデバイスへ送る `SendUserFile`（`display` 入力で表示方法を制御）が追加された。Monitor ツールはスクリプトのポーリングに加え、サーバーがイベントを push する WebSocket に接続してメッセージをイベント化できるようになった（v2.1.195）。
-5. [**MCP のセキュリティと認証まわりの強化**](#5-mcp-のセキュリティと認証まわりの強化):  
-  v2.1.196 以降、`claude mcp list`/`claude mcp get` は、リポジトリにコミットされた `.claude/settings.json` による自己承認（`enableAllProjectMcpServers` 等）を、ワークスペースを信頼するまで無視するようになった（クローンしたリポジトリは自身のサーバーを承認できない）。あわせて OAuth のトークンリフレッシュ失敗通知、非対話モードでの認証案内、要求スコープの適正化など、認証まわりが改善された。
+1. [**Artifacts が Pro と Max プランに対応**](#1-artifacts-が-pro-と-max-プランに対応):  
+  Artifacts の利用可能プランが Team／Enterprise から Pro・Max を含む 4 プランに拡大された。Pro・Max では artifacts は「自分のみに非公開」で管理者管理の対象外となり、組織メンバーへの共有機能は従来どおり Team・Enterprise 限定。可用性表・機能可用性表の Artifacts 要件も Pro・Max を含む形に更新された。
+2. [**サブエージェントとバックグラウンドエージェントの刷新**](#2-サブエージェントとバックグラウンドエージェントの刷新):  
+  v2.1.198 でサブエージェントが既定でバックグラウンド実行になり（段階的ロールアウトから一般提供へ）、Claude は作業を続けながら完了時に通知を受け取る。`claude agents` から起動したバックグラウンドエージェントは、worktree でのコード作業完了時に停止して尋ねる代わりに自動でコミット・push・ドラフト PR を作成し、入力待ち・完了で `Notification` フック（`agent_needs_input`／`agent_completed`）が発火する。組み込み Explore はメインセッションのモデルを継承（opus 上限）、サブエージェント／コンパクションは拡張思考設定を継承するようになり、`/agents` ウィザードは廃止された。
+3. [**Claude in Chrome の一般提供**](#3-claude-in-chrome-の一般提供):  
+  v2.1.198 で Claude in Chrome が一般提供（GA）となり、`llms.txt` のページ説明・タイトルからも「(beta)」表記が外れた。あわせて、プランモードで状態変更を伴うブラウザツール呼び出しが確認を求めるようになり、読み取り専用の `browser_batch` 呼び出しは正しく自動許可される修正が入った（v2.1.199）。ドキュメントマップにも `chrome` へ「Browser tools in plan mode」節が追加されている。
+4. [**動的ワークフローのワークフロープロンプト例**](#4-動的ワークフローのワークフロープロンプト例):  
+  `workflows` に「ワークフローの実行例プロンプト」節が新設された。ワークフローが適する場面（1 エージェントのコンテキストに収まらない／同じ処理を多数アイテムへ）を説明し、多数ファイルの監査、チェックが通るまでの修正ループ、多数ファイルの並列移行、変更ファイルのレビューと単一サマリ化、多ソース横断リサーチ、リストが増えなくなるまでの問題探索という代表的なプロンプト例と、保存されるスクリプトの実例（`meta` ブロック＋`agent()`／`pipeline()` を使う JavaScript）を提示する。
+5. [**エラー処理と信頼性の改善**](#5-エラー処理と信頼性の改善):  
+  v2.1.199 は信頼性・エラー処理の改善が中心。サブエージェントがレート制限やサーバーエラーで中断された際に黙って失敗せず部分的な作業を親に返し、API エラー（使用制限到達など）を成功結果として報告していた不具合も修正して親エージェントへ報告するようになった。API が部分出力後にストリーム途中でエラーを出してもストリーミング応答を破棄せず部分結果を保持し、スタックした slash-skill 呼び出し（`/skill-a /skill-b do XYZ`）は先頭スキルを最大 5 個までロードするようになった。
 <!-- light:highlight-list:end -->
 
-## 1. Claude Sonnet 5 のリリース
+## 1. Artifacts が Pro と Max プランに対応
 
-Claude Code の新しいデフォルトモデルとして Claude Sonnet 5 がリリースされました（v2.1.197、changelog 上は 2026年06月30日）。Anthropic API では `opus` が Opus 4.8、`sonnet` が Sonnet 5 に解決されるようになり、Pro／Team Standard／Enterprise サブスクリプションシートの既定モデルが Sonnet 5 になります。努力レベルは `low`〜`max` をサポート（既定は `high`）、常に適応的推論（adaptive reasoning）で動作し、`CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING` の対象外です。利用には Claude Code v2.1.197 以降（Agent SDK では TypeScript SDK v0.3.197 以降）が必要です。changelog によれば、8 月 31 日まで $2/$10 per Mtok の割引価格で提供されます。
+Artifacts（セッション出力を claude.ai 上のプライベートページとして公開する機能）の利用可能プランが、従来の Team／Enterprise から **Pro・Max を含む 4 プラン**に拡大されました。可用性表の「プラン」要件は「Pro、Max、Team、または Enterprise」に更新され、Pro・Max プランでは artifacts は**自分のみに非公開**のままで、管理者による有効化・管理（claude.ai 管理設定のトグルや保持ポリシー等）は適用されません。組織メンバーへの**共有**（ページヘッダーの Share コントロールで特定の人や全員に公開する操作）は引き続き Team・Enterprise プラン限定で、Pro・Max にはこの共有 UI がありません。
 
-コンテキストウィンドウの扱いが従来モデルと異なる点が重要です。Anthropic API 上の Sonnet 5 は常に 1M トークンウィンドウで動作し、200K バリアントや `[1m]` サフィックスは存在せず、どのプランでも使用クレジットは不要です。既定では約 967K トークンで自動コンパクトされ、しきい値は `CLAUDE_CODE_AUTO_COMPACT_WINDOW` で変更できます。ただし、LLM ゲートウェイ経由（`ANTHROPIC_BASE_URL` がゲートウェイを指す）では 1M サポートを検証できないため、モデルピッカーで「Sonnet 5 (1M context)」（＝`sonnet[1m]`）を選ぶ必要があり、`CLAUDE_CODE_DISABLE_1M_CONTEXT=1` を設定した場合は 200K として扱われます。Bedrock／Vertex／Foundry でも Sonnet 5 は常に 1M で動作しサフィックス不要で、`VERTEX_REGION_CLAUDE_5_SONNET` 環境変数で Vertex のリージョンを上書きできます（v2.1.197 追加）。この変更に伴い、モデル ID の例（`claude-sonnet-4-6` → `claude-sonnet-5`）や advisor・permission-modes 等のモデル対応表も更新されています。
+認証（`/login` で claude.ai にサインイン必須。API キー・ゲートウェイトークン・クラウドプロバイダー認証情報では公開不可）、モデルプロバイダー（Anthropic API のみ。Bedrock／Vertex AI／Foundry では不可）、組織ポリシー（CMEK・HIPAA・Zero Data Retention が無効であること）といった他の要件は変わりません。あわせて機能可用性表（プラン別）の Artifacts 行が Pro・Max でも利用可（✓）に更新され、ツールリファレンスの `Artifact` ツール説明や、直接ログインが必要な機能一覧の記述も「Pro、Max、Team、Enterprise」に揃えられました。
 
-- [モデル設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config#sonnet-5-context-window)
-- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#sonnet-5-context-window)
-- [モデル設定（拡張コンテキスト） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config#extended-context)
-- [Model configuration (Extended context) - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#extended-context)
+- [セッション出力をアーティファクトとして共有する（利用可能性） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/artifacts#availability)
+- [Share session output as artifacts (Availability) - Claude Code Docs (English)](https://code.claude.com/docs/en/artifacts#availability)
+- [セッション出力をアーティファクトとして共有する（アーティファクトを共有する） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/artifacts#share-an-artifact)
+- [Share session output as artifacts (Share an artifact) - Claude Code Docs (English)](https://code.claude.com/docs/en/artifacts#share-an-artifact)
 
-## 2. オートモードの保護範囲拡大と全シェルコマンドの分類
+## 2. サブエージェントとバックグラウンドエージェントの刷新
 
-Claude Code v2.1.195 以降、オートモードの分類器が既定でブロック／許可するカテゴリが大幅に拡張されました。新たにブロック対象へ加わったのは、シークレットマネージャーへの書き込みや DNS/TLS 証明書の変更、人間が承認していない PR のマージ・Claude 自身の PR の承認・CI チェックの無効化、本番フィーチャーフラグの切り替え、保護された IaC スコープへの適用やクラスタノードの排出、機密リモートターゲットへの対話シェル／ポートフォワード、PII・規制対象データの場所へのアクセス、内部パッケージレジストリを迂回した公開レジストリへのインストールなどです。逆に、同一セッションで Claude が作成した正確なジョブの削除、セキュリティ関連コードの読み書き、`environment` に列挙した信頼済みドメイン／バケット／サービスへのデータ送信などは既定で許可されるようになりました。
+v2.1.198 で、サブエージェントとバックグラウンドエージェントの挙動が大きく変わりました。サブエージェントは**既定でバックグラウンド実行**になり（従来は段階的ロールアウト）、Claude は他の作業を続けながらサブエージェントの完了時に通知を受け取ります。`claude agents` から起動したバックグラウンドエージェントは、worktree 内でのコード作業を終えると、停止して確認を求める代わりに**自動でコミット・push・ドラフト PR を作成**するようになりました。さらに `claude agents` にバックグラウンドエージェント通知が追加され、入力待ちや完了時に `Notification` フック（`agent_needs_input`／`agent_completed`）が発火します。
 
-これらの新ルールの一部は `autoMode.environment` の設定に依存します。`claude auto-mode defaults` は v2.1.195 以降、従来の「信頼スロット」（信頼リポジトリ・ソース管理・内部ドメイン・クラウドバケット・内部サービス・内部パッケージレジストリ）に加えて「感度スロット」（PII/規制データの場所・機密リモートターゲット・保護 IaC スコープ）を出力し、既定では広いヒューリスティック（例: 名前に `prod`/`production` を含むホストを機密リモートターゲット扱い）で保護が有効になります。あわせて `autoMode.classifyAllShell: true`（v2.1.193 以降）を設定すると、`Bash(npm test)` のような狭い許可ルールも一時停止され、オートモード中は全 Bash/PowerShell コマンドが分類器を通るようになります（レイテンシと引き換えにカバレッジを確保）。
+品質面の変更も入りました。組み込みの Explore エージェントが haiku ではなく**メインセッションのモデルを継承**するようになり（opus 上限）、サブエージェントとコンテキストコンパクションが**セッションの拡張思考設定を継承**して委任タスクの出力品質が改善されます。また、別エージェントから届いたメッセージは通常のタスク指示として扱われる一方、ユーザーの承認としては決して扱われないという境界が明確化されました。運用面では `/agents` ウィザードが廃止され、サブエージェントの作成・管理は Claude への依頼か `.claude/agents/` の直接編集で行う形になっています（ドキュメントマップからも「Use the /agents command」が削除）。
 
-- [オートモードの設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/auto-mode-config#route-all-shell-commands-through-the-classifier)
-- [Configure auto mode - Claude Code Docs (English)](https://code.claude.com/docs/en/auto-mode-config#route-all-shell-commands-through-the-classifier)
-- [権限モードの選択（分類器が既定でブロックするもの） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/permission-modes#what-the-classifier-blocks-by-default)
-- [Choose a permission mode (What the classifier blocks by default) - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default)
+- [Create custom subagents (Run subagents in foreground or background) - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)
 
-## 3. 進行中の作業をバックグラウンドセッションへ引き継ぐエージェントビュー
+> 上記の変更は主に changelog（v2.1.198）由来です。日本語版 `sub-agents` ページは本サマリ作成時点で「既定バックグラウンド実行」を反映していない（`background` フロントマターの既定は `false` のまま）ため、日本語リンクは省略しています。
 
-対話セッションをバックグラウンド化する挙動が大きく変わりました。従来は、バックグラウンド化すると保存済み会話から再開する新しいプロセスが起動し、実行中のサブエージェント・Monitor・バックグラウンドコマンドは引き継がれませんでした。今回、実行中のバックグラウンドシェルコマンド・動的ワークフロー・バックグラウンド化されたサブエージェント・`/loop` で作成したスケジュールタスクが新しいプロセスへ引き継がれ、そのまま走り続けるようになりました（Windows を含む。`CLAUDE_DISABLE_ADOPT=1` で従来どおり停止させることも可能）。引き継げない作業（実行中の Monitor など）がある場合のみ `Background this session?` ダイアログが表示され、停止される作業と引き継がれるタスク数を提示して確認します。
+## 3. Claude in Chrome の一般提供
 
-操作面では、フォアグラウンドセッションのバックグラウンド化が 1 回の `←` 押下になりました（従来は 2 回）。ツール実行中に `←` を押すと最大 10 秒ほど完了を待ってから引き継ぎ、もう一度押すと即時にバックグラウンド化します。`leftArrowOpensAgents` 設定でこのショートカットを無効化できます。あわせて、リスタートしたセッションのトランスクリプトを誤って空と判定した場合はファイルを削除せず `.orphaned-` 付きで退避するようになり、トラブルシュートの「Cannot open agents…」節は `Background this session?` ダイアログの説明に置き換えられました。ページ末尾には各フラグ・挙動の導入バージョンをまとめた「バージョン履歴」節が新設されています。
+v2.1.198 で **Claude in Chrome が一般提供（GA）** になりました。これに伴い `llms.txt` のページ説明・タイトルから「(beta)」表記が外れています（機能自体は Google Chrome・Microsoft Edge で動作し、Web アプリのテスト・コンソールログでのデバッグ・フォーム入力の自動化・データ抽出などをブラウザとコーディングを跨いで行えます）。あわせて v2.1.199 で、プランモード時に**状態変更を伴うブラウザツール呼び出しが確認を求める**ようになり、読み取り専用の `browser_batch` 呼び出しは正しく自動許可されるよう修正されました。ドキュメントマップには `chrome` ページへ「Browser tools in plan mode」節が追加されています。
 
-- [エージェントビューで複数のエージェントを管理する（セッション内から） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#from-inside-a-session)
-- [Manage multiple agents with agent view (From inside a session) - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#from-inside-a-session)
-- [エージェントビューで複数のエージェントを管理する（バージョン履歴） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-view#version-history)
-- [Manage multiple agents with agent view (Version history) - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-view#version-history)
+- [Use Claude Code with Chrome - Claude Code Docs (English)](https://code.claude.com/docs/en/chrome)
 
-## 4. 新ツール ReportFindings と SendUserFile および Monitor の WebSocket ソース
+> Chrome の GA・プランモード対応は changelog 由来です。日本語版 `chrome` ページは本サマリ作成時点でまだ「（ベータ版）」表記で GA・「Browser tools in plan mode」節を反映していないため、日本語リンクは省略しています。
 
-ツールリファレンスに 2 つの新ツールが追加されました。`ReportFindings`（v2.1.196 以降）は、コードレビューの検出結果をファイル・概要・失敗シナリオを備えた構造化リストとして報告し、Claude Code がテキスト出力ではなく専用のレンダリングを行えるようにします（アクティブなコードレビュー指示が Claude に呼び出しを指示したときに使われます）。`SendUserFile` は、生成したレポート・図・スクリーンショット・ビルド成果物などをキャプション付きでユーザーのデバイスへ送るツールで、v2.1.196 以降はオプションの `display` 入力で表示方法を制御できます（`render` はクライアント内でインライン表示、`attach` はダウンロードカードのみ、未設定ならクライアントがファイル種別で判断）。いずれも Remote Control 接続時や Claude Code on the web などのマネージドクラウド環境で利用でき、配信が Anthropic ホストのインフラを通るため Bedrock／Vertex／Foundry では利用できません。
+## 4. 動的ワークフローのワークフロープロンプト例
 
-既存の `Monitor` ツールは WebSocket ソースに対応しました（v2.1.195 以降）。サーバーが既に WebSocket でイベントを push している場合、ポーリングスクリプトを書く代わりに直接接続でき、テキストメッセージを 1 件ずつイベント化します（バイナリはプレースホルダー、1 MiB 超やソケットクローズで監視終了）。`command` の代わりに `ws` 入力（`url`／`protocols`）を取り、両者は併用できません。WebSocket を開く際は専用の承認プロンプトが出て、プライベート／リンクローカル／クラウドメタデータのアドレスや管理設定の拒否ドメインは拒否されます。TypeScript Agent SDK 側の Monitor ツール入力にも同じ `ws` フィールドが追加されています。
+`workflows`（動的ワークフロー）に「ワークフローの実行例プロンプト」節が新設されました。ワークフローが最も適するのは、タスクが 1 つのエージェントのコンテキストに収まらない場合、または同じステップを多数のアイテムに適用する場合であると説明した上で、代表的な 6 つのプロンプト例を示します。具体的には、同一問題での多数ファイル監査（ファイルごとにファンアウトして検出結果を対立的に検証）、チェックが通るまでの修正ループ、多数ファイルの並列移行（各ファイルを分離コピーで変換）、変更ファイルのレビューと単一サマリへの集約、複数ソースを横断するリサーチ、リストが増えなくなるまでの問題探索です。
 
-- [ツールリファレンス（WebSocket ソース） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference#websocket-source)
-- [Tools reference (WebSocket source) - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference#websocket-source)
-- [ツールリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference)
-- [日本語](https://code.claude.com/docs/ja/tools-reference) / [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference)
+各例は「Claude にそのタスク用のワークフローを作成・実行させる」形で、ユーザー自身がスクリプトを書く必要はありません。節末には、保存されるワークフローの実体（`.claude/workflows/` 内の `meta` ブロック＋`agent()`／`pipeline()` を使うトップレベル `await` の JavaScript）の小さな実例が添えられ、Claude が生成したスクリプトの形を把握できるようになっています。
 
-## 5. MCP のセキュリティと認証まわりの強化
+- [動的ワークフローで大規模にサブエージェントをオーケストレーションする（ワークフローの実行例プロンプト） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/workflows#example-workflow-prompts)
+- [Orchestrate subagents at scale with dynamic workflows (Example workflow prompts) - Claude Code Docs (English)](https://code.claude.com/docs/en/workflows#example-workflow-prompts)
 
-MCP の信頼境界が強化されました。v2.1.196 以降、`claude mcp list` と `claude mcp get` は、リポジトリにチェックインされていない設定ファイルからのみ `.mcp.json` の承認を読み取り、`claude` を実行してワークスペーストラストダイアログを受け入れて初めて信頼します。これにより、クローンしたリポジトリが `.claude/settings.json` にコミットした `enableAllProjectMcpServers` や `enabledMcpjsonServers` で自身のサーバーを勝手に承認することはできなくなり、信頼していないフォルダではサーバーは `⏸ Pending approval` のまま接続・ヘルスチェックされません。ユーザーの `~/.claude/settings.json`・管理設定・`--settings`・（git 管理外の）`.claude/settings.local.json` からの承認は引き続き有効です。あわせて管理設定に `disableSideloadFlags` が追加され、`--plugin-dir`／`--plugin-url`／`--agents`／`--mcp-config` によるサイドロードを 1 回の実行単位で拒否できます。
+## 5. エラー処理と信頼性の改善
 
-認証（OAuth）まわりも複数改善されました。v2.1.195 以降、保存したリフレッシュトークンが拒否されてトークン更新に失敗した場合は `/mcp` を指す通知が即座に表示され、そこから再認証できます。v2.1.193 以降は起動時に認証が必要なサーバーを通知し、非対話（`claude -p`／Agent SDK、ツール検索が既定で有効）では認証が必要なサーバー名を Claude に伝えます。さらに v2.1.196 以降、`oauth.scopes` 未設定時は `WWW-Authenticate` ヘッダーや保護リソースメタデータが示すスコープのみを要求し（どちらも無ければ `scope` を送らず）、従来の `scopes_supported` カタログ全体を要求して GitLab セルフホスト等で `invalid_scope` になる問題を解消しました。プラグイン提供サーバーの `headersHelper` は、相対パスがプラグインルート基準で解決されるようになっています（v2.1.195 以降）。
+v2.1.199 は信頼性とエラー処理の改善が中心のリリースです。サブエージェントがレート制限やサーバーエラーで打ち切られた際に**黙って失敗せず部分的な作業を親に返す**ようになり、サブエージェントが API エラー（使用制限到達など）を成功結果として報告していた不具合も修正され、**エラーが親エージェントに報告**されるようになりました。API が部分出力の後にストリーム途中で overloaded／サーバーエラーを返した場合も、**ストリーミング応答を破棄せず部分結果を「不完全」注記付きで保持**します。
 
-- [MCP で Claude Code をツールに接続する（サーバーの管理） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/mcp#managing-your-servers)
-- [Connect Claude Code to tools via MCP (Managing your servers) - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#managing-your-servers)
-- [MCP で Claude Code をツールに接続する（リモート MCP サーバーで認証する） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/mcp#authenticate-with-remote-mcp-servers)
-- [Connect Claude Code to tools via MCP (Authenticate with remote MCP servers) - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#authenticate-with-remote-mcp-servers)
+そのほか、スタックした slash-skill 呼び出し（`/skill-a /skill-b do XYZ`）が**先頭スキルを最大 5 個までロード**するようになり（従来は最初の 1 個のみ）、SSL 証明書エラー（TLS 検査プロキシ・`NODE_EXTRA_CA_CERTS` 未設定・期限切れ証明書）はリトライを消費する前に即座に失敗して修正ヒントを表示するようになりました。リトライ制御では、`CLAUDE_CODE_RETRY_WATCHDOG` が非容量の一時エラーの既定リトライ回数を 300 に引き上げ、`CLAUDE_CODE_MAX_RETRIES` の 15 上限を撤廃しています。
+
+> 本セクションの内容は changelog（v2.1.199）由来で、対応する通常ドキュメントページ（エラーリファレンス等）への反映は原文全文（llms-full）・日本語ページともに本サマリ作成時点で未追従のため、参考リンクは省略しています。
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回、リファレンス系で新規追加されたページは 1 件です。
-
-- [**Linux 版 Claude Desktop（ベータ）**](#1-linux-版-claude-desktopベータ) ([日本語](https://code.claude.com/docs/ja/desktop-linux) / [English](https://code.claude.com/docs/en/desktop-linux)):  
-  Ubuntu／Debian への Claude デスクトップアプリのインストール・更新手順を扱うベータ版ページ。
+今回、リファレンス系で新規追加されたページはありません。
 <!-- light:new-pages:end -->
-
-## 1. Linux 版 Claude Desktop（ベータ）
-
-Ubuntu 22.04 以降・Debian 12 以降（x86\_64／arm64）を対象に、Claude デスクトップアプリを Linux にインストール・更新する手順を扱う新設ページです。Anthropic の apt リポジトリ（署名キーの追加＋`deb` エントリ登録＋`apt install claude-desktop`）からのインストールと、`.deb` ファイルを直接インストールする方法の両方を示し、更新はシステムの通常のパッケージ更新（`apt upgrade`）で提供される旨や、アンインストール手順を記載します。Linux ベータでは Chat・Cowork・Code の各タブが利用できる一方、Computer Use・音声入力・（Wayland ネイティブでの）Quick Entry グローバルホットキー・Fedora/RHEL などは未対応であることが明記されています。
-
-- [Linux 版 Claude Desktop（ベータ） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/desktop-linux#install)
-- [Claude Desktop on Linux (beta) - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop-linux#install)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回は既存ページで規模の大きい変更が複数ありました。うち `model-config`（Sonnet 5 対応。ハイライト 1）、`tools-reference` / `agent-sdk/typescript`（新ツール・Monitor WebSocket。ハイライト 4）、`agent-view`（バックグラウンド引き継ぎ。ハイライト 3）は上記ハイライトに整理しています。以下は、それ以外で大きく更新されたページです。
+上記ハイライト以外で、既存ページの規模の大きい・意味のある更新は以下の 2 件です。
 
-- [**環境変数リファレンスの多数追加**](#1-環境変数リファレンスの多数追加) ([日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)):  
-  バックグラウンド作業・UI・通知・OTLP などの新しい環境変数が多数追加され、Sonnet 5／v2.1.196 に伴う記述が更新された。
-- [**フックのマッチャー仕様の拡張**](#2-フックのマッチャー仕様の拡張) ([日本語](https://code.claude.com/docs/ja/hooks#matcher-patterns) / [English](https://code.claude.com/docs/en/hooks#matcher-patterns)):  
-  完全一致マッチャーへのハイフン対応、プラグインスコープのエージェント名、`prompt_id` 入力フィールド、`MessageDisplay` イベントなどが追記された。
-- [**プラグインのリネームと削除の移行サポート**](#3-プラグインのリネームと削除の移行サポート) ([日本語](https://code.claude.com/docs/ja/plugin-marketplaces#rename-or-remove-a-plugin) / [English](https://code.claude.com/docs/en/plugin-marketplaces#rename-or-remove-a-plugin)):  
-  `marketplace.json` の `renames` フィールドで、プラグイン名の変更・削除時に既存ユーザーを自動移行できるようになった。
-- [**TypeScript Agent SDK の更新**](#4-typescript-agent-sdk-の更新) ([日本語](https://code.claude.com/docs/ja/agent-sdk/typescript#query-object) / [English](https://code.claude.com/docs/en/agent-sdk/typescript#query-object)):  
-  `reinitialize()` メソッド、`canUseTool` の発火条件明確化、Monitor の `ws` 入力、`ModelInfo` の新フィールドなどが追加された。
+- [**組織のモデル制限に関する記述の整理**](#1-組織のモデル制限に関する記述の整理) ([日本語](https://code.claude.com/docs/ja/model-config#organization-model-restrictions) / [English](https://code.claude.com/docs/en/model-config#organization-model-restrictions)):  
+  組織管理者がメンバーの利用モデルを制限する方法が「Claude Enterprise プランの組織管理者が claude.ai 管理コンソールで無効化する」ものとして明確化され、Console 側での制限（`availableModels`）との使い分けが整理された。
+- [**タスクリストと実行中タスクビューの区別**](#2-タスクリストと実行中タスクビューの区別) ([日本語](https://code.claude.com/docs/ja/interactive-mode#task-list) / [English](https://code.claude.com/docs/en/interactive-mode#task-list)):  
+  タスクリストが「Claude が多段作業を計画するために作る ToDo チェックリスト」であり、実行中のシェルやサブエージェントを見る `/tasks` のバックグラウンドタスクビューとは別物であることが明確化された。
 <!-- light:updated-pages:end -->
 
-## 1. 環境変数リファレンスの多数追加
+## 1. 組織のモデル制限に関する記述の整理
 
-`env-vars` に多数の環境変数が追加され、既存記述も Sonnet 5・v2.1.196 に合わせて更新されました。追加された主な変数は、バックグラウンドセッションの作業引き継ぎ制御（`CLAUDE_CODE_DISABLE_BG_EXIT_HANDOFF`・`CLAUDE_DISABLE_ADOPT`）、メモリ圧迫時のバックグラウンドシェル停止抑止（`CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP`）、フルスクリーン描画のマウスクリック無効化（`CLAUDE_CODE_DISABLE_MOUSE_CLICKS`）、通知のプレゼンスチェック無効化（`CLAUDE_CODE_DISABLE_NOTIFICATION_PRESENCE_CHECK`）、OTLP のアシスタント応答ログ（`OTEL_LOG_ASSISTANT_RESPONSES`）、Vertex の Sonnet 5 リージョン上書き（`VERTEX_REGION_CLAUDE_5_SONNET`）などです。
+`model-config` の「組織モデル制限」節が整理されました。組織管理者がメンバーの実行できるモデルを制限する手段が、「**Claude Enterprise プラン**の組織管理者が **claude.ai 管理コンソール**で個別モデルを無効化する」ものとして明確化されています。この制限はメンバーのサインインまたは自身の API キー利用時に適用され、組織サービスキーのようなユーザーに紐づかない組織スコープの認証情報には適用されません。制限は認証時にアカウントの権利として配信され、設定の `availableModels` とは別物で、セッション作成時にサーバー側でも独立に適用されます（要 v2.1.187 以降）。
 
-既存変数では、`CLAUDE_ENABLE_STREAM_WATCHDOG` の既定が「全プロバイダーでオン」に変わった旨（v2.1.196、無効化は `=0`）、`CLAUDE_CODE_SHELL` が Bash ツール実行シェルの指定（`bash`/`zsh` のパス）である旨の明確化、`CLAUDE_CODE_SUBAGENT_MODEL` を `inherit` にすると未設定と同義になる旨（v2.1.196）、`ANTHROPIC_BASE_URL` を非 Anthropic ホストに向けると Remote Control が無効化される旨（v2.1.196）、Sonnet 5 のコンテキスト計算に関する `CLAUDE_CODE_AUTO_COMPACT_WINDOW`／`CLAUDE_CODE_DISABLE_1M_CONTEXT` の追記などが行われています。
+あわせて、**Claude Console にはモデル制限機能が無い**ことが明記され、Enterprise プランを持たない組織（Anthropic API で認証するメンバーを含む）は管理設定の [`availableModels`] でモデルを制限し、Default オプションもカバーするには `enforceAvailableModels` を併用する、という使い分けが示されました。なお、ドキュメントマップには `model-config` へ「Organization default model」「Organization effort limits」の見出しも追加されていますが、これらの本文は原文全文（llms-full）には未収録です。
 
-- [環境変数 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/env-vars)
-- [日本語](https://code.claude.com/docs/ja/env-vars) / [Environment variables - Claude Code Docs (English)](https://code.claude.com/docs/en/env-vars)
+- [モデル設定（組織モデル制限） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config#organization-model-restrictions)
+- [Model configuration (Organization model restrictions) - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#organization-model-restrictions)
 
-## 2. フックのマッチャー仕様の拡張
+## 2. タスクリストと実行中タスクビューの区別
 
-`hooks` のマッチャー仕様が拡張されました。完全一致マッチャーの許容文字にハイフン（`-`）が加わり、`code-reviewer` のような名前を正規表現ではなく厳密一致として扱えるようになりました（v2.1.195 以降。旧版ではアンカーなし正規表現扱いのため `^code-reviewer$` と書く必要があった）。正規表現パスは `RegExp.prototype.test` によるアンカーなし評価である旨が明記され、`Edit.*` が `NotebookEdit` にも一致することなどが例示されています。`SubagentStart` のマッチャーには `my-plugin:reviewer` のようなプラグインスコープ名が使えるようになり（コロンを含むため正規表現パスとして `^...$` でのアンカーを推奨）、`FileChanged`／`StopFailure` は狭い完全一致セット（`|` のみ区切り）である点も補足されました。
+`interactive-mode` の「タスクリスト」節と `Ctrl+T` の説明が刷新され、**タスクリストが「Claude の ToDo チェックリスト」**であることが明確になりました。これは Claude が多段作業を計画するために作成した項目（保留中・進行中・完了のインジケータ付き）で、**実行中のシェルやサブエージェントを見る `/tasks` のバックグラウンドタスクビューとは別物**です。`Ctrl+T` はこの ToDo チェックリストの表示切り替えで、Claude がまだチェックリスト項目を作っていない場合はトグルしても表示は変わりません。
 
-そのほか、共通 JSON 入力フィールドに `prompt_id`（処理中プロンプトの UUID。OTel の `prompt.id` と一致、v2.1.196 以降）が追加され、matcher 非対応イベント一覧に `MessageDisplay` が加わりました。`command` フックの `shell` は既定が `bash`、Windows で Git Bash 未導入時は `powershell` になる旨や、`@` で参照したファイルには PreToolUse フックが発火しない旨の警告、PowerShell シェル形式での `$env:CLAUDE_PROJECT_DIR` 参照方法なども追記されています。
+キーボードショートカット表と、グローバルアクション表の `app:toggleTodos`（`Ctrl+T`）の説明も同様に「Claude の ToDo チェックリストの表示切り替え。これは `/tasks` のバックグラウンドタスクビューではない」と補足されています。
 
-- [フックリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/hooks#matcher-patterns)
-- [Hooks reference - Claude Code Docs (English)](https://code.claude.com/docs/en/hooks#matcher-patterns)
-
-## 3. プラグインのリネームと削除の移行サポート
-
-`plugin-marketplaces` に「Rename or remove a plugin」節が新設されました。プラグインの `name` は `enabledPlugins`・`pluginConfigs`・`/plugin install` から参照される安定した識別子のため、変更すると既存のインストールがすべて壊れます。表示名だけ変えたい場合は `displayName` を使い `name` は据え置きます。どうしても `name` を変更する、あるいはプラグインを `plugins` 配列から削除する場合は、トップレベルに `renames` フィールド（旧名→新名、削除なら `null` のマップ）を追加すると、既存ユーザーが `plugin-not-found` エラーではなく自動移行されます（v2.1.193 以降）。
-
-移行時、新名が指定されていれば新名でロードして「Renamed to …」通知を 1 度表示し、ユーザー／プロジェクト／ローカル設定の古いキーを新キーへ書き換えます（`null` なら削除通知）。`renames` は追記専用の履歴として扱い（チェーンをたどるため古いエントリは残す）、`claude plugin validate .` はチェーンが循環したり `null`／既存プラグインで終端しないエントリを拒否します。管理設定・ポリシー設定は読み取り専用のため自動書き換えできず、管理者が更新するまで通知が繰り返される点が注記されています。
-
-- [プラグインマーケットプレイスの作成と配布 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/plugin-marketplaces#rename-or-remove-a-plugin)
-- [Create and distribute a plugin marketplace - Claude Code Docs (English)](https://code.claude.com/docs/en/plugin-marketplaces#rename-or-remove-a-plugin)
-
-## 4. TypeScript Agent SDK の更新
-
-`agent-sdk/typescript` に複数の更新が入りました。`Query` オブジェクトに `reinitialize()` メソッドが追加され、トランスポート断（再接続など）の後に `initialize` コントロールリクエストを再送して、保留中の権限リクエストを `canUseTool` コールバックへ再配送できるようになりました。`canUseTool` は「権限評価フローがプロンプトに到達した場合にのみ呼ばれる」ことが明確化され（`allowedTools`・allow ルール・`permissionMode` で自動承認された呼び出しでは発火しない）、接続前に発行され保留中の権限リクエストは SDK が自動的に `canUseTool` へ振り分けるようになりました。
-
-型定義も更新され、`Monitor` ツール入力に `ws`（`url`／`protocols`）フィールドが追加されて `command` と排他になり（`ws` は v2.1.195 以降）、`ModelInfo` に `resolvedModel`（エイリアスが解決される正規のモデル ID）や `supportsAutoMode` などのフィールドが加わりました。フック入力の `prompt_id`（v2.1.196 以降）や、`CLAUDE_ENABLE_STREAM_WATCHDOG` の既定オン化、1M コンテキスト移行先への Sonnet 5 追記なども反映されています。
-
-- [Agent SDK リファレンス - TypeScript - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/agent-sdk/typescript#query-object)
-- [Agent SDK reference - TypeScript - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-sdk/typescript#query-object)
+- [インタラクティブモード（タスクリスト） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/interactive-mode#task-list)
+- [Interactive mode (Task list) - Claude Code Docs (English)](https://code.claude.com/docs/en/interactive-mode#task-list)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、Sonnet 5 リリースと v2.1.195／v2.1.196 に伴う既存ページへの追記・修正が中心です。以下に分類して整理します（複数リリースを含むため、識別が必要な項目にはバージョンを併記します）。
+今回の軽微な更新は、v2.1.198／v2.1.199 の 2 リリースに伴う既存ページへの追記・修正と多数のバグ修正が中心です。以下に分類して整理します（複数リリースを含むため、識別が必要な項目にはバージョンを併記します）。
 
 **新機能**
 
-- OTLP テレメトリに「アシスタント応答イベント」（`claude_code.assistant_response`）が追加され、応答テキスト長やモデル ID などを記録できるようになった。応答本文は既定で `<REDACTED>`、`OTEL_LOG_ASSISTANT_RESPONSES=1` で含められる（v2.1.193 以降）— [日本語](https://code.claude.com/docs/ja/monitoring-usage#assistant-response-event) / [English](https://code.claude.com/docs/en/monitoring-usage#assistant-response-event)。
-- 設定に `autoMode.classifyAllShell`（詳細はハイライト 2 参照）・`disableSideloadFlags`（詳細はハイライト 5 参照）・`enableArtifact`（Artifact ツールのユーザー単位の有効化）が追加された — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)。
-- スキルで `${CLAUDE_PROJECT_DIR}` 置換が使えるようになり、本文と `allowed-tools` フロントマターの双方でプロジェクトルート相対のパスを参照できるようになった（v2.1.196 以降）— [日本語](https://code.claude.com/docs/ja/skills) / [English](https://code.claude.com/docs/en/skills)。
+- `/dataviz` スキルが追加され、チャート・ダッシュボード設計のガイダンスと実行可能なカラーパレット検証ツールを提供するようになった（v2.1.198）。
+- Claude apps ゲートウェイのアップストリームプロバイダーに「Claude Platform on AWS」（`anthropicAws`）が追加され、model-not-found 応答でフェイルオーバーチェーンが次へ進むようになった（v2.1.198）。ドキュメントマップの `claude-apps-gateway-config`（`upstreams`）にも該当エントリが追加されている。
 
 **機能改善**
 
-- 設定の `maxSkillDescriptionChars` が `skillListingMaxDescChars` に改称され、`statusLine` に `padding`／`refreshInterval`／`hideVimModeIndicator` フィールドが追加された — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)。
-- スキル一覧の予算適用後サイズが `/context` に正しく反映されるようになり（v2.1.196 以降）、`<skill-name>` のシンボリックリンク解決もサポートされた — [日本語](https://code.claude.com/docs/ja/skills) / [English](https://code.claude.com/docs/en/skills)。
-- サブエージェントで `CLAUDE_CODE_SUBAGENT_MODEL=inherit` が未設定と同義になり（v2.1.196。以前は強制的にメイン会話のモデルを使用）、`/doctor` が同一スコープ内の重複エージェント名を検出するようになった — [日本語](https://code.claude.com/docs/ja/sub-agents#choose-a-model) / [English](https://code.claude.com/docs/en/sub-agents#choose-a-model)。
-- Monitor 経由でない場合の PowerShell ツールが、Bash と同様に `grep`/`git grep`（終了コード 1＝一致なし）や `git diff`（終了コード 1＝差分あり）を失敗として報告しなくなった（v2.1.196）— [日本語](https://code.claude.com/docs/ja/tools-reference#powershell-tool) / [English](https://code.claude.com/docs/en/tools-reference#powershell-tool)。
-- 音声ディクテーションの要件が整理され（HIPAA 有効組織では無効化）、tap モードの自動送信で日本語・中国語・タイ語も単語数を数えるようになった（v2.1.195）。文字起こしはメッセージ／トークンを消費しない旨も明記 — [日本語](https://code.claude.com/docs/ja/voice-dictation#requirements) / [English](https://code.claude.com/docs/en/voice-dictation#requirements)。
-- Read ツールが、リサイズ後も 500KB を超える画像を（寸法を保ったまま）品質を下げた JPEG に再エンコードするようになった（v2.1.196）— [日本語](https://code.claude.com/docs/ja/tools-reference#read-tool-behavior) / [English](https://code.claude.com/docs/en/tools-reference#read-tool-behavior)。
-- プラグイン発見・依存関係の改善: `/plugin enable`/`disable` が 2 つの名前（マーケットプレイス名とプラグイン名）どちらでも動作するようになり（v2.1.195）、ローカルフォルダ（git リポジトリ）のマーケットプレイスからも依存タグを解決できるようになった（v2.1.196）— [日本語](https://code.claude.com/docs/ja/discover-plugins) / [English](https://code.claude.com/docs/en/discover-plugins)。
-- advisor のサポート主モデルに Sonnet 5 が追加された（Sonnet 5 が主モデルのときは Sonnet 4.6 のアドバイザーは拒否）— [日本語](https://code.claude.com/docs/ja/advisor) / [English](https://code.claude.com/docs/en/advisor)。
-- エージェントチームで `SendMessage` の信頼境界が明記された。別エージェントから届いたメッセージは「別の Claude セッション由来」として扱われ、チームメイトが代理で権限プロンプトを承認・同意することや、拒否されたアクションを別メンバー経由でバイパスすることはできず、オートモードの分類器も代理承認の申告を信頼できない入力として扱う — [日本語](https://code.claude.com/docs/ja/agent-teams#permissions) / [English](https://code.claude.com/docs/en/agent-teams#permissions)。
+- サブエージェントの既定バックグラウンド化、Explore のモデル継承、拡張思考設定の継承（詳細はハイライト 2 参照）。
+- ベストプラクティスの記述が複数明確化された。コンパクション指示を書く `CLAUDE.md` が「プロジェクトルートの `CLAUDE.md`」であること、拡張思考予算を下げる `MAX_THINKING_TOKENS` が環境変数であること、`filter-test-output` フックスクリプトの設置手順（`mkdir`／`chmod +x`）などが追記された — [English](https://code.claude.com/docs/en/best-practices)。
+- `dontAsk` モードが有効な間、ステータスバーに `⏵⏵ don't ask on` を表示する旨が追記された — [English](https://code.claude.com/docs/en/permissions#allow-only-pre-approved-tools-with-dontask-mode)。
+- Agent SDK ドキュメントで、自動メモリが専用ツールではなく `Write`／`Edit` ツールで書き込まれる旨や、チェックポイント例・SDK サンプルの実行前提が明確化された — [English](https://code.claude.com/docs/en/agent-sdk/typescript)。
+- `CLAUDE_CODE_RETRY_WATCHDOG` の既定リトライ回数引き上げ・`CLAUDE_CODE_MAX_RETRIES` の上限撤廃（詳細はハイライト 5 参照）に加え、サブスクライバー向けに使用制限と無関係な一時的 429 を自動バックオフ再試行するようになった（v2.1.199）。
+- API リトライの UX が改善され、2 回目試行後にエラー理由を表示し、API 過負荷時はスピナーのヒントをステータスページへのリンクに置き換えるようになった（v2.1.198）。
+- コードブロック・差分・ファイルプレビューの構文ハイライトが highlight.js 11 へのアップグレードで改善された（v2.1.198）。
+- `/login` が `claude agents` ビューから「利用不可」と表示する代わりにサインインダイアログを開くようになり、フォーカスモードでは 1 ターン内で起動したサブエージェントがその活動サマリに表示され、Mac から SSH 接続時のキーボードショートカットヒントが alt/super の代わりに opt/cmd を表示するようになった（v2.1.198）。
+- そのほか、手順・前提を明確化する小規模な更新が複数ページで行われた。エージェントビューの「既存セッションの取り込み」手順とバックグラウンドサービス起動時のメッセージ（`agent-view`）、Linux 版デスクトップのサインイン方法（`desktop-linux`）、プラグインクイックスタートのディレクトリ配置（`plugins-quickstart`）など。
 
 **バグ修正**
 
-- Bedrock で `/context` が全ツールグループで 0 トークンと表示される不具合を修正（v2.1.196）— [日本語](https://code.claude.com/docs/ja/monitoring-usage) / [English](https://code.claude.com/docs/en/monitoring-usage)。
-- バックグラウンドジョブの復帰時に、トランスクリプトの誤読で会話が削除され元プロンプトが再実行される不具合を修正（ファイルは削除せず退避）（v2.1.196）— [日本語](https://code.claude.com/docs/ja/agent-view#from-inside-a-session) / [English](https://code.claude.com/docs/en/agent-view#from-inside-a-session)。
-- 並列リクエスト時にレート制限警告が点滅し、レート制限テレメトリが過大計上される不具合を修正（v2.1.196）。
-- MCP OAuth が未指定時に認可サーバーの `scopes_supported` 全体を要求し、GitLab セルフホスト等で `invalid_scope` になる不具合を修正（詳細はハイライト 5 参照）（v2.1.196）。
-- `/deep-research` が検証失敗を「全主張が反証された」と誤報告する不具合を修正（v2.1.196）— [日本語](https://code.claude.com/docs/ja/errors) / [English](https://code.claude.com/docs/en/errors)。
-- `claude agents` の状態表示・キーボードフォーカス・サブエージェント種別の喪失など複数の不具合を修正（v2.1.196）。
-- `claude plugin validate` がソース `.` のローカルプラグインをスキップし最初のエラークラスで停止する不具合を修正（v2.1.196）。
+- 応答途中のネットワーク瞬断でターンが中断される不具合を修正し、ECONNRESET 等の一時エラーをバックオフ再試行するようにした（v2.1.198）。
+- エージェントチームで、API エラーで死んだチームメイトがリードに「failed」を報告し、行き詰まったチームメイトへのメッセージが即時リトライを促すように修正（v2.1.198）。
+- web／desktop／VS Code のタスクパネルが、完了後や再開後も「Running」のまま止まる不具合を修正（v2.1.198）。
+- `claude --bg` を `--print`／`-p` と併用すると接続不能なセッションが黙って作られる不具合を、競合フラグの起動時拒否で修正（v2.1.198）。
+- Claude Platform on AWS／Mantle セッションが STS トークン失効時に「Please run /login」で行き詰まる不具合を、`awsAuthRefresh` の自動実行で修正（v2.1.198）。
+- macOS のバックグラウンドエージェントセッションでローカルネットワークホストへ「no route to host」になる不具合を、Local Network entitlements の宣言で修正（v2.1.198）。
+- プランモードで開始したセッションが読み取り専用ツール呼び出しを自動許可しない不具合、および `.claude/rules/` の条件付きルールがシンボリックリンク経由のパスでロードされない不具合を修正（v2.1.198）。
+- Linux のバックグラウンドエージェントデーモンが、不正終了後の破損ワーカー記録により約 50 秒ごとに自身と全エージェントを kill する不具合を修正（v2.1.199）。
+- `claude stop` がバックグラウンドエージェントの再生成と競合して無効化される不具合、およびメモリ不足マシンでのバックグラウンドセッションが汎用エラーではなく低メモリを示すよう修正（v2.1.199）。
+- `SessionStart`／`Setup`／`SubagentStart` フックが終了コード 2 で stderr を隠す不具合を修正し、エラーをトランスクリプトに表示するようにした（v2.1.199）。
+- `SendMessage` が再生成で前のエージェント名を再利用した際に誤ルーティングする不具合を、不一致検出と再指定要求で修正（v2.1.199）。
+- そのほか、macOS SSH でのコールドスタート失敗、バックグラウンドジョブ進捗の停滞、アイドルサブエージェントのパネル消失、破損 config リセット時のバックアップなど、多数の修正が含まれる（v2.1.198／v2.1.199）。
 
 **その他**
 
-- Remote Control が Anthropic API 直結時のみ利用可能になり、`ANTHROPIC_BASE_URL` を `api.anthropic.com` 以外（LLM ゲートウェイ／プロキシ）に向けると無効化されるようになった（v2.1.196）。対応するエラー「Remote Control is only available when using Claude via api.anthropic.com」がエラーリファレンスに追加 — [日本語](https://code.claude.com/docs/ja/errors#remote-control-requires-the-anthropic-api) / [English](https://code.claude.com/docs/en/errors#remote-control-requires-the-anthropic-api)。
-- 組織デフォルトモデル（管理コンソールで設定し `/model` に「Org default」/「Role default」と表示）が追加されたが、対応する通常ドキュメントページの記載は無いためリンクは省略（v2.1.196、changelog 由来）。
-- エージェントチームの `auto` 表示モードで分割ペインが開く条件が「tmux セッション内、または `it2` CLI を導入した iTerm2」に絞り込まれ、あわせて `iterm2` 表示モードが追加された（v2.1.186）— [English](https://code.claude.com/docs/en/agent-teams#choose-a-display-mode)（ja 未反映のため en のみ）。
-- モニタリング・フック等の例示モデル ID が `claude-sonnet-4-6` から `claude-sonnet-5` に更新された。
-- 一部ページで「do not → don't」などの短縮形への文体統一が継続（文意の変更なし）。
+- エラーリファレンス（`errors`）に新しいエラー節が複数追加された（応答が不完全な可能性、API エラーによるエージェントの早期終了、AWS 認証情報の失効・無効、AWS 認証失敗、`--bg` と `--print` の競合など）。いずれも changelog／ドキュメントマップ先行で、原文全文（llms-full）・日本語ページともに未反映のため参考リンクは省略する。
+- ドキュメントマップに、本文が llms-full 未収録の新見出しが複数追加された（`chrome` の「Browser tools in plan mode」、`mcp` の「Tool input schemas with a root-level combinator」「Require approval for a specific tool」、`sandboxing` の「Mask environment variables」、`model-config` の「Organization default model」「Organization effort limits」、`sub-agents` の「API errors in subagents」など）。
+- `llms.txt` のページ説明が更新された（`artifacts` の公開先を「claude.ai」に明記、`chrome` から「(beta)」を削除、ゲートウェイ系ページに「Claude Platform on AWS」を併記）。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
 
 <!-- light:whats-new:start -->
-今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの実質的な更新はありません。`whats-new/2026-w23` に差分が検出されましたが、JSON コードブロックの整形（インデント調整）のみで内容の変更はありません。ドキュメントマップにも `whats-new/` の新規エントリ追加はありませんでした。
+今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの更新はありません。ドキュメントマップにも `whats-new/` の新規エントリ追加はありませんでした。
 <!-- light:whats-new:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-29.md](./archives/latest/2026-06-29.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-29.md](./archives/latest-detail/2026-06-29.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-01.md](./archives/latest/2026-07-01.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-01.md](./archives/latest-detail/2026-07-01.md)
 
 <!--
-base_commit: 0a3a35d4963888e7a9a90b6fb761cf22619631a9
-head_commit: 0479bd37959b8b8592cf2b7e35df021189becc68
-generated_at_full: 2026-07-02T15:06:58+09:00
+base_commit: 0479bd37959b8b8592cf2b7e35df021189becc68
+head_commit: 331621b2d46b6f0f04b5dc7868b469f76a64d0a4
+generated_at_full: 2026-07-03T15:07:28+09:00
 -->
