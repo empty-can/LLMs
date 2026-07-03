@@ -622,7 +622,7 @@ This walkthrough covers the core agent view loop: dispatch a task, watch its row
   </Step>
 
   <Step title="Bring an existing session in">
-    To move a session you already have open into agent view, run `/bg` inside it, or press `←` on an empty prompt to background it and open agent view in one step. The session keeps running and appears as a row alongside the ones you dispatched.
+    This step needs a running session. If you followed the earlier steps you don't have one open in this terminal, so open a regular `claude` session in another terminal and send it a message first. To move a session you already have open into agent view, run `/bg` inside it, or press `←` on an empty prompt to background it and open agent view in one step. The session keeps running and appears as a row alongside the ones you dispatched.
   </Step>
 </Steps>
 
@@ -884,7 +884,7 @@ Pass `--name` to set the session's display name in agent view instead of the aut
 claude --bg --name "flaky-test-fix" "investigate the flaky SettingsChangeDetector test"
 ```
 
-After backgrounding, Claude prints the session's short ID and the commands for managing it. When you pass `--name`, the name appears after the short ID:
+After backgrounding, Claude prints the session's short ID and the commands for managing it. When the service that hosts background sessions isn't already running, `--bg` may first print `Starting background service…` above this output. When you pass `--name`, the name appears after the short ID:
 
 ```text theme={null}
 backgrounded · 7c5dcf5d · flaky-test-fix
@@ -1917,13 +1917,13 @@ The team insights table shows per-user metrics:
 # Share session output as artifacts
 Source: https://code.claude.com/docs/en/artifacts
 
-Artifacts turn Claude Code's work into live, interactive pages at a private URL you can share inside your organization.
+Artifacts turn Claude Code's work into live, interactive pages at a private URL on claude.ai.
 
 <Note>
-  Artifacts require a Team or Enterprise plan and a session signed in with [`/login`](/docs/en/setup#authenticate). See [Availability](#availability) for the full set of requirements.
+  Artifacts are available on Pro, Max, Team, and Enterprise plans and require a session signed in with [`/login`](/docs/en/setup#authenticate). See [Availability](#availability) for the full set of requirements.
 </Note>
 
-An artifact is a live, interactive web page that Claude Code publishes from your session to a private URL on claude.ai. You open it in a browser, and it updates in place as the session continues. Share it from the page header when you want a teammate to see it too. For example, use an artifact to walk a reviewer through a pull request with annotated diffs, build a dashboard from session data, or keep an investigation timeline that fills in as Claude works.
+An artifact is a live, interactive web page that Claude Code publishes from your session to a private URL on claude.ai. You open it in a browser, and it updates in place as the session continues. On Team and Enterprise plans, share it from the page header when you want a teammate to see it too. For example, use an artifact to walk a reviewer through a pull request with annotated diffs, build a dashboard from session data, or keep an investigation timeline that fills in as Claude works.
 
 <Frame>
   <img alt="An artifact open in a browser at claude.ai/code/artifact. The viewer header shows the artifact title acme-funnel-fix, a Share button, and the author avatar. The Share menu is open with the Always share latest version toggle, a version picker reading Sharing version 2, an Everyone at Acme audience selector, and a Copy link button. Below the header, the artifact page shows two mobile mockups side by side, a funnel chart, and a row of metric cards." />
@@ -1985,7 +1985,7 @@ Update https://claude.ai/code/artifact/5fbea6f3-... with today's numbers.
 
 ## Share an artifact
 
-A new artifact is visible only to you. Open it in your browser and use the **Share** control in the page header to grant access to specific people in your organization, or to everyone in it. The header names you as the artifact's author, so anyone you share it with can see who published the page. It also links to your gallery at [claude.ai/code/artifacts](https://claude.ai/code/artifacts), which lists every artifact you have created.
+A new artifact is visible only to you. On Pro and Max plans, artifacts stay private to you. On Team and Enterprise plans, open the artifact in your browser and use the **Share** control in the page header to grant access to specific people in your organization, or to everyone in it. The header names you as the artifact's author, so anyone you share it with can see who published the page. It also links to your gallery at [claude.ai/code/artifacts](https://claude.ai/code/artifacts), which lists every artifact you have created.
 
 Sharing stops at your organization. Viewers must sign in to claude.ai as a member of the same organization that published the artifact, and there is no option to make an artifact viewable outside it. To send the underlying content to someone outside your organization, ask Claude for the HTML file and share that file directly.
 
@@ -2071,13 +2071,13 @@ Generating an artifact uses output tokens like any other response, and a styled 
 
 Artifacts require every condition below. When one is not met, Claude writes a local HTML file or says it cannot publish instead.
 
-| Requirement         | Available when                                                                                                                                                                                                                                    |
-| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Plan                | Team or Enterprise. On Team plans, artifacts are on by default. On Enterprise plans, an Owner [enables them](#manage-artifacts-for-your-organization) in claude.ai admin settings.                                                                |
-| Authentication      | Signed in to claude.ai with `/login`. Sessions using an API key, [gateway token](/docs/en/llm-gateway), or cloud-provider credential cannot publish.                                                                                                   |
-| Model provider      | Anthropic API. Not available on [Amazon Bedrock](/docs/en/amazon-bedrock), [Google Cloud Vertex AI](/docs/en/google-vertex-ai), or [Microsoft Foundry](/docs/en/microsoft-foundry).                                                                              |
-| Organization policy | Customer-managed encryption keys (CMEK), HIPAA, and [Zero Data Retention](/docs/en/zero-data-retention) are not enabled for the organization.                                                                                                          |
-| Surface             | Claude Code CLI, or the Claude desktop app version 1.13576.0 or later. Off by default in [Agent SDK](/docs/en/agent-sdk/overview), GitHub Action, and MCP-server contexts, and when [`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`](/docs/en/env-vars) is set. |
+| Requirement         | Available when                                                                                                                                                                                                                                                                     |
+| :------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plan                | Pro, Max, Team, or Enterprise. On Pro and Max plans, artifacts are private to you, and no admin management applies. On Team plans, artifacts are on by default. On Enterprise plans, an Owner [enables them](#manage-artifacts-for-your-organization) in claude.ai admin settings. |
+| Authentication      | Signed in to claude.ai with `/login`. Sessions using an API key, [gateway token](/docs/en/llm-gateway), or cloud-provider credential cannot publish.                                                                                                                                    |
+| Model provider      | Anthropic API. Not available on [Amazon Bedrock](/docs/en/amazon-bedrock), [Google Cloud Vertex AI](/docs/en/google-vertex-ai), or [Microsoft Foundry](/docs/en/microsoft-foundry).                                                                                                               |
+| Organization policy | Customer-managed encryption keys (CMEK), HIPAA, and [Zero Data Retention](/docs/en/zero-data-retention) are not enabled for the organization.                                                                                                                                           |
+| Surface             | Claude Code CLI, or the Claude desktop app version 1.13576.0 or later. Off by default in [Agent SDK](/docs/en/agent-sdk/overview), GitHub Action, and MCP-server contexts, and when [`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`](/docs/en/env-vars) is set.                                  |
 
 ## Disable artifacts
 
@@ -3336,6 +3336,69 @@ Release notes for Claude Code, including new features, improvements, and bug fix
 This page is generated from the [CHANGELOG.md on GitHub](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md).
 
 Run `claude --version` to check your installed version.
+
+<Update label="2.1.199" description="July 2, 2026">
+  * Stacked slash-skill invocations like `/skill-a /skill-b do XYZ` now load all leading skills (up to 5), not just the first
+  * Fixed SSL certificate errors (TLS-inspecting proxies, missing `NODE_EXTRA_CA_CERTS`, expired certs) burning retries before showing actionable guidance — they now fail immediately with the fix hint
+  * Fixed streaming responses being discarded when the API emits a mid-stream overloaded/server error after partial output — the partial is now kept with an incomplete-response notice
+  * Fixed subagents cut off by a rate limit or server error silently failing instead of returning their partial work to the parent
+  * Fixed subagents reporting API errors (e.g. usage limit reached) as successful results — the error is now reported to the parent agent
+  * Fixed the background-agent daemon on Linux killing itself and every running agent every \~50 seconds after an unclean shutdown left a corrupted worker record
+  * Fixed background agents failing to cold-start over SSH on macOS with "Could not switch to audit session" (regression in 2.1.196)
+  * Fixed `claude stop` being silently undone when it raced a background-agent respawn — the respawn now honors the stop
+  * Fixed background job progress indicators stalling for minutes while the job ran long commands
+  * Fixed background sessions on memory-starved machines showing a generic error — they now indicate low memory and suggest freeing resources
+  * Fixed remote sessions briefly flapping between Working and Idle in the agent view when a background agent completes
+  * Fixed idle subagents vanishing from the agent panel while other subagents were still working; surplus idle agents now collapse into an expandable summary row
+  * Fixed typing `/model` or `/fast` while viewing a subagent silently opening the lead's model picker — a notice now explains the command applies to the lead
+  * Fixed `SessionStart`, `Setup`, and `SubagentStart` hooks silently hiding stderr when exiting with code 2 — the error is now shown in the transcript
+  * Fixed `claude --dangerously-skip-permissions daemon <subcommand>` being treated as a chat prompt instead of running the subcommand
+  * Fixed `SendMessage` silently misrouting when a re-spawned agent reuses a previous agent's name — the tool now detects the mismatch and asks the caller to retarget
+  * Fixed opening or resuming a session with no new messages needlessly growing the transcript file
+  * Fixed backgrounding a session with `←` or `/background` dropping its `/color` from the agent view row
+  * Fixed resetting a corrupted config file from the startup recovery dialog destroying it unrecoverably — it now backs up the file first
+  * Fixed Claude in Chrome repeatedly opening the reconnect page when sessions run from different builds or config directories
+  * Fixed plan mode not prompting for state-changing browser tool calls; read-only `browser_batch` calls are now correctly auto-allowed
+  * Transient server rate-limit errors (429s unrelated to your usage limit) are now retried automatically with backoff for subscribers instead of failing the turn
+  * `CLAUDE_CODE_RETRY_WATCHDOG` now raises the default retry count for non-capacity transient errors to 300 and lifts the cap of 15 on `CLAUDE_CODE_MAX_RETRIES`
+  * `claude agents` session rows now show pull-request links as bare `#N` without the redundant "PR" label
+</Update>
+
+<Update label="2.1.198" description="July 1, 2026">
+  * Subagents now run in the background by default, so Claude keeps working while they run and is notified when they finish (previously a gradual rollout)
+  * Claude in Chrome is now generally available
+  * Added background agent notifications in `claude agents` — sessions that need input or finish now fire the `Notification` hook (`agent_needs_input` / `agent_completed`)
+  * Added `/dataviz` skill for chart and dashboard design guidance with a runnable color-palette validator
+  * Gateway: added Claude Platform on AWS (anthropicAws) as an upstream provider; model-not-found responses now advance the failover chain
+  * Background agents launched from `claude agents` now commit, push, and open a draft PR when they finish code work in a worktree, instead of stopping to ask
+  * The built-in Explore agent now inherits the main session's model (capped at opus) instead of running on haiku
+  * Subagents and context compaction now inherit the session's extended thinking configuration, improving output quality on delegated tasks
+  * Fixed brief network drops mid-response aborting the turn — transient errors like ECONNRESET now retry with backoff instead of failing
+  * Fixed excessive background classifier requests when sandboxed processes repeatedly accessed the same network host
+  * Fixed background tasks in web, desktop, and VS Code task panels getting stuck on "Running" after they finish or after resuming a session
+  * Fixed agent teams: a teammate that dies on an API error now reports "failed" to the lead, and messaging a stuck teammate wakes it to retry immediately
+  * Fixed the `/diff` panel not refreshing when you switch branches or commit outside the session
+  * Fixed markdown tables overflowing and wrapping their right border when rendered in fullscreen mode
+  * Fixed Claude Platform on AWS and Mantle sessions dead-ending with "Please run /login" when the STS token expires — `awsAuthRefresh` now runs automatically
+  * Fixed "no route to host" for local-network hosts in macOS background agent sessions by declaring Local Network entitlements
+  * Fixed `/desktop` failing with "Cannot determine working directory" after entering and exiting a worktree
+  * Fixed background agents repeatedly showing "Reconnecting…" every \~52 seconds on macOS while the agents view was open
+  * Fixed pressing `←` inside `claude attach <id>` exiting to the shell instead of opening the agent view
+  * Fixed `claude --bg` silently creating an unattachable session when combined with `--print`/`-p`; the conflicting flags are now rejected up front
+  * Fixed the workflow progress view dropping the earliest agents from the list while the phase counter stayed correct in SDK and desktop-app sessions
+  * Fixed `.claude/rules/` conditional rules not loading when the target file is reached via a symlinked path
+  * Fixed Cmd+click not opening URLs in fullscreen mode in Warp on macOS
+  * Fixed double-click word selection in fullscreen mode to select the entire URL including the scheme
+  * Fixed plan mode not auto-allowing read-only tool calls when a session starts in plan mode
+  * Fixed `/branch` deriving its default fork name from the compaction summary instead of the first real prompt
+  * Improved focus mode: subagents launched in a turn now appear in its activity summary, and completed background notifications fold into a single count
+  * Improved syntax highlighting accuracy in code blocks, diffs, and file previews by upgrading to highlight.js 11
+  * Keyboard shortcut hints now show opt/cmd instead of alt/super when connected from a Mac over SSH
+  * Improved API retry UX: the error reason is now shown after the second attempt, and a status page link replaces the spinner tip when the API is overloaded
+  * `/login` now opens the sign-in dialog from the `claude agents` view instead of saying it isn't available
+  * Subagents now treat messages from the agent that launched them as normal task direction; an agent's message is still never treated as the user's approval
+  * Removed the `/agents` wizard; ask Claude to create or manage subagents, or edit `.claude/agents/` directly
+</Update>
 
 <Update label="2.1.197" description="June 30, 2026">
   * Introducing Claude Sonnet 5: now the default model in Claude Code, with a native 1M-token context window and promotional pricing of $2/$10 per Mtok through August 31. Update to version 2.1.197 for access. [https://www.anthropic.com/news/claude-sonnet-5](https://www.anthropic.com/news/claude-sonnet-5)
@@ -13197,7 +13260,7 @@ Use `/usage` to check your current token usage, or [configure your status line](
 * **Clear between tasks**: Use `/clear` to start fresh when switching to unrelated work. Stale context wastes tokens on every subsequent message. Use `/rename` before clearing so you can easily find the session later, then `/resume` to return to it.
 * **Add custom compaction instructions**: `/compact Focus on code samples and API usage` tells Claude what to preserve during summarization.
 
-You can also customize compaction behavior in your CLAUDE.md:
+You can also customize compaction behavior in your CLAUDE.md file at the root of your project:
 
 ```markdown theme={null}
 # Compact instructions
@@ -13252,7 +13315,7 @@ For example, this PreToolUse hook filters test output to show only failures:
   </Tab>
 
   <Tab title="filter-test-output.sh">
-    The hook calls this script, which checks if the command is a test runner and modifies it to show only failures:
+    The hook calls this script. Create the folder with `mkdir -p ~/.claude/hooks`, save the script below as `~/.claude/hooks/filter-test-output.sh`, and make it executable with `chmod +x ~/.claude/hooks/filter-test-output.sh`. It checks if the command is a test runner and modifies it to show only failures:
 
     ```bash theme={null}
     #!/bin/bash
@@ -13276,7 +13339,7 @@ Your [CLAUDE.md](/docs/en/memory) file is loaded into context at session start. 
 
 ### Adjust extended thinking
 
-Extended thinking is enabled by default because it significantly improves performance on complex planning and reasoning tasks. Thinking tokens are billed as output tokens, and the default budget can be tens of thousands of tokens per request depending on the model. For simpler tasks where deep reasoning isn't needed, you can reduce costs by lowering the [effort level](/docs/en/model-config#adjust-effort-level) with `/effort` or in `/model`, disabling thinking in `/config`, or, on models with a [fixed thinking budget](/docs/en/model-config#adaptive-reasoning-and-fixed-thinking-budgets), lowering the budget with `MAX_THINKING_TOKENS=8000`. Adaptive-reasoning models ignore nonzero budgets, so use effort levels there instead. Disabling thinking is not available on Fable 5, which always uses extended thinking.
+Extended thinking is enabled by default because it significantly improves performance on complex planning and reasoning tasks. Thinking tokens are billed as output tokens, and the default budget can be tens of thousands of tokens per request depending on the model. For simpler tasks where deep reasoning isn't needed, you can reduce costs by lowering the [effort level](/docs/en/model-config#adjust-effort-level) with `/effort` or in `/model`, disabling thinking in `/config`, or, on models with a [fixed thinking budget](/docs/en/model-config#adaptive-reasoning-and-fixed-thinking-budgets), lowering the budget by setting the `MAX_THINKING_TOKENS` [environment variable](/docs/en/env-vars), for example `MAX_THINKING_TOKENS=8000`. Adaptive-reasoning models ignore nonzero budgets, so use effort levels there instead. Disabling thinking is not available on Fable 5, which always uses extended thinking.
 
 ### Delegate verbose operations to subagents
 
@@ -14588,6 +14651,8 @@ Install from Anthropic's apt repository so that updates arrive through your syst
 
   <Step title="Launch and sign in">
     Launch **Claude** from your application launcher, or run `claude-desktop` from a terminal, and sign in with your Anthropic account.
+
+    The Linux app signs in the same way as on macOS and Windows: with a claude.ai subscription, or through your organization's SSO. Desktop doesn't accept a Claude Console API key directly; use the [CLI](/docs/en/quickstart) for API-key authentication. For enterprise deployments that route Desktop to Google Cloud's Agent Platform or an LLM gateway, see the [enterprise configuration guide](https://support.claude.com/en/articles/12622667-enterprise-configuration) and [network configuration](/docs/en/network-config).
   </Step>
 </Steps>
 
@@ -16214,7 +16279,7 @@ Claude Opus is not available with the Claude Pro plan · Select a different mode
 
 ### Model is restricted by your organization's settings
 
-Your organization admin has disabled this model in the Claude Console, or it is excluded by an [`availableModels`](/docs/en/model-config#restrict-model-selection) allowlist in managed settings. When the restricted model was set with `--model`, `ANTHROPIC_MODEL`, or the `model` setting, Claude Code substitutes an allowed model and continues. Typing `/model <name>` for a restricted model is rejected with `Run /model to choose a different model.` and the session keeps its current model.
+Your organization admin has disabled this model in the claude.ai admin console, or it is excluded by an [`availableModels`](/docs/en/model-config#restrict-model-selection) allowlist in managed settings. When the restricted model was set with `--model`, `ANTHROPIC_MODEL`, or the `model` setting, Claude Code substitutes an allowed model and continues. Typing `/model <name>` for a restricted model is rejected with `Run /model to choose a different model.` and the session keeps its current model.
 
 ```text theme={null}
 Model "claude-opus-4-8" is restricted by your organization's settings. Using claude-sonnet-4-6 instead.
@@ -16522,7 +16587,7 @@ These require signing in with a claude.ai account and are not reachable with an 
 * [Remote Control](/docs/en/remote-control)
 * [Chrome extension](/docs/en/chrome)
 * [Computer use](/docs/en/computer-use): Pro and Max plans
-* [Artifacts](/docs/en/artifacts): Team and Enterprise plans
+* [Artifacts](/docs/en/artifacts): Pro, Max, Team, and Enterprise plans
 * [Voice dictation](/docs/en/voice-dictation)
 
 Desktop is the partial exception: Enterprise deployments can route Desktop to Vertex AI or a gateway provider via [managed settings](https://support.claude.com/en/articles/12622667-enterprise-configuration), and the [Cowork on 3P research preview](https://claude.com/docs/cowork/3p/overview) runs the Code tab on Bedrock, Vertex AI, Foundry, or a self-hosted LLM gateway. For per-plan availability of these features, see [Availability by subscription plan](#availability-by-subscription-plan).
@@ -16750,7 +16815,7 @@ If you authenticate through Bedrock, Vertex AI, Foundry, or an Anthropic Console
 | [Computer use](/docs/en/computer-use)                                                        | ✓   | ✓   | ✗             | ✗                                 |
 | Dispatch ([Desktop](/docs/en/desktop#sessions-from-dispatch))                                | ✓   | ✓   | ✗             | ✗                                 |
 | [Code Review](/docs/en/code-review)                                                          | ✗   | ✗   | ✓             | ✓                                 |
-| [Artifacts](/docs/en/artifacts)                                                              | ✗   | ✗   | ✓             | Admin-enabled                     |
+| [Artifacts](/docs/en/artifacts)                                                              | ✓   | ✓   | ✓             | Admin-enabled                     |
 | [Analytics dashboard, API, and contribution metrics](/docs/en/analytics)                     | ✗   | ✗   | ✓             | ✓                                 |
 | [Server-managed settings](/docs/en/server-managed-settings)                                  | ✗   | ✗   | ✓             | ✓                                 |
 | [SSO](https://support.claude.com/en/articles/9266767-what-is-the-team-plan)             | ✗   | ✗   | ✓             | ✓                                 |
@@ -24704,7 +24769,11 @@ When the [Bedrock Mantle endpoint](/docs/en/amazon-bedrock#use-the-mantle-endpoi
 
 ### Organization model restrictions
 
-Organization admins restrict which models members can run by disabling individual models in the Claude Console. Use this Console toggle instead of `availableModels` when your members authenticate through the Anthropic API and you want one org-wide switch without deploying settings files. This restriction is delivered with the account's entitlements when Claude Code authenticates, separate from any `availableModels` list in settings, and the server enforces the same restriction independently when a session is created. Requires Claude Code v2.1.187 or later.
+Organization admins on Claude Enterprise plans restrict which models members can run by disabling individual models in the claude.ai admin console. This restriction is delivered with the account's entitlements when Claude Code authenticates, separate from any `availableModels` list in settings, and the server enforces the same restriction independently when a session is created. Requires Claude Code v2.1.187 or later.
+
+The restriction applies when a member signs in or uses their own API key. Organization-scoped credentials, such as organization service keys, are not tied to a user, so the restriction does not apply to them.
+
+The Claude Console has no model restriction control. Organizations without a Claude Enterprise plan, including those whose members authenticate through the Anthropic API, restrict models with [`availableModels`](#restrict-model-selection) in [managed settings](/docs/en/settings#settings-files) instead, adding [`enforceAvailableModels`](#enforce-the-allowlist-for-the-default-model) to cover the Default option. These settings are enforced by Claude Code itself, not by the server.
 
 A restricted model is hidden from the `/model` picker. Selecting it by name with `--model`, the `ANTHROPIC_MODEL` environment variable, or the `model` setting shows the notice `Model "<name>" is restricted by your organization's settings. Using <model> instead.` and the session starts on an allowed model. Typing `/model <name>` for a restricted model is rejected with `Model '<name>' is restricted by your organization's settings. Run /model to choose a different model.` and the session keeps its current model.
 
@@ -26972,7 +27041,7 @@ Repeated blocks usually mean the classifier is missing context about your infras
 
 ## Allow only pre-approved tools with dontAsk mode
 
-`dontAsk` mode auto-denies every tool call that would otherwise prompt. Only actions matching your `permissions.allow` rules and [read-only Bash commands](/docs/en/permissions#read-only-commands) can execute; explicit [`ask` rules](/docs/en/permissions#manage-permissions) are denied rather than prompting. This makes the mode fully non-interactive for CI pipelines or restricted environments where you pre-define exactly what Claude may do. Cloud sessions on [Claude Code on the web](/docs/en/claude-code-on-the-web) ignore `defaultMode: "dontAsk"`; see [bypassPermissions](#skip-all-checks-with-bypasspermissions-mode) for details.
+`dontAsk` mode auto-denies every tool call that would otherwise prompt. The status bar shows `⏵⏵ don't ask on` while this mode is active. Only actions matching your `permissions.allow` rules and [read-only Bash commands](/docs/en/permissions#read-only-commands) can execute; explicit [`ask` rules](/docs/en/permissions#manage-permissions) are denied rather than prompting. This makes the mode fully non-interactive for CI pipelines or restricted environments where you pre-define exactly what Claude may do. Cloud sessions on [Claude Code on the web](/docs/en/claude-code-on-the-web) ignore `defaultMode: "dontAsk"`; see [bypassPermissions](#skip-all-checks-with-bypasspermissions-mode) for details.
 
 Set it at startup with the flag:
 
@@ -29277,11 +29346,13 @@ This quickstart walks you through creating a plugin with a custom skill. You'll 
 
 <Steps>
   <Step title="Create the plugin directory">
-    Every plugin lives in its own directory containing your skills, agents, or hooks, optionally alongside a `.claude-plugin/plugin.json` manifest. Create one now:
+    Every plugin lives in its own directory containing your skills, agents, or hooks, optionally alongside a `.claude-plugin/plugin.json` manifest. The location doesn't matter for this quickstart because you'll point Claude Code at the directory with `--plugin-dir` in the test step. Create it anywhere convenient, such as a scratch folder or a projects directory:
 
     ```bash theme={null}
     mkdir my-first-plugin
     ```
+
+    The remaining steps run from the parent directory and reference paths like `my-first-plugin/...` relative to it.
   </Step>
 
   <Step title="Create the plugin manifest">
@@ -29625,7 +29696,7 @@ If you already have skills or hooks in your `.claude/` directory, you can conver
 
 <Steps>
   <Step title="Create the plugin structure">
-    Create a new plugin directory:
+    Create a new plugin directory in your project root, alongside the existing `.claude/` folder, so the relative `cp` paths in the next step resolve:
 
     ```bash theme={null}
     mkdir -p my-plugin/.claude-plugin
@@ -39086,6 +39157,81 @@ The following prompt runs a saved workflow with a list of issue numbers:
 
 Claude passes the list as structured data, so the script can call array and object methods on `args` directly without parsing it first. If `args` is omitted, the global is `undefined` inside the script.
 
+## Example workflow prompts
+
+A workflow fits best when the task is larger than one agent can hold in context, or when the same step needs to run across many items. The prompts below show common shapes. Each one asks Claude to write and run a workflow for that task; you don't write the script yourself.
+
+### Audit many files for the same issue
+
+Fan out one agent per file, then collect and verify the findings.
+
+```text theme={null}
+> use a workflow to audit every route handler under src/routes/ for missing authentication checks, and adversarially verify each finding before reporting it
+```
+
+### Keep fixing until a check passes
+
+Run a checker, fix what failed, and repeat until it passes or stops making progress.
+
+```text theme={null}
+> use a workflow to run npx tsc --noEmit and keep fixing the reported errors until the type check passes or two rounds in a row make no progress
+```
+
+### Migrate many files in parallel
+
+Discover the files to migrate, transform each one in an isolated copy so edits don't conflict, and verify each result.
+
+```text theme={null}
+> use a workflow to migrate every component under src/components/ from styled-components to Tailwind, working on each file in its own isolated copy
+```
+
+### Review every changed file and write one summary
+
+Run a reviewer per file, then hand all the findings to one agent that ranks and deduplicates them.
+
+```text theme={null}
+> use a workflow to review every file changed in this PR for correctness issues, then merge the per-file findings into one ranked summary
+```
+
+### Research a topic across many sources
+
+Fan out readers across changelogs, issues, and docs, then synthesize. The bundled `/deep-research` workflow does this; you can also describe a narrower version.
+
+```text theme={null}
+> use a workflow to research how our three competitors handle rate limiting: read their public docs and recent changelog entries in parallel, then compare the approaches
+```
+
+### Find issues until the list stops growing
+
+Keep searching in rounds and stop when new rounds turn up nothing new.
+
+```text theme={null}
+> use a workflow to find flaky tests in this repo: run the suite repeatedly, record which tests fail intermittently, and stop once two rounds in a row find nothing new
+```
+
+### What the saved script looks like
+
+When you [save a workflow](#save-the-workflow-for-reuse), the file in `.claude/workflows/` holds a `meta` block followed by a script body that orchestrates subagents. You usually don't need to edit it, but here is the shape of a small one so you can recognize what Claude generated:
+
+```javascript theme={null}
+export const meta = {
+  name: 'audit-routes',
+  description: 'Audit every route handler for missing auth checks',
+}
+
+const found = await agent('List every .ts file under src/routes/.', {
+  schema: { type: 'object', required: ['files'], properties: { files: { type: 'array', items: { type: 'string' } } } },
+})
+
+const audits = await pipeline(found.files, file =>
+  agent(`Audit ${file} for missing authentication checks.`, { label: file }),
+)
+
+return audits.filter(Boolean)
+```
+
+The body is plain JavaScript with top-level `await`. `agent()` spawns one subagent and `pipeline()` runs one per item in a list. If you want to edit a script by hand, ask Claude to walk you through the change, or see the Workflow tool entry in the [Agent SDK reference](/docs/en/agent-sdk/typescript) for the full set of options.
+
 ## How a workflow runs
 
 The workflow runtime executes the script in an isolated environment, separate from your conversation. Intermediate results stay in script variables instead of landing in Claude's context.
@@ -39532,7 +39678,7 @@ To stop using the advisor and clear your saved `advisorModel`, run `/advisor off
 /advisor off
 ```
 
-To disable the advisor tool entirely, including the `/advisor` command and the `--advisor` flag, set `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1`. See [Environment variables](/docs/en/env-vars).
+To disable the advisor tool entirely, set `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1`. The `/advisor` command becomes unavailable and any configured `advisorModel` is ignored. The `--advisor` flag is accepted but has no effect; existing scripts that pass it continue to work without errors. See [Environment variables](/docs/en/env-vars).
 
 ## Compare with related features
 
@@ -40038,7 +40184,7 @@ The `cwd` option determines where the SDK looks for project-level inputs. CLAUDE
 | :----------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Managed policy settings                                            | Endpoint-managed policy, such as an MDM plist, registry policy, or managed settings file, loads from the host. [Server-managed settings](/docs/en/server-managed-settings) are fetched on an [eligible configuration](/docs/en/server-managed-settings#platform-availability) when the session authenticates with an organization OAuth login or a directly configured API key | Endpoint policy: remove the managed settings file, plist, or registry policy from the host. Server-managed settings: controlled by your org admin; cannot be disabled from the SDK |
 | `~/.claude.json` global config                                     | Always read                                                                                                                                                                                                                                                                                                                                                          | Relocate with `CLAUDE_CONFIG_DIR` in `env`                                                                                                                                         |
-| Auto memory at `~/.claude/projects/<project>/memory/`              | Loaded by default into the system prompt                                                                                                                                                                                                                                                                                                                             | Set `autoMemoryEnabled: false` in settings, or `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` in `env`                                                                                        |
+| Auto memory at `~/.claude/projects/<project>/memory/`              | Loaded into the system prompt at session start. The agent writes new memories there with the standard `Write` and `Edit` tools rather than a dedicated memory tool, so those tools must be enabled for the agent to save memories                                                                                                                                    | Set `autoMemoryEnabled: false` in settings, or `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` in `env`                                                                                        |
 | [claude.ai MCP connectors](/docs/en/mcp#use-mcp-servers-from-claude-ai) | Loaded when the active authentication method is a claude.ai subscription. Passing `mcpServers: {}` does not suppress them                                                                                                                                                                                                                                            | Set `strictMcpConfig: true`, [`disableClaudeAiConnectors: true`](/docs/en/mcp#disable-claude-ai-connectors) in settings, or `ENABLE_CLAUDEAI_MCP_SERVERS=false` in `env`                |
 
 <Warning>
@@ -41407,7 +41553,7 @@ When you rewind to a checkpoint, created files are deleted and modified files ar
 
 To use file checkpointing, enable it in your options, capture checkpoint UUIDs from the response stream, then call `rewindFiles()` (TypeScript) or `rewind_files()` (Python) when you need to restore.
 
-The following example shows the complete flow: enable checkpointing, capture the checkpoint UUID and session ID from the response stream, then resume the session later to rewind files. Each step is explained in detail below.
+The following example shows the complete flow: enable checkpointing, capture the checkpoint UUID and session ID from the response stream, then resume the session later to rewind files. Each step is explained in detail below. The examples in this section use the prompt "Refactor the authentication module". Run them in a project that contains an authentication module, or change the prompt to name files that exist in your project, so you can watch files change and see the rewind restore them.
 
 <CodeGroup>
   ```python Python theme={null}
@@ -41607,7 +41753,7 @@ The following example shows the complete flow: enable checkpointing, capture the
       ```
     </CodeGroup>
 
-    If you capture the session ID and checkpoint ID, you can also rewind from the CLI:
+    If you capture the session ID and checkpoint ID, you can also rewind from the CLI. This command requires the `claude` executable, which comes from [installing Claude Code](/docs/en/setup) and is not installed by the SDK package:
 
     ```bash theme={null}
     claude -p --resume <session-id> --rewind-files <checkpoint-uuid>
@@ -53691,6 +53837,8 @@ The SDK automatically creates todos for:
 
 ## Examples
 
+Before running these examples, install the Claude Agent SDK by following the [quickstart](/docs/en/agent-sdk/quickstart).
+
 ### Monitoring Todo Changes
 
 <CodeGroup>
@@ -60166,7 +60314,7 @@ Claude Code reads environment variables at startup, so changes take effect the n
 | `CLAUDE_CODE_DEBUG_LOG_LEVEL`                           | Minimum log level written to the debug log file. Values: `verbose`, `debug` (default), `info`, `warn`, `error`. Set to `verbose` to include high-volume diagnostics like full status line command output, or raise to `error` to reduce noise                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `CLAUDE_CODE_DISABLE_1M_CONTEXT`                        | Set to `1` to disable [1M context window](/docs/en/model-config#extended-context) support. When set, 1M model variants are unavailable in the model picker, and [Sonnet 5](/docs/en/model-config#sonnet-5-context-window) sessions are treated as having a 200K window. Useful for enterprise environments with compliance requirements                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING`                 | Set to `1` to disable [adaptive reasoning](/docs/en/model-config#adjust-effort-level) on Opus 4.6 and Sonnet 4.6 and fall back to the fixed thinking budget controlled by `MAX_THINKING_TOKENS`. From v2.1.111, has no effect on Fable 5, Sonnet 5, or Opus 4.7 and later, which always use adaptive reasoning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `CLAUDE_CODE_DISABLE_ADVISOR_TOOL`                      | Set to `1` to disable the [advisor tool](/docs/en/advisor). The `/advisor` command and `--advisor` flag become unavailable and any configured `advisorModel` is ignored. Requires Claude Code v2.1.98 or later                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `CLAUDE_CODE_DISABLE_ADVISOR_TOOL`                      | Set to `1` to disable the [advisor tool](/docs/en/advisor). The `/advisor` command becomes unavailable, any configured `advisorModel` is ignored, and the `--advisor` flag is accepted but has no effect, so existing scripts that pass it continue to work without errors. Requires Claude Code v2.1.98 or later                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `CLAUDE_CODE_DISABLE_AGENT_VIEW`                        | Set to `1` to turn off [background agents and agent view](/docs/en/agent-view): `claude agents`, `--bg`, `/background`, and the on-demand supervisor. Equivalent to the [`disableAgentView`](/docs/en/settings#available-settings) setting                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN`                  | Set to `1` to disable [fullscreen rendering](/docs/en/fullscreen) and use the classic main-screen renderer. The conversation stays in your terminal's native scrollback so `Cmd+f` and tmux copy mode work as usual. Takes precedence over `CLAUDE_CODE_NO_FLICKER` and the [`tui`](/docs/en/settings#available-settings) setting. You can also switch with `/tui default`. Does not apply to background sessions opened from [agent view](/docs/en/agent-view), which always use fullscreen rendering                                                                                                                                                                                                                                                                                                                                                                                            |
 | `CLAUDE_CODE_DISABLE_ARTIFACT`                          | Set to `1` to disable the [Artifact](/docs/en/artifacts) tool, which publishes session output as a private web page on claude.ai. Equivalent to the [`disableArtifact`](/docs/en/settings#available-settings) setting                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -64006,7 +64154,7 @@ Complete reference for keyboard shortcuts, input modes, and interactive features
 | `Ctrl+R`                                                  | Reverse search command history                                                                                                                             | Search through previous commands interactively                                                                                                                                                                                                                                                         |
 | `Ctrl+V` or `Cmd+V` (iTerm2) or `Alt+V` (Windows and WSL) | Paste image from clipboard                                                                                                                                 | Inserts an `[Image #N]` chip at the cursor so you can reference it positionally in your prompt. On WSL, both `Ctrl+V` and `Alt+V` are bound; use `Alt+V` if your terminal intercepts `Ctrl+V`                                                                                                          |
 | `Ctrl+B`                                                  | Background running tasks                                                                                                                                   | Backgrounds Bash commands and agents. Tmux users press twice                                                                                                                                                                                                                                           |
-| `Ctrl+T`                                                  | Toggle task list                                                                                                                                           | Show or hide the [task list](#task-list) in the terminal status area                                                                                                                                                                                                                                   |
+| `Ctrl+T`                                                  | Toggle Claude's task checklist                                                                                                                             | Show or hide [Claude's to-do checklist](#task-list) in the status area. This is not the background-task view; use [`/tasks`](/docs/en/commands) to see running shells and subagents                                                                                                                         |
 | `Left/Right arrows`                                       | Cycle through dialog tabs                                                                                                                                  | Navigate between tabs in permission dialogs and menus                                                                                                                                                                                                                                                  |
 | `Up/Down arrows` or `Ctrl+P`/`Ctrl+N`                     | Move cursor or navigate command history                                                                                                                    | When the input spans more than one visual row, whether wrapped or multiline, first moves the cursor within the prompt. Once the cursor is on the first or last visual row, pressing again navigates command history. As of v2.1.169, wrapped single-line input behaves the same as multiline           |
 | `Esc`                                                     | Interrupt Claude                                                                                                                                           | Stop the current response or tool call mid-turn so you can redirect. Claude keeps the work done so far                                                                                                                                                                                                 |
@@ -64318,9 +64466,9 @@ Once the answer appears, the overlay accepts these keys.
 
 ## Task list
 
-When working on complex, multi-step work, Claude creates a task list to track progress. Tasks appear in the status area of your terminal with indicators showing what's pending, in progress, or complete.
+The task list is Claude's to-do checklist: items Claude created to plan multi-step work, with indicators showing what's pending, in progress, or complete. It's separate from the background-task view. To see running shells and subagents, use [`/tasks`](/docs/en/commands) instead.
 
-* Press `Ctrl+T` to toggle the task list view. The display shows up to 5 tasks at a time
+* Press `Ctrl+T` to toggle the task list view. The display shows up to five tasks at a time. When Claude hasn't created any checklist items yet, the toggle has no visible effect because there's nothing to display
 * To see all tasks or clear them, ask Claude directly: "show me all tasks" or "clear all tasks"
 * Tasks persist across context compactions, helping Claude stay organized on larger projects
 * To share a task list across sessions, set `CLAUDE_CODE_TASK_LIST_ID` to use a named directory in `~/.claude/tasks/`: `CLAUDE_CODE_TASK_LIST_ID=my-project claude`
@@ -64433,13 +64581,13 @@ Actions follow a `namespace:action` format, such as `chat:submit` to send a mess
 
 Actions available in the `Global` context:
 
-| Action                 | Default   | Description                 |
-| :--------------------- | :-------- | :-------------------------- |
-| `app:interrupt`        | Ctrl+C    | Cancel current operation    |
-| `app:exit`             | Ctrl+D    | Exit Claude Code            |
-| `app:redraw`           | (unbound) | Force terminal redraw       |
-| `app:toggleTodos`      | Ctrl+T    | Toggle task list visibility |
-| `app:toggleTranscript` | Ctrl+O    | Toggle verbose transcript   |
+| Action                 | Default   | Description                                                                                                  |
+| :--------------------- | :-------- | :----------------------------------------------------------------------------------------------------------- |
+| `app:interrupt`        | Ctrl+C    | Cancel current operation                                                                                     |
+| `app:exit`             | Ctrl+D    | Exit Claude Code                                                                                             |
+| `app:redraw`           | (unbound) | Force terminal redraw                                                                                        |
+| `app:toggleTodos`      | Ctrl+T    | Toggle visibility of Claude's to-do checklist. This is not the [`/tasks`](/docs/en/commands) background-task view |
+| `app:toggleTranscript` | Ctrl+O    | Toggle verbose transcript                                                                                    |
 
 ### History actions
 
@@ -67654,7 +67802,7 @@ To add custom tools, connect an [MCP server](/docs/en/mcp). To extend Claude wit
 | Tool                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Permission Required |
 | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------ |
 | `Agent`                | Spawns a [subagent](/docs/en/sub-agents) with its own context window to handle a task. See [Agent tool behavior](#agent-tool-behavior)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | No                  |
-| `Artifact`             | Publishes an HTML or Markdown file as an [artifact](/docs/en/artifacts): a private, interactive page on claude.ai you can share inside your organization. Requires a Team or Enterprise plan and `/login` authentication; see [Availability](/docs/en/artifacts#availability)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Yes                 |
+| `Artifact`             | Publishes an HTML or Markdown file as an [artifact](/docs/en/artifacts): a private, interactive page on claude.ai. On Team and Enterprise plans, you can share it inside your organization. Requires a Pro, Max, Team, or Enterprise plan and `/login` authentication; see [Availability](/docs/en/artifacts#availability)                                                                                                                                                                                                                                                                                                                                                                                                                                   | Yes                 |
 | `AskUserQuestion`      | Asks multiple-choice questions to gather requirements or clarify ambiguity                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | No                  |
 | `Bash`                 | Executes shell commands in your environment. See [Bash tool behavior](#bash-tool-behavior)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Yes                 |
 | `CronCreate`           | Schedules a recurring or one-shot prompt within the current session. Tasks are session-scoped and restored on `--resume` or `--continue` if unexpired. See [scheduled tasks](/docs/en/scheduled-tasks)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | No                  |
