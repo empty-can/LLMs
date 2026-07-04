@@ -1,84 +1,104 @@
 ---
-対象期間: 2026年07月01日 〜 2026年07月02日
-作成日: 2026-07-02
+対象期間: 2026年07月02日 〜 2026年07月03日
+作成日: 2026-07-03
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、Artifacts が Pro・Max プランへ拡大したことと、v2.1.198／v2.1.199 の 2 リリースによるサブエージェント・バックグラウンドエージェントの刷新、および Claude in Chrome の一般提供が中心です。動的ワークフローには実践的な「ワークフロープロンプト例」節が新設され、エラー処理・信頼性の改善も広く入りました。今回、週刊ダイジェスト「新着情報」の更新はありません。
+今回の対象期間は、大規模なリブランド・改称と、これまで changelog 先行だった多数の機能・エラーのドキュメント実体化が中心です。「Google Vertex AI」が「Google Cloud's Agent Platform」へ、Web セッション作成フラグ `--remote` が `--cloud` へ改称され、v2.1.200／v2.1.201 の 2 リリースも加わりました。今回、週刊ダイジェスト「新着情報」の新規追加はありません。
 
 主要なものを以下に挙げます。
 
-1. Artifacts が Pro・Max プランでも利用可能になった（従来は Team／Enterprise 限定。Pro・Max では自分のみに非公開で、組織共有機能は使えない）
-2. サブエージェントが v2.1.198 で既定のバックグラウンド実行として一般提供され、バックグラウンドエージェントは作業完了時に自動でコミット／push／ドラフト PR を作成し、完了・入力待ちで通知フックが発火するようになった
-3. Claude in Chrome が v2.1.198 で一般提供（GA）となり、プランモードでの状態変更ブラウザツールの確認・読み取り専用ツールの自動許可も修正された
-4. 動的ワークフローに「ワークフロープロンプト例」節が新設され、代表的なプロンプト例と、生成されるスクリプトの形が示された
-5. v2.1.199 でサブエージェントの部分結果返却・API エラーの親への報告、ストリーミング応答の部分保持、スタックした slash-skill の複数ロードなど、エラー処理と信頼性が広く改善された
+1. 「Google Vertex AI」がドキュメント全体で「Google Cloud's Agent Platform」（旧 Vertex AI）へリブランドされた
+2. Web（クラウド）セッションを作成する CLI フラグが `--cloud` へ改称され、従来の `--remote` は非推奨エイリアスになった
+3. 権限モードの `default` が CLI・IDE 拡張で「Manual」と表示されるようになり（別名 `manual`）、AskUserQuestion ダイアログの自動継続が既定オフになった（v2.1.200）
+4. エラーリファレンスに新エラー節が多数追加され、ワークスペース未信頼・モデルID検証・AWS 認証・不完全応答の保持・インストール OOM 等が文書化された
+5. Enterprise 管理者向けに「組織デフォルトモデル」と「組織エフォート上限」がドキュメント化された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Artifacts が Pro と Max プランに対応**](#1-artifacts-が-pro-と-max-プランに対応):  
-  Artifacts の利用可能プランが Team／Enterprise から Pro・Max を含む 4 プランに拡大された。Pro・Max では artifacts は「自分のみに非公開」で管理者管理の対象外となり、組織メンバーへの共有機能は従来どおり Team・Enterprise 限定。可用性表・機能可用性表の Artifacts 要件も Pro・Max を含む形に更新された。
-2. [**サブエージェントとバックグラウンドエージェントの刷新**](#2-サブエージェントとバックグラウンドエージェントの刷新):  
-  v2.1.198 でサブエージェントが既定でバックグラウンド実行になり（段階的ロールアウトから一般提供へ）、Claude は作業を続けながら完了時に通知を受け取る。`claude agents` から起動したバックグラウンドエージェントは、worktree でのコード作業完了時に停止して尋ねる代わりに自動でコミット・push・ドラフト PR を作成し、入力待ち・完了で `Notification` フック（`agent_needs_input`／`agent_completed`）が発火する。組み込み Explore はメインセッションのモデルを継承（opus 上限）、サブエージェント／コンパクションは拡張思考設定を継承するようになり、`/agents` ウィザードは廃止された。
-3. [**Claude in Chrome の一般提供**](#3-claude-in-chrome-の一般提供):  
-  v2.1.198 で Claude in Chrome が一般提供（GA）となり、`llms.txt` のページ説明・タイトルからも「(beta)」表記が外れた。あわせて、プランモードで状態変更を伴うブラウザツール呼び出しが確認を求めるようになり、読み取り専用の `browser_batch` 呼び出しは正しく自動許可される修正が入った（v2.1.199）。ドキュメントマップにも `chrome` へ「Browser tools in plan mode」節が追加されている。
-4. [**動的ワークフローのワークフロープロンプト例**](#4-動的ワークフローのワークフロープロンプト例):  
-  `workflows` に「ワークフローの実行例プロンプト」節が新設された。ワークフローが適する場面（1 エージェントのコンテキストに収まらない／同じ処理を多数アイテムへ）を説明し、多数ファイルの監査、チェックが通るまでの修正ループ、多数ファイルの並列移行、変更ファイルのレビューと単一サマリ化、多ソース横断リサーチ、リストが増えなくなるまでの問題探索という代表的なプロンプト例と、保存されるスクリプトの実例（`meta` ブロック＋`agent()`／`pipeline()` を使う JavaScript）を提示する。
-5. [**エラー処理と信頼性の改善**](#5-エラー処理と信頼性の改善):  
-  v2.1.199 は信頼性・エラー処理の改善が中心。サブエージェントがレート制限やサーバーエラーで中断された際に黙って失敗せず部分的な作業を親に返し、API エラー（使用制限到達など）を成功結果として報告していた不具合も修正して親エージェントへ報告するようになった。API が部分出力後にストリーム途中でエラーを出してもストリーミング応答を破棄せず部分結果を保持し、スタックした slash-skill 呼び出し（`/skill-a /skill-b do XYZ`）は先頭スキルを最大 5 個までロードするようになった。
+1. [**Google Cloud's Agent Platform へのリブランド**](#1-google-clouds-agent-platform-へのリブランド):  
+  「Google Vertex AI」がページタイトル・説明・ドキュメントマップ全体で「Google Cloud's Agent Platform（旧 Vertex AI）」へ改称された。ゲートウェイ設定・機能可用性表・GitLab／GitHub CI 例など多数のページに波及するが、機能自体は変わらず名称のみの変更で、URL パス（`/google-vertex-ai`）や環境変数（`CLAUDE_CODE_USE_VERTEX` 等）は据え置き。
+2. [**Web セッション作成フラグの改称**](#2-web-セッション作成フラグの改称):  
+  Web（クラウド）セッションを作成する CLI フラグが `--remote` から `--cloud` へ改称された。`--cloud` が正式名となり、`--remote` は当面「`--cloud` の非推奨エイリアス」として動作を維持する。`claude-code-on-the-web`・CLI リファレンス・GitHub Enterprise Server ページ・エラー文言などが一斉に `--cloud` 表記へ更新された。
+3. [**権限モードの Manual 改称と質問ダイアログの既定変更**](#3-権限モードの-manual-改称と質問ダイアログの既定変更):  
+  v2.1.200 で `default` 権限モードが CLI・`claude --help`・VS Code・JetBrains 上で「Manual」と表示されるようになり、値としての別名 `manual`（`--permission-mode manual` / `"defaultMode": "manual"`）も受け付ける。設定値・フック／SDK が受け取る値は引き続き `default`。あわせて AskUserQuestion ダイアログの自動継続が既定オフ（`never`）になり、`askUserQuestionTimeout` 設定または `/config` でオプトインする形に変わった。
+4. [**エラーリファレンスの大幅拡充**](#4-エラーリファレンスの大幅拡充):  
+  `errors` ページに新エラー節が多数追加された。ワークスペース未信頼（allow ルール無視）、認識されないモデルID、AWS 認証情報の失効／認証失敗、ストリーム途中失敗時の部分応答保持、サブエージェントの API エラーによる早期終了、インストールの OOM 強制終了、`--bg` と `--print` の競合、Remote Control 再接続失敗など。多くは v2.1.198〜200 の changelog 先行項目が正式に文書化されたもの。
+5. [**組織デフォルトモデルと組織エフォート上限**](#5-組織デフォルトモデルと組織エフォート上限):  
+  Claude Enterprise プランの管理者が claude.ai 管理コンソールから、Claude Code メンバーの既定モデル（組織全体／カスタムロール単位）と、モデル別のエフォート上限をロール単位で設定できることが `model-config` に文書化された。既定モデルは「制限」ではなく開始点で、`--model` 等が優先される。
 <!-- light:highlight-list:end -->
 
-## 1. Artifacts が Pro と Max プランに対応
+## 1. Google Cloud's Agent Platform へのリブランド
 
-Artifacts（セッション出力を claude.ai 上のプライベートページとして公開する機能）の利用可能プランが、従来の Team／Enterprise から **Pro・Max を含む 4 プラン**に拡大されました。可用性表の「プラン」要件は「Pro、Max、Team、または Enterprise」に更新され、Pro・Max プランでは artifacts は**自分のみに非公開**のままで、管理者による有効化・管理（claude.ai 管理設定のトグルや保持ポリシー等）は適用されません。組織メンバーへの**共有**（ページヘッダーの Share コントロールで特定の人や全員に公開する操作）は引き続き Team・Enterprise プラン限定で、Pro・Max にはこの共有 UI がありません。
+「Google Vertex AI」ブランドが、Claude Code ドキュメント全体で **「Google Cloud's Agent Platform」（旧 Vertex AI）** へ改称されました。`llms.txt` のページタイトルが「Claude Code on Google Cloud's Agent Platform」に、説明文も「formerly Vertex AI」を添えた新名称に更新され、ドキュメントマップでも「Sign in with Agent Platform」「Enable Agent Platform API」「Enable auto mode on Bedrock, Agent Platform, or Foundry」などへ一斉に置き換わっています。
 
-認証（`/login` で claude.ai にサインイン必須。API キー・ゲートウェイトークン・クラウドプロバイダー認証情報では公開不可）、モデルプロバイダー（Anthropic API のみ。Bedrock／Vertex AI／Foundry では不可）、組織ポリシー（CMEK・HIPAA・Zero Data Retention が無効であること）といった他の要件は変わりません。あわせて機能可用性表（プラン別）の Artifacts 行が Pro・Max でも利用可（✓）に更新され、ツールリファレンスの `Artifact` ツール説明や、直接ログインが必要な機能一覧の記述も「Pro、Max、Team、Enterprise」に揃えられました。
+波及範囲は広く、Claude apps ゲートウェイ設定（`gateway.yaml` の upstream 説明）、機能可用性表（`feature-availability`）、GitLab CI/CD・GitHub Actions の「Amazon Bedrock and Google Cloud」節や CI ジョブ例、フォールバック設定の説明などが同様に更新されました。一方で **これは名称のみの変更** であり、URL パスは `/google-vertex-ai` のまま、`CLAUDE_CODE_USE_VERTEX`・`ANTHROPIC_VERTEX_PROJECT_ID`・`CLOUD_ML_REGION` などの環境変数や `VERTEX_REGION_CLAUDE_*` の挙動は据え置きです。日本語版 `google-vertex-ai` ページは本サマリ作成時点で旧称「Google Vertex AI」のままのため、日本語リンクは省略しています。
 
-- [セッション出力をアーティファクトとして共有する（利用可能性） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/artifacts#availability)
-- [Share session output as artifacts (Availability) - Claude Code Docs (English)](https://code.claude.com/docs/en/artifacts#availability)
-- [セッション出力をアーティファクトとして共有する（アーティファクトを共有する） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/artifacts#share-an-artifact)
-- [Share session output as artifacts (Share an artifact) - Claude Code Docs (English)](https://code.claude.com/docs/en/artifacts#share-an-artifact)
+- [Claude Code on Google Cloud's Agent Platform - Claude Code Docs (English)](https://code.claude.com/docs/en/google-vertex-ai)
 
-## 2. サブエージェントとバックグラウンドエージェントの刷新
+> リブランドは llms.txt・ドキュメントマップ・原文全文（llms-full）の en 側で反映済みですが、日本語ページ群（`google-vertex-ai` 等）は本サマリ作成時点で「Vertex AI」表記のままです。翻訳追従待ちとして日本語リンクは付けていません。
 
-v2.1.198 で、サブエージェントとバックグラウンドエージェントの挙動が大きく変わりました。サブエージェントは**既定でバックグラウンド実行**になり（従来は段階的ロールアウト）、Claude は他の作業を続けながらサブエージェントの完了時に通知を受け取ります。`claude agents` から起動したバックグラウンドエージェントは、worktree 内でのコード作業を終えると、停止して確認を求める代わりに**自動でコミット・push・ドラフト PR を作成**するようになりました。さらに `claude agents` にバックグラウンドエージェント通知が追加され、入力待ちや完了時に `Notification` フック（`agent_needs_input`／`agent_completed`）が発火します。
+## 2. Web セッション作成フラグの改称
 
-品質面の変更も入りました。組み込みの Explore エージェントが haiku ではなく**メインセッションのモデルを継承**するようになり（opus 上限）、サブエージェントとコンテキストコンパクションが**セッションの拡張思考設定を継承**して委任タスクの出力品質が改善されます。また、別エージェントから届いたメッセージは通常のタスク指示として扱われる一方、ユーザーの承認としては決して扱われないという境界が明確化されました。運用面では `/agents` ウィザードが廃止され、サブエージェントの作成・管理は Claude への依頼か `.claude/agents/` の直接編集で行う形になっています（ドキュメントマップからも「Use the /agents command」が削除）。
+Web（クラウド）セッションを作成する CLI フラグが `--remote` から **`--cloud`** へ改称されました。`claude --cloud "<task>"` が正式な書き方になり、`claude-code-on-the-web` ページ本文・CLI リファレンス・GitHub Enterprise Server ページ・関連するエラー文言（「Could not create a cloud environment ... when using `--cloud` or ultraplan」）が一斉に `--cloud` 表記へ更新されています。
 
-- [Create custom subagents (Run subagents in foreground or background) - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)
+**後方互換は保たれ**、原文には「The older `--remote` spelling still works as a deprecated alias for `--cloud`」と明記され、CLI リファレンスでも `--remote` は「Deprecated alias for `--cloud`」として掲載されています。あわせて `CCR_FORCE_BUNDLE=1 claude --cloud ...` によるローカルリポジトリのバンドル送信、並列実行、テレポート（`--teleport`／`/teleport`）との対比も `--cloud` 前提で記述し直されました。なお `--remote-control`（ローカル CLI セッションを Web から監視する Remote Control）は無関係で、名称の混同に注意する旨も補足されています。日本語版 `claude-code-on-the-web` ページは本サマリ作成時点でまだ `--remote` 表記のため、日本語リンクは省略しています。
 
-> 上記の変更は主に changelog（v2.1.198）由来です。日本語版 `sub-agents` ページは本サマリ作成時点で「既定バックグラウンド実行」を反映していない（`background` フロントマターの既定は `false` のまま）ため、日本語リンクは省略しています。
+- [Use Claude Code on the web (Move tasks between web and terminal) - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-code-on-the-web#move-tasks-between-web-and-terminal)
+- [CLI reference (CLI flags) - Claude Code Docs (English)](https://code.claude.com/docs/en/cli-reference#cli-flags)
 
-## 3. Claude in Chrome の一般提供
+> `--cloud`／`--remote` 改称は en 側で反映済みですが、日本語 `claude-code-on-the-web` は本サマリ作成時点で `--remote` 表記のままのため、日本語リンクは省略しています。
 
-v2.1.198 で **Claude in Chrome が一般提供（GA）** になりました。これに伴い `llms.txt` のページ説明・タイトルから「(beta)」表記が外れています（機能自体は Google Chrome・Microsoft Edge で動作し、Web アプリのテスト・コンソールログでのデバッグ・フォーム入力の自動化・データ抽出などをブラウザとコーディングを跨いで行えます）。あわせて v2.1.199 で、プランモード時に**状態変更を伴うブラウザツール呼び出しが確認を求める**ようになり、読み取り専用の `browser_batch` 呼び出しは正しく自動許可されるよう修正されました。ドキュメントマップには `chrome` ページへ「Browser tools in plan mode」節が追加されています。
+## 3. 権限モードの Manual 改称と質問ダイアログの既定変更
 
-- [日本語](https://code.claude.com/docs/ja/chrome) / [Use Claude Code with Chrome - Claude Code Docs (English)](https://code.claude.com/docs/en/chrome)
+v2.1.200 で、権限モードの **`default` が UI 上「Manual」と表示** されるようになりました。CLI・`claude --help`・VS Code／JetBrains 拡張のいずれでも「各アクションを個別に確認する」モードが「Manual」と表記され、値としての別名 `manual` も受け付けます（`claude --permission-mode manual`、`"defaultMode": "manual"`）。ただし **設定値・フック／SDK が受け取る値は引き続き `default`** で、`permission_mode` フィールドや `initialPermissionMode` も `"default"` のまま届くため、`"default"` を判定する既存スクリプトはそのまま動作します。`Shift+Tab` のモード循環表示も「Manual」を先頭に表示するようになりました。
 
-> Chrome の GA・プランモード対応は changelog 由来です。日本語版 `chrome` ページは本サマリ作成時点でまだ「（ベータ版）」表記で GA・「Browser tools in plan mode」節を反映していないため、日本語リンクは省略しています。
+もう一つの変更として、**AskUserQuestion ダイアログの自動継続が既定オフ（`never`）** になりました。v2.1.198／v2.1.199 では 60 秒アイドルで自動継続していましたが、v2.1.200 以降は既定で「回答するまで待つ」挙動になり、自動継続したい場合は `askUserQuestionTimeout` 設定（`60s`／`5m`／`10m`）または `/config` の「Question auto-continue timeout」でオプトインします。カウントダウンは最後の 20 秒で表示され、`CLAUDE_AFK_TIMEOUT_MS`／`CLAUDE_AFK_COUNTDOWN_MS` はデモ・自動テスト用のオーバーライドとして残ります。権限プロンプト（プラン承認を含む）はアイドルで自動解決しません。
 
-## 4. 動的ワークフローのワークフロープロンプト例
+- [Permission modes (Permission modes) - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#permission-modes)
+- [Settings (Available settings) - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#available-settings)
 
-`workflows`（動的ワークフロー）に「ワークフローの実行例プロンプト」節が新設されました。ワークフローが最も適するのは、タスクが 1 つのエージェントのコンテキストに収まらない場合、または同じステップを多数のアイテムに適用する場合であると説明した上で、代表的な 6 つのプロンプト例を示します。具体的には、同一問題での多数ファイル監査（ファイルごとにファンアウトして検出結果を対立的に検証）、チェックが通るまでの修正ループ、多数ファイルの並列移行（各ファイルを分離コピーで変換）、変更ファイルのレビューと単一サマリへの集約、複数ソースを横断するリサーチ、リストが増えなくなるまでの問題探索です。
+> 本節は主に changelog（v2.1.200）由来で、日本語版 `permission-modes`・`settings` ページは本サマリ作成時点で「Manual」表記・`askUserQuestionTimeout` 既定変更を反映していないため、日本語リンクは省略しています。
 
-各例は「Claude にそのタスク用のワークフローを作成・実行させる」形で、ユーザー自身がスクリプトを書く必要はありません。節末には、保存されるワークフローの実体（`.claude/workflows/` 内の `meta` ブロック＋`agent()`／`pipeline()` を使うトップレベル `await` の JavaScript）の小さな実例が添えられ、Claude が生成したスクリプトの形を把握できるようになっています。
+## 4. エラーリファレンスの大幅拡充
 
-- [動的ワークフローで大規模にサブエージェントをオーケストレーションする（ワークフローの実行例プロンプト） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/workflows#example-workflow-prompts)
-- [Orchestrate subagents at scale with dynamic workflows (Example workflow prompts) - Claude Code Docs (English)](https://code.claude.com/docs/en/workflows#example-workflow-prompts)
+`errors` ページに、これまで changelog 先行だった挙動を説明する **新エラー節が多数追加** されました。主なものは次のとおりです。
 
-## 5. エラー処理と信頼性の改善
+- **不完全応答の保持**（`The response above may be incomplete`）: ストリーム途中でサーバーエラー・接続切断・停滞が起きても、可視出力済みの応答を破棄せず不完全注記付きで保持する（v2.1.199 以降）。
+- **サブエージェントの早期終了**（`Agent terminated early due to an API error`）: 使用制限到達やサーバーエラーの再試行枯渇でサブエージェントが打ち切られた際、エラー本文を成果として返さず失敗として親へ報告する（v2.1.199 以降）。
+- **AWS 認証系**（`AWS credentials expired or invalid` / `AWS authentication failed`）: `awsAuthRefresh` 設定時の 401／403 に対する復旧手順を明文化（v2.1.198 以降）。
+- **認識されないモデルID**（`Model is not a recognized model id`）: SDK `setModel()` や Desktop アプリ経由で不正なモデル文字列を指定した際、リクエスト前にローカルで拒否する（v2.1.200 以降）。
+- **ワークスペース未信頼**（`Workspace has not been trusted`）: プロジェクト設定の `permissions.allow`／`additionalDirectories` がワークスペース信頼前のため無視された旨を stderr に警告（v2.1.200 以降）。
+- **インストールの OOM 強制終了**（`Installation was killed before it could finish`）: Linux の終了コード 137（OOM killer）等でインストールが中断された理由を説明（v2.1.200 以降）。
+- そのほか `Conflict between --bg and --print`、`Couldn't reconnect to your Remote Control session`、ページ全体の再構成（リクエストエラーの導入文更新など）。
 
-v2.1.199 は信頼性とエラー処理の改善が中心のリリースです。サブエージェントがレート制限やサーバーエラーで打ち切られた際に**黙って失敗せず部分的な作業を親に返す**ようになり、サブエージェントが API エラー（使用制限到達など）を成功結果として報告していた不具合も修正され、**エラーが親エージェントに報告**されるようになりました。API が部分出力の後にストリーム途中で overloaded／サーバーエラーを返した場合も、**ストリーミング応答を破棄せず部分結果を「不完全」注記付きで保持**します。
+このうち、不完全応答・サブエージェント早期終了・AWS 認証系は日本語版 `errors` ページも反映済みですが、v2.1.200 由来のワークスペース未信頼・認識されないモデルID・インストール OOM は本サマリ作成時点で日本語未追従のため、それらは英語リンクのみ掲載します。
 
-そのほか、スタックした slash-skill 呼び出し（`/skill-a /skill-b do XYZ`）が**先頭スキルを最大 5 個までロード**するようになり（従来は最初の 1 個のみ）、SSL 証明書エラー（TLS 検査プロキシ・`NODE_EXTRA_CA_CERTS` 未設定・期限切れ証明書）はリトライを消費する前に即座に失敗して修正ヒントを表示するようになりました。リトライ制御では、`CLAUDE_CODE_RETRY_WATCHDOG` が非容量の一時エラーの既定リトライ回数を 300 に引き上げ、`CLAUDE_CODE_MAX_RETRIES` の 15 上限を撤廃しています。
+- [エラーリファレンス（上記の応答は不完全な可能性があります） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/errors#the-response-above-may-be-incomplete)
+- [Error reference (The response above may be incomplete) - Claude Code Docs (English)](https://code.claude.com/docs/en/errors#the-response-above-may-be-incomplete)
+- [エラーリファレンス（API エラーによりエージェントが早期終了） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/errors#agent-terminated-early-due-to-an-api-error)
+- [Error reference (Agent terminated early due to an API error) - Claude Code Docs (English)](https://code.claude.com/docs/en/errors#agent-terminated-early-due-to-an-api-error)
+- [Error reference (Workspace has not been trusted) - Claude Code Docs (English)](https://code.claude.com/docs/en/errors#workspace-has-not-been-trusted)
+- [Error reference (Model is not a recognized model id) - Claude Code Docs (English)](https://code.claude.com/docs/en/errors#model-is-not-a-recognized-model-id)
 
-> 本セクションの内容は changelog（v2.1.199）由来で、対応する通常ドキュメントページ（エラーリファレンス等）への反映は原文全文（llms-full）・日本語ページともに本サマリ作成時点で未追従のため、参考リンクは省略しています。
+## 5. 組織デフォルトモデルと組織エフォート上限
+
+`model-config` に、Claude Enterprise 管理者向けの 2 つの統制機能が文書化されました。
+
+**組織デフォルトモデル**（Organization default model）は、管理者が claude.ai 管理コンソールから Claude Code メンバーの既定モデルを、組織全体またはカスタムロール単位で設定するものです（v2.1.196 以降）。設定すると `/model` ピッカーの Default 行が組織既定モデル名を「Org default」ラベル付きで表示します。これは **制限ではなく開始点** で、`--model`／`ANTHROPIC_MODEL`、管理設定や `--settings` の `model`、ユーザー／プロジェクト／ローカル設定の `model`（`/model` で保存したものを含む）が優先されます。管理者が「ユーザー選択をオーバーライド」に設定した場合のみ、ユーザー／プロジェクト／ローカル設定より優先され、次回起動で組織既定へ戻ります。`availableModels`／`enforceAvailableModels`・組織モデル制限・ゼロデータ保持といった既存の制限チェックも通過します。
+
+**組織エフォート上限**（Organization effort limits）は、ロールごと・モデルごとに最大エフォートレベルを設定するものです（v2.1.195 以降）。上限超のレベルは `/effort` ピッカーに出ず、`--effort`／`/effort` で高いレベルを指定しても上限で実行されます。対話・プレーンテキスト `--print` では要求レベルと適用レベルを示す警告が出ますが、`json`／`stream-json` 出力やバックグラウンドエージェントでは無警告でクランプされます。いずれの機能も Anthropic API 認証セッションにのみ配信され、Amazon Bedrock・Google Cloud's Agent Platform・Microsoft Foundry・Claude Platform on AWS には配信されません（それらでは管理設定の `model` キーや `availableModels` を使用）。
+
+- [モデル設定（組織デフォルトモデル） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config#organization-default-model)
+- [Model configuration (Organization default model) - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#organization-default-model)
+- [モデル設定（組織努力制限） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config#organization-effort-limits)
+- [Model configuration (Organization effort limits) - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#organization-effort-limits)
 
 ## 新規追加されたページ
 
@@ -89,89 +109,98 @@ v2.1.199 は信頼性とエラー処理の改善が中心のリリースです�
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-上記ハイライト以外で、既存ページの規模の大きい・意味のある更新は以下の 2 件です。
+上記ハイライト以外で、既存ページに実体化した規模の大きい更新は以下の 3 件です。
 
-- [**組織のモデル制限に関する記述の整理**](#1-組織のモデル制限に関する記述の整理) ([日本語](https://code.claude.com/docs/ja/model-config#organization-model-restrictions) / [English](https://code.claude.com/docs/en/model-config#organization-model-restrictions)):  
-  組織管理者がメンバーの利用モデルを制限する方法が「Claude Enterprise プランの組織管理者が claude.ai 管理コンソールで無効化する」ものとして明確化され、Console 側での制限（`availableModels`）との使い分けが整理された。
-- [**タスクリストと実行中タスクビューの区別**](#2-タスクリストと実行中タスクビューの区別) ([日本語](https://code.claude.com/docs/ja/interactive-mode#task-list) / [English](https://code.claude.com/docs/en/interactive-mode#task-list)):  
-  タスクリストが「Claude が多段作業を計画するために作る ToDo チェックリスト」であり、実行中のシェルやサブエージェントを見る `/tasks` のバックグラウンドタスクビューとは別物であることが明確化された。
+- [**ワークスペース信頼とプロジェクト allow ルール**](#1-ワークスペース信頼とプロジェクト-allow-ルール) ([English](https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust)):  
+  プロジェクトの `.claude/settings.json` の `permissions.allow`／`additionalDirectories` は、ワークスペース信頼ダイアログを受け入れるまで適用されないという規則が明文化された。親ディレクトリを信頼済みでも入れ子プロジェクトの allow ルールは適用されず、v2.1.196〜199 で誤って無視されていた自分の `.claude/settings.local.json` の扱いが v2.1.200 で v2.1.195 以前の挙動に復元された。
+- [**MCP のツール承認強制とルートレベル結合子対応**](#2-mcp-のツール承認強制とルートレベル結合子対応) ([日本語](https://code.claude.com/docs/ja/mcp#require-approval-for-a-specific-tool) / [English](https://code.claude.com/docs/en/mcp#require-approval-for-a-specific-tool)):  
+  MCP サーバーが `_meta["anthropic/requiresUserInteraction"]` でツールを「毎回承認必須」にできる仕組み（v2.1.199 以降）と、入力スキーマのルート直下に `anyOf`／`oneOf`／`allOf` を持つツールを Claude Code がフラット化して利用可能に保つ仕組み（v2.1.195 以降）が追加された。
+- [**サンドボックスの認証情報マスキング**](#3-サンドボックスの認証情報マスキング) ([日本語](https://code.claude.com/docs/ja/sandboxing#mask-environment-variables) / [English](https://code.claude.com/docs/en/sandboxing#mask-environment-variables)):  
+  `sandbox.credentials` の環境変数エントリに `"mode": "mask"` が追加され、認証情報を削除せずセンチネル値に置換し、`injectHosts` 宛のリクエスト時のみプロキシが実値へ差し替える方式が文書化された（v2.1.199 以降、`network.tlsTerminate` 前提）。
 <!-- light:updated-pages:end -->
 
-## 1. 組織のモデル制限に関する記述の整理
+## 1. ワークスペース信頼とプロジェクト allow ルール
 
-`model-config` の「組織モデル制限」節が整理されました。組織管理者がメンバーの実行できるモデルを制限する手段が、「**Claude Enterprise プラン**の組織管理者が **claude.ai 管理コンソール**で個別モデルを無効化する」ものとして明確化されています。この制限はメンバーのサインインまたは自身の API キー利用時に適用され、組織サービスキーのようなユーザーに紐づかない組織スコープの認証情報には適用されません。制限は認証時にアカウントの権利として配信され、設定の `availableModels` とは別物で、セッション作成時にサーバー側でも独立に適用されます（要 v2.1.187 以降）。
+`permissions` ページに「Project allow rules and workspace trust」節が追加され、**プロジェクトの `.claude/settings.json` の `permissions.allow` ルールと `permissions.additionalDirectories` は、そのワークスペースの信頼ダイアログを受け入れるまで適用されない**ことが明文化されました。信頼を受け入れるまで Claude Code はルールを読み込むだけで適用せず、信頼ダイアログには付与される allow ルール・追加ディレクトリが一覧表示されます。`deny`／`ask` ルールは制限のみのため影響を受けません。信頼はワークスペース単位（git リポジトリルート、リポジトリ外なら起動ディレクトリ）で保存され、親ディレクトリを信頼済みでも入れ子プロジェクトの allow ルールは適用されません。
 
-あわせて、**Claude Console にはモデル制限機能が無い**ことが明記され、Enterprise プランを持たない組織（Anthropic API で認証するメンバーを含む）は管理設定の [`availableModels`] でモデルを制限し、Default オプションもカバーするには `enforceAvailableModels` を併用する、という使い分けが示されました。なお、ドキュメントマップには `model-config` へ「Organization default model」「Organization effort limits」の見出しも追加されていますが、これらの本文は原文全文（llms-full）には未収録です。
+`.claude/settings.local.json` は本来自分のファイルなので通常は信頼チェックの対象外ですが、リポジトリが供給し得る場合（git にコミット済み・`.claude` がシンボリックリンク）は信頼チェックを経ます。**v2.1.196〜199 では git リポジトリ外やホーム／`CLAUDE_CONFIG_DIR` 配下で自分の `.claude/settings.local.json` を「リポジトリ供給」と誤判定して allow ルールを無視し stderr 警告を出していた**不具合が、v2.1.200 で v2.1.195 以前の挙動（この 2 ケースは信頼不要）に復元されました。また、親ディレクトリが信頼済みで信頼ダイアログが一度も出ずルール未適用のワークスペースでは、v2.1.200 以降、次回対話起動時に信頼ダイアログが表示されるようになりました。
 
-- [モデル設定（組織モデル制限） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config#organization-model-restrictions)
-- [Model configuration (Organization model restrictions) - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#organization-model-restrictions)
+- [Permissions (Project allow rules and workspace trust) - Claude Code Docs (English)](https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust)
 
-## 2. タスクリストと実行中タスクビューの区別
+> 本節は日本語版 `permissions` ページに本サマリ作成時点で未追従（該当見出しが存在しない）のため、日本語リンクは省略しています。関連するエラー文言は `errors#workspace-has-not-been-trusted`（英語）にあります。
 
-`interactive-mode` の「タスクリスト」節と `Ctrl+T` の説明が刷新され、**タスクリストが「Claude の ToDo チェックリスト」**であることが明確になりました。これは Claude が多段作業を計画するために作成した項目（保留中・進行中・完了のインジケータ付き）で、**実行中のシェルやサブエージェントを見る `/tasks` のバックグラウンドタスクビューとは別物**です。`Ctrl+T` はこの ToDo チェックリストの表示切り替えで、Claude がまだチェックリスト項目を作っていない場合はトグルしても表示は変わりません。
+## 2. MCP のツール承認強制とルートレベル結合子対応
 
-キーボードショートカット表と、グローバルアクション表の `app:toggleTodos`（`Ctrl+T`）の説明も同様に「Claude の ToDo チェックリストの表示切り替え。これは `/tasks` のバックグラウンドタスクビューではない」と補足されています。
+`mcp` ページに、MCP サーバー作成者向けの 2 つの節が追加されました。
 
-- [インタラクティブモード（タスクリスト） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/interactive-mode#task-list)
-- [Interactive mode (Task list) - Claude Code Docs (English)](https://code.claude.com/docs/en/interactive-mode#task-list)
+1 つ目の「**特定のツールの承認を要求する**」は、`tools/list` 応答エントリで `_meta["anthropic/requiresUserInteraction"]` を `true` にすると、そのツールを **すべての呼び出しで明示承認必須** にできる仕組みです（v2.1.199 以降）。`acceptEdits`／`auto`／`bypassPermissions` モードでもプロンプトを表示し、「今後は聞かない」も提供せず、allow ルールにマッチしてもスキップしません。`dontAsk` モードでは拒否されます。`--permission-prompt-tool` 経由の `allow` は拒否へ変換され、SDK の `canUseTool` コールバックには到達します。同意・アクセス付与などプロンプト自体が目的のツールが想定用途です。
+
+2 つ目の「**ルートレベルの結合子を持つツール入力スキーマ**」は、入力スキーマのルート直下に `anyOf`／`oneOf`／`allOf` を持つツールへの対応です（v2.1.195 以降）。Claude API はこれらをスキーマルートで受け付けないため、Claude Code がスキーマを単一オブジェクトへフラット化し、どのパラメータ群が同時指定かをツール説明の先頭文で補足します（`allOf` は各分岐の `required` を維持、`anyOf`／`oneOf` は説明文で補足）。スキーマを生成できない環境ではそのツールのみスキップし、他ツールは利用可能に保ちます。
+
+- [MCP を使用して Claude Code をツールに接続する（特定のツールの承認を要求する） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/mcp#require-approval-for-a-specific-tool)
+- [Connect Claude Code to tools via MCP (Require approval for a specific tool) - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#require-approval-for-a-specific-tool)
+- [MCP を使用して Claude Code をツールに接続する（ツール入力スキーマとルートレベルのコンビネータ） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/mcp#tool-input-schemas-with-a-root-level-combinator)
+- [Connect Claude Code to tools via MCP (Tool input schemas with a root-level combinator) - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#tool-input-schemas-with-a-root-level-combinator)
+
+## 3. サンドボックスの認証情報マスキング
+
+`sandboxing` ページの「認証情報を保護する」節が再構成され、環境変数エントリに新モード **`"mode": "mask"`** が追加されました（v2.1.199 以降）。`deny` が変数を完全に削除して `gh` や `npm` などのツールも壊すのに対し、`mask` は認証情報を保護しつつ、それで認証するツールを動作させ続けます。
+
+`mask` では、サンドボックス化されたコマンドはセッションごとのセンチネル値のみを見て、リクエストが認証情報の `injectHosts`（省略時は `network.allowedDomains` の全ホスト）宛にサンドボックスを離れるとき、サンドボックスプロキシがセンチネルを実値へ差し替えます。プロキシがリクエスト内容を見る必要があるため **`network.tlsTerminate` が前提** で、未設定時はマスキングがフェイルクローズします（センチネルのまま送出され認証失敗、起動時と `/doctor` で警告）。マスキングはプロキシに実値送信を認可するため、ユーザー設定・管理設定・`--settings` からのみ有効で、リポジトリの `.claude/settings.json`／`.claude/settings.local.json` の `mask` エントリ・`tlsTerminate`・`allowPlaintextInject` は無視されます。同一変数が `deny` されている場合は `deny` が優先します。
+
+- [サンドボックス化された Bash ツールを設定する（環境変数をマスクする） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/sandboxing#mask-environment-variables)
+- [Configure the sandboxed Bash tool (Mask environment variables) - Claude Code Docs (English)](https://code.claude.com/docs/en/sandboxing#mask-environment-variables)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、v2.1.198／v2.1.199 の 2 リリースに伴う既存ページへの追記・修正と多数のバグ修正が中心です。以下に分類して整理します（複数リリースを含むため、識別が必要な項目にはバージョンを併記します）。
+今回の軽微な更新は、v2.1.200／v2.1.201 の 2 リリースに伴う多数のバグ修正と、既存ページへの記述明確化・実体化が中心です。以下に分類して整理します（複数リリースを含むため、識別が必要な項目にはバージョンを併記します）。
 
 **新機能**
 
-- `/dataviz` スキルが追加され、チャート・ダッシュボード設計のガイダンスと実行可能なカラーパレット検証ツールを提供するようになった（v2.1.198）。
-- Claude apps ゲートウェイのアップストリームプロバイダーに「Claude Platform on AWS」（`anthropicAws`）が追加され、model-not-found 応答でフェイルオーバーチェーンが次へ進むようになった（v2.1.198）。ドキュメントマップの `claude-apps-gateway-config`（`upstreams`）にも該当エントリが追加されている。
+- Remote Control に再開系フラグが追加された。`-c`／`--continue`（このディレクトリで開始した直近セッションを再開）、`--session-id <id>`（ID 指定で再開）、`--[no-]create-session-in-dir`（起動時に現在ディレクトリへ 1 セッション事前作成）（v2.1.200） — [日本語](https://code.claude.com/docs/ja/remote-control) / [English](https://code.claude.com/docs/en/remote-control)。
 
 **機能改善**
 
-- サブエージェントの既定バックグラウンド化、Explore のモデル継承、拡張思考設定の継承（詳細はハイライト 2 参照）。
-- ベストプラクティスの記述が複数明確化された。コンパクション指示を書く `CLAUDE.md` が「プロジェクトルートの `CLAUDE.md`」であること、拡張思考予算を下げる `MAX_THINKING_TOKENS` が環境変数であること、`filter-test-output` フックスクリプトの設置手順（`mkdir`／`chmod +x`）などが追記された — [日本語](https://code.claude.com/docs/ja/best-practices) / [English](https://code.claude.com/docs/en/best-practices)。
-- `dontAsk` モードが有効な間、ステータスバーに `⏵⏵ don't ask on` を表示する旨が追記された — [English](https://code.claude.com/docs/en/permissions#allow-only-pre-approved-tools-with-dontask-mode)。
-- Agent SDK ドキュメントで、自動メモリが専用ツールではなく `Write`／`Edit` ツールで書き込まれる旨や、チェックポイント例・SDK サンプルの実行前提が明確化された — [日本語](https://code.claude.com/docs/ja/agent-sdk/typescript) / [English](https://code.claude.com/docs/en/agent-sdk/typescript)。
-- `CLAUDE_CODE_RETRY_WATCHDOG` の既定リトライ回数引き上げ・`CLAUDE_CODE_MAX_RETRIES` の上限撤廃（詳細はハイライト 5 参照）に加え、サブスクライバー向けに使用制限と無関係な一時的 429 を自動バックオフ再試行するようになった（v2.1.199）。
-- API リトライの UX が改善され、2 回目試行後にエラー理由を表示し、API 過負荷時はスピナーのヒントをステータスページへのリンクに置き換えるようになった（v2.1.198）。
-- コードブロック・差分・ファイルプレビューの構文ハイライトが highlight.js 11 へのアップグレードで改善された（v2.1.198）。
-- `/login` が `claude agents` ビューから「利用不可」と表示する代わりにサインインダイアログを開くようになり、フォーカスモードでは 1 ターン内で起動したサブエージェントがその活動サマリに表示され、Mac から SSH 接続時のキーボードショートカットヒントが alt/super の代わりに opt/cmd を表示するようになった（v2.1.198）。
-- そのほか、手順・前提を明確化する小規模な更新が複数ページで行われた。エージェントビューの「既存セッションの取り込み」手順とバックグラウンドサービス起動時のメッセージ（`agent-view`）、Linux 版デスクトップのサインイン方法（`desktop-linux`）、プラグインクイックスタートのディレクトリ配置（`plugins-quickstart`）など。
+- Chrome のプランモードで、ページ／ブラウザ状態を読むだけの呼び出しは確認なしで実行し、状態変更呼び出しは承認を求めるようになった。`createIfEmpty`／`clear`／`save_to_disk` など状態変更フラグを伴う読み取りも承認対象で、`browser_batch` は全アクションが読み取り専用のときのみ無確認（v2.1.199） — [日本語](https://code.claude.com/docs/ja/chrome#browser-tools-in-plan-mode) / [English](https://code.claude.com/docs/en/chrome#browser-tools-in-plan-mode)。
+- サブエージェント関連の挙動が複数明確化された。API エラー時の親への報告（詳細はハイライト4参照）、`SendMessage` が会話内で名前の指す相手が変わっていないか検証し誤配送を拒否、起動元エージェントからのメッセージを通常のタスク指示として扱う一方で承認や設定変更には決してならない境界（v2.1.198／v2.1.199） — [English](https://code.claude.com/docs/en/sub-agents#api-errors-in-subagents)（日本語版 `sub-agents` ページの該当節は本サマリ作成時点で未確認のため英語リンクのみ掲載）。
+- エージェントチーム（実験的機能）のパネル挙動が変わった（v2.1.199）。アイドルの担当者行はパネル全体がアイドルになるまで残り、全員アイドル後 30 秒で非表示になる（次のターンで再表示、非表示中も稼働・宛先指定は可能）。4 人以上が同時にアイドルのときは先頭 3 行以外が「N idle agents」の 1 行に折りたたまれる。担当者（in-process teammate）を表示中はテキスト入力と skills はその担当者へ送られ、組み込みコマンドは lead セッションで実行される。また in-process teammate は自身のサブエージェントを常にフォアグラウンドで実行し、`run_in_background` や `background: true` でバックグラウンド起動を求めるとエラーになる — [English](https://code.claude.com/docs/en/agent-teams)（日本語版 `agent-teams` ページの該当記述は本サマリ作成時点で未確認のため英語リンクのみ掲載）。
+- モデル切替の検証が追加された。SDK `setModel()` や Desktop アプリ経由で不正なモデル文字列を指定すると、リクエスト前にローカルで拒否するようになった（v2.1.200、詳細はハイライト4参照） — [日本語](https://code.claude.com/docs/ja/model-config#setting-your-model) / [English](https://code.claude.com/docs/en/model-config#setting-your-model)。
+- 管理設定の優先順位の記述が整理され、例外的に「いずれの管理ソースが設定しても尊重されるキー」に `forceRemoteSettingsRefresh` が追加された — [日本語](https://code.claude.com/docs/ja/settings#settings-precedence) / [English](https://code.claude.com/docs/en/settings#settings-precedence)。
+- システムプロンプトの帰属ブロックについて、ゲートウェイが `system` 配列を改変するとストリップが効かなくなる条件が詳述された（先頭・単独エントリ維持、崩す場合は `CLAUDE_CODE_ATTRIBUTION_HEADER=0`）。
+- `.claude/rules/` の path-scoped ルールが、v2.1.198 以降シンボリックリンク経由でファイルに到達した場合もマッチするようになった旨が追記された。
 
 **バグ修正**
 
-- 応答途中のネットワーク瞬断でターンが中断される不具合を修正し、ECONNRESET 等の一時エラーをバックオフ再試行するようにした（v2.1.198）。
-- エージェントチームで、API エラーで死んだチームメイトがリードに「failed」を報告し、行き詰まったチームメイトへのメッセージが即時リトライを促すように修正（v2.1.198）。
-- web／desktop／VS Code のタスクパネルが、完了後や再開後も「Running」のまま止まる不具合を修正（v2.1.198）。
-- `claude --bg` を `--print`／`-p` と併用すると接続不能なセッションが黙って作られる不具合を、競合フラグの起動時拒否で修正（v2.1.198）。
-- Claude Platform on AWS／Mantle セッションが STS トークン失効時に「Please run /login」で行き詰まる不具合を、`awsAuthRefresh` の自動実行で修正（v2.1.198）。
-- macOS のバックグラウンドエージェントセッションでローカルネットワークホストへ「no route to host」になる不具合を、Local Network entitlements の宣言で修正（v2.1.198）。
-- プランモードで開始したセッションが読み取り専用ツール呼び出しを自動許可しない不具合、および `.claude/rules/` の条件付きルールがシンボリックリンク経由のパスでロードされない不具合を修正（v2.1.198）。
-- Linux のバックグラウンドエージェントデーモンが、不正終了後の破損ワーカー記録により約 50 秒ごとに自身と全エージェントを kill する不具合を修正（v2.1.199）。
-- `claude stop` がバックグラウンドエージェントの再生成と競合して無効化される不具合、およびメモリ不足マシンでのバックグラウンドセッションが汎用エラーではなく低メモリを示すよう修正（v2.1.199）。
-- `SessionStart`／`Setup`／`SubagentStart` フックが終了コード 2 で stderr を隠す不具合を修正し、エラーをトランスクリプトに表示するようにした（v2.1.199）。
-- `SendMessage` が再生成で前のエージェント名を再利用した際に誤ルーティングする不具合を、不一致検出と再指定要求で修正（v2.1.199）。
-- そのほか、macOS SSH でのコールドスタート失敗、バックグラウンドジョブ進捗の停滞、アイドルサブエージェントのパネル消失、破損 config リセット時のバックアップなど、多数の修正が含まれる（v2.1.198／v2.1.199）。
+- バックグラウンドセッション／エージェントの多数の不具合を修正（v2.1.200）: sleep/wake 後や停滞セッション再開後の無言停止、停滞後の再生成で Esc キャンセル済みターンの再実行、OS が PID を再利用した stale `daemon.lock` によるバックグラウンドエージェント不起動、再インストールした古いビルドによる daemon 乗っ取り防止（ビルドのタイムスタンプで新しさを判定）、ロスターの一時破損による孤児クリーンアップ無効化・socket 認証トークン喪失など。
+- `.claude.json` の `disabledMcpServers`／`enabledMcpServers` が非配列値のとき起動時にクラッシュする不具合を修正（v2.1.200）。
+- サブエージェントがテキスト出力前にレート制限で打ち切られた際、クリーンに失敗せず空結果を返す不具合を修正（v2.1.200）。
+- `claude agents --plugin-dir <dir>` でフラグが `agents` の後だとプラグインの agents／skills がエージェントビューに出ない不具合、同一リポジトリの git worktree からプロジェクトスコーププラグインが正しく読み込まれない不具合を修正（v2.1.200）。
+- `/mcp` サーバー一覧がスクリーンリーダー・拡大鏡向けにフォーカス追跡しない不具合、無音録音時に音声ディクテーションが誤って「Voice connection failed」と表示する不具合、tmux 3.4+ での描画ちらつきを修正（v2.1.200）。
+- Claude Sonnet 5 セッションが、ハーネスのリマインダーに会話途中の system ロールを使わなくなった（v2.1.201）。
 
 **その他**
 
-- エラーリファレンス（`errors`）に新しいエラー節が複数追加された（応答が不完全な可能性、API エラーによるエージェントの早期終了、AWS 認証情報の失効・無効、AWS 認証失敗、`--bg` と `--print` の競合など）。いずれも changelog／ドキュメントマップ先行で、原文全文（llms-full）・日本語ページともに未反映のため参考リンクは省略する。
-- ドキュメントマップに、本文が llms-full 未収録の新見出しが複数追加された（`chrome` の「Browser tools in plan mode」、`mcp` の「Tool input schemas with a root-level combinator」「Require approval for a specific tool」、`sandboxing` の「Mask environment variables」、`model-config` の「Organization default model」「Organization effort limits」、`sub-agents` の「API errors in subagents」など）。
-- `llms.txt` のページ説明が更新された（`artifacts` の公開先を「claude.ai」に明記、`chrome` から「(beta)」を削除、ゲートウェイ系ページに「Claude Platform on AWS」を併記）。
+- スクリーンリーダー出力が改善され、装飾グリフの非表示、トランスクリプト記号の短ラベル読み上げ、ネストしたテーブルの `Header: value.` 形式読み上げが行われるようになった（v2.1.200）。
+- インストールスクリプトが、システムのメモリ不足でインストールが強制終了された場合に説明を表示するようになった（v2.1.200、詳細はハイライト4・`errors#installation-was-killed-before-it-could-finish` 参照）。
+- チェックポイント（Agent SDK）に「File rewinding is not enabled」エラー節が追加され、非対話 rewind でチェックポイント未有効時の対処（`CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING=true`）が示された。
+- ドキュメントマップに複数の新エラー節・新見出しが追加された（`errors` の「Model is not a recognized model id」「Installation was killed before it could finish」「Workspace has not been trusted」「Couldn't reconnect to your Remote Control session」「File rewinding is not enabled」、`settings` の「Project allow rules and workspace trust」など）。いずれも今回、原文全文（llms-full）にも本文が実体化している。
+- `llms.txt` のページ説明・タイトルが多数更新された（`google-vertex-ai`・`feature-availability`・ゲートウェイ系の「Agent Platform」化、`claude-code-on-the-web` の `--remote`→`--cloud`、Week 23 ダイジェスト説明の「Agent Platform」化など）。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
 
 <!-- light:whats-new:start -->
-今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの更新はありません。ドキュメントマップにも `whats-new/` の新規エントリ追加はありませんでした。
+今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの新規追加はありません。ドキュメントマップにも `whats-new/` の新規エントリ追加はなく、`llms.txt` の Week 23 ダイジェスト説明が「Amazon Bedrock, Google Cloud's Agent Platform, and Microsoft Foundry」へ改称された（リブランドの一環）のみです。
 <!-- light:whats-new:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-01.md](./archives/latest/2026-07-01.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-01.md](./archives/latest-detail/2026-07-01.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-02.md](./archives/latest/2026-07-02.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-02.md](./archives/latest-detail/2026-07-02.md)
 
 <!--
-base_commit: 0479bd37959b8b8592cf2b7e35df021189becc68
-head_commit: 331621b2d46b6f0f04b5dc7868b469f76a64d0a4
-generated_at_full: 2026-07-03T15:07:28+09:00
+base_commit: 331621b2d46b6f0f04b5dc7868b469f76a64d0a4
+head_commit: da00f2b5089c533aaf3714238391edee13fa9a25
+generated_at_full: 2026-07-04T15:06:19+09:00
 -->
