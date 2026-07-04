@@ -40,7 +40,7 @@
 
 波及範囲は広く、Claude apps ゲートウェイ設定（`gateway.yaml` の upstream 説明）、機能可用性表（`feature-availability`）、GitLab CI/CD・GitHub Actions の「Amazon Bedrock and Google Cloud」節や CI ジョブ例、フォールバック設定の説明などが同様に更新されました。一方で **これは名称のみの変更** であり、URL パスは `/google-vertex-ai` のまま、`CLAUDE_CODE_USE_VERTEX`・`ANTHROPIC_VERTEX_PROJECT_ID`・`CLOUD_ML_REGION` などの環境変数や `VERTEX_REGION_CLAUDE_*` の挙動は据え置きです。日本語版 `google-vertex-ai` ページは本サマリ作成時点で旧称「Google Vertex AI」のままのため、日本語リンクは省略しています。
 
-- [Claude Code on Google Cloud's Agent Platform - Claude Code Docs (English)](https://code.claude.com/docs/en/google-vertex-ai)
+- [日本語](https://code.claude.com/docs/ja/google-vertex-ai) / [Claude Code on Google Cloud's Agent Platform - Claude Code Docs (English)](https://code.claude.com/docs/en/google-vertex-ai)
 
 > リブランドは llms.txt・ドキュメントマップ・原文全文（llms-full）の en 側で反映済みですが、日本語ページ群（`google-vertex-ai` 等）は本サマリ作成時点で「Vertex AI」表記のままです。翻訳追従待ちとして日本語リンクは付けていません。
 
@@ -51,7 +51,7 @@ Web（クラウド）セッションを作成する CLI フラグが `--remote` 
 **後方互換は保たれ**、原文には「The older `--remote` spelling still works as a deprecated alias for `--cloud`」と明記され、CLI リファレンスでも `--remote` は「Deprecated alias for `--cloud`」として掲載されています。あわせて `CCR_FORCE_BUNDLE=1 claude --cloud ...` によるローカルリポジトリのバンドル送信、並列実行、テレポート（`--teleport`／`/teleport`）との対比も `--cloud` 前提で記述し直されました。なお `--remote-control`（ローカル CLI セッションを Web から監視する Remote Control）は無関係で、名称の混同に注意する旨も補足されています。日本語版 `claude-code-on-the-web` ページは本サマリ作成時点でまだ `--remote` 表記のため、日本語リンクは省略しています。
 
 - [Use Claude Code on the web (Move tasks between web and terminal) - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-code-on-the-web#move-tasks-between-web-and-terminal)
-- [CLI reference (CLI flags) - Claude Code Docs (English)](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- [日本語](https://code.claude.com/docs/ja/cli-reference#cli-flags) / [CLI reference (CLI flags) - Claude Code Docs (English)](https://code.claude.com/docs/en/cli-reference#cli-flags)
 
 > `--cloud`／`--remote` 改称は en 側で反映済みですが、日本語 `claude-code-on-the-web` は本サマリ作成時点で `--remote` 表記のままのため、日本語リンクは省略しています。
 
@@ -62,7 +62,7 @@ v2.1.200 で、権限モードの **`default` が UI 上「Manual」と表示** 
 もう一つの変更として、**AskUserQuestion ダイアログの自動継続が既定オフ（`never`）** になりました。v2.1.198／v2.1.199 では 60 秒アイドルで自動継続していましたが、v2.1.200 以降は既定で「回答するまで待つ」挙動になり、自動継続したい場合は `askUserQuestionTimeout` 設定（`60s`／`5m`／`10m`）または `/config` の「Question auto-continue timeout」でオプトインします。カウントダウンは最後の 20 秒で表示され、`CLAUDE_AFK_TIMEOUT_MS`／`CLAUDE_AFK_COUNTDOWN_MS` はデモ・自動テスト用のオーバーライドとして残ります。権限プロンプト（プラン承認を含む）はアイドルで自動解決しません。
 
 - [Permission modes (Permission modes) - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#permission-modes)
-- [Settings (Available settings) - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#available-settings)
+- [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [Settings (Available settings) - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#available-settings)
 
 > 本節は主に changelog（v2.1.200）由来で、日本語版 `permission-modes`・`settings` ページは本サマリ作成時点で「Manual」表記・`askUserQuestionTimeout` 既定変更を反映していないため、日本語リンクは省略しています。
 
@@ -164,7 +164,7 @@ v2.1.200 で、権限モードの **`default` が UI 上「Manual」と表示** 
 
 - Chrome のプランモードで、ページ／ブラウザ状態を読むだけの呼び出しは確認なしで実行し、状態変更呼び出しは承認を求めるようになった。`createIfEmpty`／`clear`／`save_to_disk` など状態変更フラグを伴う読み取りも承認対象で、`browser_batch` は全アクションが読み取り専用のときのみ無確認（v2.1.199） — [日本語](https://code.claude.com/docs/ja/chrome#browser-tools-in-plan-mode) / [English](https://code.claude.com/docs/en/chrome#browser-tools-in-plan-mode)。
 - サブエージェント関連の挙動が複数明確化された。API エラー時の親への報告（詳細はハイライト4参照）、`SendMessage` が会話内で名前の指す相手が変わっていないか検証し誤配送を拒否、起動元エージェントからのメッセージを通常のタスク指示として扱う一方で承認や設定変更には決してならない境界（v2.1.198／v2.1.199） — [English](https://code.claude.com/docs/en/sub-agents#api-errors-in-subagents)（日本語版 `sub-agents` ページの該当節は本サマリ作成時点で未確認のため英語リンクのみ掲載）。
-- エージェントチーム（実験的機能）のパネル挙動が変わった（v2.1.199）。アイドルの担当者行はパネル全体がアイドルになるまで残り、全員アイドル後 30 秒で非表示になる（次のターンで再表示、非表示中も稼働・宛先指定は可能）。4 人以上が同時にアイドルのときは先頭 3 行以外が「N idle agents」の 1 行に折りたたまれる。担当者（in-process teammate）を表示中はテキスト入力と skills はその担当者へ送られ、組み込みコマンドは lead セッションで実行される。また in-process teammate は自身のサブエージェントを常にフォアグラウンドで実行し、`run_in_background` や `background: true` でバックグラウンド起動を求めるとエラーになる — [English](https://code.claude.com/docs/en/agent-teams)（日本語版 `agent-teams` ページの該当記述は本サマリ作成時点で未確認のため英語リンクのみ掲載）。
+- エージェントチーム（実験的機能）のパネル挙動が変わった（v2.1.199）。アイドルの担当者行はパネル全体がアイドルになるまで残り、全員アイドル後 30 秒で非表示になる（次のターンで再表示、非表示中も稼働・宛先指定は可能）。4 人以上が同時にアイドルのときは先頭 3 行以外が「N idle agents」の 1 行に折りたたまれる。担当者（in-process teammate）を表示中はテキスト入力と skills はその担当者へ送られ、組み込みコマンドは lead セッションで実行される。また in-process teammate は自身のサブエージェントを常にフォアグラウンドで実行し、`run_in_background` や `background: true` でバックグラウンド起動を求めるとエラーになる — [日本語](https://code.claude.com/docs/ja/agent-teams) / [English](https://code.claude.com/docs/en/agent-teams)（日本語版 `agent-teams` ページの該当記述は本サマリ作成時点で未確認のため英語リンクのみ掲載）。
 - モデル切替の検証が追加された。SDK `setModel()` や Desktop アプリ経由で不正なモデル文字列を指定すると、リクエスト前にローカルで拒否するようになった（v2.1.200、詳細はハイライト4参照） — [日本語](https://code.claude.com/docs/ja/model-config#setting-your-model) / [English](https://code.claude.com/docs/en/model-config#setting-your-model)。
 - 管理設定の優先順位の記述が整理され、例外的に「いずれの管理ソースが設定しても尊重されるキー」に `forceRemoteSettingsRefresh` が追加された — [日本語](https://code.claude.com/docs/ja/settings#settings-precedence) / [English](https://code.claude.com/docs/en/settings#settings-precedence)。
 - システムプロンプトの帰属ブロックについて、ゲートウェイが `system` 配列を改変するとストリップが効かなくなる条件が詳述された（先頭・単独エントリ維持、崩す場合は `CLAUDE_CODE_ATTRIBUTION_HEADER=0`）。
