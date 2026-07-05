@@ -1,34 +1,25 @@
 ---
-対象期間: 2026年07月02日 〜 2026年07月03日
-作成日: 2026-07-03
+対象期間: 2026年07月03日 〜 2026年07月04日
+作成日: 2026-07-04
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、大規模なリブランド・改称と、これまで changelog 先行だった多数の機能・エラーのドキュメント実体化が中心です。「Google Vertex AI」が「Google Cloud's Agent Platform」へ、Web セッション作成フラグ `--remote` が `--cloud` へ改称され、v2.1.200／v2.1.201 の 2 リリースも加わりました。今回、週刊ダイジェスト「新着情報」の新規追加はありません。
+今回の対象期間は、原文全文（llms-full）に対するプロバイダ名の全文正規化スイープが唯一のまとまった変更で、新機能・新エラー節・新規ページの追加はありません。前回 llms.txt とドキュメントマップで先行した「Vertex AI → Google Cloud's Agent Platform」リブランドが本文全体へ波及し、あわせて短縮表記「Bedrock」「Foundry」が正式名称「Amazon Bedrock」「Microsoft Foundry」へ統一されました。機能・環境変数・URL パスに変更はなく、名称と一部の内部アンカーのみの変更です。
 
 主要なものを以下に挙げます。
 
-1. 「Google Vertex AI」がドキュメント全体で「Google Cloud's Agent Platform」（旧 Vertex AI）へリブランドされた
-2. Web（クラウド）セッションを作成する CLI フラグが `--cloud` へ改称され、従来の `--remote` は非推奨エイリアスになった
-3. 権限モードの `default` が CLI・IDE 拡張で「Manual」と表示されるようになり（別名 `manual`）、AskUserQuestion ダイアログの自動継続が既定オフになった（v2.1.200）
-4. エラーリファレンスに新エラー節が多数追加され、ワークスペース未信頼・モデルID検証・AWS 認証・不完全応答の保持・インストール OOM 等が文書化された
-5. Enterprise 管理者向けに「組織デフォルトモデル」と「組織エフォート上限」がドキュメント化された
+1. 短縮表記「Bedrock」「Foundry」が本文全体で正式名称「Amazon Bedrock」「Microsoft Foundry」へ統一された（機能・環境変数・アンカーは不変）
+2. 「Vertex AI → Google Cloud's Agent Platform」リブランドが原文全文へ波及し、Vertex 関連の多数の見出し（`Sign in with Agent Platform`、`Enable auto mode on Bedrock, Agent Platform, or Foundry` など）が今回改称されてアンカーが変わり、内部の参照リンクも同時に追従した（旧アンカーの deep link は切れる）
 ```
 
 ## ハイライト
 
-1. [**Google Cloud's Agent Platform へのリブランド**](./latest-detail.md#1-google-clouds-agent-platform-へのリブランド):  
-  「Google Vertex AI」がページタイトル・説明・ドキュメントマップ全体で「Google Cloud's Agent Platform（旧 Vertex AI）」へ改称された。ゲートウェイ設定・機能可用性表・GitLab／GitHub CI 例など多数のページに波及するが、機能自体は変わらず名称のみの変更で、URL パス（`/google-vertex-ai`）や環境変数（`CLAUDE_CODE_USE_VERTEX` 等）は据え置き。
-2. [**Web セッション作成フラグの改称**](./latest-detail.md#2-web-セッション作成フラグの改称):  
-  Web（クラウド）セッションを作成する CLI フラグが `--remote` から `--cloud` へ改称された。`--cloud` が正式名となり、`--remote` は当面「`--cloud` の非推奨エイリアス」として動作を維持する。`claude-code-on-the-web`・CLI リファレンス・GitHub Enterprise Server ページ・エラー文言などが一斉に `--cloud` 表記へ更新された。
-3. [**権限モードの Manual 改称と質問ダイアログの既定変更**](./latest-detail.md#3-権限モードの-manual-改称と質問ダイアログの既定変更):  
-  v2.1.200 で `default` 権限モードが CLI・`claude --help`・VS Code・JetBrains 上で「Manual」と表示されるようになり、値としての別名 `manual`（`--permission-mode manual` / `"defaultMode": "manual"`）も受け付ける。設定値・フック／SDK が受け取る値は引き続き `default`。あわせて AskUserQuestion ダイアログの自動継続が既定オフ（`never`）になり、`askUserQuestionTimeout` 設定または `/config` でオプトインする形に変わった。
-4. [**エラーリファレンスの大幅拡充**](./latest-detail.md#4-エラーリファレンスの大幅拡充):  
-  `errors` ページに新エラー節が多数追加された。ワークスペース未信頼（allow ルール無視）、認識されないモデルID、AWS 認証情報の失効／認証失敗、ストリーム途中失敗時の部分応答保持、サブエージェントの API エラーによる早期終了、インストールの OOM 強制終了、`--bg` と `--print` の競合、Remote Control 再接続失敗など。多くは v2.1.198〜200 の changelog 先行項目が正式に文書化されたもの。
-5. [**組織デフォルトモデルと組織エフォート上限**](./latest-detail.md#5-組織デフォルトモデルと組織エフォート上限):  
-  Claude Enterprise プランの管理者が claude.ai 管理コンソールから、Claude Code メンバーの既定モデル（組織全体／カスタムロール単位）と、モデル別のエフォート上限をロール単位で設定できることが `model-config` に文書化された。既定モデルは「制限」ではなく開始点で、`--model` 等が優先される。
+1. [**Amazon Bedrock と Microsoft Foundry の正式名称統一**](./latest-detail.md#1-amazon-bedrock-と-microsoft-foundry-の正式名称統一):  
+  本文全体で、単独表記の「Bedrock」が「Amazon Bedrock」へ、「Foundry」が「Microsoft Foundry」へ機械的に統一された。プロバイダ比較表・ゲートウェイ設定・認証・エラーリファレンス・GitHub/GitLab CI 例など多数のページに波及するが、これは名称のみの変更で、環境変数（`CLAUDE_CODE_USE_BEDROCK`・`CLAUDE_CODE_USE_FOUNDRY` 等）・URL パス・セクションアンカーは据え置き（`## Sign in with Bedrock` などの見出しも変わらず）。
+2. [**Agent Platform リブランドの全文波及とアンカー改称**](./latest-detail.md#2-google-clouds-agent-platform-リブランドの全文波及とアンカー改称):  
+  前回 llms.txt とドキュメントマップで先行した「Google Vertex AI／Vertex AI → Google Cloud's Agent Platform」改称が、今回、原文全文（llms-full）の本文と多数のセクション見出しへ波及した。`## Sign in with Vertex AI`→`## Sign in with Agent Platform`、`### Enable auto mode on Bedrock, Vertex AI, or Foundry`→`### Enable auto mode on Bedrock, Agent Platform, or Foundry` など Vertex を含む見出しが今回まとめて改称され、それに伴って対応する内部アンカー（`sign-in-with-vertex-ai`→`sign-in-with-agent-platform`、`enable-auto-mode-on-bedrock-vertex-ai-or-foundry`→`enable-auto-mode-on-bedrock-agent-platform-or-foundry` など）が変化し、それらを指す参照リンクも同一 diff 内で追従した。旧アンカーを指す外部からの deep link は切れる点に注意。
 
 ## 新規追加されたページ
 
@@ -36,61 +27,30 @@
 
 ## 大幅に更新されたページ
 
-上記ハイライト以外で、既存ページに実体化した規模の大きい更新は以下の 3 件です。
-
-- [**ワークスペース信頼とプロジェクト allow ルール**](./latest-detail.md#1-ワークスペース信頼とプロジェクト-allow-ルール) ([English](https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust)):  
-  プロジェクトの `.claude/settings.json` の `permissions.allow`／`additionalDirectories` は、ワークスペース信頼ダイアログを受け入れるまで適用されないという規則が明文化された。親ディレクトリを信頼済みでも入れ子プロジェクトの allow ルールは適用されず、v2.1.196〜199 で誤って無視されていた自分の `.claude/settings.local.json` の扱いが v2.1.200 で v2.1.195 以前の挙動に復元された。
-- [**MCP のツール承認強制とルートレベル結合子対応**](./latest-detail.md#2-mcp-のツール承認強制とルートレベル結合子対応) ([日本語](https://code.claude.com/docs/ja/mcp#require-approval-for-a-specific-tool) / [English](https://code.claude.com/docs/en/mcp#require-approval-for-a-specific-tool)):  
-  MCP サーバーが `_meta["anthropic/requiresUserInteraction"]` でツールを「毎回承認必須」にできる仕組み（v2.1.199 以降）と、入力スキーマのルート直下に `anyOf`／`oneOf`／`allOf` を持つツールを Claude Code がフラット化して利用可能に保つ仕組み（v2.1.195 以降）が追加された。
-- [**サンドボックスの認証情報マスキング**](./latest-detail.md#3-サンドボックスの認証情報マスキング) ([日本語](https://code.claude.com/docs/ja/sandboxing#mask-environment-variables) / [English](https://code.claude.com/docs/en/sandboxing#mask-environment-variables)):  
-  `sandbox.credentials` の環境変数エントリに `"mode": "mask"` が追加され、認証情報を削除せずセンチネル値に置換し、`injectHosts` 宛のリクエスト時のみプロキシが実値へ差し替える方式が文書化された（v2.1.199 以降、`network.tlsTerminate` 前提）。
+今回、上記ハイライト（プロバイダ名の全文正規化）以外に、本文の実体的な追加・改稿を伴う大幅更新はありません。数十ページに変更が及んでいますが、いずれも名称正規化に由来する差し替えのみです。
 
 ## 軽微な更新
 
-今回の軽微な更新は、v2.1.200／v2.1.201 の 2 リリースに伴う多数のバグ修正と、既存ページへの記述明確化・実体化が中心です。以下に分類して整理します（複数リリースを含むため、識別が必要な項目にはバージョンを併記します）。
-
-**新機能**
-
-- Remote Control に再開系フラグが追加された。`-c`／`--continue`（このディレクトリで開始した直近セッションを再開）、`--session-id <id>`（ID 指定で再開）、`--[no-]create-session-in-dir`（起動時に現在ディレクトリへ 1 セッション事前作成）（v2.1.200） — [日本語](https://code.claude.com/docs/ja/remote-control) / [English](https://code.claude.com/docs/en/remote-control)。
-
-**機能改善**
-
-- Chrome のプランモードで、ページ／ブラウザ状態を読むだけの呼び出しは確認なしで実行し、状態変更呼び出しは承認を求めるようになった。`createIfEmpty`／`clear`／`save_to_disk` など状態変更フラグを伴う読み取りも承認対象で、`browser_batch` は全アクションが読み取り専用のときのみ無確認（v2.1.199） — [日本語](https://code.claude.com/docs/ja/chrome#browser-tools-in-plan-mode) / [English](https://code.claude.com/docs/en/chrome#browser-tools-in-plan-mode)。
-- サブエージェント関連の挙動が複数明確化された。API エラー時の親への報告（詳細はハイライト4参照）、`SendMessage` が会話内で名前の指す相手が変わっていないか検証し誤配送を拒否、起動元エージェントからのメッセージを通常のタスク指示として扱う一方で承認や設定変更には決してならない境界（v2.1.198／v2.1.199） — [English](https://code.claude.com/docs/en/sub-agents#api-errors-in-subagents)（日本語版 `sub-agents` ページの該当節は本サマリ作成時点で未確認のため英語リンクのみ掲載）。
-- エージェントチーム（実験的機能）のパネル挙動が変わった（v2.1.199）。アイドルの担当者行はパネル全体がアイドルになるまで残り、全員アイドル後 30 秒で非表示になる（次のターンで再表示、非表示中も稼働・宛先指定は可能）。4 人以上が同時にアイドルのときは先頭 3 行以外が「N idle agents」の 1 行に折りたたまれる。担当者（in-process teammate）を表示中はテキスト入力と skills はその担当者へ送られ、組み込みコマンドは lead セッションで実行される。また in-process teammate は自身のサブエージェントを常にフォアグラウンドで実行し、`run_in_background` や `background: true` でバックグラウンド起動を求めるとエラーになる — [日本語](https://code.claude.com/docs/ja/agent-teams) / [English](https://code.claude.com/docs/en/agent-teams)（日本語版 `agent-teams` ページの該当記述は本サマリ作成時点で未確認のため英語リンクのみ掲載）。
-- モデル切替の検証が追加された。SDK `setModel()` や Desktop アプリ経由で不正なモデル文字列を指定すると、リクエスト前にローカルで拒否するようになった（v2.1.200、詳細はハイライト4参照） — [日本語](https://code.claude.com/docs/ja/model-config#setting-your-model) / [English](https://code.claude.com/docs/en/model-config#setting-your-model)。
-- 管理設定の優先順位の記述が整理され、例外的に「いずれの管理ソースが設定しても尊重されるキー」に `forceRemoteSettingsRefresh` が追加された — [日本語](https://code.claude.com/docs/ja/settings#settings-precedence) / [English](https://code.claude.com/docs/en/settings#settings-precedence)。
-- システムプロンプトの帰属ブロックについて、ゲートウェイが `system` 配列を改変するとストリップが効かなくなる条件が詳述された（先頭・単独エントリ維持、崩す場合は `CLAUDE_CODE_ATTRIBUTION_HEADER=0`）。
-- `.claude/rules/` の path-scoped ルールが、v2.1.198 以降シンボリックリンク経由でファイルに到達した場合もマッチするようになった旨が追記された。
-
-**バグ修正**
-
-- バックグラウンドセッション／エージェントの多数の不具合を修正（v2.1.200）: sleep/wake 後や停滞セッション再開後の無言停止、停滞後の再生成で Esc キャンセル済みターンの再実行、OS が PID を再利用した stale `daemon.lock` によるバックグラウンドエージェント不起動、再インストールした古いビルドによる daemon 乗っ取り防止（ビルドのタイムスタンプで新しさを判定）、ロスターの一時破損による孤児クリーンアップ無効化・socket 認証トークン喪失など。
-- `.claude.json` の `disabledMcpServers`／`enabledMcpServers` が非配列値のとき起動時にクラッシュする不具合を修正（v2.1.200）。
-- サブエージェントがテキスト出力前にレート制限で打ち切られた際、クリーンに失敗せず空結果を返す不具合を修正（v2.1.200）。
-- `claude agents --plugin-dir <dir>` でフラグが `agents` の後だとプラグインの agents／skills がエージェントビューに出ない不具合、同一リポジトリの git worktree からプロジェクトスコーププラグインが正しく読み込まれない不具合を修正（v2.1.200）。
-- `/mcp` サーバー一覧がスクリーンリーダー・拡大鏡向けにフォーカス追跡しない不具合、無音録音時に音声ディクテーションが誤って「Voice connection failed」と表示する不具合、tmux 3.4+ での描画ちらつきを修正（v2.1.200）。
-- Claude Sonnet 5 セッションが、ハーネスのリマインダーに会話途中の system ロールを使わなくなった（v2.1.201）。
+今回の軽微な更新は、プロバイダ名の全文正規化スイープに付随する字句・アンカーの変更が中心です。changelog リリースに伴う機能追加・バグ修正はありません。
 
 **その他**
 
-- スクリーンリーダー出力が改善され、装飾グリフの非表示、トランスクリプト記号の短ラベル読み上げ、ネストしたテーブルの `Header: value.` 形式読み上げが行われるようになった（v2.1.200）。
-- インストールスクリプトが、システムのメモリ不足でインストールが強制終了された場合に説明を表示するようになった（v2.1.200、詳細はハイライト4・`errors#installation-was-killed-before-it-could-finish` 参照）。
-- チェックポイント（Agent SDK）に「File rewinding is not enabled」エラー節が追加され、非対話 rewind でチェックポイント未有効時の対処（`CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING=true`）が示された。
-- ドキュメントマップに複数の新エラー節・新見出しが追加された（`errors` の「Model is not a recognized model id」「Installation was killed before it could finish」「Workspace has not been trusted」「Couldn't reconnect to your Remote Control session」「File rewinding is not enabled」、`settings` の「Project allow rules and workspace trust」など）。いずれも今回、原文全文（llms-full）にも本文が実体化している。
-- `llms.txt` のページ説明・タイトルが多数更新された（`google-vertex-ai`・`feature-availability`・ゲートウェイ系の「Agent Platform」化、`claude-code-on-the-web` の `--remote`→`--cloud`、Week 23 ダイジェスト説明の「Agent Platform」化など）。
+- `errors`（エラーリファレンス）ページの `Request rejected (429)` 節のレートリミット説明で、対象が「Google Vertex AI project」から「Google Cloud project」へと、より一般的な表現に微修正された（Vertex→Agent Platform リブランドに付随。ハイライト2の一環）。
+- 原文全文（llms-full）の抽出物で、`setup`（Advanced setup）ページの Native Install／Homebrew／WinGet の `bash`／`powershell`／`batch` コードフェンス属性に重複して付いていた `theme={null} theme={null} …`（最大 6 回連続）が、単一の `theme={null}` に整理された。これはスクレイプ由来のノイズ除去であり、ドキュメント内容の変更ではない。
+- GitHub Actions ページ **および** GitLab CI/CD ページの節見出しが、いずれも「Using with Amazon Bedrock & Google Vertex AI」→「Using with Amazon Bedrock and Google Cloud」へ改称され、対応するアンカーが `#using-with-amazon-bedrock-%26-google-vertex-ai` から `#using-with-amazon-bedrock-and-google-cloud` へ変化した（詳細はハイライト2参照）。
+- プロバイダ名を列挙する表（機能可用性・データ利用のデフォルト動作・CLI/Desktop 比較など）で、正式名称化に伴い列幅・罫線の再整形が入ったが、表の内容自体に変更はない。
 
 ## 新着情報
 
-今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの新規追加はありません。ドキュメントマップにも `whats-new/` の新規エントリ追加はなく、`llms.txt` の Week 23 ダイジェスト説明が「Amazon Bedrock, Google Cloud's Agent Platform, and Microsoft Foundry」へ改称された（リブランドの一環）のみです。
+今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの **新規追加はありません**（`llms.txt`・ドキュメントマップにも `whats-new/` の新規エントリはなし）。ただし既存の複数の週次ダイジェストページ（Week 15・16・18・21・22・23・25 など）および `whats-new/index` ハブページの本文にも、他ページと同じプロバイダ名正規化が入りました。検証できた具体例として Week 23（`whats-new/2026-w23`）では、ダイジェスト冒頭と項目見出しの「Auto mode on **Bedrock, Vertex, and Foundry**」が「Auto mode on **Amazon Bedrock, Google Cloud's Agent Platform, and Microsoft Foundry**」へ統一され、その auto-mode 節を指すリンクのアンカーが `#enable-auto-mode-on-bedrock-vertex-ai-or-foundry`→`#enable-auto-mode-on-bedrock-agent-platform-or-foundry` へ追従しています。他の週次ページも同様に「Bedrock／Vertex／Foundry」表記の正式名称化が中心で、いずれもダイジェストの内容自体を変える更新ではなく、名称正規化の一環です。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-02.md](./archives/latest/2026-07-02.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-02.md](./archives/latest-detail/2026-07-02.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-03.md](./archives/latest/2026-07-03.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-03.md](./archives/latest-detail/2026-07-03.md)
 
 <!--
-base_commit: 331621b2d46b6f0f04b5dc7868b469f76a64d0a4
-head_commit: da00f2b5089c533aaf3714238391edee13fa9a25
-generated_at_full: 2026-07-04T15:06:19+09:00
+base_commit: da00f2b5089c533aaf3714238391edee13fa9a25
+head_commit: a036140d77a0f23cf530861a4b172aad2422a5a2
+generated_at_full: 2026-07-05T15:05:25+09:00
 -->
