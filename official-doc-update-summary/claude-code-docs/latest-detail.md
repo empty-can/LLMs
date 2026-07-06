@@ -32,7 +32,7 @@ Claude Code ドキュメントの原文全文（llms-full）で、単独表記�
 一方で **これは名称のみの変更** です。環境変数（`CLAUDE_CODE_USE_BEDROCK`・`CLAUDE_CODE_USE_FOUNDRY`・`CLAUDE_CODE_USE_MANTLE` 等）、URL パス（`/amazon-bedrock`・`/microsoft-foundry`）、および見出しに紐づくセクションアンカーは据え置きで、`## Sign in with Bedrock`（`amazon-bedrock` ページ）などの見出しテキストも「Amazon Bedrock」化されていません。したがって Bedrock／Foundry 側では内部アンカーの変更は発生していません（アンカーが変わったのは Agent Platform 側のみ。ハイライト 2 参照）。なお日本語版ページ群は本サマリ作成時点で表記が混在（「Amazon Bedrock」と「Bedrock」など）しており、この en 側の正規化を一律には反映していないため、日本語リンクは省略しています。
 
 - [Feature availability (Availability by model provider) - Claude Code Docs (English)](https://code.claude.com/docs/en/feature-availability#availability-by-model-provider)
-- [Claude Code on Amazon Bedrock - Claude Code Docs (English)](https://code.claude.com/docs/en/amazon-bedrock)
+- [日本語](https://code.claude.com/docs/ja/amazon-bedrock) / [Claude Code on Amazon Bedrock - Claude Code Docs (English)](https://code.claude.com/docs/en/amazon-bedrock)
 
 > 本節は en 原文全文の表記正規化のみで、機能・環境変数・アンカーは不変です。日本語版はプロバイダ名の表記が独立・混在しており（2026-07-05 時点で ja `feature-availability` を WebFetch で確認。「Amazon Bedrock」と「Bedrock」等が混在）、この en 側の正規化を一律には反映していないため日本語リンクは省略しています。
 
