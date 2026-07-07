@@ -47,7 +47,7 @@
 **機能改善**
 
 - background セッションで `/rename` または `Ctrl+R` で設定したセッション名が、スーパーバイザのプロセス停止・再起動をまたいで保持されるようになり、`claude --resume <name>` が引き続き解決するようになった（v2.1.202 以前は dispatch 時の名前に戻り、新しい名前で解決できなくなっていた）。 — [English](https://code.claude.com/docs/en/agent-view#permission-mode-model-and-effort)
-- Remote Control セッションが自身の権限モードを claude.ai・モバイルアプリへ報告するようになり、ドロップダウンがターミナル側を含むモード変更に追従するようになった。唯一の例外は bypassPermissions で、このモードは claude.ai へ報告されない。v2.1.202 以前は `/remote-control`・`claude --remote-control` で接続したセッションがモードを全く報告せず、表示が実モードと食い違うことがあった（不一致はラベルのみで、権限プロンプトは実モードから生成され従来通り表示された。`/remote-control` セッションが誤った権限モードを表示する不具合の修正も同根）。 — [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
+- Remote Control セッションが自身の権限モードを claude.ai・モバイルアプリへ報告するようになり、ドロップダウンがターミナル側を含むモード変更に追従するようになった。唯一の例外は bypassPermissions で、このモードは claude.ai へ報告されない。v2.1.202 以前は `/remote-control`・`claude --remote-control` で接続したセッションがモードを全く報告せず、表示が実モードと食い違うことがあった（不一致はラベルのみで、権限プロンプトは実モードから生成され従来通り表示された。`/remote-control` セッションが誤った権限モードを表示する不具合の修正も同根）。 — [日本語](https://code.claude.com/docs/ja/permission-modes#switch-permission-modes) / [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
 - MCP 設定で `url` があり `type` が無いエントリを設定エラーとして扱い、誤解を招く `command: expected string` ではなく `type: http`（または `sse`/`ws`）の追加を促す明確なメッセージ（`MCP server "<name>" has a "url" but no "type"; ...`）を表示するようになった。 — [English](https://code.claude.com/docs/en/mcp#option-1-add-a-remote-http-server)
 - 「Yes, don't ask again」でファイルパスを許可する際、`[` `]` `*` などの gitignore パターン文字をエスケープし、生成ルールが許可したリテラルパスにのみ一致するようになった（自分で書くルールはエスケープされない）。v2.1.202 以前は未エスケープで保存され、`[2024-06] Reports` のようなディレクトリ向けの生成ルールが自身に一致しなかったり、意図しない兄弟ディレクトリに一致する恐れがあった。 — [English](https://code.claude.com/docs/en/permissions#read-and-edit)
 - `cd` と `git` を1つの複合コマンドで組み合わせた場合のプロンプト条件が精緻化され、`cd` が別ディレクトリへ移動するとき（そのディレクトリの hooks が実行され得るため）のみプロンプトするようになった。cwd に解決される no-op の `cd` はプロンプトを誘発しない。 — [English](https://code.claude.com/docs/en/permissions#read-only-commands)
@@ -61,7 +61,7 @@
 
 - `Ctrl+R` のインライン履歴検索で、履歴ファイルの走査中に確定・キャンセルするとクラッシュ/内部エラーになる不具合を修正。走査中でも確定・キャンセルが即座に効くようになった。
 - Remote Control（モバイル/web）から対話セッションに送ったコマンドが「Unknown command」で失敗する不具合を修正。
-- Remote Control のモバイル/web アプリからキャプション無しで送った画像・ファイルが黙って破棄される不具合を修正（添付は `@` ファイル参照として渡されるようになった）。 — [English](https://code.claude.com/docs/en/remote-control)
+- Remote Control のモバイル/web アプリからキャプション無しで送った画像・ファイルが黙って破棄される不具合を修正（添付は `@` ファイル参照として渡されるようになった）。 — [日本語](https://code.claude.com/docs/ja/remote-control) / [English](https://code.claude.com/docs/en/remote-control)
 - `claude auth login` と `claude mcp login --no-browser` が表示するサインイン URL が、SSH 越しに折り返すと確実にクリックできない不具合を修正（単一のハイパーリンクとして出力）。
 - `claude agents` からチャットを開くと「currently running as a background agent」で失敗し、worker のクラッシュ/再生成ループになる不具合を修正。
 - 文字列内に unicode のクォートエスケープを含むワークフロースクリプトがパース前に壊れる不具合を修正。ワークフローのパースエラーは常に TypeScript のせいにするのではなく、該当行を表示するようになった。
