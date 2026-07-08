@@ -1,133 +1,93 @@
 ---
-対象期間: 2026年07月04日 〜 2026年07月06日
-作成日: 2026-07-06
+対象期間: 2026年07月06日 〜 2026年07月07日
+作成日: 2026-07-07
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は v2.1.202（2026年07月06日）リリースを起点に、新機能の追加・エラーリファレンスの新設・GHES 関連ドキュメントの大幅改稿・テレメトリ属性の追加が入った、実体的な更新の多い回です。前回までのプロバイダ名正規化のような字句変更中心の回とは性質が異なります。
+今回の対象期間は、公式ドキュメントのバージョンアップ（changelog エントリ）を伴わない、記述面の明確化・訂正が中心の回です。特に Agent SDK とフック／MCP まわりで、プラグイン同梱 MCP サーバの命名規則・権限モードの利用可否・ツールのエラーハンドリングに関する記述が整理されました。
 
 主要なものを以下に挙げます。
 
-1. 動的ワークフローが生成するエージェント数の目安を `/config` の「Dynamic workflow size」（設定キー `workflowSizeGuideline`）で設定できるようになった（強制上限ではなく助言。small/medium/large/unrestricted）
-2. ダウンロード切断で install/update が失敗する事象に対する新しいエラーリファレンス節が追加され、切断・停滞・チェックサム失敗時は最大3回まで自動リトライするようになった
-3. GHES 上のプラグインマーケットプレイスのドキュメントが大幅改稿され、サーフェス別の認証要件表・`extraKnownMarketplaces` によるプリレジスト節・claude.ai 追加失敗のトラブルシュート節が新設された
-4. ワークフローが spawn したエージェントのテレメトリに `workflow.run_id` / `workflow.name` 属性が追加され、1つのワークフロー実行を OpenTelemetry データから再構成できるようになった
+1. プラグインが同梱する MCP サーバのツール名・サーバ名がスコープ付きになることが、フック（マッチャ・`mcp_tool` の `server` フィールド）と MCP のドキュメントで明文化された（`mcp__plugin_<plugin>_<server>__<tool>` / `plugin:<plugin>:<server>`。裸のサーバ名で書いたマッチャは発火しない）
+2. Agent SDK の `auto` 権限モードから「TypeScript only」の但し書きが外れ、Python SDK でも利用可能としてドキュメント上に記載された（各表の可用性注記は従来どおり）
+3. Agent SDK のカスタムツールで、ハンドラの未捕捉例外がエージェントループを止めるという記述が訂正され、実際には in-process MCP サーバが例外をエラー結果へ変換してループは継続する旨に書き換えられた
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**動的ワークフローのサイズガイドライン設定**](#1-動的ワークフローのサイズガイドライン設定):  
-  `/config` の「Dynamic workflow size」（設定キー `workflowSizeGuideline`）で、Claude が生成する動的ワークフローのエージェント数の目安を制御できるようになった。unrestricted（既定）/ small / medium / large の4値で、強制上限ではなく Claude への助言として送られる。
-2. [**ダウンロード切断エラーの新規リファレンスと自動リトライ**](#2-ダウンロード切断エラーの新規リファレンスと自動リトライ):  
-  エラーリファレンスに「The connection dropped while downloading the update」節が新設され、install/update のバイナリ取得中に接続が切れた場合の挙動が明文化された。切断・停滞・チェックサム失敗は合計最大3回まで自動リトライする（v2.1.202 以前は1回の切断で即失敗）。
-3. [**GHES プラグインマーケットプレイスの登録方式と認証要件の刷新**](#3-ghes-プラグインマーケットプレイスの登録方式と認証要件の刷新):  
-  github-enterprise-server ページの「Plugin marketplaces on GHES」が大幅改稿。追加サーフェス別の認証要件表、`extraKnownMarketplaces` によるプリレジスト節（旧 Allowlist 節から分離・改称）、HTTPS URL 推奨化、claude.ai 追加失敗のトラブルシュート節が加わった。
-4. [**ワークフロー由来エージェントの OpenTelemetry 属性追加**](#4-ワークフロー由来エージェントの-opentelemetry-属性追加):  
-  ワークフローが spawn したエージェントのテレメトリに `workflow.run_id`（`wf_` 前置の実行識別子）と `workflow.name` が追加された。1つの `workflow.run_id` で絞り込めば、そのワークフロー実行の API リクエストとツール結果を再構成できる。
+1. [**プラグイン同梱 MCP サーバのスコープ付き命名**](#1-プラグイン同梱-mcp-サーバのスコープ付き命名):  
+  プラグインがバンドルする MCP サーバは、ツール名が `mcp__plugin_<plugin-name>_<server-name>__<tool>`、サーバ名が `plugin:<plugin-name>:<server-name>` というスコープ付きになる。フックのマッチャ・`if` フィールド・`mcp_tool` フックの `server` フィールド、および `docs/en/mcp` の各所でこれが明記され、裸のサーバキー（例: `mcp__database-tools__.*`）で書いたマッチャはプラグイン同梱サーバには発火しないと注意喚起された。
+2. [**Agent SDK の auto 権限モードが Python でも利用可能に**](#2-agent-sdk-の-auto-権限モードが-python-でも利用可能に):  
+  Agent SDK の権限モード表から `auto` に付いていた「(TypeScript only)」の但し書きが、agent-loop・permissions・quickstart の各権限モード表で一斉に削除され、Python SDK リファレンスの `PermissionMode` Literal にも `"auto"` が追加された。ドキュメント上は Python SDK でも `auto` が選べる扱いになった（各エントリに残る「See Auto mode for availability」の可用性注記は従来どおり）。
+3. [**Agent SDK のツールエラーハンドリング記述の訂正**](#3-agent-sdk-のツールエラーハンドリング記述の訂正):  
+  カスタムツールの「Handle errors」節が、ハンドラの未捕捉例外はエージェントループを止め `query` が失敗するという旧記述から、SDK の in-process MCP サーバが未捕捉例外を捕捉してエラー結果に変換するため**どちらの報告方法でもループは継続する**という記述へ訂正された。`isError: true` を返す意味は「ループを継続させること」ではなく「Claude が読むメッセージを自分で組み立てること」に整理された。
 <!-- light:highlight-list:end -->
 
-## 1. 動的ワークフローのサイズガイドライン設定
+## 1. プラグイン同梱 MCP サーバのスコープ付き命名
 
-v2.1.202 で、Claude が生成する動的ワークフローのエージェント数の目安を制御する設定「**Dynamic workflow size**」が `/config` に追加されました。設定キーは `workflowSizeGuideline` で、`~/.claude.json` に保存されます。値は `unrestricted`（既定＝ガイドラインを送らない）・`small`（5未満を目標）・`medium`（15未満）・`large`（50未満）の4つで、`/config workflowSizeGuideline=small` のように直接指定することもできます。
+フック（`docs/en/hooks`）と MCP（`docs/en/mcp`）の各ページで、プラグインがバンドルする MCP サーバのツール名・サーバ名がスコープ付きになることが明文化されました。プラグイン `my-plugin` が `db`（旧例では `database-tools`）というキーでサーバを同梱する場合、そのツールは `mcp__plugin_my-plugin_db__query` のように **`mcp__plugin_<plugin-name>_<server-name>__<tool>`** という命名になります。したがって、そのサーバの全ツールにマッチさせるフックマッチャは `mcp__plugin_my-plugin_db__.*` と書く必要があり、裸のサーバキー（`mcp__database-tools__.*`）で書いたマッチャは**プラグイン同梱サーバには一切発火しません**。この注意は「Match MCP tools」タブ・「Match MCP tools」リファレンス節の両方に加筆され、同じスコープ付きツール名をハンドラの `if` フィールドにも使う旨が示されました。
 
-重要なのは、この設定は Claude Code から Claude へ **助言（advice）として送られるだけで強制上限ではない** 点です。異なる規模を要求するプロンプトはこれを上書きでき、またランタイムのエージェント上限（実行ごと最大1,000エージェント等）は設定値に関わらず適用され続けます。変更は次のプロンプトから反映されます。workflows ページには新たに「Set a size guideline」節が追加され、コスト管理の観点からも「実行を既定で小さく保つには size guideline を設定する」旨が追記されました。いずれも Claude Code v2.1.202 以降が必要です。
+サーバ自体は **`plugin:<plugin-name>:<server-name>`**（例: `plugin:my-plugin:db`）というスコープ名で登録されるため、設定済みサーバ名が期待される箇所——具体的には `mcp_tool` フックの `server` フィールド——ではこのスコープ名を使います。`mcp_tool` フックフィールド表の `server` 行にも、プラグイン同梱サーバでは裸のサーバキーではなくスコープ名を渡す旨が追記されました。あわせて MCP ページの「Plugin-provided MCP servers」節では、フルなツール名を permission ルール・skill の `allowed-tools`・サブエージェントの `tools` フィールドに加えて**フックマッチャ**でも使えること、およびプラグイン側フックのドキュメント（plugins リファレンス）にも、プラグイン自身の同梱 MCP サーバを狙うフックはスコープ名を使わねばならない旨のクロスリンクが追加されました。
 
-- [Orchestrate subagents at scale with dynamic workflows (Set a size guideline) - Claude Code Docs (English)](https://code.claude.com/docs/en/workflows#set-a-size-guideline)
-- [Claude Code settings (Global config settings) - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#global-config-settings)
+- [Connect Claude Code to tools via MCP (Plugin-provided MCP servers) - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers)
+- [Hooks reference (Match MCP tools) - Claude Code Docs (English)](https://code.claude.com/docs/en/hooks#match-mcp-tools)
 
-> 本節は v2.1.202（2026年07月06日）で新設されたばかりで、日本語版 workflows ページは本サマリ作成時点で当該内容（Set a size guideline 節・`workflowSizeGuideline`）を反映していないため（2026年07月07日に ja workflows を WebFetch で確認）、日本語リンクは省略しています。
+> 本節の加筆は en 側のみで、日本語版 hooks / mcp ページが本サマリ作成時点で当該記述（プラグイン同梱サーバのスコープ付き命名）を反映しているか確認できないため、安全側で日本語リンクを省略しています。
 
-## 2. ダウンロード切断エラーの新規リファレンスと自動リトライ
+## 2. Agent SDK の auto 権限モードが Python でも利用可能に
 
-errors（エラーリファレンス）ページに、新しい節「**The connection dropped while downloading the update**」が追加されました。これは `claude install`・`claude update`・自動アップデータが Claude Code バイナリを取得中にダウンロードサーバとの接続が切れ、リトライでも回復しなかった場合に表示されるエラーです。
+Agent SDK 各ページの権限モード表で、`auto` モードに付与されていた「**(TypeScript only)**」の但し書きが一斉に削除されました。対象は How the agent loop works（`agent-sdk/agent-loop`）・Configure permissions（`agent-sdk/permissions`）・Quickstart（`agent-sdk/quickstart`）の各権限モード表で、いずれも `auto`（モデル分類器が各ツール呼び出しを承認/拒否する）から言語限定の注記が外れています。あわせて Python SDK リファレンス（`agent-sdk/python`）の `PermissionMode` Literal にも `"auto"`（モデル分類器が各ツール呼び出しを承認/拒否する）が追加されました。
 
-あわせて **自動リトライ挙動が明文化** されました。Claude Code は接続切断・転送停滞・チェックサム不一致のいずれかが起きるとダウンロードを再試行し、**合計最大3回** まで試みます。404 のような完了した HTTP エラーはサーバが応答済みのためリトライしません。**v2.1.202 以前は、1回の接続切断で即座に `aborted` の素のエラーで失敗** していました。エラーメッセージ本文は失敗した試行番号（例: `attempt 3/3`）と基盤ネットワークエラーを併記し、`claude update` の場合は stderr に `Error: Failed to install native update` を先行表示します。主因は長時間の転送を途中で切るプロキシ/ゲートウェイで、対処として `claude update` の再実行・`HTTPS_PROXY` の設定・`downloads.claude.ai` からのフルダウンロード許可・`claude doctor` の実行が案内されます。あわせて、エラーメッセージ索引表と troubleshooting ページの症状表にも、この新エラー（`The connection dropped while downloading the update` / `aborted`）への導線が追加されました。
+これにより、`auto` モードはドキュメント上 TypeScript 専用ではなく **Python SDK でも選択可能**な扱いになりました。ただし各表に残る「See [Auto mode](/docs/en/permission-modes#eliminate-prompts-with-auto-mode) for availability and behavior」という可用性注記はそのまま維持されており、実際に利用できるかは Auto mode 節の可用性条件に従います。無条件で有効化されるわけではない点は従来どおりです。
 
-- [Error reference (The connection dropped while downloading the update) - Claude Code Docs (English)](https://code.claude.com/docs/en/errors#the-connection-dropped-while-downloading-the-update)
+- [Configure permissions (Permission modes) - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-sdk/permissions#permission-modes)
 
-> 本節は v2.1.202 で新設されたばかりで、日本語版 errors ページは本サマリ作成時点で当該セクションを反映しているか確認できないため、安全側で日本語リンクを省略しています。
+> 本変更は en 側のみで、日本語版 agent-sdk ページが本サマリ作成時点で `auto` の Python 対応記述を反映しているか確認できないため、安全側で日本語リンクを省略しています。
 
-## 3. GHES プラグインマーケットプレイスの登録方式と認証要件の刷新
+## 3. Agent SDK のツールエラーハンドリング記述の訂正
 
-github-enterprise-server ページの「**Plugin marketplaces on GHES**」節が大幅に改稿され、追加サーフェスごとにインストールの仕組みと必要な認証が異なることが明示されました。新設の表は、Claude Code CLI/desktop、管理設定（`extraKnownMarketplaces`）、claude.ai 組織プラグイン設定、claude.ai ユーザー設定、Claude Code on the web の5サーフェスについて、それぞれのインストール方式と各ユーザーに必要なものを整理しています。あわせて、claude.ai のユーザー設定からマーケットプレイスを追加する場合の GitHub Enterprise 接続が **ユーザー単位** であること（Owner の接続でも他ユーザーはカバーされないが、Owner が組織プラグイン設定で追加した場合は各ユーザーの接続は不要）を説明する Warning が追加されました。
+カスタムツール（`agent-sdk/custom-tools`）の「**Handle errors**」節が大きく書き換えられ、これまでの記述の誤りが訂正されました。旧記述は「ハンドラが未捕捉例外を投げるとエージェントループが停止し、Claude はエラーを見ることなく `query` 呼び出しが失敗する」としていましたが、実際には SDK の in-process MCP サーバが未捕捉例外を捕捉してエラー結果に変換するため、**例外を投げても `isError: true` を返しても、いずれの場合もエージェントループは継続します**。両者の違いは「ループが止まるかどうか」ではなく「**Claude が読むメッセージが何になるか**」です。
 
-「Add a GHES marketplace」節では **HTTPS URL が推奨** へと変わり（例が SSH 先頭から HTTPS 先頭に入れ替え）、Claude Code は git を非対話で実行するため `known_hosts` に無いホストへの SSH 接続を拒否する旨が加筆されました。旧「Allowlist GHES marketplaces in managed settings」節は、`extraKnownMarketplaces` でマーケットプレイスを事前登録する新節「**Pre-register GHES marketplaces with managed settings**」として分離・改称され、成功のためのチェックリスト（フル git URL を使う・HTTPS を優先・各マシンがクローンできるか確認・設定が各マシンに届くか確認）が加わりました。`hostPattern`（`strictKnownMarketplaces`）で許可する従来の allowlist 節も引き続き残っています。さらにトラブルシューティングに「**Marketplace add on claude.ai fails with a GitHub access error**」節が新設され、汎用的な失敗メッセージの実態が自分の GitHub Enterprise アカウント未接続であることや、接続手順（[claude.ai/code](https://claude.ai/code) のリポジトリピッカー、管理設定の GitHub Enterprise セクション）が説明されています。GHES 概要文と機能サポート表の「Plugin marketplaces」行も、認証要件がサーフェスで異なる旨に更新されました。
+新しい表では、未捕捉例外を投げた場合は MCP サーバが生の例外メッセージを載せたエラー結果に変換して Claude に渡す（ループは継続）、`isError: true`（Python では `"is_error": True`）で返した場合は自分が組み立てたメッセージを Claude が読む（どのリクエストが失敗したか・次に何を試すか等、生の例外に無い文脈を足せる）、と整理されました。したがってエラーを自前で捕捉すべきなのは「ループを生かすため」ではなく「生の例外メッセージだけでは Claude が対処できないとき」だと明記されています。ページ冒頭の早見表の該当行も「Handle errors without stopping the loop」から「**Control the error message Claude reads**」に、コード例中のコメントも「捕捉がループを生かす」から「Claude が読むメッセージを組み立てる」に更新されました。
 
-- [Claude Code with GitHub Enterprise Server (Plugin marketplaces on GHES) - Claude Code Docs (English)](https://code.claude.com/docs/en/github-enterprise-server#plugin-marketplaces-on-ghes)
+- [Give Claude custom tools (Handle errors) - Claude Code Docs (English)](https://code.claude.com/docs/en/agent-sdk/custom-tools#handle-errors)
 
-> 本節の改稿は en 側のみで、日本語版 github-enterprise-server ページの「GHES 上のプラグインマーケットプレイス」節は本サマリ作成時点で旧内容のまま（認証要件表・Pre-register 節・claude.ai トラブルシュート節が未反映。2026年07月07日に ja ページを WebFetch で確認）のため、日本語リンクは省略しています。
-
-## 4. ワークフロー由来エージェントの OpenTelemetry 属性追加
-
-monitoring（Monitoring）ページで、ワークフローが spawn したエージェントが発するテレメトリに2つの新属性 `workflow.run_id` と `workflow.name` が追加されました。`workflow.run_id` は当該エージェントを spawn した Workflow ツール実行の実行識別子（`wf_` 前置）で、ワークフローが spawn したエージェントおよびそれらがさらに spawn したエージェント（skill 呼び出し等）を横断してカバーします。これにより、1つの `workflow.run_id` でイベントを絞り込めば、そのワークフロー実行の API リクエストとツール結果を再構成でき、値は Workflow ツールの実行結果に報告される実行識別子と一致します。
-
-`workflow.name` はワークフロー名（スクリプトの `meta.name`）で、組み込みワークフローは未改変のスクリプトを実行した場合に verbatim で出ますが、**user-authored 名（組み込みの編集コピーを含む）は `OTEL_LOG_TOOL_DETAILS=1` を設定しない限り `custom` に置換** されます。これらの属性は `claude_code.llm_request` span・tool 実行 span・イベント属性に追加され、いずれも Claude Code v2.1.202 以降が必要です。あわせて `OTEL_LOG_TOOL_DETAILS` の説明にも、対象として「user-authored workflow 名」が追記されました。
-
-- [Monitoring (Span attributes) - Claude Code Docs (English)](https://code.claude.com/docs/en/monitoring-usage#span-attributes)
-
-> 本属性は v2.1.202 で追加されたばかりで、日本語版 monitoring ページは本サマリ作成時点で当該属性を反映しているか確認できないため、安全側で日本語リンクを省略しています。
+> 本節の訂正は en 側のみで、日本語版 custom-tools ページが本サマリ作成時点で当該訂正を反映しているか確認できないため、安全側で日本語リンクを省略しています。
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回、リファレンス系で新規追加されたページ（新規ページファイル）はありません。上記ハイライトはいずれも既存ページへの節追加・改稿です。
+今回、リファレンス系で新規追加されたページ（新規ページファイル）はありません。`llms.txt`・ドキュメントマップにエントリの増減はなく、変更はいずれも既存ページ本文の改稿です。
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回、上記ハイライト（workflows / errors / github-enterprise-server / monitoring の各ページ）以外に、本文の実体的な追加・改稿を独立して伴う大幅更新はありません。その他の変更はいずれも v2.1.202 リリースに付随する軽微な加筆・修正です（軽微な更新に記載）。
+今回、上記ハイライト（hooks / mcp / plugins / agent-sdk の各ページ）以外に、本文の実体的な追加・改稿を独立して伴う大幅更新はありません。その他の変更はいずれもドキュメント記述の明確化・訂正の範囲です（軽微な更新に記載）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、v2.1.202（2026年07月06日）リリースに付随する多数の機能追加・改善・バグ修正と、その反映によるドキュメント各ページの加筆が中心です。特記なきバージョンは v2.1.202 です。
-
-**新機能**
-
-- 自動ペース（self-paced）の `/loop` を、`ScheduleWakeup` ツールを `stop: true` で呼ぶことで明示的に終了できるようになった。リスケジュールも stop もしないままイテレーションが終わると、Claude Code は約20分後に fallback wakeup を1回だけスケジュールし、そのイテレーションでもリスケジュールされなければループを終了する（v2.1.202 以前は「リスケジュールしない」ことだけが自走終了の手段だった）。tools-reference の `ScheduleWakeup` の説明にも `stop` フィールドの追加が反映された。
-- Agent SDK の `getSessionMessages` が返す `SessionMessage` 型に、`parent_agent_id`（ネストされたサブエージェントを spawn した親サブエージェントの `agentId`。メインセッション・トップレベルのサブエージェント・旧セッションでは `null`）が追加された。
+今回の軽微な更新は、公式ドキュメントのバージョンアップを伴わない記述面の明確化・訂正です（changelog エントリの追加はありません）。いずれも既存の挙動をより正確に説明し直したもので、機能追加やバグ修正ではありません。
 
 **機能改善**
 
-- background セッションで `/rename` または `Ctrl+R` で設定したセッション名が、スーパーバイザのプロセス停止・再起動をまたいで保持されるようになり、`claude --resume <name>` が引き続き解決するようになった（v2.1.202 以前は dispatch 時の名前に戻り、新しい名前で解決できなくなっていた）。 — [English](https://code.claude.com/docs/en/agent-view#permission-mode-model-and-effort)
-- Remote Control セッションが自身の権限モードを claude.ai・モバイルアプリへ報告するようになり、ドロップダウンがターミナル側を含むモード変更に追従するようになった。唯一の例外は bypassPermissions で、このモードは claude.ai へ報告されない。v2.1.202 以前は `/remote-control`・`claude --remote-control` で接続したセッションがモードを全く報告せず、表示が実モードと食い違うことがあった（不一致はラベルのみで、権限プロンプトは実モードから生成され従来通り表示された。`/remote-control` セッションが誤った権限モードを表示する不具合の修正も同根）。 — [日本語](https://code.claude.com/docs/ja/permission-modes#switch-permission-modes) / [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
-- MCP 設定で `url` があり `type` が無いエントリを設定エラーとして扱い、誤解を招く `command: expected string` ではなく `type: http`（または `sse`/`ws`）の追加を促す明確なメッセージ（`MCP server "<name>" has a "url" but no "type"; ...`）を表示するようになった。 — [English](https://code.claude.com/docs/en/mcp#option-1-add-a-remote-http-server)
-- 「Yes, don't ask again」でファイルパスを許可する際、`[` `]` `*` などの gitignore パターン文字をエスケープし、生成ルールが許可したリテラルパスにのみ一致するようになった（自分で書くルールはエスケープされない）。v2.1.202 以前は未エスケープで保存され、`[2024-06] Reports` のようなディレクトリ向けの生成ルールが自身に一致しなかったり、意図しない兄弟ディレクトリに一致する恐れがあった。 — [English](https://code.claude.com/docs/en/permissions#read-and-edit)
-- `cd` と `git` を1つの複合コマンドで組み合わせた場合のプロンプト条件が精緻化され、`cd` が別ディレクトリへ移動するとき（そのディレクトリの hooks が実行され得るため）のみプロンプトするようになった。cwd に解決される no-op の `cd` はプロンプトを誘発しない。 — [English](https://code.claude.com/docs/en/permissions#read-only-commands)
-- mTLS クライアント証明書の in-place ローテーションに対応。Claude Code は証明書・鍵ファイルを起動時および設定適用のたびに再読込するため、同じパスにファイルを差し替えるだけでローテーションできる（あわせて、設定再適用時＝証明書 in-place ローテーション中の一時的な mTLS ハンドシェイク失敗も修正された）。
-- skill を再 invoke した際、レンダリング内容が既にコンテキストにあるコピーと同一なら、instructions の2つ目のコピーではなく「already loaded」の短い注記を追加するようになった（引数変更や動的コンテキストで内容が異なる場合は従来通り全文を再追加）。v2.1.202 以前は再 invoke ごとに全文を重複追加していた。
-- `/workflows` のエージェント一覧レイアウトが改善された（タイトル幅の拡大・専用の時刻列・短いモデル名表示・行ごとのツール呼び出し数の削除）。
-- Debian/Ubuntu の apt インストール手順に、`curl` 未導入環境向けの `sudo apt install curl` ステップと、`.deb` 手動インストール時のパターン不一致エラー（`E: Unsupported file ...`）への対処注記が追加された。
-- errors ページの「Installation errors」節の導入文が、対象を「install script（起動前）」から「install/update 中（install script・`claude install`・`claude update`）」へと一般化された。
-
-**バグ修正**
-
-- `Ctrl+R` のインライン履歴検索で、履歴ファイルの走査中に確定・キャンセルするとクラッシュ/内部エラーになる不具合を修正。走査中でも確定・キャンセルが即座に効くようになった。
-- Remote Control（モバイル/web）から対話セッションに送ったコマンドが「Unknown command」で失敗する不具合を修正。
-- Remote Control のモバイル/web アプリからキャプション無しで送った画像・ファイルが黙って破棄される不具合を修正（添付は `@` ファイル参照として渡されるようになった）。 — [日本語](https://code.claude.com/docs/ja/remote-control) / [English](https://code.claude.com/docs/en/remote-control)
-- `claude auth login` と `claude mcp login --no-browser` が表示するサインイン URL が、SSH 越しに折り返すと確実にクリックできない不具合を修正（単一のハイパーリンクとして出力）。
-- `claude agents` からチャットを開くと「currently running as a background agent」で失敗し、worker のクラッシュ/再生成ループになる不具合を修正。
-- 文字列内に unicode のクォートエスケープを含むワークフロースクリプトがパース前に壊れる不具合を修正。ワークフローのパースエラーは常に TypeScript のせいにするのではなく、該当行を表示するようになった。
-- 音声ディクテーションがマイク/録音の失敗時に無限リトライする不具合を修正（capture 失敗の連続で音声入力を一時停止）。voice の一時停止判定が、start-up 失敗だけでなく「録音開始後に音声を得られず停止した」capture 失敗も数えるようになった。
-- 多数の git worktree があるリポジトリで、名前によるセッション resume や resume picker の表示が数分かかり大量のメモリを消費する不具合を修正。
-- installer/updater のダウンロードがプロキシ/ネットワークの途中切断で即座に「aborted」で失敗する不具合を修正（一時的切断はリトライ。詳細はハイライト2参照）。
-- 非同期（async）hook の JSON 出力を同期 hook と同じ出力スキーマで検証し、型が不正なフィールド（例: 文字列でない `systemMessage`）を配信せず破棄するようになった。`--debug` で破棄されたフィールドを警告表示する。v2.1.202 以前は async hook の不正 JSON 出力でセッションがクラッシュし、resume のたびに再発し得た。
+- `claude mcp add` の設定 Tips に、`--scope` に短縮形 `-s`、`--env` に短縮形 `-e` があること、および `--transport`・`--header` にもそれぞれ `-t`・`-H` の短縮形があることが明記された（例: `-e KEY=value`）。 — [English](https://code.claude.com/docs/en/mcp#installing-mcp-servers)
+- Agent SDK のカスタムツールで、ツール結果の `content` 配列が扱うブロック種別の説明が言語別に精緻化された。audio ブロックは TypeScript ではディスクに保存されパスがテキストブロックとして Claude に渡るが、**Python SDK ではツール結果から破棄され警告がログ出力される**旨、および `resource.blob`（base64 のバイナリ）も **TypeScript 専用で Python SDK では破棄・警告**される旨が追記された。 — [English](https://code.claude.com/docs/en/agent-sdk/custom-tools#return-images-and-resources)
+- Agent SDK（Python）で、フックに渡る `agent_id` / `agent_type` の対象が拡張された。従来 `PreToolUse` / `PostToolUse` / `PostToolUseFailure` のみだったのが、`PermissionRequest` では任意フィールドとして、`SubagentStart` / `SubagentStop` では必須フィールドとして利用可能になり、`PermissionRequestHookInput` の定義にも `agent_id` / `agent_type`（いずれもサブエージェント内でフックが発火したときに存在）が追加された。
+- Agent SDK（Python）の `can_use_tool` に関する注記が精緻化された。`can_use_tool` はストリーミングモードを要するが、`query(prompt=generator)` や `ClaudeSDKClient.connect(prompt=async_iterable)` に有限のメッセージストリームを渡すと、フックや in-process MCP サーバが開いたままにしていない限り最後のメッセージ後に入力ストリームが閉じ、権限コールバックが呼ばれない。prompt なしで接続し `ClaudeSDKClient.query()` でメッセージを送る場合はストリームが自動で開いたままになりフック不要、という具体的条件が追記された。
+- hooks リファレンスの共通入力フィールド表で、`transcript_path` の説明に、トランスクリプトファイルは非同期に書かれるためフック発火時点で当該ターンの最新メッセージをまだ含まない場合がある旨と、現ターンの最終アシスタントテキストが必要なフックは `transcript_path` を読むのではなく Stop / SubagentStop の `last_assistant_message` を使うべき旨が追記された。 — [English](https://code.claude.com/docs/en/hooks#common-input-fields)
+- hooks リファレンスの Stop 節で、`last_assistant_message` の使いどころが補足された。読み上げ・通知など直近完了ターンに作用するフックは、バージョンによって Stop 時点でトランスクリプトが最終メッセージを含む保証がないため、`transcript_path` を読むのではなく本フィールドを使うべき旨が明記された。 — [English](https://code.claude.com/docs/en/hooks#stop)
 
 **その他**
 
-- changelog ページに v2.1.202（2026年07月06日）のリリースエントリが追加された（changelog ページ自体へのリンクは方針により付さない）。
-- `/review` が高速な単一パスレビューに戻され、多エージェントレビューは `/code-review <level> <pr#>` を使うよう変更された。これに伴い commands ページの「Before you ship」記述・`/review` のコマンド表・`/code-review ultra` の比較表（Depth/Duration 列、"medium-effort" 表現の削除）・ultrareview ページの記述が更新された。
-- errors ページの応答品質の項に、「Claude Code v2.1.200 以前で Sonnet 5 が prompt injection を疑って拒否したら `claude update` で v2.1.201 の修正を取得する」旨の注記が追加された（changelog の v2.1.201＝2026年07月03日エントリに対応）。
-- `Esc` キーの挙動注記が更新され、権限プロンプト等のダイアログが開いているときは `Esc` が（Claude を中断するのではなく）ダイアログを閉じるようになった旨が明記された（v2.1.202 以前は一部ダイアログで Claude を中断しダイアログが残った）。
-- `workflow.name` を含む OTel 属性は `OTEL_LOG_TOOL_DETAILS` でゲートされる（詳細はハイライト4参照）。
-- 原文全文（llms-full）の setup ページ抽出で、Native Install／Homebrew／WinGet の `bash`／`powershell`／`batch` コードフェンス属性に付く `theme={null}` が、単一から最大5回連続へと重複した（スクレイプ由来のノイズの変動であり、ドキュメント内容の変更ではない）。前回（07-04 サマリ）に「6→1へ整理」と記録した箇所で、再び重複が増えた形。
+- 原文全文（llms-full）の setup ページ抽出で、Native Install／Homebrew／WinGet の `bash`／`powershell`／`batch` コードフェンス属性に付く `theme={null}` の重複が、5回連続から1回へと整理された（スクレイプ由来のノイズの変動であり、ドキュメント内容の変更ではない）。前回（2026年07月06日サマリ）に「1→5へ増加」と記録した箇所が、今回は逆に減少した形。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -138,11 +98,11 @@ monitoring（Monitoring）ページで、ワークフローが spawn したエ�
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-04.md](./archives/latest/2026-07-04.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-04.md](./archives/latest-detail/2026-07-04.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-06.md](./archives/latest/2026-07-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-06.md](./archives/latest-detail/2026-07-06.md)
 
 <!--
-base_commit: a036140d77a0f23cf530861a4b172aad2422a5a2
-head_commit: eacae3b50bdabd388ec09e26647eca3a8ae25345
-generated_at_full: 2026-07-07T15:02:04+09:00
+base_commit: eacae3b50bdabd388ec09e26647eca3a8ae25345
+head_commit: 88368cb696a40602cde0d146a1705284bcfe43d2
+generated_at_full: 2026-07-08T15:01:34+09:00
 -->
