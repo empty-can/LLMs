@@ -26,7 +26,10 @@
 
 .NOTES
   - 生成 bot（15:00）と時間をずらして実行する（推奨 15:30）。同一 bot ブランチを共有する
-    ため同時実行は避ける。
+    ため同時実行は避ける。生成 bot の所要時間は日によりばらつく（claude -p のレビュー反復
+    含め数分〜30分超）ため、起動直後に作業ツリーが汚れていても即失敗にはせず、生成 bot の
+    commit 完了を最大 20 分ポーリング待機してから判定する
+    （2026-07 に固定オフセットのみでは生成長引き日に取りこぼす実績あり）。
   - 注入は本文不変・置換数==1 検証済の純追記のみ。push は bot ブランチ限定（実行直前 assert）。
   - registry.json の last_checked 等の churn は、実 .md 注入が無い日には revert して
     ツリーをクリーンに保つ（次回 run の未コミット判定を通すため。registry は .md から再導出可能）。
@@ -51,6 +54,10 @@ $REPO_ROOT   = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $LOG_DIR     = Join-Path $REPO_ROOT "work\ja-follow-watch"
 $WATCH_PY    = Join-Path $REPO_ROOT ".claude\skills\update-official-doc-summary\scripts\watch.py"
 $SUMMARY_DIR = "official-doc-update-summary"
+
+# 生成 bot の commit 待ちポーリング設定（タスクスケジューラの ExecutionTimeLimit=1h に収まる範囲）
+$DIRTY_WAIT_MAX_MINUTES  = 20
+$DIRTY_WAIT_POLL_SECONDS = 120
 
 # python の UTF-8 入出力を強制（Windows 既定 CP932 だと ja を含む処理・出力が壊れる）。
 $env:PYTHONUTF8 = "1"
@@ -104,10 +111,20 @@ $pushAborted = $false
 $injected    = $false
 
 try {
-    # 1. 前提: tracked の未コミット変更が無いこと（untracked は無視）
+    # 1. 前提: tracked の未コミット変更が無いこと（untracked は無視）。
+    #    生成 bot（run-doc-summary.ps1, 15:00開始）は claude -p の所要時間が日によって
+    #    大きくばらつく（数分〜30分超）ため、固定オフセット起動だと生成 bot がまだ
+    #    commit していない状態と衝突しうる。即座に失敗させず、一定時間ポーリングして
+    #    生成 bot の commit 完了を待つ（真に詰まっている場合のみ最終的に失敗させる）。
+    $dirtyWaitDeadline = (Get-Date).AddMinutes($DIRTY_WAIT_MAX_MINUTES)
     $dirty = & git status --porcelain --untracked-files=no
+    while ($dirty -and (Get-Date) -lt $dirtyWaitDeadline) {
+        Write-Log "作業ツリーに未コミットの変更を検出（生成 bot 実行中の可能性）。${DIRTY_WAIT_POLL_SECONDS}秒後に再チェック" "WARN"
+        Start-Sleep -Seconds $DIRTY_WAIT_POLL_SECONDS
+        $dirty = & git status --porcelain --untracked-files=no
+    }
     if ($dirty) {
-        throw "作業ツリーに未コミットの変更があります。bot ブランチ操作前にクリーンにしてください:`n$dirty"
+        throw "作業ツリーに未コミットの変更があります（${DIRTY_WAIT_MAX_MINUTES}分待機後もクリーンにならず）。bot ブランチ操作前にクリーンにしてください:`n$dirty"
     }
 
     # 2. bot ブランチ準備（無ければ BASE から作成、有れば BASE を取り込み最新化）
