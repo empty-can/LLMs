@@ -1,65 +1,108 @@
 ---
-対象期間: 2026年07月06日 〜 2026年07月07日
-作成日: 2026-07-07
+対象期間: 2026年07月07日 〜 2026年07月08日
+作成日: 2026-07-08
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、公式ドキュメントのバージョンアップ（changelog エントリ）を伴わない、記述面の明確化・訂正が中心の回です。特に Agent SDK とフック／MCP まわりで、プラグイン同梱 MCP サーバの命名規則・権限モードの利用可否・ツールのエラーハンドリングに関する記述が整理されました。
+今回の対象期間は、公式 changelog に v2.1.203〜v2.1.205（2026年07月07日〜08日）の 3 リリースが追加された大型の更新回です。中心は v2.1.203 のバックグラウンドエージェント／agent view 刷新で、認証・MCP・権限・Agent SDK・ワークフローの各リファレンスに新機能と多数の修正が反映されました。
 
 主要なものを以下に挙げます。
 
-1. プラグインが同梱する MCP サーバのツール名・サーバ名がスコープ付きになることが、フック（マッチャ・`mcp_tool` の `server` フィールド）と MCP のドキュメントで明文化された（`mcp__plugin_<plugin>_<server>__<tool>` / `plugin:<plugin>:<server>`。裸のサーバ名で書いたマッチャは発火しない）
-2. Agent SDK の `auto` 権限モードから「TypeScript only」の但し書きが外れ、Python SDK でも利用可能としてドキュメント上に記載された（各表の可用性注記は従来どおり）
-3. Agent SDK のカスタムツールで、ハンドラの未捕捉例外がエージェントループを止めるという記述が訂正され、実際には in-process MCP サーバが例外をエラー結果へ変換してループは継続する旨に書き換えられた
+1. agent view / バックグラウンドセッションに多数の改善と修正（ゲートウェイ設定・PATH の引き継ぎ、← 押下時のサブエージェント待機、「会話が既に開いている」拒否メッセージ、`@` ピッカーの worktree 表示、`effortLevel` 設定の追従など。v2.1.203）
+2. ログイン失効の事前警告が追加され、失効 5 日前から起動時に `/login` での更新を促すようになった（v2.1.203）
+3. モデルの安全対策がサイバーセキュリティ話題をフラグした際の専用メッセージと、Cyber Verification Program への導線が整理された（v2.1.203）
+4. ultracode を `--effort ultracode` フラグや Agent SDK からも起動できるようになった（v2.1.203）
+5. auto mode 分類器のポリシーが調整され、デフォルトブランチへの単純な push が既定ではブロックされなくなる一方、機微ストア由来コンテンツの持ち出し等の新たなブロックが加わった（v2.1.203）
 ```
 
 ## ハイライト
 
-1. [**プラグイン同梱 MCP サーバのスコープ付き命名**](./latest-detail.md#1-プラグイン同梱-mcp-サーバのスコープ付き命名):  
-  プラグインがバンドルする MCP サーバは、ツール名が `mcp__plugin_<plugin-name>_<server-name>__<tool>`、サーバ名が `plugin:<plugin-name>:<server-name>` というスコープ付きになる。フックのマッチャ・`if` フィールド・`mcp_tool` フックの `server` フィールド、および `docs/en/mcp` の各所でこれが明記され、裸のサーバキー（例: `mcp__database-tools__.*`）で書いたマッチャはプラグイン同梱サーバには発火しないと注意喚起された。
-2. [**Agent SDK の auto 権限モードが Python でも利用可能に**](./latest-detail.md#2-agent-sdk-の-auto-権限モードが-python-でも利用可能に):  
-  Agent SDK の権限モード表から `auto` に付いていた「(TypeScript only)」の但し書きが、agent-loop・permissions・quickstart の各権限モード表で一斉に削除され、Python SDK リファレンスの `PermissionMode` Literal にも `"auto"` が追加された。ドキュメント上は Python SDK でも `auto` が選べる扱いになった（各エントリに残る「See Auto mode for availability」の可用性注記は従来どおり）。
-3. [**Agent SDK のツールエラーハンドリング記述の訂正**](./latest-detail.md#3-agent-sdk-のツールエラーハンドリング記述の訂正):  
-  カスタムツールの「Handle errors」節が、ハンドラの未捕捉例外はエージェントループを止め `query` が失敗するという旧記述から、SDK の in-process MCP サーバが未捕捉例外を捕捉してエラー結果に変換するため**どちらの報告方法でもループは継続する**という記述へ訂正された。`isError: true` を返す意味は「ループを継続させること」ではなく「Claude が読むメッセージを自分で組み立てること」に整理された。
+1. [**agent view / バックグラウンドセッションの多数の改善と修正**](./latest-detail.md#1-agent-view--バックグラウンドセッションの多数の改善と修正):  
+  v2.1.203 でバックグラウンドエージェントまわりが大きく更新された。ディスパッチ元シェルのゲートウェイ `ANTHROPIC_BASE_URL` と `PATH` がワーカーに引き継がれるようになり（401 や Windows でのツール欠落を修正）、`←` 押下時に実行中サブエージェントを再起動せず待機、停止行を開いたとき会話が別プロセスで開いていれば拒否メッセージを表示、`@` ディレクトリピッカーが登録済み worktree を列挙、`effortLevel` 設定の後からの編集がセッションへ追従するようになった。
+2. [**ログイン失効の事前警告（Renew an expiring login）**](./latest-detail.md#2-ログイン失効の事前警告renew-an-expiring-login):  
+  claude.ai / Claude Console のログインが失効 5 日前以内になると、起動時に `Your login expires in 3 days · run /login to renew` の警告を表示するようになった（v2.1.203）。警告は情報提供のみでリクエストをブロックせず、`/login` で更新できる。無人で走るバックグラウンド／Remote Control セッションが失効で停止するのを防ぐのが狙い。
+3. [**サイバーセキュリティ話題の安全対策メッセージと Cyber Verification Program**](./latest-detail.md#3-サイバーセキュリティ話題の安全対策メッセージと-cyber-verification-program):  
+  モデルの安全対策が会話をサイバーセキュリティ話題としてフラグした際の専用エラーメッセージが整理され、正当なセキュリティ作業向けの Cyber Verification Program への申請導線が示された（v2.1.203。トラブルシューティングに新節、エラー対応表にも行を追加）。Bedrock / Vertex / Foundry では従来どおり Usage Policy 拒否メッセージになる。
+4. [**ultracode を `--effort ultracode` / Agent SDK から起動可能に**](./latest-detail.md#4-ultracode-を---effort-ultracode--agent-sdk-から起動可能に):  
+  従来 `/effort` メニュー専用だった ultracode を、`claude --effort ultracode` 起動フラグや Agent SDK の `applyFlagSettings({ effortLevel: "ultracode" })` からも有効化できるようになった（v2.1.203）。永続 `effortLevel` 設定と `CLAUDE_CODE_EFFORT_LEVEL` は引き続き `ultracode` を受け付けない。
+5. [**auto mode 分類器のデフォルトブロック方針の調整**](./latest-detail.md#5-auto-mode-分類器のデフォルトブロック方針の調整):  
+  v2.1.203 で auto mode の既定ブロックが再整理された。デフォルトブランチへの**単純な** push は既定ではブロックされなくなり、機微・秘匿・改変された内容や、リポジトリ外から持ち込んだ内容を伴う push、レビューを迂回する push のみがブロック対象になった。一方で、セッションのトランスクリプトや認証情報フォルダなど機微ローカルストア由来のコンテンツを commit・push・PR/Issue 等へ持ち出す行為が新たに既定ブロックに加わった。
 
 ## 新規追加されたページ
 
-今回、リファレンス系で新規追加されたページ（新規ページファイル）はありません。`llms.txt`・ドキュメントマップにエントリの増減はなく、変更はいずれも既存ページ本文の改稿です。
+今回、リファレンス系で新規追加されたページ（新規ページファイル）はありません。`llms.txt` にエントリの増減はなく、変更はいずれも既存ページ本文の改稿と changelog へのリリース追加です。
 
 ## 大幅に更新されたページ
 
-今回、上記ハイライト（hooks / mcp / plugins / agent-sdk の各ページ）以外に、本文の実体的な追加・改稿を独立して伴う大幅更新はありません。その他の変更はいずれもドキュメント記述の明確化・訂正の範囲です（軽微な更新に記載）。
+上記ハイライト以外に、以下のページで本文の実体的な追加を伴う更新がありました（いずれも v2.1.203）。
+
+- [**MCP ページ: `roots/list` の作業ディレクトリ対応と idle timeout の拡張**](./latest-detail.md#1-mcp-ページ-rootslist-の作業ディレクトリ対応と-idle-timeout-の拡張):  
+  MCP サーバの `roots/list` が起動ディレクトリに加えて追加作業ディレクトリを返すようになり、変更時に `notifications/roots/list_changed` を送出。MCP ツール呼び出しの idle timeout が stdio サーバ（既定 30 分）にも適用されるようになった。
+- [**Microsoft Foundry: ベアラートークン認証 `ANTHROPIC_FOUNDRY_AUTH_TOKEN`**](./latest-detail.md#2-microsoft-foundry-ベアラートークン認証-anthropic_foundry_auth_token):  
+  API キー・Entra ID に続く第 3 の認証方式として、ベアラートークンを `Authorization: Bearer` で送る `ANTHROPIC_FOUNDRY_AUTH_TOKEN` が追加された。LLM gateway ページにも追記。
+- [**Agent SDK（TypeScript）リファレンス: 新規メッセージ型 2 種**](./latest-detail.md#3-agent-sdktypescriptリファレンス-新規メッセージ型-2-種):  
+  `SDKBackgroundTasksChangedMessage`（ライブなバックグラウンドタスク集合の変化を通知）と `SDKConversationResetMessage`（`/clear` 等で会話が置き換わったことを通知）が `SDKMessage` に追加された。
 
 ## 軽微な更新
 
-今回の軽微な更新は、公式ドキュメントのバージョンアップを伴わない記述面の明確化・訂正です（changelog エントリの追加はありません）。いずれも既存の挙動をより正確に説明し直したもので、機能追加やバグ修正ではありません。
+今回の軽微な更新は、v2.1.203〜v2.1.205（changelog に新規追加された 3 リリース）由来の小規模な機能追加・改善・修正が中心です。ハイライト・大幅更新で扱った項目は再掲せず、それ以外を分類して挙げます。バージョンは項目ごとに併記します。
+
+**新機能**
+
+- ワークフローが 25 エージェント超、または投影トークン総数が 150 万超になると、入力欄下のタスクパネルの進捗行に `Large workflow` 警告を表示するようになった。警告は助言的で実行を止めず、サイズガイドライン設定時はそのエージェント数が 25 の閾値を置き換え、ultracode オン時は表示されない（v2.1.203）。 — [English](https://code.claude.com/docs/en/workflows#cost)
+- ネストした skill を非修飾名で起動すると、プロジェクトルートの skill をロードしたうえで、ディレクトリ修飾された各バリアントの一覧と「作業中ファイルを含むディレクトリのバリアントも起動せよ」という指示を付加するようになった（v2.1.203）。 — [English](https://code.claude.com/docs/en/skills#add-per-directory-skills)
+- プロジェクトの `.claude/settings.json` が有効化しているプラグインをアンインストールする際、「自分だけ無効化（`settings.local.json` に override）」に加えて「全員向けにアンインストール（共有 `settings.json` から削除）」を選べるダイアログになった（v2.1.203）。
+- VS Code 拡張のコマンドメニュー Settings 節に **Enable Remote Control for all sessions** トグルが追加され、`remoteControlAtStartup` を設定できるようになった（v2.1.203）。 — [English](https://code.claude.com/docs/en/vs-code#use-the-prompt-box)
+- `/doctor` がインストール・設定を診断して修復もできる本格的なセットアップ点検になり、`/checkup` がそのエイリアスになった（v2.1.205）。
+- auto mode に、セッションのトランスクリプトファイルへの改竄をブロックするルールが追加された（v2.1.205。ハイライト 5 の機微ローカルストア保護と同系統の追加）。
 
 **機能改善**
 
-- `claude mcp add` の設定 Tips に、`--scope` に短縮形 `-s`、`--env` に短縮形 `-e` があること、および `--transport`・`--header` にもそれぞれ `-t`・`-H` の短縮形があることが明記された（例: `-e KEY=value`）。 — [English](https://code.claude.com/docs/en/mcp#installing-mcp-servers)
-- Agent SDK のカスタムツールで、ツール結果の `content` 配列が扱うブロック種別の説明が言語別に精緻化された。audio ブロックは TypeScript ではディスクに保存されパスがテキストブロックとして Claude に渡るが、**Python SDK ではツール結果から破棄され警告がログ出力される**旨、および `resource.blob`（base64 のバイナリ）も **TypeScript 専用で Python SDK では破棄・警告**される旨が追記された。 — [English](https://code.claude.com/docs/en/agent-sdk/custom-tools#return-images-and-resources)
-- Agent SDK（Python）で、フックに渡る `agent_id` / `agent_type` の対象が拡張された。従来 `PreToolUse` / `PostToolUse` / `PostToolUseFailure` のみだったのが、`PermissionRequest` では任意フィールドとして、`SubagentStart` / `SubagentStop` では必須フィールドとして利用可能になり、`PermissionRequestHookInput` の定義にも `agent_id` / `agent_type`（いずれもサブエージェント内でフックが発火したときに存在）が追加された。
-- Agent SDK（Python）の `can_use_tool` に関する注記が精緻化された。`can_use_tool` はストリーミングモードを要するが、`query(prompt=generator)` や `ClaudeSDKClient.connect(prompt=async_iterable)` に有限のメッセージストリームを渡すと、フックや in-process MCP サーバが開いたままにしていない限り最後のメッセージ後に入力ストリームが閉じ、権限コールバックが呼ばれない。prompt なしで接続し `ClaudeSDKClient.query()` でメッセージを送る場合はストリームが自動で開いたままになりフック不要、という具体的条件が追記された。
-- hooks リファレンスの共通入力フィールド表で、`transcript_path` の説明に、トランスクリプトファイルは非同期に書かれるためフック発火時点で当該ターンの最新メッセージをまだ含まない場合がある旨と、現ターンの最終アシスタントテキストが必要なフックは `transcript_path` を読むのではなく Stop / SubagentStop の `last_assistant_message` を使うべき旨が追記された。 — [English](https://code.claude.com/docs/en/hooks#common-input-fields)
-- hooks リファレンスの Stop 節で、`last_assistant_message` の使いどころが補足された。読み上げ・通知など直近完了ターンに作用するフックは、バージョンによって Stop 時点でトランスクリプトが最終メッセージを含む保証がないため、`transcript_path` を読むのではなく本フィールドを使うべき旨が明記された。 — [English](https://code.claude.com/docs/en/hooks#stop)
+- `cleanupPeriodDays`: 設定ファイルが読めない／パースできない場合、`/status` に警告を出して保持クリーンアップ掃引を一時停止するようになった（管理設定が値を供給する場合はその値で実行）。v2.1.203 より前はこの状態でも 30 日既定で掃引し、より長い `cleanupPeriodDays` が保持するはずのトランスクリプトを削除しうる問題があった（v2.1.203）。 — [English](https://code.claude.com/docs/en/settings#available-settings)
+- プラグインの language server が診断を配信するかコードナビゲーション要求に応えたときに「使用中」とみなされ、LSP を含むプラグインが不使用グループに誤って挙がらなくなった（v2.1.203）。 — [English](https://code.claude.com/docs/en/plugins#add-lsp-servers-to-your-plugin)
+- 手動権限モード（サイクル上の `default`）で、ステータスバーにグレーの `⏸ manual mode on` バッジを表示するようになった（v2.1.203）。 — [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
+- `isolation: worktree` のサブエージェントは Bash / PowerShell コマンドを worktree 内で実行するようになり、作業ディレクトリがメインチェックアウトに解決される場合はエラーになる。v2.1.203 より前はメインチェックアウトで実行されうる問題があった（v2.1.203）。 — [English](https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields)
+- `/review` が高速な単一パスの読み取り専用 GitHub PR レビューに戻り、PR 番号の後ろのテキストは追加レビュー指示になった。多エージェントレビューを効果レベル指定で行う `/code-review <level> <pr#>` が案内された（v2.1.203。`/review` は v2.1.186〜v2.1.201 では `/code-review medium` 相当を実行していた）。 — [English](https://code.claude.com/docs/en/cli-reference#slash-commands)
+- `workflowSizeGuideline` を設定すると、そのエージェント数が `Large workflow` 警告の既定閾値も置き換えるようになった（v2.1.203）。
+- MCP の設定ファイルパス案内で `~/.claude/.mcp.json` を読まないことが明記され、プラグインルートは常に個別プラグインのディレクトリで `~/.claude/` ではないことが補足された（v2.1.203）。
+- `TaskStop` / `TaskOutput` が対象タスク未発見時に、実行中のバックグラウンドエージェントを ID と説明で列挙するようになり、別エージェントが生成したバックグラウンドエージェントも識別・停止できるようになった（v2.1.203）。
+- auto mode がコンテキストから解決できない変数に対する `rm -rf` を実行前に確認するよう改善され、バックグラウンドタスク通知が「人間の入力は発生していない」旨を明示してトランスクリプト内の捏造承認に基づく行動を防ぐようになった（v2.1.205）。
+- agent view の行が生のツール呼び出しテキストではなく色付きの状態語と分類器が書いた見出しを表示し、既存 PR を編集・マージ・コメント・push したセッションがその PR を `claude agents` にリンクするようになった（v2.1.205）。
+
+**バグ修正**
+
+- macOS で誤った低メモリ検知によりバックグラウンドエージェントのセッションを開く／切り替える際に 15〜20 秒停止する問題を修正（v2.1.196 のリグレッション。v2.1.203）。
+- daemon のセッショントークンが陳腐化するとバックグラウンドセッションが attach・返信・停止に恒久的に応答しなくなる問題を修正（自動回復するように。v2.1.203）。
+- バックグラウンド daemon の自動アップグレード失敗が実行中の全バックグラウンドセッションを静かに kill する問題、および作業ディレクトリが削除・ファイルに置換・無効パス化した際にバックグラウンドエージェントがクラッシュループする問題（明確なエラーで 1 度だけ失敗するように）を修正（v2.1.203）。
+- 対話セッションでコンテキスト使用インジケータが毎ターン後にトランスクリプト全体を再解析していたメモリ／CPU リグレッションを修正（v2.1.203）。
+- 多数の git worktree を持つリポジトリで Bash が `argument list too long` で失敗する問題、worktree 分離サブエージェントが親チェックアウトでシェルコマンドを実行しうる問題、マルチリポジトリで worktree 作成がネストしたリポジトリを拒否して分離・編集できなくなる問題を修正（v2.1.203）。
+- 長いトランスクリプト履歴をスクロールした際の content jumping、bash モードでシェル履歴サジェスト表示中のちらつき・ジャンプ、バックグラウンドセッション再 attach 時に `^[[I` / `^[[O` エスケープコードがそのまま表示される問題を修正（v2.1.203）。
+- バックグラウンドセッションが `settings.json` の `effortLevel` 変更を daemon 経由 fork 時に無視する問題、Windows で `/clear` 後にバックグラウンドタスク出力が空ファイルに置き換わる問題、非 git ディレクトリで `WorktreeCreate` フック構成時にファイル編集できない問題を修正（v2.1.203）。
+- ヘッドレスセッションで SessionStart フック中に hook イベントがストリーミングされず、リモートワーカーがフック途中で idle-reap されうる問題を修正（v2.1.204）。
+- `--json-schema` が無効なスキーマ時に静かに非構造化出力を出す問題と `format` キーワードを使うスキーマが拒否される問題、`--max-turns` 上限でターンが終わるとき作業中に送ったメッセージが静かに失われる問題を修正（v2.1.205）。
+- Windows の worktree 削除が、内部に NTFS ジャンクションやディレクトリシンボリックリンクがあると worktree 外のファイルを削除する問題、起動元ディレクトリが実行中に削除・ロック・アンマウントされた際の Windows クラッシュ、ディレクトリスキャン中にファイルウォッチャが閉じられた際のクラッシュを修正（v2.1.205）。
+- `SendMessage` で再開したバックグラウンドエージェントがエージェント一覧で「failed」「completed」のまま表示される問題、読めるテキストを含まないターンで「needs input」から「working」へ戻る問題、`claude attach` がアップグレード再起動中のバックグラウンドエージェントでエラーになる問題を修正（v2.1.205）。
+- 30K インライン上限を超える Bash 出力内で作成された PR がセッション–PR リンクから漏れる問題、`claude mcp add-from-claude-desktop` がサーバ名に非対応文字を含むとスタックする問題（無効名を報告し残りは取り込む）、初期化に失敗したプラグイン LSP が同じ拡張子を扱う別プラグインの正常な LSP を妨げる問題、CLI 2.1.203+ で Cowork VM モードのローカルエージェントセッションが `Not logged in` で起動失敗する問題を修正（v2.1.205）。
 
 **その他**
 
-- 原文全文（llms-full）の setup ページ抽出で、Native Install／Homebrew／WinGet の `bash`／`powershell`／`batch` コードフェンス属性に付く `theme={null}` の重複が、5回連続から1回へと整理された（スクレイプ由来のノイズの変動であり、ドキュメント内容の変更ではない）。前回（2026年07月06日サマリ）に「1→5へ増加」と記録した箇所が、今回は逆に減少した形。
+- 大きなバンドル依存を遅延ロードするなどでバイナリサイズを約 7MB、起動メモリを約 7MB 削減。左矢印がバックグラウンドタスク／diff／ワークフロー詳細ビューを閉じないようになり（代わりに Esc）、起動時の `claude command missing or broken` 警告や `claude agents` フッタの冗長なナビゲーションヒントを削除（v2.1.203）。
+- 自動更新のバイナリダウンロードをメモリバッファではなくディスクへストリームし、更新時のピークメモリを約 400MB 削減。Claude Desktop のペイン改称に先立ち MCP サーバ名 "Claude Browser"（"Claude Preview" と並び）を予約し、ユーザー構成の MCP サーバがこれらの名前で登録できないようにした（v2.1.205）。
+- 公式 changelog ページに v2.1.203（2026年07月07日）・v2.1.204（2026年07月08日）・v2.1.205（2026年07月08日）の 3 リリースエントリが追加された（changelog ページ自体へのリンクは方針により張らない）。
 
 ## 新着情報
 
-今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの新規追加・本文変更はありません（差分内に `whats-new/` を含む変更は 0 件。`llms.txt`・ドキュメントマップにも `whats-new/` の新規エントリはありません）。
+今回、週刊ダイジェスト「新着情報」（`whats-new/`）ページの新規追加・本文変更はありません（差分内に `whats-new/` を含む変更は 0 件。`llms.txt` にも `whats-new/` の新規エントリはありません）。今回追加された changelog エントリ（v2.1.203〜v2.1.205）は各リファレンスページの更新およびハイライト・軽微な更新に反映しています。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-06.md](./archives/latest/2026-07-06.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-06.md](./archives/latest-detail/2026-07-06.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-07.md](./archives/latest/2026-07-07.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-07.md](./archives/latest-detail/2026-07-07.md)
 
 <!--
-base_commit: eacae3b50bdabd388ec09e26647eca3a8ae25345
-head_commit: 88368cb696a40602cde0d146a1705284bcfe43d2
-generated_at_full: 2026-07-08T15:01:34+09:00
+base_commit: 88368cb696a40602cde0d146a1705284bcfe43d2
+head_commit: c5b9ea9f9b938819036015f5beec69baf4c1cbc7
+generated_at_full: 2026-07-09T15:07:53+09:00
 -->

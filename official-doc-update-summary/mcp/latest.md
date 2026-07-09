@@ -1,12 +1,12 @@
 ---
-対象期間: 2026年06月30日 〜 2026年07月07日
-作成日: 2026-07-07
+対象期間: 2026年07月07日 〜 2026年07月08日
+作成日: 2026-07-08
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の原文差分は、仕様スキーマリファレンス（2025-11-25 版 Schema Reference）ページの HTML 整形（隣接タグ間への空白挿入）のみで、型定義・規範（MUST/SHOULD 等）・仕様のいずれにも実体的な変更はありませんでした（空白を除去すると差分前後でバイト単位に同一であることを確認済み）。このため今回取り上げるべきハイライトはありません。
+今回の対象期間の原文差分は、「Build an MCP App」ページの Agent Skills インストール手順表にある Goose のドキュメントリンク URL 差し替え（`block.github.io/goose/...` → `goose-docs.ai/...`）のみで、手順・型定義・仕様のいずれにも実体的な変更はありませんでした。このため今回取り上げるべきハイライトはありません。
 ```
 
 ## ハイライト
@@ -25,15 +25,15 @@
 
 **その他**
 
-- 仕様スキーマリファレンス（2025-11-25 版 Schema Reference）ページで、レンダリング済み HTML の記法が整形され、隣接するタグの間（`</div><div>` や `<section>` / `<aside>` の前後など）に空白が挿入されました。表示上の見た目・型定義・規範記述に変化はなく、意味上の変更はありません（空白除去後は差分前後でバイト単位に同一）。 — [Schema Reference](https://modelcontextprotocol.io/specification/2025-11-25/schema)
+- 「Build an MCP App」ページの「Getting started」節にある、各 AI コーディングエージェント向け Agent Skills インストール先ディレクトリの一覧表で、Goose のドキュメントリンク URL が `https://block.github.io/goose/docs/guides/context-engineering/using-skills/` から `https://goose-docs.ai/docs/guides/context-engineering/using-skills/` へ差し替えられました。リンク先の移設に伴う URL 更新のみで、手順・スキル配置先パス・本文記述に変化はありません。 — [Build an MCP App](https://modelcontextprotocol.io/extensions/apps/build#getting-started)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-06-30.md](./archives/latest/2026-06-30.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-06-30.md](./archives/latest-detail/2026-06-30.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-07.md](./archives/latest/2026-07-07.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-07.md](./archives/latest-detail/2026-07-07.md)
 
 <!--
-base_commit: 270e6fa0b7efe4f16ebdd47a4e8f6edbcfc9f585
-head_commit: 88368cb696a40602cde0d146a1705284bcfe43d2
-generated_at_full: 2026-07-08T15:24:01+09:00
+base_commit: 88368cb696a40602cde0d146a1705284bcfe43d2
+head_commit: c5b9ea9f9b938819036015f5beec69baf4c1cbc7
+generated_at_full: 2026-07-09T15:28:46+09:00
 -->
