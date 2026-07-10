@@ -55,22 +55,22 @@
 
 **新機能**
 
-- 非対話モード専用のフラグ `--append-subagent-system-prompt` が追加され、ネストしたものを含む全サブエージェントのシステムプロンプト末尾に任意のテキストを追記できるようになった。フラグが環境変数 `CLAUDE_CODE_ENABLE_APPEND_SUBAGENT_PROMPT` を自動で設定する（v2.1.205）。 — [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- 非対話モード専用のフラグ `--append-subagent-system-prompt` が追加され、ネストしたものを含む全サブエージェントのシステムプロンプト末尾に任意のテキストを追記できるようになった。フラグが環境変数 `CLAUDE_CODE_ENABLE_APPEND_SUBAGENT_PROMPT` を自動で設定する（v2.1.205）。 — [日本語](https://code.claude.com/docs/ja/cli-reference#cli-flags) / [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
 - `claude doctor` が CLI サブコマンド表に追加され、セッションを起動せずインストール診断・設定ファイル検証エラー・Remote Control 適格性を出力することが明記された（v2.1.205）。 — [English](https://code.claude.com/docs/en/cli-reference#cli-commands)
 - プラグイン LSP サーバ設定に `restartOnCrash`（既定 `true`）と `shutdownTimeout` が使えるようになった。v2.1.205 より前はスキーマ上は受理されつつ、いずれかを設定するとそのサーバが起動時に丸ごとスキップされていた（v2.1.205）。
 - サブエージェント用ステータスライン hook の各タスクに `model`（解決済みモデル ID）と `contextWindowSize`（そのモデルのコンテキストウィンドウ）が渡るようになり、行ごとの使用率を描画できるようになった（v2.1.205）。
-- 管理設定に `browserExternalPageTools` が追加され、Desktop の Browser ペインでの外部ページ上のツール利用を無効化できるようになった（詳細はハイライト 1 参照）。 — [English](https://code.claude.com/docs/en/settings#available-settings)
+- 管理設定に `browserExternalPageTools` が追加され、Desktop の Browser ペインでの外部ページ上のツール利用を無効化できるようになった（詳細はハイライト 1 参照）。 — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
 - `/usage-credits` が、SSH 経由などブラウザを開けない環境では課金ページの URL をテキストで表示するようになった。v2.1.205 より前はその場合に何も表示されなかった（v2.1.205）。 — [English](https://code.claude.com/docs/en/commands#all-commands)
 
 **機能改善**
 
-- モデル既定 effort の保持がセッションを跨いで維持され、`/effort` の実行や `--effort` 付き起動といった明示的な選択があるまで解除されないことが明記された（v2.1.205）。 — [English](https://code.claude.com/docs/en/model-config#adjust-effort-level)
+- モデル既定 effort の保持がセッションを跨いで維持され、`/effort` の実行や `--effort` 付き起動といった明示的な選択があるまで解除されないことが明記された（v2.1.205）。 — [日本語](https://code.claude.com/docs/ja/model-config#adjust-effort-level) / [English](https://code.claude.com/docs/en/model-config#adjust-effort-level)
 - 構造化出力で、無効な JSON Schema は起動時にエラーで失敗するようになり、`format` キーワードは注釈として受理され SDK のバリデータでは強制されなくなった。v2.1.205 より前は無効なスキーマが黙って無視され非構造化テキストが返っていた（v2.1.205）。 — [English](https://code.claude.com/docs/en/headless#get-structured-output)
 - ストリーミング入力で、ターンが `--max-turns` 上限で終わるときに送信済みのメッセージがキューに残り、自身の上限を持つ独自のターンとして走るようになった。v2.1.205 より前は最終イテレーションに届いたメッセージが取り込まれ、モデルに届かないまま失われていた（v2.1.205）。
 - `WorktreeCreate` hook の出力規約が精緻化された。command hook は stdout の最後の非空行にパスを出力し、Claude Code は ANSI エスケープを除去してから読む。相対パスは hook の実行ディレクトリを基準に解決され、ディレクトリとして入れなければパスを示すエラーを出して終了コード 1 で終わる。v2.1.205 より前はセッションがクラッシュし、`-p` では約 30 秒停止したのち終了コード 0 で終わっていた（v2.1.205）。
 - Windows で worktree を削除する前に、内部の任意の深さにある NTFS ジャンクションやディレクトリシンボリックリンクをリンクエントリとして除去するようになり、worktree 外のファイルを消さなくなった。v2.1.205 より前はトップレベルのリンクしか扱わなかった（v2.1.205）。
 - LSP サーバの重複解決が変わり、同じ拡張子を宣言する有効なサーバが複数あるときは最初に登録されたものが担当し、`/plugin` が有効なプラグイン名を示す警告を出すようになった。初期化に失敗したサーバは拡張子を占有しなくなり、同じ拡張子を扱う別の正常なサーバが処理する（v2.1.205）。
-- スキル一覧のコンテキスト予算に関する記述が刷新され、`/doctor` が一覧のコンテキストコストと主な寄与要素を見積もるようになった。予算超過時はデバッグログにも警告が書かれる（v2.1.205）。 — [English](https://code.claude.com/docs/en/skills#skill-descriptions-are-cut-short)
+- スキル一覧のコンテキスト予算に関する記述が刷新され、`/doctor` が一覧のコンテキストコストと主な寄与要素を見積もるようになった。予算超過時はデバッグログにも警告が書かれる（v2.1.205）。 — [日本語](https://code.claude.com/docs/ja/skills#skill-descriptions-are-cut-short) / [English](https://code.claude.com/docs/en/skills#skill-descriptions-are-cut-short)
 - `SendMessage` で再開したサブエージェントは同一 ID の下で新しい実行として走り、タスク一覧と Agent SDK のタスクイベントで再び running として表示されるようになった。v2.1.205 より前は再開した実行が動いている間も以前の failed / completed のままだった（v2.1.205）。
 - 同一 `.claude/agents/` ディレクトリ（サブフォルダ含む）で名前が重複する場合、どれがロードされるかはファイルシステムの読み取り順であり、文書化された優先順位はないことが明記された。`/doctor` の点検が重複を報告し、1 つを残すリネーム・削除を提案する（v2.1.205）。
 - npm インストーラが FreeBSD を非対応プラットフォームとして報告するようになった。v2.1.205 より前は Linux として扱い、実行できないバイナリをダウンロードしていた（v2.1.205）。

@@ -38,7 +38,7 @@
 
 Desktop（`docs/en/desktop`）の Code タブで、これまで「preview ペイン／埋め込みブラウザ」と呼ばれていた領域が **Browser ペイン**に改称され、単なるアプリプレビューを超えたタブブラウザになりました。**Cmd+Shift+B**（Windows は **Ctrl+Shift+B**）または **Views** メニューから開き、実行中アプリの隣にドキュメントや issue トラッカーなど任意のサイトを並べられます。チャット内の外部リンクをクリックすると「Open in app（Browser ペイン）」と「Default browser」の選択肢が出て、**Cmd**（Windows は **Ctrl**）クリックならシステムブラウザで直接開きます。Google OAuth のようなポップアップ型サインインを含め、ペイン内でサイトにログインすることもできます。キーボードショートカット表も `Cmd+Shift+P`（Toggle preview pane）から `Cmd+Shift+B`（Toggle Browser pane）へ更新され、ペイン一覧の「preview」も「browser」になりました。
 
-外部ページの取り扱いには 2 つの安全チェックが加わります。1 つはクリックや入力といった**書き込み操作を審査する安全分類器**で、これは auto mode が使うものと同じ分類器であり、フラグが立てば権限モードに関わらず確認プロンプトが出ます。もう 1 つは、Auto と Bypass permissions 以外の権限モードで新規サイトへ遷移する前に働く**ドメイン許可リストチェック**です。Claude が外部サイトで初めて操作するときは **Allow once / Always allow / Deny** の権限カードが出て、承認はサイト単位（サブドメインも別扱い）で保存されます。ローカル dev サーバとプロジェクトファイルは承認不要なので auto-verify は従来どおり動きます。承認済みサイトでも、購入・アカウント作成・CAPTCHA 回避は Claude が勝手に行いません。Browser ペインはクリーンなブラウザプロファイルを使うため、ログイン状態を伴う操作をさせたい場合は [Claude in Chrome 拡張](https://code.claude.com/docs/en/chrome)を使う、という使い分けが示されています。組織向けには Chrome 拡張と同じサイト許可／ブロックリストが適用され、管理者は `browserExternalPageTools` 管理設定を `"disabled"` にすることで、外部ページ上での Claude のツール利用（読み取り・操作）だけを止められます（ユーザー自身の遷移とローカルプレビューは影響を受けません）。
+外部ページの取り扱いには 2 つの安全チェックが加わります。1 つはクリックや入力といった**書き込み操作を審査する安全分類器**で、これは auto mode が使うものと同じ分類器であり、フラグが立てば権限モードに関わらず確認プロンプトが出ます。もう 1 つは、Auto と Bypass permissions 以外の権限モードで新規サイトへ遷移する前に働く**ドメイン許可リストチェック**です。Claude が外部サイトで初めて操作するときは **Allow once / Always allow / Deny** の権限カードが出て、承認はサイト単位（サブドメインも別扱い）で保存されます。ローカル dev サーバとプロジェクトファイルは承認不要なので auto-verify は従来どおり動きます。承認済みサイトでも、購入・アカウント作成・CAPTCHA 回避は Claude が勝手に行いません。Browser ペインはクリーンなブラウザプロファイルを使うため、ログイン状態を伴う操作をさせたい場合は [日本語](https://code.claude.com/docs/ja/chrome) / [Claude in Chrome 拡張](https://code.claude.com/docs/en/chrome)を使う、という使い分けが示されています。組織向けには Chrome 拡張と同じサイト許可／ブロックリストが適用され、管理者は `browserExternalPageTools` 管理設定を `"disabled"` にすることで、外部ページ上での Claude のツール利用（読み取り・操作）だけを止められます（ユーザー自身の遷移とローカルプレビューは影響を受けません）。
 
 - [Desktop application (Browse external sites) - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#browse-external-sites)
 
@@ -162,22 +162,22 @@ MCP ページ（`docs/en/mcp`）で、Claude Code 組み込みサーバ向けの
 
 **新機能**
 
-- 非対話モード専用のフラグ `--append-subagent-system-prompt` が追加され、ネストしたものを含む全サブエージェントのシステムプロンプト末尾に任意のテキストを追記できるようになった。フラグが環境変数 `CLAUDE_CODE_ENABLE_APPEND_SUBAGENT_PROMPT` を自動で設定する（v2.1.205）。 — [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- 非対話モード専用のフラグ `--append-subagent-system-prompt` が追加され、ネストしたものを含む全サブエージェントのシステムプロンプト末尾に任意のテキストを追記できるようになった。フラグが環境変数 `CLAUDE_CODE_ENABLE_APPEND_SUBAGENT_PROMPT` を自動で設定する（v2.1.205）。 — [日本語](https://code.claude.com/docs/ja/cli-reference#cli-flags) / [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
 - `claude doctor` が CLI サブコマンド表に追加され、セッションを起動せずインストール診断・設定ファイル検証エラー・Remote Control 適格性を出力することが明記された（v2.1.205）。 — [English](https://code.claude.com/docs/en/cli-reference#cli-commands)
 - プラグイン LSP サーバ設定に `restartOnCrash`（既定 `true`）と `shutdownTimeout` が使えるようになった。v2.1.205 より前はスキーマ上は受理されつつ、いずれかを設定するとそのサーバが起動時に丸ごとスキップされていた（v2.1.205）。
 - サブエージェント用ステータスライン hook の各タスクに `model`（解決済みモデル ID）と `contextWindowSize`（そのモデルのコンテキストウィンドウ）が渡るようになり、行ごとの使用率を描画できるようになった（v2.1.205）。
-- 管理設定に `browserExternalPageTools` が追加され、Desktop の Browser ペインでの外部ページ上のツール利用を無効化できるようになった（詳細はハイライト 1 参照）。 — [English](https://code.claude.com/docs/en/settings#available-settings)
+- 管理設定に `browserExternalPageTools` が追加され、Desktop の Browser ペインでの外部ページ上のツール利用を無効化できるようになった（詳細はハイライト 1 参照）。 — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
 - `/usage-credits` が、SSH 経由などブラウザを開けない環境では課金ページの URL をテキストで表示するようになった。v2.1.205 より前はその場合に何も表示されなかった（v2.1.205）。 — [English](https://code.claude.com/docs/en/commands#all-commands)
 
 **機能改善**
 
-- モデル既定 effort の保持がセッションを跨いで維持され、`/effort` の実行や `--effort` 付き起動といった明示的な選択があるまで解除されないことが明記された（v2.1.205）。 — [English](https://code.claude.com/docs/en/model-config#adjust-effort-level)
+- モデル既定 effort の保持がセッションを跨いで維持され、`/effort` の実行や `--effort` 付き起動といった明示的な選択があるまで解除されないことが明記された（v2.1.205）。 — [日本語](https://code.claude.com/docs/ja/model-config#adjust-effort-level) / [English](https://code.claude.com/docs/en/model-config#adjust-effort-level)
 - 構造化出力で、無効な JSON Schema は起動時にエラーで失敗するようになり、`format` キーワードは注釈として受理され SDK のバリデータでは強制されなくなった。v2.1.205 より前は無効なスキーマが黙って無視され非構造化テキストが返っていた（v2.1.205）。 — [English](https://code.claude.com/docs/en/headless#get-structured-output)
 - ストリーミング入力で、ターンが `--max-turns` 上限で終わるときに送信済みのメッセージがキューに残り、自身の上限を持つ独自のターンとして走るようになった。v2.1.205 より前は最終イテレーションに届いたメッセージが取り込まれ、モデルに届かないまま失われていた（v2.1.205）。
 - `WorktreeCreate` hook の出力規約が精緻化された。command hook は stdout の最後の非空行にパスを出力し、Claude Code は ANSI エスケープを除去してから読む。相対パスは hook の実行ディレクトリを基準に解決され、ディレクトリとして入れなければパスを示すエラーを出して終了コード 1 で終わる。v2.1.205 より前はセッションがクラッシュし、`-p` では約 30 秒停止したのち終了コード 0 で終わっていた（v2.1.205）。
 - Windows で worktree を削除する前に、内部の任意の深さにある NTFS ジャンクションやディレクトリシンボリックリンクをリンクエントリとして除去するようになり、worktree 外のファイルを消さなくなった。v2.1.205 より前はトップレベルのリンクしか扱わなかった（v2.1.205）。
 - LSP サーバの重複解決が変わり、同じ拡張子を宣言する有効なサーバが複数あるときは最初に登録されたものが担当し、`/plugin` が有効なプラグイン名を示す警告を出すようになった。初期化に失敗したサーバは拡張子を占有しなくなり、同じ拡張子を扱う別の正常なサーバが処理する（v2.1.205）。
-- スキル一覧のコンテキスト予算に関する記述が刷新され、`/doctor` が一覧のコンテキストコストと主な寄与要素を見積もるようになった。予算超過時はデバッグログにも警告が書かれる（v2.1.205）。 — [English](https://code.claude.com/docs/en/skills#skill-descriptions-are-cut-short)
+- スキル一覧のコンテキスト予算に関する記述が刷新され、`/doctor` が一覧のコンテキストコストと主な寄与要素を見積もるようになった。予算超過時はデバッグログにも警告が書かれる（v2.1.205）。 — [日本語](https://code.claude.com/docs/ja/skills#skill-descriptions-are-cut-short) / [English](https://code.claude.com/docs/en/skills#skill-descriptions-are-cut-short)
 - `SendMessage` で再開したサブエージェントは同一 ID の下で新しい実行として走り、タスク一覧と Agent SDK のタスクイベントで再び running として表示されるようになった。v2.1.205 より前は再開した実行が動いている間も以前の failed / completed のままだった（v2.1.205）。
 - 同一 `.claude/agents/` ディレクトリ（サブフォルダ含む）で名前が重複する場合、どれがロードされるかはファイルシステムの読み取り順であり、文書化された優先順位はないことが明記された。`/doctor` の点検が重複を報告し、1 つを残すリネーム・削除を提案する（v2.1.205）。
 - npm インストーラが FreeBSD を非対応プラットフォームとして報告するようになった。v2.1.205 より前は Linux として扱い、実行できないバイナリをダウンロードしていた（v2.1.205）。
