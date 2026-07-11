@@ -70,7 +70,7 @@
 **その他**
 
 - 概要ページ（`docs/en/overview`）の書き出しに「Claude Code はターミナル・IDE 拡張・デスクトップアプリ・Web という複数のサーフェスで動く」という一文が加わった。あわせて "environments" が "surfaces" に言い換えられ、用語集の [`surface`](https://code.claude.com/docs/en/glossary#surface) へのリンクが張られた。 — [English](https://code.claude.com/docs/en/overview#use-claude-code-everywhere)
-- トラブルシューティングページ（`docs/en/troubleshooting`）の症状対応表で、`model not found` の行が指すエラーリファレンスのアンカーが新しい id に更新された（詳細は大幅更新 2 参照）。 — [English](https://code.claude.com/docs/en/troubleshooting)
+- トラブルシューティングページ（`docs/en/troubleshooting`）の症状対応表で、`model not found` の行が指すエラーリファレンスのアンカーが新しい id に更新された（詳細は大幅更新 2 参照）。 — [日本語](https://code.claude.com/docs/ja/troubleshooting) / [English](https://code.claude.com/docs/en/troubleshooting)
 - ページ見出しマップ（`claude_code_docs_map.md`）に、desktop-linux の `Troubleshoot` / `Unable to locate package claude-desktop`、agent-sdk の `SystemPromptFile`、whats-new の `2026-w27` / `2026-w28` が追加された。
 
 ## 新着情報
