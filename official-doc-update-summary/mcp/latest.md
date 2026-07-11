@@ -1,12 +1,12 @@
 ---
-対象期間: 2026年07月07日 〜 2026年07月08日
-作成日: 2026-07-08
+対象期間: 2026年07月08日 〜 2026年07月10日
+作成日: 2026-07-10
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の原文差分は、「Build an MCP App」ページの Agent Skills インストール手順表にある Goose のドキュメントリンク URL 差し替え（`block.github.io/goose/...` → `goose-docs.ai/...`）のみで、手順・型定義・仕様のいずれにも実体的な変更はありませんでした。このため今回取り上げるべきハイライトはありません。
+今回の対象期間の原文差分は、「Connect to local MCP servers」ページにある Filesystem Server のインストール手順のうち、Claude Desktop 再起動後の確認手順を現行 UI に合わせて書き換えた 3 行のみで、プロトコル仕様・SDK・設定ファイルの記述に実体的な変更はありませんでした。このため今回取り上げるべきハイライトはありません。
 ```
 
 ## ハイライト
@@ -23,17 +23,17 @@
 
 ## 軽微な更新
 
-**その他**
+**機能改善**
 
-- 「Build an MCP App」ページの「Getting started」節にある、各 AI コーディングエージェント向け Agent Skills インストール先ディレクトリの一覧表で、Goose のドキュメントリンク URL が `https://block.github.io/goose/docs/guides/context-engineering/using-skills/` から `https://goose-docs.ai/docs/guides/context-engineering/using-skills/` へ差し替えられました。リンク先の移設に伴う URL 更新のみで、手順・スキル配置先パス・本文記述に変化はありません。 — [Build an MCP App](https://modelcontextprotocol.io/extensions/apps/build#getting-started)
+- 「Connect to local MCP servers」ページの「Installing the Filesystem Server」節で、Claude Desktop を再起動した後に MCP サーバーの接続を確認する手順が、現行の Claude Desktop UI に合わせて書き換えられました。従来は「会話入力欄の右下に表示される MCP サーバーインジケーターをクリックすると、Filesystem Server が提供するツールを確認できる」という説明でしたが、新しい記述では「会話入力欄の**左下**にある『Add files, connectors and more』インジケーターをクリックし、『Connectors』にカーソルを合わせて『Manage connectors』を選び、コネクタ一覧から『filesystem』を選択する」という手順に変わっています。あわせてトラブルシューティングへの誘導文も「サーバーインジケーターが表示されない場合」から「Filesystem Server が接続されない場合」に改められました。手順の意図（設定した MCP サーバーが読み込まれたかを確認する）は同じで、設定ファイルの書き方やサーバーの起動方法に変更はありません。 — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/develop/connect-local-servers#installing-the-filesystem-server)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-07.md](./archives/latest/2026-07-07.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-07.md](./archives/latest-detail/2026-07-07.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-08.md](./archives/latest/2026-07-08.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-08.md](./archives/latest-detail/2026-07-08.md)
 
 <!--
-base_commit: 88368cb696a40602cde0d146a1705284bcfe43d2
-head_commit: c5b9ea9f9b938819036015f5beec69baf4c1cbc7
-generated_at_full: 2026-07-09T15:28:46+09:00
+base_commit: c5b9ea9f9b938819036015f5beec69baf4c1cbc7
+head_commit: ffddd087c516310fe994c988f8b0ffd8fba71e59
+generated_at_full: 2026-07-11T15:45:14+09:00
 -->
