@@ -355,28 +355,31 @@ def render_entries(items_path: Path, entries_path: Path, taxonomy_path: Path, ou
                 locs.append(it)
         if len(locs) == 1:
             it = locs[0]
-            loc = (it["page_title"] or it["slug"]) + (f" › {it['section']}" if it["section"] else "")
+            fallback = (it["page_title"] or it["slug"]) + (f" › {it['section']}" if it["section"] else "")
             url = DOCS_BASE + it["slug"] + (("#" + gfm_anchor(it["section"])) if it["section"] else "")
             links = f"[English]({url})"
         else:
             n_pages = len({i["slug"] for i in locs})
-            loc = f"{n_pages}ページ・{len(locs)}セクション"
+            fallback = f"{n_pages}ページ・{len(locs)}セクション"
             parts = []
             for it in locs[:3]:
                 url = DOCS_BASE + it["slug"] + (("#" + gfm_anchor(it["section"])) if it["section"] else "")
                 parts.append(f"[{it['slug']}]({url})")
             links = " / ".join(parts) + (f" ほか{len(locs) - 3}箇所" if len(locs) > 3 else "")
+        # 見出しは LLM の label（内容を表す短い日本語＝要約の更に要約）を優先。
+        # 場所情報は末尾リンクが担う
+        label = (e.get("label") or "").strip() or fallback
         badge = "🆕新規ページ " if any(i["kind"] == "new_page" for i in e["_items"]) else ""
-        return f"- {badge}**{loc}**: {e['summary']} — {links}"
+        return f"- {badge}**{label}**: {e['summary']} — {links}"
 
     L = [
         "---",
         f"対象期間: {period_start:%Y年%m月%d日} 〜 {period_end:%Y年%m月%d日}",
         f"作成日: {period_end:%Y-%m-%d}",
-        "形式: カテゴリ別詳細・試作版 v2（Opus 意味分類・カテゴリ内統合・複数カテゴリ掲載）",
+        "形式: カテゴリ別詳細・試作版 v3（Opus 意味分類・カテゴリ内統合・複数カテゴリ掲載・内容ラベル見出し・エンタープライズサブ区分・ドキュメント改善分離）",
         "---",
         "",
-        "# Claude Code 公式ドキュメント更新サマリ（カテゴリ別詳細・試作 v2）",
+        "# Claude Code 公式ドキュメント更新サマリ（カテゴリ別詳細・試作 v3）",
         "",
         "```markdown",
         f"今回の変更 {n_items} 項目を {n_entries} エントリに集約。カテゴリ別の掲載数は {dist_txt}"
@@ -396,8 +399,26 @@ def render_entries(items_path: Path, entries_path: Path, taxonomy_path: Path, ou
             continue
         L.append(f"### {cat['icon']} {cat['name']} — {len(es)}件")
         L.append("")
-        L.extend(entry_line(e) for e in es)
-        L.append("")
+        subcats = cat.get("subcategories")
+        if subcats:
+            # サブカテゴリ順にグルーピング（未指定・不明値は先頭サブカテゴリへ）
+            default_sub = subcats[0]["key"]
+            valid_subs = {s["key"] for s in subcats}
+            by_sub: dict[str, list] = defaultdict(list)
+            for e in es:
+                sub = e.get("enterprise_sub") or default_sub
+                by_sub[sub if sub in valid_subs else default_sub].append(e)
+            for s in subcats:
+                ses = by_sub.get(s["key"], [])
+                if not ses:
+                    continue
+                L.append(f"**{s['name']}**")
+                L.append("")
+                L.extend(entry_line(e) for e in ses)
+                L.append("")
+        else:
+            L.extend(entry_line(e) for e in es)
+            L.append("")
     if empty:
         L += ["### 今回変更のなかったカテゴリ", "", " / ".join(empty), ""]
 
