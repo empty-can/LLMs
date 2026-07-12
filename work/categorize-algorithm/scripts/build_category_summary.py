@@ -300,6 +300,137 @@ def _fallback_summary(it):
     return f"本文が更新された（+{a}行 / -{r}行、機械フォールバック要約）。"
 
 
+# --- render (エントリ形式・LLM 編集版) ----------------------------------------------
+#
+# entries JSON: {"entries": [{"item_ids": [...], "categories": [<cat key>...], "summary": "..."}]}
+# LLM（Opus）が意味的に分類・統合・要約した結果を受け取り、複数カテゴリ掲載と
+# カテゴリ内統合（1 エントリ = 複数 item）をサポートして md を組み立てる。
+
+
+def render_entries(items_path: Path, entries_path: Path, taxonomy_path: Path, out_path: Path):
+    data = json.loads(items_path.read_text(encoding="utf-8"))
+    taxonomy = load_taxonomy(taxonomy_path)
+    cats = {c["key"]: c for c in taxonomy["categories"]}
+    unc_key = taxonomy["uncategorized"]["key"]
+    cats[unc_key] = taxonomy["uncategorized"]
+    entries = json.loads(entries_path.read_text(encoding="utf-8-sig"))["entries"]
+    items_by_id = {i["id"]: i for i in data["items"]}
+
+    # 検証: 全 item がいずれかのエントリに属すること。漏れは機械分類で単独エントリ化
+    covered = set()
+    for e in entries:
+        covered.update(e["item_ids"])
+    auto_added = 0
+    for it in data["items"]:
+        if it["id"] not in covered:
+            entries.append(
+                {"item_ids": [it["id"]], "categories": [it["category"]], "summary": _fallback_summary(it)}
+            )
+            auto_added += 1
+    if auto_added:
+        print(f"WARN: {auto_added} 項目がエントリ未包含のため機械分類で自動補完")
+
+    for e in entries:
+        e["categories"] = [c for c in e["categories"] if c in cats] or [unc_key]
+        e["_items"] = [items_by_id[i] for i in e["item_ids"] if i in items_by_id]
+
+    by_cat: dict[str, list] = defaultdict(list)
+    for e in entries:
+        for c in e["categories"]:
+            by_cat[c].append(e)
+
+    period_start = (datetime.fromisoformat(data["base_date"]) - timedelta(days=1)).date()
+    period_end = (datetime.fromisoformat(data["head_date"]) - timedelta(days=1)).date()
+    n_items = len(data["items"])
+    n_entries = len(entries)
+    dist = sorted(((k, len(v)) for k, v in by_cat.items()), key=lambda kv: -kv[1])
+    dist_txt = "、".join(f"「{cats[k]['name']}」{n}件" for k, n in dist)
+
+    def entry_line(e):
+        locs, seen = [], set()
+        for it in e["_items"]:
+            key = (it["slug"], it["section"])
+            if key not in seen:
+                seen.add(key)
+                locs.append(it)
+        if len(locs) == 1:
+            it = locs[0]
+            loc = (it["page_title"] or it["slug"]) + (f" › {it['section']}" if it["section"] else "")
+            url = DOCS_BASE + it["slug"] + (("#" + gfm_anchor(it["section"])) if it["section"] else "")
+            links = f"[English]({url})"
+        else:
+            n_pages = len({i["slug"] for i in locs})
+            loc = f"{n_pages}ページ・{len(locs)}セクション"
+            parts = []
+            for it in locs[:3]:
+                url = DOCS_BASE + it["slug"] + (("#" + gfm_anchor(it["section"])) if it["section"] else "")
+                parts.append(f"[{it['slug']}]({url})")
+            links = " / ".join(parts) + (f" ほか{len(locs) - 3}箇所" if len(locs) > 3 else "")
+        badge = "🆕新規ページ " if any(i["kind"] == "new_page" for i in e["_items"]) else ""
+        return f"- {badge}**{loc}**: {e['summary']} — {links}"
+
+    L = [
+        "---",
+        f"対象期間: {period_start:%Y年%m月%d日} 〜 {period_end:%Y年%m月%d日}",
+        f"作成日: {period_end:%Y-%m-%d}",
+        "形式: カテゴリ別詳細・試作版 v2（Opus 意味分類・カテゴリ内統合・複数カテゴリ掲載）",
+        "---",
+        "",
+        "# Claude Code 公式ドキュメント更新サマリ（カテゴリ別詳細・試作 v2）",
+        "",
+        "```markdown",
+        f"今回の変更 {n_items} 項目を {n_entries} エントリに集約。カテゴリ別の掲載数は {dist_txt}"
+        "（1 エントリが複数カテゴリに掲載される場合は重複計上）。",
+        "```",
+        "",
+        "## カテゴリ別の変更点",
+        "",
+    ]
+    order = [c["key"] for c in taxonomy["categories"]] + [unc_key]
+    empty = []
+    for key in order:
+        cat = cats[key]
+        es = by_cat.get(key, [])
+        if not es:
+            empty.append(f"**{cat['icon']} {cat['name']}**")
+            continue
+        L.append(f"### {cat['icon']} {cat['name']} — {len(es)}件")
+        L.append("")
+        L.extend(entry_line(e) for e in es)
+        L.append("")
+    if empty:
+        L += ["### 今回変更のなかったカテゴリ", "", " / ".join(empty), ""]
+
+    L += [
+        "## 分類の内訳（付録）",
+        "",
+        "LLM（Opus）による意味分類と、語彙マッチによる機械分類（参考）の対比。",
+        "",
+        "| エントリ | LLM 分類 | 機械分類（参考） | 統合項目数 |",
+        "|---|---|---|---:|",
+    ]
+    for e in entries:
+        first = e["_items"][0] if e["_items"] else None
+        loc = (first["slug"] + (f"#{first['section']}" if first["section"] else "")) if first else "?"
+        if len(e["_items"]) > 1:
+            loc += " ほか"
+        llm_c = ", ".join(cats[c]["name"] for c in e["categories"])
+        mech_c = ", ".join(sorted({cats.get(i["category"], cats[unc_key])["name"] for i in e["_items"]}))
+        L.append(f"| {loc} | {llm_c} | {mech_c} | {len(e['item_ids'])} |")
+    L += [
+        "",
+        "<!--",
+        f"base_commit: {data['base']}",
+        f"head_commit: {data['head']}",
+        "generator: build_category_summary.py render --entries (trial v2)",
+        "-->",
+        "",
+    ]
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("\n".join(L), encoding="utf-8", newline="\n")
+    print(f"written: {out_path} ({n_items} items -> {n_entries} entries)")
+
+
 # --- main --------------------------------------------------------------------------
 
 
@@ -317,6 +448,7 @@ def main():
     rd = sub.add_parser("render")
     rd.add_argument("--items", required=True)
     rd.add_argument("--summaries", default=None)
+    rd.add_argument("--entries", default=None, help="LLM 編集済みエントリ JSON（--summaries より優先）")
     rd.add_argument("--taxonomy", default=str(Path(__file__).parent / "categories.json"))
     rd.add_argument("--out", required=True)
 
@@ -356,6 +488,8 @@ def main():
             json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n"
         )
         print(f"extracted: {args.out} ({len(out_items)} items)")
+    elif args.entries:
+        render_entries(Path(args.items), Path(args.entries), Path(args.taxonomy), Path(args.out))
     else:
         render(
             Path(args.items),
