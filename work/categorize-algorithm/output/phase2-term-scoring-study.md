@@ -1,6 +1,6 @@
 # Phase2 検討: テキストマイニングによる名詞のカテゴリ適性スコアリング
 
-作成日: 2026-07-12（v2: ページ名・見出しの規定加算を統合） ／ 入力: `official-llms-txts/code.claude.com/docs/llms-full.txt`（165 ページ、whats-new 除外後 148 ページ）
+作成日: 2026-07-12（v2: ページ名・見出しの規定加算を統合 → v3: 動詞除外・包含併合・一般語降格・固有名詞加算を統合。§7 参照） ／ 入力: `official-llms-txts/code.claude.com/docs/llms-full.txt`（165 ページ、whats-new 除外後 148 ページ）
 プロトタイプ: `work/categorize-algorithm/scripts/term_scoring.py` ／ 実行結果: `output/term-scores.md`
 
 ---
@@ -129,8 +129,57 @@ llms-full.txt ─→ term_scoring.py ─→ 候補ランキング   サマリ生
 
 ## 6. Phase2 で決めたい残論点
 
-1. カテゴリ数の目安（v2 クラスタ素案は実質 10 前後＋小クラスタ。8〜12 を推奨）
+1. カテゴリ数の目安（v3 併合後の上位グループは実質 10〜15。8〜12 を推奨）
 2. taxonomy 確定レビューを人手のみでやるか、LLM（claude -p）に候補整形させて人が承認するか
-3. 構造加算の重み（ページ名 0.25 / 見出し 0.12）とバンドピーク（30%）の初期値をこのままレビューに進めてよいか（レビューしながらの調整を推奨）
+3. 構造加算の重み（ページ名 0.25 / 見出し 0.12 / 固有名詞 0.10）とバンドピーク（30%）・降格率（0.4 / 0.6）の初期値をこのままレビューに進めてよいか（レビューしながらの調整を推奨）
 4. スコア再計算のトリガー（定期 or docs 大改編検知 or 手動）
 5. 分類結果を載せる出力形態（Phase1 の A1/A2/B1/B2 のどれと組むか）
+6. 併合グループの代表語の命名（機械は短い側に寄せる: environment ← environment variable、microsoft ← microsoft foundry。カテゴリ名は taxonomy 確定時に人が付け直す前提でよいか）
+
+## 7. v3: 作業指示者フィードバック 4 案の統合（2026-07-12）
+
+作業指示者から提示された 4 案を実装し、すべて有効性を確認した。
+
+### 7.1 動詞・動名詞の除外（提案 1）
+
+品詞タガーが無いため「この docs で動詞としてしか実質使われない語」を厳選（connect, manage, install, update, open, load, push 等 約60 語）し、活用形（三単現/過去/進行形、e 脱落・子音重複対応）を機械生成してストップワード化した。**動詞同形の機能名詞**（plan mode の plan、code review の review、session resume の resume、checkpoint、search 等）は意図的に除外リストへ入れない。'set' は子音重複規則で setting(s) を巻き込むため対象外（素の set は既存ストップワード）。
+
+結果: v2 で上位ノイズだった connect（25 位）・manage（44 位）・install（39 位）・update が**候補から消滅**。
+
+### 7.2 包含・同義語の併合（提案 2）
+
+スコアリング後の後段処理として、(a) トークン部分列（mcp ⊂ mcp server）と (b) 既知接頭辞複合語（sub+agent → agent）の 2 規則で語を代表語へ畳み込み、**グループスコア＝構成語スコアの合計**とした。併合された語は代表語の「周辺語彙」として保持され、taxonomy 確定時の同義語表（categories.yaml の語彙リスト）の種になる。
+
+結果（併合後上位グループの例・実測）:
+
+| 代表語 | Σscore | 併合された語 |
+|---|---:|---|
+| mode | 2.40 | permission mode, auto mode, plan mode |
+| mcp | 2.36 | mcp server, mcp tool |
+| agent | 2.10 | subagent, agent team |
+| permission | 1.69 | permission prompt, permission rule |
+| bedrock | 1.43 | amazon bedrock |
+| environment | 1.39 | environment variable |
+
+### 7.3 一般名詞・非カテゴリ語の降格（提案 3）
+
+2 系統で実装: (a) 指定語リスト（setup, team, feature, json, server, app, ai, bash, md）への規定降格 ×0.4（除外でなく降格とし、レビューで目視可能な位置に残す。unigram のみ適用のため mcp server 等の複合語は無傷）、(b) **コードスパン出現シグナルの活用**——出現ページの 7 割以上がコード片由来で、かつページ名に立っていない語（構文トークン）を ×0.6 降格。
+
+結果: json 626 位・bash 473 位・server 313 位・team 505 位へ降下。一方 **mcp server は 7 位を維持**（複合語は降格対象外）。閾値 0.7 は、設定キーとして code span に頻出するだけの実カテゴリ語（sandbox）を誤爆した 0.5 から緩和して決めた値。
+
+### 7.4 文頭以外の大文字始まりの固有名詞加算（提案 4）
+
+本文中の**チャンク先頭以外**での大文字始まり率を語ごとに集計（出現 5 回以上の語のみ判定、句は構成語平均）し、率に応じ最大 +0.10 を加算。
+
+結果: bedrock 29 位（大文字率 0.99）・github 32 位（0.92）・aws 46 位（0.95）・cli 8 位（0.99）と、製品・プラットフォーム系カテゴリが明確に浮上。MCP 等の頭字語（0.88）も恩恵を受けるがカテゴリとして妥当。
+
+### 7.5 v3 で新たに見つかり修正した不具合
+
+- **AWS→aw 破損**: 複数形併合に頻度ガードが無く、AWS が希少同形語 aw へ誤併合されていた。単数形が十分な頻度（複数形の 5% 以上かつ 3 回以上）を持つ場合のみ併合するよう修正
+- **sandbox の過剰降格**: コードスパン降格閾値 0.5 で誤爆（454 位）→ 0.7 へ緩和で 119 位に回復
+
+### 7.6 残る既知の癖（taxonomy レビューで吸収する前提）
+
+- 接頭辞規則の誤併合: pre+view により preview → view。機械併合は種であり最終確定は人
+- 代表語は「短い側」に寄る: environment（← environment variable）、microsoft（← microsoft foundry）。カテゴリ表示名は確定時に人が命名し直す
+- 「code v2」「code session」等、Claude Code 自体への言及由来の低品質句が少数残る

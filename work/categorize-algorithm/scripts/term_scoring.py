@@ -121,6 +121,49 @@ list lists item items line lines detail details support version versions
 """.split()
 )
 
+# --- 動詞・動名詞の除外（v3・作業指示者提案1） --------------------------------------
+# 品詞タガーが無いため「この docs で動詞としてしか実質使われない語」を厳選し、
+# 活用形（三単現/過去/進行形）を機械生成してストップワード扱いにする。
+# 注意: plan(plan mode)/review(code review)/resume(session resume)/edit(Edit tool)/
+# checkpoint/search/monitor/log/build 等、動詞同形だが本 docs では機能名詞である語は
+# 意図的に含めない。'set' は doubling で setting(s) を殺すため含めない（素の set は
+# STOPWORDS 側で処理済み）。
+VERB_BASES = """
+connect manage install uninstall remove delete ensure verify specify define apply
+select choose click send receive pass fail skip cancel retry wait learn understand
+avoid prevent happen appear become contain expect accept reject approve deny grant
+open close load save fetch pull push merge finish complete begin continue try
+update upgrade launch execute invoke call trigger emit publish subscribe
+describe explain refer mention consider recommend suggest prefer
+""".split()
+
+
+def _inflections(base: str) -> set[str]:
+    forms = {base, base + "s", base + "es", base + "d", base + "ed", base + "ing"}
+    if base.endswith("e"):
+        forms.add(base[:-1] + "ing")  # use → using
+    if len(base) >= 3 and base[-1] not in "aeiouy" and base[-2] in "aeiou" and base[-3] not in "aeiou":
+        forms |= {base + base[-1] + "ed", base + base[-1] + "ing"}  # skip → skipped/skipping
+    if base.endswith("y") and base[-2] not in "aeiou":
+        forms |= {base[:-1] + "ies", base[:-1] + "ied"}  # try → tries/tried
+    return forms
+
+
+for _b in VERB_BASES:
+    STOPWORDS |= _inflections(_b)
+
+# --- 一般名詞・非カテゴリ語の降格（v3・作業指示者提案3） ------------------------------
+# 単体では一般名詞、または本 docs でカテゴリ的意味を持たない語。除外ではなく
+# スコアを規定率で降格し、レビュー時に目視できる位置に残す（unigram のみ適用。
+# "agent team" 等の複合語には適用しない）。
+DEMOTE_GENERIC = set("setup team feature json server app ai bash md".split())
+DEMOTE_MULT = 0.4
+# コードスパン由来ページの比率が高い語は構文トークン（json/bash 等）の可能性が高い。
+# ページ名に立っていない場合のみ降格する。閾値 0.7: 設定キーとして code span に
+# 頻出するだけの実カテゴリ語（sandbox 等）を誤爆しない程度に高く取る。
+CODE_RATIO_TH = 0.7
+CODE_DEMOTE_MULT = 0.6
+
 TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_.\-]*")
 
 
@@ -156,15 +199,34 @@ def _subphrases(run: list[str]) -> list[tuple[str, ...]]:
     return res
 
 
+def capitalization_counts(text: str, cap: Counter, tot: Counter) -> None:
+    """文頭（チャンク先頭）以外での大文字始まり率を語単位で集計する（固有名詞推定用）。"""
+    for chunk in re.split(r"[.,;:!?()\[\]{}\"“”‘’•=+*/\\<>&%$#@~^]|\s[-—–]\s|\n", text):
+        toks = TOKEN_RE.findall(chunk)
+        for i, t in enumerate(toks):
+            n = normalize(t)
+            if not n or n in STOPWORDS:
+                continue
+            if i == 0:
+                continue  # チャンク先頭は文頭の可能性があるため判定から除外
+            tot[n] += 1
+            if t[0].isupper():
+                cap[n] += 1
+
+
 def build_counts(pages):
     """ページ毎の候補句カウントと、ページ名/見出し/コード由来フラグを集計する。"""
     page_tf: list[Counter] = []
     heading_pages: dict[tuple, set] = defaultdict(set)
     title_pages: dict[tuple, set] = defaultdict(set)
     code_pages: dict[tuple, set] = defaultdict(set)
+    cap_cnt: Counter = Counter()
+    cap_tot: Counter = Counter()
     for idx, p in enumerate(pages):
         tf = Counter()
-        for ph in phrases_from_text("\n".join(p["body"])):
+        body = "\n".join(p["body"])
+        capitalization_counts(body, cap_cnt, cap_tot)
+        for ph in phrases_from_text(body):
             tf[ph] += 1
         for h in p["headings"]:
             for ph in phrases_from_text(h):
@@ -180,20 +242,25 @@ def build_counts(pages):
             for ph in phrases_from_text(c):
                 code_pages[ph].add(idx)
         page_tf.append(tf)
-    return page_tf, heading_pages, title_pages, code_pages
+    return page_tf, heading_pages, title_pages, code_pages, cap_cnt, cap_tot
 
 
-def merge_plurals(page_tf, heading_pages, title_pages, code_pages):
-    """`commands`→`command` 等、単数形が語彙に存在する場合のみ複数形を併合する。"""
-    vocab = set()
+def merge_plurals(page_tf, heading_pages, title_pages, code_pages, cap_cnt, cap_tot):
+    """`commands`→`command` 等、単数形が十分な頻度で存在する場合のみ複数形を併合する。
+
+    頻度ガード: 単数形が希少なのに複数形が高頻度の語（AWS→aw 等の頭字語）は
+    偶然の同形であり併合しない。
+    """
+    vocab: Counter = Counter()
     for tf in page_tf:
-        vocab.update(tf)
+        for ph, c in tf.items():
+            vocab[ph] += c
 
     def singular(ph):
         last = ph[-1]
         if last.endswith("s") and not last.endswith(("ss", "us", "is")):
             cand = ph[:-1] + (last[:-1],)
-            if cand in vocab:
+            if cand in vocab and vocab[cand] >= max(3, vocab[ph] * 0.05):
                 return cand
         return ph
 
@@ -209,7 +276,13 @@ def merge_plurals(page_tf, heading_pages, title_pages, code_pages):
             m = mapping.get(ph, ph)
             if m != ph:
                 d[m] |= d.pop(ph)
-    return new_tfs, heading_pages, title_pages, code_pages
+    # 大文字率カウンタ（unigram）にも複数形併合を適用
+    for c in (cap_cnt, cap_tot):
+        for w in list(c):
+            m = mapping.get((w,), (w,))
+            if m != (w,):
+                c[m[0]] += c.pop(w)
+    return new_tfs, heading_pages, title_pages, code_pages, cap_cnt, cap_tot
 
 
 # --- 3. スコアリング -------------------------------------------------------------
@@ -267,10 +340,13 @@ def npmi_degree(top_terms, term_pages, n_pages):
 # ページ名はカテゴリの最有力候補なので最も重く、複数ページのページ名に出る語ほど加算を増す。
 TITLE_BONUS_MAX = 0.25    # ページ名（h1/slug）: 3 ページ分で満額
 HEADING_BONUS_MAX = 0.12  # ページ内見出し（h2〜h4）: 10 ページ分で満額
+PROPN_BONUS_MAX = 0.10    # 文頭以外の大文字始まり率 100% で満額（固有名詞推定・v3 提案4）
 
 
 def score_terms(pages, min_tf=8, min_df=4):
-    page_tf, heading_pages, title_pages, code_pages = merge_plurals(*build_counts(pages))
+    page_tf, heading_pages, title_pages, code_pages, cap_cnt, cap_tot = merge_plurals(
+        *build_counts(pages)
+    )
     n_pages = len(page_tf)
     page_sizes = [sum(tf.values()) for tf in page_tf]
     total_size = sum(page_sizes)
@@ -327,6 +403,20 @@ def score_terms(pages, min_tf=8, min_df=4):
         # 統計軸が弱い語（被覆率の低いページ名語など）も候補として浮上させる
         title_bonus = TITLE_BONUS_MAX * min(t_pages, 3) / 3
         heading_bonus = HEADING_BONUS_MAX * min(h_pages, 10) / 10
+        # 固有名詞推定: 文頭以外での大文字始まり率（句は構成語の平均）に応じて加算
+        ratios = [
+            cap_cnt.get(w, 0) / cap_tot[w] for w in ph if cap_tot.get(w, 0) >= 5
+        ]
+        cap_ratio = sum(ratios) / len(ratios) if ratios else 0.0
+        propn_bonus = PROPN_BONUS_MAX * cap_ratio
+        # 一般名詞・構文トークンの降格（unigram のみ）
+        mult = 1.0
+        if len(ph) == 1:
+            if ph[0] in DEMOTE_GENERIC:
+                mult *= DEMOTE_MULT
+            code_ratio = len(code_pages.get(ph, ())) / df
+            if code_ratio >= CODE_RATIO_TH and t_pages <= 1:
+                mult *= CODE_DEMOTE_MULT
         rows.append(
             {
                 "term": " ".join(ph),
@@ -339,12 +429,77 @@ def score_terms(pages, min_tf=8, min_df=4):
                 "cent": cent,
                 "h_pages": h_pages,
                 "t_pages": t_pages,
-                "score": core + title_bonus + heading_bonus,
+                "cap": cap_ratio,
+                "mult": mult,
+                "score": (core + title_bonus + heading_bonus + propn_bonus) * mult,
                 "pages": term_pages[ph],
             }
         )
     rows.sort(key=lambda r: -r["score"])
     return rows, n_pages
+
+
+# --- 3.5 包含・同義語の併合（v3・作業指示者提案2） ----------------------------------
+
+COMPOUND_PREFIXES = ("sub", "super", "pre", "post", "multi", "non")
+
+
+def merge_containment(rows, top_k=300):
+    """包含関係にある語を代表語へ併合し、スコアを合計する。
+
+    規則:
+      (a) トークン部分列: 「mcp server」「managed settings」は「mcp」「settings」の特化形
+          → より短い側（複数候補時は高スコア側）へ併合
+      (b) 既知接頭辞の複合語: 「subagent」は「agent」の特化形 → 基底語へ併合
+    併合された語は代表語の「周辺語彙」として保持する（taxonomy 確定時の同義語表の種）。
+    """
+    top = rows[:top_k]
+    by_term = {r["term"]: r for r in top}
+
+    def find_parent(r):
+        toks = r["term"].split()
+        best = None
+        for cand in top:
+            if cand is r:
+                continue
+            ct = cand["term"].split()
+            if len(ct) >= len(toks):
+                continue
+            if any(toks[i : i + len(ct)] == ct for i in range(len(toks) - len(ct) + 1)):
+                if best is None or cand["score"] > best["score"]:
+                    best = cand
+        if best is None and len(toks) == 1:
+            for p in COMPOUND_PREFIXES:
+                base = toks[0][len(p):]
+                if toks[0].startswith(p) and len(base) >= 3 and base in by_term:
+                    return by_term[base]
+        return best
+
+    # 長い句から順に親へ畳み込む（親自身がさらに親を持つ場合は連鎖の根に集約）
+    parent_of: dict[str, str] = {}
+    for r in sorted(top, key=lambda x: -len(x["term"].split())):
+        p = find_parent(r)
+        if p is not None:
+            parent_of[r["term"]] = p["term"]
+
+    def root(t):
+        seen = set()
+        while t in parent_of and t not in seen:
+            seen.add(t)
+            t = parent_of[t]
+        return t
+
+    groups: dict[str, dict] = {}
+    for r in top:
+        rep = root(r["term"])
+        g = groups.setdefault(rep, {"rep": rep, "score": 0.0, "members": []})
+        g["score"] += r["score"]
+        if r["term"] != rep:
+            g["members"].append(r["term"])
+    merged = sorted(groups.values(), key=lambda g: -g["score"])
+    for g in merged:
+        g["rep_row"] = by_term[g["rep"]]
+    return merged
 
 
 # --- 4. カテゴリ素案クラスタリング -------------------------------------------------
@@ -422,19 +577,37 @@ def main():
         "",
         f"入力: `{args.input}`（{n_pages} ページ） / 候補語数: {len(rows)}",
         "",
-        "スコア = 幾何平均(C-value, 被覆バンド, 分散均一度, 共起中心性)"
-        f" + ページ名加算(最大{TITLE_BONUS_MAX}) + 見出し加算(最大{HEADING_BONUS_MAX})",
+        "スコア = ( 幾何平均(C-value, 被覆バンド, 分散均一度, 共起中心性)"
+        f" + ページ名加算(最大{TITLE_BONUS_MAX}) + 見出し加算(最大{HEADING_BONUS_MAX})"
+        f" + 固有名詞加算(最大{PROPN_BONUS_MAX}) ) × 降格率",
         "",
         f"## 上位 {args.top} 語",
         "",
-        "| # | term | TF | DF | C-val | band | even | cent | ページ名p | 見出しp | score |",
-        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| # | term | TF | DF | C-val | band | even | cent | ページ名p | 見出しp | 大文字率 | 降格 | score |",
+        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for i, r in enumerate(rows[: args.top], 1):
         lines.append(
             f"| {i} | {r['term']} | {r['tf']} | {r['df']} | {r['cv']:.2f} | {r['band']:.2f}"
-            f" | {r['even']:.2f} | {r['cent']:.2f} | {r['t_pages']} | {r['h_pages']} | {r['score']:.3f} |"
+            f" | {r['even']:.2f} | {r['cent']:.2f} | {r['t_pages']} | {r['h_pages']}"
+            f" | {r['cap']:.2f} | {r['mult']:.2f} | {r['score']:.3f} |"
         )
+
+    merged = merge_containment(rows)
+    lines += [
+        "",
+        "## 包含併合後のカテゴリ候補（上位 40 グループ）",
+        "",
+        "併合規則: トークン部分列（mcp ⊂ mcp server）と既知接頭辞複合語（sub+agent）。スコアはグループ合計。",
+        "",
+        "| # | 代表語 | Σscore | 併合された語 |",
+        "|---:|---|---:|---|",
+    ]
+    for i, g in enumerate(merged[:40], 1):
+        mem = ", ".join(g["members"][:8]) or "—"
+        if len(g["members"]) > 8:
+            mem += f" ほか{len(g['members']) - 8}語"
+        lines.append(f"| {i} | {g['rep']} | {g['score']:.3f} | {mem} |")
 
     if args.probe:
         lines += ["", "## 指定語の順位確認", ""]
