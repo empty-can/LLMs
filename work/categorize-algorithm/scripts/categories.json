@@ -1,0 +1,76 @@
+{
+  "comment": "カテゴリ別サマリ試作用 taxonomy。term_scoring.py (v3) の併合グループを土台に人手で仮確定した10分類。vocab は変更テキストとのマッチ語彙（小文字）、slug_prefixes は対象ページ slug の前方一致規則（マッチ時は強い重みを加算）。",
+  "categories": [
+    {
+      "key": "permission-security",
+      "name": "パーミッション・セキュリティ",
+      "icon": "🔐",
+      "vocab": ["permission", "permissions", "permission mode", "auto mode", "plan mode", "acceptedits", "accept edits", "read-only", "read only", "deny", "denyread", "allow rule", "ask rule", "sandbox", "sandboxing", "security", "working directory", "additional directories", "approval", "approve", "prompt fatigue", "bypasspermissions", "trust", "credential", "secret", "prompt injection"],
+      "slug_prefixes": ["permissions", "permission-modes", "security", "sandboxing", "sandbox-environments", "security-guidance", "data-usage", "legal-and-compliance", "zero-data-retention", "iam"]
+    },
+    {
+      "key": "extensions",
+      "name": "拡張機能（プラグイン・スキル・フック）",
+      "icon": "🧰",
+      "vocab": ["plugin", "plugins", "skill", "skills", "hook", "hooks", "marketplace", "skill.md", "frontmatter", "output style", "output styles", "statusline", "status line"],
+      "slug_prefixes": ["plugins", "plugin-", "skills", "hooks", "hooks-guide", "discover-plugins", "statusline", "output-styles"]
+    },
+    {
+      "key": "mcp",
+      "name": "MCP・外部連携",
+      "icon": "🔌",
+      "vocab": ["mcp", "mcp server", "mcp servers", "model context protocol", "managed mcp", "connector", "connectors", "channel", "channels", "oauth"],
+      "slug_prefixes": ["mcp", "mcp-quickstart", "managed-mcp", "channels", "channels-reference", "third-party-integrations"]
+    },
+    {
+      "key": "agent-sdk",
+      "name": "Agent SDK・サブエージェント",
+      "icon": "🧩",
+      "vocab": ["sdk", "agent sdk", "subagent", "subagents", "sub-agent", "agent team", "agent teams", "systemprompt", "typescript sdk", "python sdk", "streaming input", "query function"],
+      "slug_prefixes": ["agent-sdk/", "sub-agents", "agent-teams", "agent-view"]
+    },
+    {
+      "key": "settings-env",
+      "name": "設定・環境変数",
+      "icon": "⚙️",
+      "vocab": ["settings", "settings.json", "setting", "env var", "env vars", "environment variable", "environment variables", "configuration", "config", "claude.md", "memory file", "managed settings", "configure"],
+      "slug_prefixes": ["settings", "env-vars", "memory", "terminal-config", "model-config", "debug-your-config", "server-managed-settings"]
+    },
+    {
+      "key": "model-usage",
+      "name": "モデル・利用状況",
+      "icon": "🤖",
+      "vocab": ["model", "models", "token", "tokens", "opus", "sonnet", "haiku", "fable", "fast mode", "extended thinking", "usage", "cost", "costs", "rate limit", "spend", "billing", "plan usage", "prompt caching", "cache"],
+      "slug_prefixes": ["model-config", "costs", "monitoring-usage", "fast-mode", "prompt-caching", "context-window", "feature-availability"]
+    },
+    {
+      "key": "enterprise",
+      "name": "エンタープライズ基盤",
+      "icon": "🏢",
+      "vocab": ["bedrock", "vertex", "foundry", "gateway", "gateways", "enterprise", "organization", "admin", "mdm", "sso", "scim", "deploy", "deployment", "aws", "google cloud", "azure", "proxy", "network", "analytics", "compliance", "audit"],
+      "slug_prefixes": ["amazon-bedrock", "google-vertex-ai", "microsoft-foundry", "admin-setup", "gateways", "llm-gateway", "claude-apps-gateway", "network-config", "claude-platform-on-aws", "analytics", "third-party-int"]
+    },
+    {
+      "key": "apps-platform",
+      "name": "アプリ・プラットフォーム",
+      "icon": "🖥",
+      "vocab": ["desktop", "desktop app", "vs code", "vscode", "jetbrains", "chrome", "slack", "web", "browser", "ide", "windows", "macos", "linux", "apt", "install", "installer", "installation", "extension", "github actions", "gitlab", "terminal app", "remote control", "mobile"],
+      "slug_prefixes": ["desktop", "vs-code", "jetbrains", "chrome", "slack", "claude-code-on-the-web", "web-quickstart", "github-actions", "gitlab-ci-cd", "setup", "troubleshoot-install", "terminal-guide", "computer-use", "remote-control", "quickstart", "overview"]
+    },
+    {
+      "key": "session-context",
+      "name": "セッション・コンテキスト",
+      "icon": "📚",
+      "vocab": ["session", "sessions", "resume", "checkpoint", "checkpointing", "rewind", "context window", "compact", "compaction", "conversation", "history", "transcript", "context editing"],
+      "slug_prefixes": ["sessions", "checkpointing", "context-window", "how-claude-code-works"]
+    },
+    {
+      "key": "commands-workflow",
+      "name": "コマンド・ワークフロー",
+      "icon": "⌨️",
+      "vocab": ["command", "commands", "slash command", "slash commands", "cli", "keybinding", "keybindings", "keyboard shortcut", "interactive mode", "vim", "workflow", "workflows", "task", "background task", "worktree", "headless", "scripting", "cron", "schedule", "scheduled"],
+      "slug_prefixes": ["cli-reference", "interactive-mode", "keybindings", "commands", "common-workflows", "workflows", "headless", "scheduled-tasks", "deep-links", "fullscreen", "best-practices", "glossary"]
+    }
+  ],
+  "uncategorized": {"key": "uncategorized", "name": "未分類（語彙マッチなし・要 LLM 裁定）", "icon": "❓"}
+}
