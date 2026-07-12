@@ -37,7 +37,7 @@
 - [権限を設定する（権限システム） - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/permissions#permission-system)
 - [Configure permissions (Permission system) - Claude Code Docs (English)](https://code.claude.com/docs/en/permissions#permission-system)
 - [ツール リファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference)
-- [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference)
+- [日本語](https://code.claude.com/docs/ja/tools-reference) / [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference)
 
 ## 2. 権限記述の見直しがセキュリティページと各サーフェスの説明にも波及
 
