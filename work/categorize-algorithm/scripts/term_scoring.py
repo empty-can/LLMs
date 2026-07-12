@@ -11,7 +11,9 @@
   3. 横断性     : ページ被覆率のバンドパス（少数ページ特化でも全ページ遍在でもない中間帯を高評価）
                   + Gries の DP による出現分散の均一度
   4. 中心性     : ページ共起グラフ上の NPMI 重み付き次数中心性（多くの語と共起するハブ概念を高評価）
-  5. 総合スコア : 上記の幾何平均 × 見出し出現ボーナス
+  5. 総合スコア : 上記の幾何平均 + ページ名/見出し出現の規定加算ボーナス
+                  （ページ名・ページ内見出しはカテゴリの最有力候補という前提を直接反映する。
+                   加算式なので、統計軸の弱い語でもページ名に立っていれば候補として浮上できる）
 
 出力: Markdown のランキング表 + ページ被覆ベクトルの類似度によるカテゴリ素案クラスタ。
 """
@@ -155,9 +157,10 @@ def _subphrases(run: list[str]) -> list[tuple[str, ...]]:
 
 
 def build_counts(pages):
-    """ページ毎の候補句カウントと、見出し/コード由来フラグを集計する。"""
+    """ページ毎の候補句カウントと、ページ名/見出し/コード由来フラグを集計する。"""
     page_tf: list[Counter] = []
     heading_pages: dict[tuple, set] = defaultdict(set)
+    title_pages: dict[tuple, set] = defaultdict(set)
     code_pages: dict[tuple, set] = defaultdict(set)
     for idx, p in enumerate(pages):
         tf = Counter()
@@ -167,14 +170,20 @@ def build_counts(pages):
             for ph in phrases_from_text(h):
                 tf[ph] += 1
                 heading_pages[ph].add(idx)
+        # ページ名シグナル: h1 タイトルと slug のトークン（slug は - / 区切りを語に展開）
+        slug_text = re.sub(r"[-/]", " ", p["slug"])
+        for src in (p["title"], slug_text):
+            for ph in phrases_from_text(src):
+                tf[ph] += 1
+                title_pages[ph].add(idx)
         for c in p["codespans"]:
             for ph in phrases_from_text(c):
                 code_pages[ph].add(idx)
         page_tf.append(tf)
-    return page_tf, heading_pages, code_pages
+    return page_tf, heading_pages, title_pages, code_pages
 
 
-def merge_plurals(page_tf, heading_pages, code_pages):
+def merge_plurals(page_tf, heading_pages, title_pages, code_pages):
     """`commands`→`command` 等、単数形が語彙に存在する場合のみ複数形を併合する。"""
     vocab = set()
     for tf in page_tf:
@@ -195,12 +204,12 @@ def merge_plurals(page_tf, heading_pages, code_pages):
         for ph, c in tf.items():
             nt[mapping[ph]] += c
         new_tfs.append(nt)
-    for d in (heading_pages, code_pages):
+    for d in (heading_pages, title_pages, code_pages):
         for ph in list(d):
             m = mapping.get(ph, ph)
             if m != ph:
                 d[m] |= d.pop(ph)
-    return new_tfs, heading_pages, code_pages
+    return new_tfs, heading_pages, title_pages, code_pages
 
 
 # --- 3. スコアリング -------------------------------------------------------------
@@ -254,8 +263,14 @@ def npmi_degree(top_terms, term_pages, n_pages):
     return {t: deg.get(t, 0) / mx for t in terms}
 
 
+# ページ名/見出し由来の規定加算ボーナス（最大値）。
+# ページ名はカテゴリの最有力候補なので最も重く、複数ページのページ名に出る語ほど加算を増す。
+TITLE_BONUS_MAX = 0.25    # ページ名（h1/slug）: 3 ページ分で満額
+HEADING_BONUS_MAX = 0.12  # ページ内見出し（h2〜h4）: 10 ページ分で満額
+
+
 def score_terms(pages, min_tf=8, min_df=4):
-    page_tf, heading_pages, code_pages = merge_plurals(*build_counts(pages))
+    page_tf, heading_pages, title_pages, code_pages = merge_plurals(*build_counts(pages))
     n_pages = len(page_tf)
     page_sizes = [sum(tf.values()) for tf in page_tf]
     total_size = sum(page_sizes)
@@ -305,9 +320,13 @@ def score_terms(pages, min_tf=8, min_df=4):
         even = gries_dp_evenness(ph, page_tf, page_sizes, total_size)
         cent = centrality.get(ph, 0.0)
         h_pages = len(heading_pages.get(ph, ()))
-        h_bonus = 1 + min(h_pages, 8) * 0.08  # 複数ページの見出しに出る語は横断概念
+        t_pages = len(title_pages.get(ph, ()))
         # 幾何平均: どれか 1 軸が壊滅的な語（特化語・遍在語・非用語）を落とす
         core = (max(cv, 1e-6) * max(band, 1e-6) * max(even, 1e-6) * max(cent, 1e-6)) ** 0.25
+        # ページ名/見出し由来の規定加算。乗算でなく加算にすることで、
+        # 統計軸が弱い語（被覆率の低いページ名語など）も候補として浮上させる
+        title_bonus = TITLE_BONUS_MAX * min(t_pages, 3) / 3
+        heading_bonus = HEADING_BONUS_MAX * min(h_pages, 10) / 10
         rows.append(
             {
                 "term": " ".join(ph),
@@ -319,7 +338,8 @@ def score_terms(pages, min_tf=8, min_df=4):
                 "even": even,
                 "cent": cent,
                 "h_pages": h_pages,
-                "score": core * h_bonus,
+                "t_pages": t_pages,
+                "score": core + title_bonus + heading_bonus,
                 "pages": term_pages[ph],
             }
         )
@@ -402,17 +422,18 @@ def main():
         "",
         f"入力: `{args.input}`（{n_pages} ページ） / 候補語数: {len(rows)}",
         "",
-        "スコア = 幾何平均(C-value, 被覆バンド, 分散均一度, 共起中心性) × 見出しボーナス",
+        "スコア = 幾何平均(C-value, 被覆バンド, 分散均一度, 共起中心性)"
+        f" + ページ名加算(最大{TITLE_BONUS_MAX}) + 見出し加算(最大{HEADING_BONUS_MAX})",
         "",
         f"## 上位 {args.top} 語",
         "",
-        "| # | term | TF | DF | C-val | band | even | cent | 見出しp | score |",
-        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| # | term | TF | DF | C-val | band | even | cent | ページ名p | 見出しp | score |",
+        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for i, r in enumerate(rows[: args.top], 1):
         lines.append(
             f"| {i} | {r['term']} | {r['tf']} | {r['df']} | {r['cv']:.2f} | {r['band']:.2f}"
-            f" | {r['even']:.2f} | {r['cent']:.2f} | {r['h_pages']} | {r['score']:.3f} |"
+            f" | {r['even']:.2f} | {r['cent']:.2f} | {r['t_pages']} | {r['h_pages']} | {r['score']:.3f} |"
         )
 
     if args.probe:
