@@ -1,94 +1,63 @@
 ---
-対象期間: 2026年07月09日 〜 2026年07月10日
-作成日: 2026-07-10
+対象期間: 2026年07月10日 〜 2026年07月11日
+作成日: 2026-07-11
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、公式 changelog に v2.1.207（2026年07月11日）が追加され、あわせて auto mode の「リサーチプレビュー」という位置づけが各リファレンスページ本文から一斉に取り除かれた回です。サードパーティプロバイダの既定モデルも Claude Opus 4.8 に引き上げられ、Agent SDK (Python) には巨大なシステムプロンプトをファイルから読み込む型が加わりました。週刊ダイジェスト「新着情報」は Week 27・Week 28 の 2 本がまとめて公開されています。
+今回の対象期間は、changelog に新しいリリースが追加されず、代わりに「Claude Code は実際のところ何に対して確認を求めるのか」というドキュメント上の記述が、権限リファレンスからセキュリティページ・VS Code ページ・ロールアウト用資料まで一斉に見直された回です。従来の「読み取り専用ツールは確認なし / Bash は確認あり」という単純な二分法が、実挙動に合わせて条件つきの記述に改められました。新規ページと週刊ダイジェストの追加はなく、差分は `llms-full.txt` の本文のみです。
 
 主要なものを以下に挙げます。
 
-1. auto mode がリサーチプレビューの位置づけを外れ、正式機能として本文に記述されるようになった（changelog では v2.1.207 でサードパーティプロバイダの opt-in 環境変数も不要になった）
-2. Amazon Bedrock / Google Cloud's Agent Platform / Claude Platform on AWS の既定モデルが Claude Opus 4.8 になり、エイリアスの解決先がプロバイダ別に整理された
-3. changelog に v2.1.207 が追加され、プラグイン設定値のシェルインジェクション修正、非対話実行での管理設定の同意記録バグ修正、ストリーミング中のターミナル固まりの修正などが入った
-4. Agent SDK (Python) に `SystemPromptFile` 型が追加され、コマンドライン長制限に引っかかる大きなシステムプロンプトをファイル経由で渡せるようになった
+1. 権限設定ページとツールリファレンスが、Bash には確認なしで走る組み込みの読み取り専用コマンド（`ls`・`cat`・`git status` など）があり、逆に Read/Grep/Glob は作業ディレクトリの外では確認を求めることを明示するようになった
+2. セキュリティページの防御項目「書き込みアクセス制限」が「作業ディレクトリの境界」に改称され、VS Code ページの Manual モードの説明も「各アクションの前に確認」から「ファイル編集とほとんどのシェルコマンドの前に確認」に修正された
+3. Linux 版デスクトップアプリの `.deb` 直接インストール手順が、apt リポジトリのパッケージプールから最新版を引く curl コマンドに置き換えられた
 ```
 
 ## ハイライト
 
-1. [**auto mode がリサーチプレビューから正式機能へ**](./latest-detail.md#1-auto-mode-がリサーチプレビューから正式機能へ):  
-  権限モードページ・権限設定ページ・Desktop ページ・How Claude Code works ページ・用語集から、auto mode を「リサーチプレビュー」と述べる記述が一斉に削除された。あわせて changelog v2.1.207 では、Amazon Bedrock / Google Cloud's Agent Platform / Microsoft Foundry で必要だった `CLAUDE_CODE_ENABLE_AUTO_MODE` の opt-in が不要になり、無効化は `disableAutoMode` 設定で行う形に変わった（この opt-in 撤廃はまだ本文に反映されていない）。
-2. [**サードパーティプロバイダの既定モデルとエイリアス解決の更新**](./latest-detail.md#2-サードパーティプロバイダの既定モデルとエイリアス解決の更新):  
-  Amazon Bedrock / Google Cloud's Agent Platform / Claude Platform on AWS の既定モデルが Claude Opus 4.8 になった（v2.1.207）。モデル設定ページのエイリアス解決の説明も 1 段落からプロバイダ別の箇条書きに書き直され、Microsoft Foundry だけが `opus` = Opus 4.6 / `sonnet` = Sonnet 4.5 に据え置かれていることが読み取れるようになった。
-3. [**v2.1.207 リリース**](./latest-detail.md#3-v21207-リリース):  
-  2026年07月11日付で v2.1.207 が changelog に追加された。プラグインの hook / monitor / MCP `headersHelper` でシェル形式コマンド中の `${user_config.*}` を拒否するシェルインジェクション修正、非対話実行（`claude -p`・SDK）でリモート管理設定が同意ダイアログを一度も出さないまま同意済みとして恒久記録されるバグの修正、長いリストや表・コードブロックをストリーミング中にターミナルが固まる問題の修正などが入っている。
-4. [**Agent SDK (Python) の SystemPromptFile**](./latest-detail.md#4-agent-sdk-python-の-systempromptfile):  
-  Python SDK の `ClaudeAgentOptions.system_prompt` が `SystemPromptFile` を受け取れるようになり、`{"type": "file", "path": "..."}` でシステムプロンプトをディスクから読み込めるようになった。文字列で渡すと CLI サブプロセスの argv に載るため OS のコマンドライン長制限（Linux で約 128KB、Windows で約 32KB）に先に当たる、という理由づけも明記された。
+1. [**権限リファレンスが読み取り専用の境界を明示**](./latest-detail.md#1-権限リファレンスが読み取り専用の境界を明示):  
+  権限設定ページの権限システム表で、「Bash コマンド」の承認要否が「はい、ただし組み込みの読み取り専用コマンドセットを除く」に、「読み取り専用」が「いいえ、作業ディレクトリと追加ディレクトリ内」に書き換えられた。ツールリファレンスにも、表の「権限が必要」列が何を意味するかを説明する段落が新設された。
+2. [**権限記述の見直しがセキュリティページと各サーフェスの説明にも波及**](./latest-detail.md#2-権限記述の見直しがセキュリティページと各サーフェスの説明にも波及):  
+  セキュリティページの組み込み保護の項目名が「書き込みアクセス制限」から「作業ディレクトリの境界」に変わり、境界外の読み取りは承認プロンプト後に可能であること、読み取り専用 Bash コマンドの広い読み取りは sandbox の `denyRead` ルールで絞れることが加わった。VS Code ページの Manual モードの説明も同じ趣旨に修正された。
+3. [**Linux 版デスクトップアプリの手動インストール手順が刷新**](./latest-detail.md#3-linux-版デスクトップアプリの手動インストール手順が刷新):  
+  apt リポジトリを使えない場合の案内が、`claude.com/download` からの `.deb` ダウンロードではなく、リポジトリのパッケージインデックスを引いて最新パッケージを直接取得する curl コマンドに置き換えられた。失敗時のエラー（`Remote file name has no length`）の読み解き方も添えられている。
 
 ## 新規追加されたページ
 
-今回、リファレンス系で新規追加されたページはありません。`llms.txt` に増えたエントリは週刊ダイジェストの Week 27・Week 28 の 2 件のみで、これらは「新着情報」カテゴリで扱います。ページ見出しマップ（`claude_code_docs_map.md`）には、desktop-linux の「Troubleshoot」節（および配下の「Unable to locate package claude-desktop」）と、agent-sdk の `SystemPromptFile` が新しい見出しとして追加されています。
+今回、新規追加されたページはありません。`llms.txt` とページ見出しマップ（`claude_code_docs_map.md`）にも変更はなく、差分は `llms-full.txt` の本文のみです。
 
 ## 大幅に更新されたページ
 
-上記ハイライト以外に、以下のページで本文の実体的な追加・構造変更がありました。
-
-- [**Claude Desktop on Linux にトラブルシュート節を新設**](./latest-detail.md#1-claude-desktop-on-linux-にトラブルシュート節を新設) ([日本語](https://code.claude.com/docs/ja/desktop-linux#unable-to-locate-package-claude-desktop) / [English](https://code.claude.com/docs/en/desktop-linux#unable-to-locate-package-claude-desktop)):  
-  `sudo apt install claude-desktop` が `E: Unable to locate package claude-desktop` で失敗するときの確認手順（リポジトリエントリの有無・アーキテクチャ・`apt update` のエラー）が節ごと追加された。
-- [**エラーリファレンスの見出しアンカー id の変更**](./latest-detail.md#2-エラーリファレンスの見出しアンカー-id-の変更) ([English](https://code.claude.com/docs/en/errors#theres-an-issue-with-the-selected-model)):  
-  アポストロフィを含む 5 つの見出しが Markdown 見出しから HTML `<h3>` に置き換えられ、アンカー id が `%E2%80%99` を含む形から素の形（例: `#theres-an-issue-with-the-selected-model`）に変わった。ページ内リンク・エラーメッセージ対応表・他ページからの参照も一斉に追随している。
+本文に 50 行以上の変更があったページはありません。本文の実体的な変更（権限システム表の書き換え、ツールリファレンスの段落新設、セキュリティページの項目差し替え、desktop-linux のインストール手順刷新）は、いずれも上記ハイライトで扱いました。
 
 ## 軽微な更新
 
-今回の軽微な更新は、changelog に追加された v2.1.207 のうちハイライトで扱わなかった項目と、リファレンスページ側の小規模な字句・リンク修正です。ハイライト・大幅更新で扱った項目は再掲しません。単一リリース（v2.1.207）のみのため、各項目へのバージョン併記は省略します。
+今回の軽微な更新は、ハイライトで扱った権限記述の見直しがロールアウト用資料にも波及したものと、Agent SDK・セットアップ系ページのリンク追加・変更です。対象期間の差分に changelog の新規リリースは含まれないため、バージョン併記はありません。
 
 **機能改善**
 
-- agent view で、同じテキストをもう一度貼り付けると、折り畳まれた `[Pasted text #N]` プレースホルダが 2 つ目を増やす代わりに展開されるようになった。
-- agent view で、ブロック中セッションの peek が質問を先頭に置き、同じタイムスタンプを 2 度並べる代わりに `waiting 3m` のような言葉による経過時間を表示するようになった。
-- プラグインのオプション値（`pluginConfigs`）がプロジェクトレベルの `.claude/settings.json` から読まれなくなり、ユーザー設定・`--settings`・管理設定のみが尊重されるようになった。
-
-**バグ修正**
-
-- 良性のシステム生成の会話更新が、誤ってプロンプトインジェクション警告を引き起こす問題を修正。
-- `cd` を含む複合コマンドで、出力リダイレクト先が `/dev/null` だけの場合にも権限確認が出る問題を修正。
-- 応答のストリーミングが終わったときに、トランスクリプトが回答の先頭より上へ飛んでしまう問題を修正。
-- `worktree.sparsePaths` を使う最後の worktree を削除したあとも `extensions.worktreeConfig` がリポジトリの `.git/config` に残り、`tea` のような go-git ベースのツールが壊れる問題を修正。
-- ルールの glob・skill のパス・`.ignore`・`.worktreeinclude` に不正な角括弧パターンがあると、ファイル読み取り・ファイル候補表示・worktree 作成が壊れる問題を修正。
-- エージェントチームで、不正な形式のチームメイト mailbox メッセージがあると、mailbox ファイルを手で消すまで毎秒エラーを繰り返すクラッシュループに陥る問題を修正。
-- プラン承認によって自動命名されたバックグラウンドセッションが、その名前を agent view の行に表示しない問題を修正。
-- git worktree に入ったバックグラウンドセッションが、エージェント一覧からコールドで開き直すと空で再開する問題を修正。
-- Remote Control のタスク状態更新が、ネットワーク中断や認証情報の更新から接続が回復したときに失われる問題を修正。
-- デスクトップアプリがホストする Remote Control セッションが、モバイルと Web でバックグラウンドエージェントとワークフローの進捗を表示しない問題を修正。
-- Deep research の実行で、Fetch フェーズのエージェントが全て「unknown」とラベル付けされる問題を修正（チップにソースのホスト名が出るようになった）。
-- Amazon Bedrock が API リクエストのたびに IAM Identity Center へ新しい AWS SSO 認証情報を要求し直す問題を修正。
-- Windows で AWS の認証情報解決が停止（`credential_process` の固まりなど）したときに無期限にハングする問題を修正（60 秒のストール検知が働くようになった）。
-- `/usage-credits` の金額入力が、貼り付けたタイムスタンプのような不正な値を黙って数字だけに切り詰める問題を修正。不正な金額はエラーで拒否され、1,000 ドルを超える金額は入力による確認を要するようになった。
+- Agent SDK の MCP ページの「関連リソース」に「MCP 出力制限と警告」への項目が追加された。`MAX_MCP_OUTPUT_TOKENS` を超えるツール結果を SDK がどう扱うか（ディスクへの永続化フォールバック、ツールごとの `anthropic/maxResultSizeChars` アノテーション）の参照先が示されている。 — [日本語](https://code.claude.com/docs/ja/agent-sdk/mcp#related-resources) / [English](https://code.claude.com/docs/en/agent-sdk/mcp#related-resources)
+- コミュニケーションキット（Claude Code を組織にロールアウトするための文面集）の Shift+Tab 解説スニペットで、Manual モードの説明が「各アクションの前に尋ねる」から「ファイル編集とほとんどのシェルコマンドの前に尋ねる」に修正された（背景はハイライト 2 参照）。 — [日本語](https://code.claude.com/docs/ja/communications-kit#control-and-safety) / [English](https://code.claude.com/docs/en/communications-kit#control-and-safety)
+- 同キットの FAQ「リポジトリ全体を見ることができますか？」の回答が拡充された。権限プロンプトがゲートするのは編集・読み取り専用以外のシェルコマンド・作業ディレクトリ外のファイルツール読み取りであること、`ls` や `cat` などの組み込みの読み取り専用シェルコマンドはプロンプトなしで走ること、それを sandbox の `denyRead` ルールで制限できることが加わった（背景はハイライト 1 参照）。 — [日本語](https://code.claude.com/docs/ja/communications-kit#faq-responses) / [English](https://code.claude.com/docs/en/communications-kit#faq-responses)
 
 **その他**
 
-- 概要ページ（`docs/en/overview`）の書き出しに「Claude Code はターミナル・IDE 拡張・デスクトップアプリ・Web という複数のサーフェスで動く」という一文が加わった。あわせて "environments" が "surfaces" に言い換えられ、用語集の [`surface`](https://code.claude.com/docs/en/glossary#surface) へのリンクが張られた。 — [English](https://code.claude.com/docs/en/overview#use-claude-code-everywhere)
-- トラブルシューティングページ（`docs/en/troubleshooting`）の症状対応表で、`model not found` の行が指すエラーリファレンスのアンカーが新しい id に更新された（詳細は大幅更新 2 参照）。 — [日本語](https://code.claude.com/docs/ja/troubleshooting) / [English](https://code.claude.com/docs/en/troubleshooting)
-- ページ見出しマップ（`claude_code_docs_map.md`）に、desktop-linux の `Troubleshoot` / `Unable to locate package claude-desktop`、agent-sdk の `SystemPromptFile`、whats-new の `2026-w27` / `2026-w28` が追加された。
+- 高度なセットアップページの Tip で、デスクトップアプリの Linux 版ダウンロードリンクが `claude.com/download` から Linux インストール手順ページへ変更された（詳細はハイライト 3 参照）。 — [日本語](https://code.claude.com/docs/ja/setup#install-claude-code) / [English](https://code.claude.com/docs/en/setup#install-claude-code)
+- インストールとログインのトラブルシューティングページの Tip も同様に変更され、「Linux では apt でアプリをインストールしてください」と Linux インストール手順へ誘導する 1 文が加わった（詳細はハイライト 3 参照）。 — [日本語](https://code.claude.com/docs/ja/troubleshoot-install#find-your-error) / [English](https://code.claude.com/docs/en/troubleshoot-install#find-your-error)
 
 ## 新着情報
 
-週刊ダイジェスト「新着情報」（`whats-new/`）に、Week 27 と Week 28 の 2 本がまとめて追加されました。`whats-new/index` ハブページにも両週のエントリが載っています。いずれも日本語版ページは本サマリ作成時点で未作成（404）のため、英語リンクのみを記載します。
-
-- [**2026年06月29日～07月03日(Week 27)**](./latest-detail.md#2026年06月29日07月03日week-27) ([English](https://code.claude.com/docs/en/whats-new/2026-w27)):  
-  v2.1.195〜v2.1.201 を対象に 5 つの機能を紹介。Claude Sonnet 5 の既定モデル化、Claude in Chrome の一般提供、サブエージェントの既定バックグラウンド実行、Claude Desktop の Linux ベータ、`/radio` による Claude FM の再生。
-- [**2026年07月06日～10日(Week 28)**](./latest-detail.md#2026年07月06日10日week-28) ([English](https://code.claude.com/docs/en/whats-new/2026-w28)):  
-  v2.1.202〜v2.1.206 を対象に 2 つの機能を紹介。Desktop の組み込みブラウザによる外部サイト閲覧と、セットアップ点検スキルになった `/doctor`。
+今回の対象期間では、週刊ダイジェスト「新着情報」（`whats-new/`）の追加・更新はありません。直近の Week 27・Week 28 については前回サマリを参照してください。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-09.md](./archives/latest/2026-07-09.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-09.md](./archives/latest-detail/2026-07-09.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-10.md](./archives/latest/2026-07-10.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-10.md](./archives/latest-detail/2026-07-10.md)
 
 <!--
-base_commit: 191b578e6d5aaae6bbcc47aa5f1ddd0d3e85ea4a
-head_commit: b0e62bddfff0079453cf5aec4c9e84b11f68c93f
-generated_at_full: 2026-07-11T15:05:43+09:00
+base_commit: b0e62bddfff0079453cf5aec4c9e84b11f68c93f
+head_commit: 7acfb2c1fd59240680f0797da7e72d0d9ead003e
+generated_at_full: 2026-07-12T15:02:57+09:00
 -->
