@@ -1,106 +1,424 @@
 {
-  "comment": "カテゴリ別サマリ試作用 taxonomy v3。順序は表示順（作業指示者指定・2026-07-12）。vocab/slug_prefixes は機械分類（参考値）用で、正分類は Opus の意味判定。docs-improvement は機能変更を伴わない記述改善の専用固定カテゴリ（LLM 判定専用・単独分類）。",
+  "comment": "カテゴリ別サマリ試作用 taxonomy v4。配列順 = 出力順。prompt_hint は LLM 編集工程の指示文（build_category_summary.py prompt が自動生成）に載るカテゴリ説明。vocab/slug_prefixes は機械分類（参考値）用で、正の分類は LLM の意味判定。subcategories を持つカテゴリは、エントリ側の subcategories マップで区分を指定する（例: {\"enterprise\": \"bedrock-aws\"}）。",
   "categories": [
     {
       "key": "commands",
       "name": "コマンド",
+      "prompt_hint": "コマンド: スラッシュコマンド・CLI・キー操作・対話モード",
       "icon": "⌨️",
-      "vocab": ["command", "commands", "slash command", "slash commands", "cli", "keybinding", "keybindings", "keyboard shortcut", "interactive mode", "vim", "shortcut"],
-      "slug_prefixes": ["cli-reference", "interactive-mode", "keybindings", "commands"]
+      "vocab": [
+        "command",
+        "commands",
+        "slash command",
+        "slash commands",
+        "cli",
+        "keybinding",
+        "keybindings",
+        "keyboard shortcut",
+        "interactive mode",
+        "vim",
+        "shortcut"
+      ],
+      "slug_prefixes": [
+        "cli-reference",
+        "interactive-mode",
+        "keybindings",
+        "commands"
+      ]
     },
     {
       "key": "extensions",
       "name": "拡張機能（プラグイン・スキル・フック）",
+      "prompt_hint": "拡張機能: プラグイン・スキル・フック",
       "icon": "🧰",
-      "vocab": ["plugin", "plugins", "skill", "skills", "hook", "hooks", "marketplace", "skill.md", "frontmatter", "output style", "output styles", "statusline", "status line"],
-      "slug_prefixes": ["plugins", "plugin-", "skills", "hooks", "hooks-guide", "discover-plugins", "statusline", "output-styles"]
+      "vocab": [
+        "plugin",
+        "plugins",
+        "skill",
+        "skills",
+        "hook",
+        "hooks",
+        "marketplace",
+        "skill.md",
+        "frontmatter",
+        "output style",
+        "output styles",
+        "statusline",
+        "status line"
+      ],
+      "slug_prefixes": [
+        "plugins",
+        "plugin-",
+        "skills",
+        "hooks",
+        "hooks-guide",
+        "discover-plugins",
+        "statusline",
+        "output-styles"
+      ]
     },
     {
       "key": "permission-security",
       "name": "パーミッション・セキュリティ",
+      "prompt_hint": "パーミッション・セキュリティ",
       "icon": "🔐",
-      "vocab": ["permission", "permissions", "permission mode", "auto mode", "plan mode", "acceptedits", "accept edits", "read-only", "read only", "deny", "denyread", "allow rule", "ask rule", "sandbox", "sandboxing", "security", "working directory", "additional directories", "approval", "approve", "prompt fatigue", "bypasspermissions", "trust", "credential", "secret", "prompt injection"],
-      "slug_prefixes": ["permissions", "permission-modes", "security", "sandboxing", "sandbox-environments", "security-guidance", "data-usage", "legal-and-compliance", "zero-data-retention", "iam", "auto-mode"]
+      "vocab": [
+        "permission",
+        "permissions",
+        "permission mode",
+        "auto mode",
+        "plan mode",
+        "acceptedits",
+        "accept edits",
+        "read-only",
+        "read only",
+        "deny",
+        "denyread",
+        "allow rule",
+        "ask rule",
+        "sandbox",
+        "sandboxing",
+        "security",
+        "working directory",
+        "additional directories",
+        "approval",
+        "approve",
+        "prompt fatigue",
+        "bypasspermissions",
+        "trust",
+        "credential",
+        "secret",
+        "prompt injection"
+      ],
+      "slug_prefixes": [
+        "permissions",
+        "permission-modes",
+        "security",
+        "sandboxing",
+        "sandbox-environments",
+        "security-guidance",
+        "data-usage",
+        "legal-and-compliance",
+        "zero-data-retention",
+        "iam",
+        "auto-mode"
+      ]
     },
     {
       "key": "session-context",
       "name": "セッション・コンテキスト",
+      "prompt_hint": "セッション・コンテキスト・履歴・チェックポイント",
       "icon": "📚",
-      "vocab": ["session", "sessions", "resume", "checkpoint", "checkpointing", "rewind", "context window", "compact", "compaction", "conversation", "history", "transcript", "context editing"],
-      "slug_prefixes": ["sessions", "checkpointing", "context-window", "how-claude-code-works"]
+      "vocab": [
+        "session",
+        "sessions",
+        "resume",
+        "checkpoint",
+        "checkpointing",
+        "rewind",
+        "context window",
+        "compact",
+        "compaction",
+        "conversation",
+        "history",
+        "transcript",
+        "context editing"
+      ],
+      "slug_prefixes": [
+        "sessions",
+        "checkpointing",
+        "context-window",
+        "how-claude-code-works"
+      ]
     },
     {
       "key": "subagents",
       "name": "サブエージェント",
+      "prompt_hint": "サブエージェント・エージェントチーム・agent view",
       "icon": "🤝",
-      "vocab": ["subagent", "subagents", "sub-agent", "agent team", "agent teams", "teammate", "task tool", "background agent"],
-      "slug_prefixes": ["sub-agents", "agent-teams", "agent-view"]
+      "vocab": [
+        "subagent",
+        "subagents",
+        "sub-agent",
+        "agent team",
+        "agent teams",
+        "teammate",
+        "task tool",
+        "background agent"
+      ],
+      "slug_prefixes": [
+        "sub-agents",
+        "agent-teams",
+        "agent-view"
+      ]
     },
     {
       "key": "workflow",
       "name": "ワークフロー",
+      "prompt_hint": "ワークフロー: タスク自動化・worktree・headless・スケジュール実行",
       "icon": "🔁",
-      "vocab": ["workflow", "workflows", "task", "background task", "worktree", "headless", "scripting", "cron", "schedule", "scheduled", "automation", "pipeline"],
-      "slug_prefixes": ["common-workflows", "workflows", "headless", "scheduled-tasks", "deep-links", "best-practices"]
+      "vocab": [
+        "workflow",
+        "workflows",
+        "task",
+        "background task",
+        "worktree",
+        "headless",
+        "scripting",
+        "cron",
+        "schedule",
+        "scheduled",
+        "automation",
+        "pipeline"
+      ],
+      "slug_prefixes": [
+        "common-workflows",
+        "workflows",
+        "headless",
+        "scheduled-tasks",
+        "deep-links",
+        "best-practices"
+      ]
     },
     {
       "key": "settings-env",
       "name": "設定・環境変数",
+      "prompt_hint": "設定・環境変数",
       "icon": "⚙️",
-      "vocab": ["settings", "settings.json", "setting", "env var", "env vars", "environment variable", "environment variables", "configuration", "config", "claude.md", "memory file", "managed settings", "configure"],
-      "slug_prefixes": ["settings", "env-vars", "memory", "terminal-config", "debug-your-config", "server-managed-settings"]
+      "vocab": [
+        "settings",
+        "settings.json",
+        "setting",
+        "env var",
+        "env vars",
+        "environment variable",
+        "environment variables",
+        "configuration",
+        "config",
+        "claude.md",
+        "memory file",
+        "managed settings",
+        "configure"
+      ],
+      "slug_prefixes": [
+        "settings",
+        "env-vars",
+        "memory",
+        "terminal-config",
+        "debug-your-config",
+        "server-managed-settings"
+      ]
     },
     {
       "key": "apps-platform",
       "name": "アプリ・プラットフォーム",
+      "prompt_hint": "アプリ・プラットフォーム: デスクトップ/IDE/Web/OS/インストール",
       "icon": "🖥",
-      "vocab": ["desktop", "desktop app", "vs code", "vscode", "jetbrains", "chrome", "slack", "web", "browser", "ide", "windows", "macos", "linux", "apt", "install", "installer", "installation", "extension", "github actions", "gitlab", "terminal app", "remote control", "mobile"],
-      "slug_prefixes": ["desktop", "vs-code", "jetbrains", "chrome", "slack", "claude-code-on-the-web", "web-quickstart", "github-actions", "gitlab-ci-cd", "setup", "troubleshoot-install", "terminal-guide", "computer-use", "remote-control", "quickstart", "overview", "fullscreen"]
+      "vocab": [
+        "desktop",
+        "desktop app",
+        "vs code",
+        "vscode",
+        "jetbrains",
+        "chrome",
+        "slack",
+        "web",
+        "browser",
+        "ide",
+        "windows",
+        "macos",
+        "linux",
+        "apt",
+        "install",
+        "installer",
+        "installation",
+        "extension",
+        "github actions",
+        "gitlab",
+        "terminal app",
+        "remote control",
+        "mobile"
+      ],
+      "slug_prefixes": [
+        "desktop",
+        "vs-code",
+        "jetbrains",
+        "chrome",
+        "slack",
+        "claude-code-on-the-web",
+        "web-quickstart",
+        "github-actions",
+        "gitlab-ci-cd",
+        "setup",
+        "troubleshoot-install",
+        "terminal-guide",
+        "computer-use",
+        "remote-control",
+        "quickstart",
+        "overview",
+        "fullscreen"
+      ]
     },
     {
       "key": "model-usage",
       "name": "モデル・利用状況",
+      "prompt_hint": "モデル・トークン・コスト・利用状況",
       "icon": "🤖",
-      "vocab": ["model", "models", "token", "tokens", "opus", "sonnet", "haiku", "fable", "fast mode", "extended thinking", "usage", "cost", "costs", "rate limit", "spend", "billing", "plan usage", "prompt caching", "cache"],
-      "slug_prefixes": ["model-config", "costs", "monitoring-usage", "fast-mode", "prompt-caching", "feature-availability"]
+      "vocab": [
+        "model",
+        "models",
+        "token",
+        "tokens",
+        "opus",
+        "sonnet",
+        "haiku",
+        "fable",
+        "fast mode",
+        "extended thinking",
+        "usage",
+        "cost",
+        "costs",
+        "rate limit",
+        "spend",
+        "billing",
+        "plan usage",
+        "prompt caching",
+        "cache"
+      ],
+      "slug_prefixes": [
+        "model-config",
+        "costs",
+        "monitoring-usage",
+        "fast-mode",
+        "prompt-caching",
+        "feature-availability"
+      ]
     },
     {
       "key": "mcp",
       "name": "MCP・外部連携",
+      "prompt_hint": "MCP・外部連携",
       "icon": "🔌",
-      "vocab": ["mcp", "mcp server", "mcp servers", "model context protocol", "managed mcp", "connector", "connectors", "channel", "channels", "oauth"],
-      "slug_prefixes": ["mcp", "mcp-quickstart", "managed-mcp", "channels", "channels-reference", "third-party-integrations"]
+      "vocab": [
+        "mcp",
+        "mcp server",
+        "mcp servers",
+        "model context protocol",
+        "managed mcp",
+        "connector",
+        "connectors",
+        "channel",
+        "channels",
+        "oauth"
+      ],
+      "slug_prefixes": [
+        "mcp",
+        "mcp-quickstart",
+        "managed-mcp",
+        "channels",
+        "channels-reference",
+        "third-party-integrations"
+      ]
     },
     {
       "key": "agent-sdk",
       "name": "Agent SDK",
+      "prompt_hint": "Agent SDK: TypeScript/Python SDK によるアプリ開発",
       "icon": "🧩",
-      "vocab": ["sdk", "agent sdk", "typescript sdk", "python sdk", "systemprompt", "streaming input", "query function"],
-      "slug_prefixes": ["agent-sdk/"]
+      "vocab": [
+        "sdk",
+        "agent sdk",
+        "typescript sdk",
+        "python sdk",
+        "systemprompt",
+        "streaming input",
+        "query function"
+      ],
+      "slug_prefixes": [
+        "agent-sdk/"
+      ]
     },
     {
       "key": "enterprise",
       "name": "エンタープライズ基盤",
+      "prompt_hint": "エンタープライズ基盤: Bedrock/Vertex/Foundry/ゲートウェイ/組織管理",
       "icon": "🏢",
-      "vocab": ["bedrock", "vertex", "foundry", "gateway", "gateways", "enterprise", "organization", "admin", "mdm", "sso", "scim", "deploy", "deployment", "aws", "google cloud", "azure", "proxy", "network", "analytics", "compliance", "audit"],
-      "slug_prefixes": ["amazon-bedrock", "google-vertex-ai", "microsoft-foundry", "admin-setup", "gateways", "llm-gateway", "claude-apps-gateway", "network-config", "claude-platform-on-aws", "analytics", "third-party-int"],
+      "vocab": [
+        "bedrock",
+        "vertex",
+        "foundry",
+        "gateway",
+        "gateways",
+        "enterprise",
+        "organization",
+        "admin",
+        "mdm",
+        "sso",
+        "scim",
+        "deploy",
+        "deployment",
+        "aws",
+        "google cloud",
+        "azure",
+        "proxy",
+        "network",
+        "analytics",
+        "compliance",
+        "audit"
+      ],
+      "slug_prefixes": [
+        "amazon-bedrock",
+        "google-vertex-ai",
+        "microsoft-foundry",
+        "admin-setup",
+        "gateways",
+        "llm-gateway",
+        "claude-apps-gateway",
+        "network-config",
+        "claude-platform-on-aws",
+        "analytics",
+        "third-party-int"
+      ],
       "subcategories": [
-        {"key": "vendor-neutral", "name": "ベンダー非依存"},
-        {"key": "anthropic-only", "name": "Anthropic のみ"},
-        {"key": "third-party-common", "name": "サードパーティのみ（Anthropic 以外の共通話題）"},
-        {"key": "bedrock-aws", "name": "Bedrock / AWS"},
-        {"key": "foundry-azure", "name": "Foundry / Azure"},
-        {"key": "vertex-gcp", "name": "Vertex / Google Cloud"}
+        {
+          "key": "vendor-neutral",
+          "name": "ベンダー非依存"
+        },
+        {
+          "key": "anthropic-only",
+          "name": "Anthropic のみ"
+        },
+        {
+          "key": "third-party-common",
+          "name": "サードパーティのみ（Anthropic 以外の共通話題）"
+        },
+        {
+          "key": "bedrock-aws",
+          "name": "Bedrock / AWS"
+        },
+        {
+          "key": "foundry-azure",
+          "name": "Foundry / Azure"
+        },
+        {
+          "key": "vertex-gcp",
+          "name": "Vertex / Google Cloud"
+        }
       ]
     },
     {
       "key": "docs-improvement",
       "name": "ドキュメント改善",
+      "prompt_hint": "ドキュメント改善 ※下記の特別ルール参照",
       "icon": "📝",
       "vocab": [],
       "slug_prefixes": [],
       "comment": "機能面の変更を伴わない純粋な記述改善（文体統一・表記/名称の統一・書式調整・リンク張替えのみ等）を単独集約する固定カテゴリ。判定は意味解釈が必要なため LLM 専用（機械分類では割当てない）"
     }
   ],
-  "uncategorized": {"key": "uncategorized", "name": "未分類（語彙マッチなし・要 LLM 裁定）", "icon": "❓"}
+  "uncategorized": {
+    "key": "uncategorized",
+    "name": "未分類（語彙マッチなし・要 LLM 裁定）",
+    "icon": "❓"
+  }
 }

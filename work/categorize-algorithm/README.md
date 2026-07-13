@@ -28,8 +28,8 @@ work/categorize-algorithm/
 │   └── 作業指示書.md            # 依頼元（Phase1〜4 の定義）
 ├── scripts/
 │   ├── term_scoring.py         # ① カテゴリ候補語のスコアリング（taxonomy 構築の材料を作る）
-│   ├── categories.json         # ② 確定した taxonomy（13 カテゴリ＋語彙＋エンタープライズのサブ区分）
-│   └── build_category_summary.py  # ③ サマリ生成パイプライン（extract / render）
+│   ├── categories.json         # ② 確定した taxonomy（13 カテゴリ＋語彙＋サブ区分）※単一の真実
+│   └── build_category_summary.py  # ③ サマリ生成パイプライン（prompt / extract / render）
 └── output/
     ├── phase1-proposals.md     # Phase1: サマライズ手法 11 案＋比較表
     ├── phase2-term-scoring-study.md  # Phase2: 手法サーベイ・スコアリング設計・実験結果
@@ -96,27 +96,41 @@ python work/categorize-algorithm/scripts/term_scoring.py \
 | 12 | 🏢 エンタープライズ基盤 | **サブ区分あり**（下記） |
 | 13 | 📝 ドキュメント改善 | **特別カテゴリ**（下記） |
 
-**エンタープライズ基盤のサブ区分**（節内をこの順でグルーピング。該当のない区分は非表示）:
-ベンダー非依存 / Anthropic のみ / サードパーティのみ（Anthropic 以外の共通話題）/ Bedrock・AWS / Foundry・Azure / Vertex・Google Cloud
+**サブ区分**（メインカテゴリ内をさらに分ける仕組み。節内をこの順でグルーピングし、該当のない区分は非表示）。**任意のカテゴリに設定できる**（→ 追加手順は §6-3）。現在はエンタープライズ基盤のみが持つ:
+
+> ベンダー非依存 / Anthropic のみ / サードパーティのみ（Anthropic 以外の共通話題）/ Bedrock・AWS / Foundry・Azure / Vertex・Google Cloud
 
 **「ドキュメント改善」の特別ルール**: 文体統一・表記や名称の統一・書式調整・単なるリンク張替え・誤字修正など、**Claude Code の機能面の変更や仕様理解の実質的更新を伴わない差分**はここに**単独**分類する（他カテゴリと併記しない）。逆に、記述変更でも挙動の明確化や新情報の追加（仕様理解が変わる修正）は機能カテゴリへ入れる。
 
 これにより「機能カテゴリに載っているものは機能面の変化がある」という意味論が保たれ、大規模な文体統一・名称改称の日でも機能カテゴリが汚染されない。実例として 2026-07-04（プロバイダ名一斉改称）は 150 項目が **3 エントリ**に収まり、うち機能カテゴリは 1 件だけになった。
 
-`categories.json` の `vocab` / `slug_prefixes` は**機械分類（参考値）用**であり、正の分類は LLM が行う（→ §5）。
+**フィールドの役割**:
+
+| フィールド | 使われ方 |
+|---|---|
+| `key` / `name` / `icon` | 識別子・見出し表示 |
+| `prompt_hint` | **LLM プロンプトに載るカテゴリ説明**（`prompt` サブコマンドが自動で埋め込む） |
+| `vocab` / `slug_prefixes` | **機械分類（参考値）用**。正の分類は LLM が行う（→ §5） |
+| `subcategories` | サブ区分（任意） |
 
 ## 5. サマリ生成パイプライン（`build_category_summary.py`）
 
 **設計方針**: 意味的解釈が要る工程だけを LLM に任せ、それ以外は決定的な機械処理にする（本リポジトリの既存パイプラインと同じ思想）。
 
 ```
-[機械] extract                    [LLM] 編集                     [機械] render
-git diff (base..head)             各変更点を意味的に解釈し         entries JSON から
-  ↓ ページ/セクション特定           ・カテゴリを 1〜3 個割当         カテゴリ別 .md を組立
-  ↓ 変更点を項目に分解              ・冗長項目を 1 エントリに統合    ・複数カテゴリへ展開
-  ↓ 語彙マッチで機械分類(参考値)     ・内容ラベル(見出し)を生成      ・enterprise サブ区分で節内分割
-  ↓                               ・日本語要約を生成               ・「変更なしカテゴリ」を一行表示
-items JSON  ────────────────────→ entries JSON ────────────────→ サマリ .md（＋分類根拠の付録）
+                         categories.json（taxonomy = 単一の真実）
+                                   │
+              ┌────────────────────┴────────────────────┐
+              │ prompt（機械: 指示文を自動生成）           │ 語彙・サブ区分・表示順
+              ▼                                         ▼
+[機械] extract              [LLM] 編集                     [機械] render
+git diff (base..head)       各変更点を意味的に解釈し         entries JSON から
+  ↓ ページ/セクション特定     ・カテゴリを 1〜3 個割当         カテゴリ別 .md を組立
+  ↓ 変更点を項目に分解        ・サブ区分を付与                ・複数カテゴリへ展開
+  ↓ 語彙マッチで機械分類       ・冗長項目を 1 エントリに統合    ・サブ区分で節内をグルーピング
+  ↓  （＝参考値）             ・changelog をカテゴリ別に分割   ・「変更なしカテゴリ」を一行表示
+  ↓                         ・内容ラベルと日本語要約を生成
+items JSON  ──────────────→ entries JSON ─────────────────→ サマリ .md（＋分類根拠の付録）
 ```
 
 ### 5-1. extract（機械）
@@ -137,13 +151,27 @@ python work/categorize-algorithm/scripts/build_category_summary.py extract \
 
 ### 5-2. LLM 編集（Opus）
 
-items JSON を Claude（Opus）に渡し、次の 5 つをさせる。試作では sub-agent を日ごとに並列起動した。
+**指示文（プロンプト）は `categories.json` から自動生成する**。手書きせず、必ずこのサブコマンドを使う（taxonomy を単一の真実にするため。§6-4）:
+
+```bash
+python work/categorize-algorithm/scripts/build_category_summary.py prompt \
+  --items   /path/to/items_YYYY-MM-DD.json \
+  --entries-out /path/to/entries_YYYY-MM-DD.json \
+  --out     /path/to/prompt_YYYY-MM-DD.md
+```
+
+生成された指示文を Claude（Opus）に渡す（試作では sub-agent を日ごとに並列起動した）。LLM がやることは 6 つ:
 
 1. **意味分類** — 変更内容を読んでカテゴリを 1〜3 個割当。機械分類は参考に留める。複数領域に本質的に関わる変更の**複数カテゴリ掲載はむしろ望ましい**（各カテゴリを単独で読んで完結させるため）
-2. **カテゴリ内統合** — 同一カテゴリ内で並べると冗長な項目（同趣旨の調整の繰り返し等）を 1 エントリに統合（`item_ids` を複数持たせる）。意味の異なる実質的変更は潰さない
-3. **内容ラベル** — 各エントリに「何が変わったか」を一言で表す日本語見出し（10〜20 字目安）。ページ名の直訳ではなく内容の要約
-4. **`enterprise_sub`** — エンタープライズ基盤に該当するエントリへサブ区分を必須付与
-5. **要約** — 日本語 1〜3 文。「何がどう変わり、読者にとって何が変わるか」を書く
+2. **サブ区分** — サブ区分を持つカテゴリ（§4・§6-3）に分類したエントリへ `subcategories` マップで区分を付与
+3. **カテゴリ内統合** — 同一カテゴリ内で並べると冗長な項目（同趣旨の調整の繰り返し等）を 1 エントリに統合（`item_ids` を複数持たせる）。意味の異なる実質的変更は潰さない
+4. **changelog のカテゴリ別分割**（統合の逆操作）— 下記
+5. **内容ラベル** — 各エントリに「何が変わったか」を一言で表す日本語見出し（10〜20 字目安）。ページ名の直訳ではなく内容の要約
+6. **要約** — 日本語 1〜3 文。「何がどう変わり、読者にとって何が変わるか」を書く
+
+**changelog のカテゴリ別分割**: changelog・リリースノート・バージョン履歴表への追記のように、**1 つの変更が複数カテゴリの内容を単に束ねて記載しているだけ**の場合は、カテゴリごとに別エントリへ分割し、**各エントリの要約には当該カテゴリの内容だけ**を書く。
+
+> 判断基準: 「1 つの話題が複数領域に波及している」なら**分割せず複数カテゴリ掲載**（同じ要約でよい）。「複数の独立した話題が 1 箇所にまとめて記載されている」なら**分割**する。
 
 出力する entries JSON:
 
@@ -153,13 +181,22 @@ items JSON を Claude（Opus）に渡し、次の 5 つをさせる。試作で�
    "categories": ["permission-security", "apps-platform"],
    "label": "read-only コマンドの承認不要化の明文化",
    "summary": "組み込みの読み取り専用シェルコマンド（`ls`・`cat` 等）が確認なしで実行される挙動が…"},
+
   {"item_ids": ["item12"],
-   "categories": ["enterprise"], "enterprise_sub": "bedrock-aws",
-   "label": "…", "summary": "…"}
+   "categories": ["enterprise"],
+   "subcategories": {"enterprise": "bedrock-aws"},
+   "label": "…", "summary": "…"},
+
+  {"item_ids": ["item48"], "categories": ["permission-security"],
+   "label": "v2.1.200/201 更新ログ追加",
+   "summary": "パーミッションモード「default」が「Manual」へ改称された。"},
+  {"item_ids": ["item48"], "categories": ["session-context"],
+   "label": "v2.1.200/201 更新ログ追加",
+   "summary": "バックグラウンドセッションの各種修正が入った。"}
 ]}
 ```
 
-**制約**: 全 `item_id` をいずれか 1 つのエントリに必ず含める（重複所属は不可。複数カテゴリは `categories` 側で表現）。
+**制約**: 全 `item_id` を**最低 1 つ**のエントリに含める（漏れ厳禁）。同一 `item_id` の複数エントリへの重複は、**changelog のカテゴリ別分割の場合に限り**許可（付録の「分割」列で識別できる）。
 
 ### 5-3. render（機械）
 
@@ -205,26 +242,65 @@ python work/categorize-algorithm/scripts/build_category_summary.py render \
 
 `vocab` / `slug_prefixes` は付録の「機械分類（参考値）」列に効くだけで、**正の分類には影響しない**（正の分類は LLM）。カテゴリを増やすだけなら空配列で始めて構わない。
 
-### 6-3. サブカテゴリの追加
+### 6-3. サブカテゴリの追加（どのカテゴリでも可）
 
-任意のカテゴリに `subcategories`（`key` / `name` の配列）を足すと、その節がサブ区分でグルーピングされる。配列順が表示順、該当エントリのない区分は非表示になる。レンダラーの実装は汎用なので、エンタープライズ基盤以外にも付けられる。
+**任意のメインカテゴリにサブ区分を設けられる**（エンタープライズ基盤に限らない）。手順は 1 つだけ:
 
-⚠️ ただし現状、**エントリ側のキー名が `enterprise_sub` にハードコード**されている。エンタープライズ基盤以外でサブ区分を使う場合は、`build_category_summary.py` の該当箇所（`e.get("enterprise_sub")`）をカテゴリごとのキーに一般化する改修が要る。
+`categories.json` の対象カテゴリに `subcategories`（`key` / `name` の配列）を足す。
 
-### 6-4. ⚠️ 最重要: taxonomy を編集したら LLM プロンプトも必ず同期する
+```json
+{
+  "key": "extensions",
+  "name": "拡張機能（プラグイン・スキル・フック）",
+  "prompt_hint": "拡張機能: プラグイン・スキル・フック",
+  "icon": "🧰",
+  "vocab": [ ... ],
+  "slug_prefixes": [ ... ],
+  "subcategories": [
+    {"key": "plugin", "name": "プラグイン"},
+    {"key": "skill",  "name": "スキル"},
+    {"key": "hook",   "name": "フック"}
+  ]
+}
+```
 
-**現状、カテゴリ一覧は `categories.json` と LLM 編集工程のプロンプトに二重管理されている。** 片方だけ直すと次のように**エラーにならず静かに壊れる**ので注意する。
+これだけで:
+
+- **レンダラー**がその節をサブ区分ごとにグルーピングする（配列順が表示順。該当エントリのない区分は非表示。未指定・不正値のエントリは先頭区分に落ちる）
+- **LLM プロンプト**（`prompt` サブコマンドが生成）に当該カテゴリのサブ区分一覧が自動で載り、LLM が `subcategories` マップで区分を付与するようになる
+
+エントリ側の指定形式は **`"subcategories": {"<カテゴリ key>": "<サブ区分 key>"}`** のマップ。複数のサブ区分持ちカテゴリに分類された場合は、各カテゴリ分をマップに並べる。
+
+```json
+{"item_ids": ["item12"],
+ "categories": ["enterprise", "extensions"],
+ "subcategories": {"enterprise": "bedrock-aws", "extensions": "plugin"},
+ "label": "…", "summary": "…"}
+```
+
+> 旧形式の `"enterprise_sub": "bedrock-aws"` も後方互換で読める（過去の entries JSON を再レンダリングできるようにするため）。新規に書くときはマップ形式を使う。
+
+### 6-4. taxonomy を編集したら LLM プロンプトを再生成する
+
+カテゴリ一覧は `categories.json` を**単一の真実**とし、LLM 編集工程の指示文は `prompt` サブコマンドで**そこから自動生成**する（§5-2）。プロンプトを手書き・手修正しないこと。
+
+```bash
+python work/categorize-algorithm/scripts/build_category_summary.py prompt \
+  --items <items JSON> --entries-out <entries JSON> --out <prompt.md>
+```
+
+`categories.json` を編集したら、**生成し直したプロンプトで LLM 編集をやり直す**。プロンプトを再生成せずに古い指示文を使うと、次のように**エラーにならず静かに壊れる**:
 
 | ずれの方向 | 起きること |
 |---|---|
-| taxonomy に追加したが、プロンプトに書かなかった | LLM がその `key` を知らない → **そのカテゴリは永久に 0 件**（見出しすら出ない） |
+| taxonomy に追加したが、LLM が古い一覧しか知らない | **そのカテゴリは永久に 0 件**（見出しすら出ない） |
 | LLM が taxonomy に無い `key` を返した | レンダラーが黙って捨て、カテゴリが空になれば**「未分類」送り** |
 
 > レンダラーの該当ロジック: `e["categories"] = [c for c in e["categories"] if c in cats] or [unc_key]`
 
-したがって **`categories.json` を編集したら、LLM に渡すプロンプトのカテゴリ一覧（key・説明・特別ルール・サブ区分）も同じ内容に必ず直す**。編集後は 1 日分を再生成し、付録の「LLM 分類」列に新カテゴリが実際に現れるか、未分類が急増していないかを目視で確認するとよい。
+編集後は 1 日分を再生成し、付録の「LLM 分類」列に新カテゴリが実際に現れるか、未分類が急増していないかを目視で確認するとよい。
 
-（将来的には `categories.json` からプロンプトを自動生成するサブコマンドを設け、taxonomy を単一の真実にするのが望ましい。§8「既知の限界」参照）
+なお `prompt_hint`（LLM に渡すカテゴリ説明）も `categories.json` のフィールドである。カテゴリの意味を調整したいときは、プロンプトではなくここを直す。
 
 ### 6-5. 定例メンテナンス
 
@@ -257,8 +333,7 @@ python work/categorize-algorithm/scripts/build_category_summary.py render \
 ## 8. 既知の限界
 
 - **taxonomy は人手確定が前提**: スコアリングは候補を出すところまで。品詞情報のない純統計では一般語の混入が残るため、最終確定は人（または LLM 補助＋人の承認）が行う
-- **taxonomy とプロンプトの二重管理**: カテゴリ一覧が `categories.json` と LLM プロンプトの 2 箇所にあり、片方だけの編集が**エラーにならず静かに壊れる**（§6-4）。`categories.json` からプロンプトを自動生成するサブコマンドを設ければ解消できる
-- **サブ区分キーのハードコード**: エントリ側のサブ区分キーが `enterprise_sub` 固定のため、他カテゴリでサブ区分を使うには改修が要る（§6-3）
+- **プロンプト再生成の忘れ**: taxonomy を編集してもプロンプトを再生成しなければ古い指示文が使われ、**エラーにならず静かに壊れる**（§6-4）。生成は `prompt` サブコマンドに一本化してあるが、実行忘れ自体は防げない（本番組込み時はラッパーで強制する）
 - **語形のゆれ**: `sandbox` / `sandboxing` のような派生形は簡易レンマ化では統合されない
 - **接頭辞規則の誤併合**: `pre+view` により `preview → view` のような誤りが出る。機械併合はあくまで種
 - **新概念への追従**: docs に新カテゴリ相当の概念が現れた直後は語彙が無く「未分類」に落ちる。`term_scoring.py` の再計算で追従する

@@ -17,7 +17,7 @@ import json
 import re
 import subprocess
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -302,9 +302,28 @@ def _fallback_summary(it):
 
 # --- render (エントリ形式・LLM 編集版) ----------------------------------------------
 #
-# entries JSON: {"entries": [{"item_ids": [...], "categories": [<cat key>...], "summary": "..."}]}
-# LLM（Opus）が意味的に分類・統合・要約した結果を受け取り、複数カテゴリ掲載と
-# カテゴリ内統合（1 エントリ = 複数 item）をサポートして md を組み立てる。
+# entries JSON:
+#   {"entries": [{
+#      "item_ids": [...],                       # 統合: 1 エントリ = 複数 item
+#      "categories": [<cat key>, ...],          # 複数カテゴリ掲載
+#      "subcategories": {<cat key>: <sub key>}, # サブ区分を持つカテゴリごとの所属（任意）
+#      "label": "...", "summary": "..."
+#   }]}
+# LLM（Opus）が意味的に分類・統合・要約した結果を受け取り、複数カテゴリ掲載・
+# カテゴリ内統合・サブ区分・changelog のカテゴリ別分割をサポートして md を組み立てる。
+#
+# item_id は原則 1 エントリに属するが、1 つの変更（例: changelog への追記）が
+# 複数カテゴリの内容を束ねている場合に限り、カテゴリごとに分割した複数エントリが
+# 同じ item_id を共有してよい（各エントリの summary は当該カテゴリの内容のみを書く）。
+
+
+def entry_subcategory(entry: dict, cat_key: str, subcats: list[dict]) -> str:
+    """エントリの当該カテゴリにおけるサブ区分 key を返す（不正・未指定は先頭区分）。"""
+    valid = {s["key"] for s in subcats}
+    val = (entry.get("subcategories") or {}).get(cat_key)
+    if val is None and cat_key == "enterprise":
+        val = entry.get("enterprise_sub")  # 旧形式との後方互換
+    return val if val in valid else subcats[0]["key"]
 
 
 def render_entries(items_path: Path, entries_path: Path, taxonomy_path: Path, out_path: Path):
@@ -401,13 +420,10 @@ def render_entries(items_path: Path, entries_path: Path, taxonomy_path: Path, ou
         L.append("")
         subcats = cat.get("subcategories")
         if subcats:
-            # サブカテゴリ順にグルーピング（未指定・不明値は先頭サブカテゴリへ）
-            default_sub = subcats[0]["key"]
-            valid_subs = {s["key"] for s in subcats}
+            # サブ区分を持つカテゴリは区分順にグルーピング（未指定・不明値は先頭区分へ）
             by_sub: dict[str, list] = defaultdict(list)
             for e in es:
-                sub = e.get("enterprise_sub") or default_sub
-                by_sub[sub if sub in valid_subs else default_sub].append(e)
+                by_sub[entry_subcategory(e, key, subcats)].append(e)
             for s in subcats:
                 ses = by_sub.get(s["key"], [])
                 if not ses:
@@ -422,13 +438,18 @@ def render_entries(items_path: Path, entries_path: Path, taxonomy_path: Path, ou
     if empty:
         L += ["### 今回変更のなかったカテゴリ", "", " / ".join(empty), ""]
 
+    # 同じ item を共有する複数エントリ = changelog のカテゴリ別分割
+    id_uses = Counter(i for e in entries for i in e["item_ids"])
+    n_split = sum(1 for e in entries if any(id_uses[i] > 1 for i in e["item_ids"]))
+
     L += [
         "## 分類の内訳（付録）",
         "",
-        "LLM（Opus）による意味分類と、語彙マッチによる機械分類（参考）の対比。",
+        "LLM（Opus）による意味分類と、語彙マッチによる機械分類（参考）の対比。"
+        + ("「分割」= 1 つの changelog 等をカテゴリ別に分けたエントリ。" if n_split else ""),
         "",
-        "| エントリ | LLM 分類 | 機械分類（参考） | 統合項目数 |",
-        "|---|---|---|---:|",
+        "| エントリ | LLM 分類 | 機械分類（参考） | 統合項目数 | 分割 |",
+        "|---|---|---|---:|:--:|",
     ]
     for e in entries:
         first = e["_items"][0] if e["_items"] else None
@@ -437,19 +458,132 @@ def render_entries(items_path: Path, entries_path: Path, taxonomy_path: Path, ou
             loc += " ほか"
         llm_c = ", ".join(cats[c]["name"] for c in e["categories"])
         mech_c = ", ".join(sorted({cats.get(i["category"], cats[unc_key])["name"] for i in e["_items"]}))
-        L.append(f"| {loc} | {llm_c} | {mech_c} | {len(e['item_ids'])} |")
+        split = "✔" if any(id_uses[i] > 1 for i in e["item_ids"]) else ""
+        L.append(f"| {loc} | {llm_c} | {mech_c} | {len(e['item_ids'])} | {split} |")
     L += [
         "",
         "<!--",
         f"base_commit: {data['base']}",
         f"head_commit: {data['head']}",
-        "generator: build_category_summary.py render --entries (trial v2)",
+        "generator: build_category_summary.py render --entries (trial v3)",
         "-->",
         "",
     ]
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(L), encoding="utf-8", newline="\n")
     print(f"written: {out_path} ({n_items} items -> {n_entries} entries)")
+
+
+# --- prompt（LLM 編集工程の指示文を taxonomy から自動生成） ---------------------------
+#
+# カテゴリ一覧を categories.json とプロンプトに二重管理すると、片方だけの編集が
+# エラーにならず静かに壊れる（追加したカテゴリが永久に 0 件になる等）。
+# ここで taxonomy から指示文を生成し、categories.json を単一の真実とする。
+
+PROMPT_TEMPLATE = """あなたは Claude Code 公式ドキュメント更新サマリの編集者です。
+{items_path} を Read で読んでください（大きい場合は offset/limit で分割し、**全件**読むこと）。
+
+各 item は公式ドキュメントの変更点 1 件です（slug / page_title / section / added_excerpt /
+removed_excerpt。category と matched_vocab は語彙マッチによる機械分類の**参考値**）。
+
+## 1. 意味分類
+
+各変更点の内容を意味的に解釈し、以下のカテゴリ key を 1〜3 個割り当てる（機械分類は参考に留め、
+内容で判断する）。変更が複数領域に本質的に関わる場合、複数カテゴリへの割当てはむしろ望ましい。
+
+{category_list}
+- uncategorized（どうしても当てはまらない場合のみ）
+
+**docs-improvement の特別ルール**: 文体統一・表記や名称の統一・書式調整・単なるリンク張替え・
+誤字修正など、**Claude Code の機能面の変更や仕様理解の実質的更新を伴わない差分**は
+docs-improvement **単独**に分類する（他カテゴリと併記しない）。一方、記述変更でも挙動の明確化・
+新情報の追加（仕様理解が変わる修正）は機能カテゴリへ入れる。
+
+## 2. サブ区分
+
+以下のカテゴリはサブ区分を持つ。該当カテゴリに分類したエントリには、"subcategories" に
+{{"<カテゴリ key>": "<サブ区分 key>"}} を必ず付与する（複数の該当カテゴリがあれば各々に付与）。
+
+{subcategory_list}
+
+## 3. カテゴリ内統合
+
+同一カテゴリ内で並べると冗長になる項目（同一ページ／同趣旨の調整の繰り返し、同一リリースの
+バージョン表記追記の繰り返し等）は 1 エントリに統合する（item_ids を複数持たせる）。
+意味の異なる実質的変更を 1 つに潰さないこと。
+
+## 4. changelog のカテゴリ別分割（統合の逆操作）
+
+1 つの変更（典型的には changelog やリリースノート、バージョン履歴表への追記）が、**複数カテゴリ
+の内容を単に束ねて記載しているだけ**の場合は、**カテゴリごとに別エントリへ分割**する。
+このときに限り、同じ item_id を複数のエントリが共有してよい。
+
+分割した各エントリの summary には、**そのカテゴリに対応する変更内容だけ**を書く（他カテゴリの
+内容を混ぜない）。label は共通でよい。
+
+悪い例（1 エントリを 3 カテゴリに掲載し、要約に全部を混ぜる）:
+  {{"item_ids": ["item48"], "categories": ["permission-security", "session-context", "apps-platform"],
+    "label": "v2.1.200/201 更新ログ追加",
+    "summary": "AskUserQuestion の自動継続廃止、パーミッションモードの改称、バックグラウンド
+    セッションの修正、スクリーンリーダー出力の改善などが含まれる。"}}
+
+良い例（カテゴリごとに分割し、各要約は当該カテゴリの内容のみ）:
+  {{"item_ids": ["item48"], "categories": ["permission-security"],
+    "label": "v2.1.200/201 更新ログ追加",
+    "summary": "パーミッションモード「default」が「Manual」へ改称された。"}}
+  {{"item_ids": ["item48"], "categories": ["session-context"],
+    "label": "v2.1.200/201 更新ログ追加",
+    "summary": "バックグラウンドセッションの各種修正が入った。"}}
+  {{"item_ids": ["item48"], "categories": ["apps-platform"],
+    "label": "v2.1.200/201 更新ログ追加",
+    "summary": "AskUserQuestion のデフォルト自動継続が廃止され、スクリーンリーダー出力が改善された。"}}
+
+**判断基準**: その変更が「1 つの話題が複数領域に波及している」なら分割せず複数カテゴリ掲載
+（同じ要約でよい）。「複数の独立した話題が 1 箇所にまとめて記載されている」なら分割する。
+
+## 5. label（内容ラベル）
+
+各エントリに "label" = 変更内容を一言で表す日本語見出し（10〜20 字目安・体言止め）。
+ページ名の直訳ではなく**内容の要約**にする。例: "auto mode の信頼設定", "プロバイダ名称の一斉統一"
+
+## 6. 要約
+
+各エントリに日本語 1〜3 文の "summary"（常体「〜された。」）。差分から「何がどう変わり、
+読者にとって何が変わるか」が分かる自然で具体的な文にする。excerpt から読み取れないことは
+推測で書かない。新規ページ（kind=new_page）は「新規ページ。<内容説明>」とする。
+
+## 出力
+
+Write ツールで {out_path} に以下の JSON を書く:
+
+{{"entries": [
+  {{"item_ids": ["item01"], "categories": ["permission-security"],
+    "label": "…", "summary": "…"}},
+  {{"item_ids": ["item02"], "categories": ["enterprise"],
+    "subcategories": {{"enterprise": "bedrock-aws"}}, "label": "…", "summary": "…"}}
+]}}
+
+**制約**: 全 item_id を最低 1 つのエントリの item_ids に含める（漏れ厳禁）。同一 item_id の
+複数エントリへの重複は、上記 4（changelog のカテゴリ別分割）の場合に限り許可。
+最終メッセージは「done: <エントリ数> entries / <項目数> items」のみ。
+"""
+
+
+def build_prompt(taxonomy_path: Path, items_path: str, out_path: str) -> str:
+    taxonomy = load_taxonomy(taxonomy_path)
+    cat_lines, sub_lines = [], []
+    for c in taxonomy["categories"]:
+        desc = c.get("prompt_hint") or c["name"]
+        cat_lines.append(f"- {c['key']}（{desc}）")
+        if c.get("subcategories"):
+            subs = " / ".join(f"{s['key']}（{s['name']}）" for s in c["subcategories"])
+            sub_lines.append(f"- **{c['key']}**: {subs}")
+    return PROMPT_TEMPLATE.format(
+        items_path=items_path,
+        out_path=out_path,
+        category_list="\n".join(cat_lines),
+        subcategory_list="\n".join(sub_lines) or "（サブ区分を持つカテゴリは現在ない）",
+    )
 
 
 # --- main --------------------------------------------------------------------------
@@ -472,6 +606,12 @@ def main():
     rd.add_argument("--entries", default=None, help="LLM 編集済みエントリ JSON（--summaries より優先）")
     rd.add_argument("--taxonomy", default=str(Path(__file__).parent / "categories.json"))
     rd.add_argument("--out", required=True)
+
+    pr = sub.add_parser("prompt", help="LLM 編集工程の指示文を taxonomy から生成")
+    pr.add_argument("--items", required=True, help="LLM に読ませる items JSON のパス")
+    pr.add_argument("--entries-out", required=True, help="LLM に書かせる entries JSON のパス")
+    pr.add_argument("--taxonomy", default=str(Path(__file__).parent / "categories.json"))
+    pr.add_argument("--out", default=None, help="省略時は標準出力")
 
     args = ap.parse_args()
     if args.cmd == "extract":
@@ -509,6 +649,14 @@ def main():
             json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n"
         )
         print(f"extracted: {args.out} ({len(out_items)} items)")
+    elif args.cmd == "prompt":
+        text = build_prompt(Path(args.taxonomy), args.items, args.entries_out)
+        if args.out:
+            Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.out).write_text(text, encoding="utf-8", newline="\n")
+            print(f"written: {args.out}")
+        else:
+            print(text)
     elif args.entries:
         render_entries(Path(args.items), Path(args.entries), Path(args.taxonomy), Path(args.out))
     else:
