@@ -87,15 +87,15 @@ Amazon Bedrock ページとエラーリファレンスに、ストリーミン�
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**エラーリファレンス**](#1-エラーリファレンス) ([English](https://code.claude.com/docs/en/errors)):  
+- [**エラーリファレンス**](#1-エラーリファレンス) ([日本語](https://code.claude.com/docs/ja/errors) / [English](https://code.claude.com/docs/en/errors)):  
   複数のエラーセクションが新設された。`apiKeyHelper` スクリプトの失敗、サブエージェントがツールゼロで起動されるケース、`Read` deny ルールによる編集拒否（ハイライト 2 参照）、バックグラウンドセッションで拒否されるコマンドと `CLAUDE_CODE_PROCESS_WRAPPER` ランチャーのエラー、Amazon Bedrock ストリーミングの content-type エラー（ハイライト 4 参照）。
-- [**エージェントビュー**](#2-エージェントビュー) ([English](https://code.claude.com/docs/en/agent-view)):  
+- [**エージェントビュー**](#2-エージェントビュー) ([日本語](https://code.claude.com/docs/ja/agent-view) / [English](https://code.claude.com/docs/en/agent-view)):  
   待機中のバックグラウンドエージェント数を数える `←` フッタヒント、配信できなかった返信を次回プロンプトとして保存する挙動、バックグラウンドセッションでの `/install-github-app` と `/mcp` 設定一覧の拒否、supervisor のバージョン取り扱い、worktree 削除の安全化（ハイライト 5 参照）、バージョン履歴表への v2.1.208 行が加わった。
-- [**ツールリファレンス**](#3-ツールリファレンス) ([English](https://code.claude.com/docs/en/tools-reference)):  
+- [**ツールリファレンス**](#3-ツールリファレンス) ([日本語](https://code.claude.com/docs/ja/tools-reference) / [English](https://code.claude.com/docs/en/tools-reference)):  
   Edit ツールの read-before-edit 緩和と Read deny による編集拒否（ハイライト 1・2 参照）に加え、Read の空ファイル通知と巨大 1 行の早期エラー、Grep が不正入力を `No files found` ではなくエラーで返す変更と件数モードの総数、Glob のヌルバイトエラーが加わった。
-- [**プラグインリファレンス**](#4-プラグインリファレンス) ([English](https://code.claude.com/docs/en/plugins-reference)):  
+- [**プラグインリファレンス**](#4-プラグインリファレンス) ([日本語](https://code.claude.com/docs/ja/plugins-reference) / [English](https://code.claude.com/docs/en/plugins-reference)):  
   `${user_config.*}` がシェル経由のフィールドで拒否される仕様が表に再構成され（各フィールドの代替手段つき）、`${CLAUDE_PLUGIN_ROOT}` などパスプレースホルダの置換対象がコンポーネント別・サーバー型別の表に整理された。
-- [**権限モード**](#5-権限モード) ([English](https://code.claude.com/docs/en/permission-modes)):  
+- [**権限モード**](#5-権限モード) ([日本語](https://code.claude.com/docs/ja/permission-modes) / [English](https://code.claude.com/docs/en/permission-modes)):  
   `bypassPermissions` モードの節が全面的に書き直され、ファイルシステムのルート・ホームディレクトリ削除のサーキットブレーカが `$(...)`・バックティック・`<(...)` を含むコマンドでも発火するようになった点が auto モードとあわせて明記された。
 <!-- light:updated-pages:end -->
 
@@ -150,7 +150,7 @@ Amazon Bedrock ページとエラーリファレンスに、ストリーミン�
 **新機能**
 
 - 組織共有のクラウド環境が追加された。Team / Enterprise の Owner / Admin が、admin settings の Cloud environments ページで、ネットワークアクセスレベル・環境変数・setup script を持つ環境を組織全員に共有でき、組織の既定環境も選べる。 — [English](https://code.claude.com/docs/en/claude-code-on-the-web#organization-shared-environments)
-- 環境変数 `CLAUDE_CODE_PROCESS_WRAPPER` が追加された（v2.1.208）。Claude Code が自分のバイナリから起動するプロセス（agent view を支えるバックグラウンドサービス、それが spawn する各セッション、更新完了のための自己再起動）を、`exec "$@"` で終わるラッパー実行ファイル経由にする。値は argv プレフィックスで、user / managed 設定の `env` ブロックに置く（Windows では無視）。 — [English](https://code.claude.com/docs/en/env-vars)
+- 環境変数 `CLAUDE_CODE_PROCESS_WRAPPER` が追加された（v2.1.208）。Claude Code が自分のバイナリから起動するプロセス（agent view を支えるバックグラウンドサービス、それが spawn する各セッション、更新完了のための自己再起動）を、`exec "$@"` で終わるラッパー実行ファイル経由にする。値は argv プレフィックスで、user / managed 設定の `env` ブロックに置く（Windows では無視）。 — [日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)
 - 設定 `vimInsertModeRemaps` が追加された（v2.1.208）。vim モードで `jj` のような 2 キーの INSERT モード列を Escape に割り当てる。ターゲットは `"<Esc>"` のみ。user・`--settings`・managed 設定からのみ読むため、リポジトリのチェックイン設定でキー操作を書き換えられない。 — [English](https://code.claude.com/docs/en/interactive-mode#remap-insert-mode-key-sequences)
 - `claude auto-mode defaults` に `--label <prefix>` が追加された（v2.1.208）。ラベルの前置一致（大小無視）で特定のルールだけを表示し、`jq` を通さずに 1 ルールの全文を読める。
 - SDK メッセージ型 `SDKThinkingTokensMessage` が型定義に追加された（v2.1.153）。thinking ブロック（redacted を含む）の生成中に、生成済み thinking トークンの推定累計と増分を流す。課金上の正値は result メッセージの `usage.output_tokens`。 — [English](https://code.claude.com/docs/en/agent-sdk/typescript#sdkthinkingtokensmessage)
@@ -163,15 +163,15 @@ Amazon Bedrock ページとエラーリファレンスに、ストリーミン�
 
 - `/usage` が、プラン上限の取得に失敗（多くはレート制限）した場合、直近 60 分にこのマシンで読み込んだ last-known のバーを `Showing last-known usage` の注記つきで表示するようになった（v2.1.208）。`r` で再試行できる。 — [English](https://code.claude.com/docs/en/costs#using-the-usage-command)
 - マーケットプレイスの自動更新が、起動後に最大 10 分のランダム遅延を挟んでチェックするようになった。実行中のセッションは起動時に読み込んだバージョンを使い続け、更新分は次回起動で読み込まれる。 — [English](https://code.claude.com/docs/en/plugin-marketplaces#configure-auto-updates)
-- worktree の base branch が、24 時間以内に fetch が無いと `origin/HEAD` を 5 秒上限で fetch して更新し、失敗時はローカルキャッシュを使うようになった（v2.1.208）。 — [English](https://code.claude.com/docs/en/worktrees#choose-the-base-branch)
+- worktree の base branch が、24 時間以内に fetch が無いと `origin/HEAD` を 5 秒上限で fetch して更新し、失敗時はローカルキャッシュを使うようになった（v2.1.208）。 — [日本語](https://code.claude.com/docs/ja/worktrees#choose-the-base-branch) / [English](https://code.claude.com/docs/en/worktrees#choose-the-base-branch)
 - ワークフローの resume で、停止時に実行中だったエージェントは保存されず最初からやり直しになるため、多数の小さなエージェントに分ける方が進捗を保てることが明記された。あわせて `CLAUDE_CODE_SUBAGENT_MODEL` がワークフローの各エージェントのモデルも上書きし、エイリアス指定も受け付けることが加わった。 — [English](https://code.claude.com/docs/en/workflows#resume-after-a-pause)
 - 空の `url` を持つリモート MCP サーバーが `/mcp`・`claude mcp list`・`/plugin` で `not configured` と表示され、接続を試みなくなった（プラグインが後で設定するコネクタのプレースホルダを置ける）（v2.1.208）。 — [English](https://code.claude.com/docs/en/mcp#installing-mcp-servers)
 - `Ctrl+O` のトランスクリプトビューアが、各アシスタントメッセージにタイムスタンプと使用モデルを表示するようになった。 — [English](https://code.claude.com/docs/en/interactive-mode#keyboard-shortcuts)
 - コマンドが、Claude の応答中に送るとキューされ現在のターン後に実行されるようになった。`/status`・`/tasks`・`/usage` は応答を中断せず即時実行される。 — [English](https://code.claude.com/docs/en/commands#slash-commands)
 - `/tasks` に、完了したバックグラウンドサブエージェントも（done 表示で実行中作業の下に並べて）表示されるようになった。詳細ビューも終了時に開いたまま残る。失敗・停止したサブエージェントは一覧から消える（v2.1.208）。サブエージェント・「Run agents in parallel」・バックグラウンドタスクの各ページに追記された。 — [English](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)
-- 環境変数の優先順位が明記された。同じ変数が shell と設定ファイルの `env` ブロック両方にある場合は設定ファイルの値が適用され、設定ファイル間では settings precedence に従う（managed が user / project を上書き）。 — [English](https://code.claude.com/docs/en/env-vars)
+- 環境変数の優先順位が明記された。同じ変数が shell と設定ファイルの `env` ブロック両方にある場合は設定ファイルの値が適用され、設定ファイル間では settings precedence に従う（managed が user / project を上書き）。 — [日本語](https://code.claude.com/docs/ja/env-vars) / [English](https://code.claude.com/docs/en/env-vars)
 - チェックポイントのファイルスナップショットが直近 100 チェックポイント分に絞られ、残らないチェックポイントが参照するスナップショットは削除されるようになった（各ファイルの最初のスナップショットは VS Code 拡張の差分基準として残す）（v2.1.208）。 — [English](https://code.claude.com/docs/en/checkpointing#how-checkpoints-work)
-- スクリーンリーダーモードが、自己再起動時に `CLAUDE_AX_SCREEN_READER` 環境変数経由で引き継がれ、`Shift+Tab` でモードを巡回すると権限モードの変更を読み上げるようになった（v2.1.210）。 — [English](https://code.claude.com/docs/en/accessibility#turn-on-screen-reader-mode)
+- スクリーンリーダーモードが、自己再起動時に `CLAUDE_AX_SCREEN_READER` 環境変数経由で引き継がれ、`Shift+Tab` でモードを巡回すると権限モードの変更を読み上げるようになった（v2.1.210）。 — [日本語](https://code.claude.com/docs/ja/accessibility#turn-on-screen-reader-mode) / [English](https://code.claude.com/docs/en/accessibility#turn-on-screen-reader-mode)
 - auto モードで許可分類器が、外部セッションでは既定 Sonnet 5 になり、セッションの最初のリクエストで検証してセッションに固定するようになった（v2.1.210）。
 
 **バグ修正**
