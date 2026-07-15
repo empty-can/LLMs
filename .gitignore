@@ -5,6 +5,9 @@ work/ja-follow-watch/
 # work/ 直下の一時スクラッチ（差分ダンプ・一時コミットメッセージ等）
 work/*.txt
 
+# カテゴリ別サマリの手動実行(run-category-summary.sh)の中間・成果物
+work/categorize-algorithm/output/manual-runs/
+
 # Python キャッシュ
 __pycache__/
 *.pyc

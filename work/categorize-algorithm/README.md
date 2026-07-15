@@ -29,15 +29,25 @@ work/categorize-algorithm/
 ├── scripts/
 │   ├── term_scoring.py         # ① カテゴリ候補語のスコアリング（taxonomy 構築の材料を作る）
 │   ├── categories.json         # ② 確定した taxonomy（13 カテゴリ＋語彙＋サブ区分）※単一の真実
-│   └── build_category_summary.py  # ③ サマリ生成パイプライン（prompt / extract / render）
+│   ├── build_category_summary.py  # ③ サマリ生成パイプライン（prompt / extract / render）
+│   ├── run-term-scoring.sh     # 🚀 ① のランチャー（人間が taxonomy 保守時に実行）
+│   └── run-category-summary.sh # 🚀 ③ のランチャー（人間が手動でサマリ生成: prepare / render）
 └── output/
     ├── phase1-proposals.md     # Phase1: サマライズ手法 11 案＋比較表
     ├── phase2-term-scoring-study.md  # Phase2: 手法サーベイ・スコアリング設計・実験結果
     ├── term-scores.md          # term_scoring.py の出力（候補語ランキング＋クラスタ素案）
     ├── trial-category-summary_2026-07-11.md      # 手動試作（1 日分・ライト版相当）
-    └── trial-category-summary-detail_2026-07-11/ # 試作生成した詳細版サマリ 10 日分
-        └── 2026-07-01.md … 2026-07-11.md
+    ├── trial-category-summary-detail_2026-07-11/ # 試作生成した詳細版サマリ 10 日分
+    │   └── 2026-07-01.md … 2026-07-11.md
+    └── manual-runs/            # run-category-summary.sh の手動実行の作業場（gitignore）
 ```
+
+**実行ランチャー（`.sh`）**: Python スクリプトを直接叩かなくても、人間が任意のタイミングで実行できるラッパー。`bash` から実行する。
+
+| ランチャー | 何を起動するか | いつ人間が使うか |
+|---|---|---|
+| `run-term-scoring.sh` | `term_scoring.py` | taxonomy 保守（候補語の再計算）。§6-5 |
+| `run-category-summary.sh` | `build_category_summary.py`（extract → prompt →〔Claude〕→ render） | 任意のコミット範囲のサマリを手動生成。§5 |
 
 ## 3. カテゴリ候補語のスコアリング（`term_scoring.py`）
 
@@ -64,12 +74,18 @@ score(t) = ( C-value × 被覆バンドパス × 分散均一度 × 共起中心
 
 動詞・動名詞は候補から除外している（`connect` `manage` `install` 等。ただし `plan`（plan mode）・`review`（code review）のような**動詞同形の機能名詞は保護**）。
 
-**使い方**（外部パッケージ不要・Python 3 のみ。リポジトリルートから実行）:
+**使い方**（外部パッケージ不要・Python 3 のみ）。ランチャー経由が簡単（引数はそのまま渡る。どこから実行してもよい）:
+
+```bash
+bash work/categorize-algorithm/scripts/run-term-scoring.sh \
+  --top 100 --probe "environment variable" "permission" "hook"
+```
+
+Python を直接叩く場合はリポジトリルートから（既定の入出力がルート相対のため）:
 
 ```bash
 python work/categorize-algorithm/scripts/term_scoring.py \
-  --top 100 \
-  --probe "environment variable" "permission" "hook"
+  --top 100 --probe "environment variable" "permission" "hook"
 ```
 
 出力 `output/term-scores.md` には、①候補語ランキング（各スコア成分つき）②包含併合後のカテゴリ候補グループ（`mode ← permission mode, auto mode, plan mode` のように統合しスコア合算）③セクション共起によるクラスタ素案 が入る。**この出力を人がレビューして `categories.json` を確定する**（全自動でカテゴリを確定はしない）。
@@ -214,6 +230,25 @@ python work/categorize-algorithm/scripts/build_category_summary.py render \
 - エントリに含まれない項目があれば機械分類で**自動補完**する安全網つき（LLM の取りこぼし対策）
 
 `--entries` の代わりに `--summaries`（`{item_id: 要約文}` の単純形式）も受け付ける。この場合は機械分類がそのまま使われ、統合・複数カテゴリ掲載は行われない（v1 互換）。
+
+### 5-4. ランチャー（人間が手動で 1 回まわす）
+
+`run-category-summary.sh` が上記 3 工程のパスの受け渡しを肩代わりする。中間の LLM 編集だけは Claude の担当なので、**prepare（extract + prompt）→〔Claude が entries を書く〕→ render** の 2 段に分かれる:
+
+```bash
+# 1. 差分を項目化し、LLM 指示文を生成（BASE..HEAD は取り込みコミット）
+bash work/categorize-algorithm/scripts/run-category-summary.sh prepare b0e62bd 7acfb2c
+#    → output/manual-runs/<HEAD 短縮 SHA>/ に items.json と prompt.md を生成
+
+# 2. prompt.md を Claude に渡す（サブエージェント、または claude -p）。
+#    Claude が items.json を読み、同じフォルダに entries.json を書く。
+
+# 3. entries.json からサマリ .md を組み立てる
+bash work/categorize-algorithm/scripts/run-category-summary.sh render 7acfb2c
+#    → 同フォルダに summary.md
+```
+
+中間ファイルは `output/manual-runs/<ラベル>/`（gitignore）に置かれる。ラベル既定値は HEAD の短縮 SHA。
 
 ## 6. 人間が行う作業とメンテナンス
 
