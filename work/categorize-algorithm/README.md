@@ -250,6 +250,8 @@ bash work/categorize-algorithm/scripts/run-category-summary.sh render 7acfb2c
 
 中間ファイルは `output/manual-runs/<ラベル>/`（gitignore）に置かれる。ラベル既定値は HEAD の短縮 SHA。
 
+**整合性ガード**: `prepare` はそのとき使った taxonomy の構造（カテゴリ／サブ区分の `key`）を `taxonomy.sig` に記録する。`render` は現在の `categories.json` の構造と照合し、**prepare 後に key が増減・改名されていたら停止する**。entries は prepare 時点の taxonomy に対して Claude が生成したものなので、その後にカテゴリを足す／消すと「新カテゴリが空」「消したカテゴリのエントリが未分類送り」になる——それを黙って出力しないための安全網。`prepare` からやり直すのが正しい対処。key に影響しない編集（`name`・`icon`・`vocab`・`prompt_hint`・並び順）では発火しない。変更が entries に無害と分かっている場合のみ `render <ラベル> --force` で続行できる。
+
 ## 6. 人間が行う作業とメンテナンス
 
 スクリプトの実行を除けば、人間の担当は **taxonomy（`categories.json`）の設計と保守**にほぼ集約される。以下は「何を、いつ、どうやるか」。
@@ -368,7 +370,7 @@ python work/categorize-algorithm/scripts/build_category_summary.py prompt \
 ## 8. 既知の限界
 
 - **taxonomy は人手確定が前提**: スコアリングは候補を出すところまで。品詞情報のない純統計では一般語の混入が残るため、最終確定は人（または LLM 補助＋人の承認）が行う
-- **プロンプト再生成の忘れ**: taxonomy を編集してもプロンプトを再生成しなければ古い指示文が使われ、**エラーにならず静かに壊れる**（§6-4）。生成は `prompt` サブコマンドに一本化してあるが、実行忘れ自体は防げない（本番組込み時はラッパーで強制する）
+- **プロンプト再生成の忘れ**: `run-category-summary.sh` を使う限り**解消済み**。`prepare` が毎回 `prompt` を実行して `categories.json` から指示文を生成し直すため、古い指示文の使い回しは起きない（§5-4）。加えて `prepare` は taxonomy の構造（カテゴリ／サブ区分 key）を記録し、`render` が prepare 後の key 変更を検知して停止する（`--force` で上書き可）。ランチャーを経由せず Python を手で叩く／ハンド保存した古い prompt.md を使う場合はこの保護が効かない点だけ残る
 - **語形のゆれ**: `sandbox` / `sandboxing` のような派生形は簡易レンマ化では統合されない
 - **接頭辞規則の誤併合**: `pre+view` により `preview → view` のような誤りが出る。機械併合はあくまで種
 - **新概念への追従**: docs に新カテゴリ相当の概念が現れた直後は語彙が無く「未分類」に落ちる。`term_scoring.py` の再計算で追従する
