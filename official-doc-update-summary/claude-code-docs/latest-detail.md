@@ -46,7 +46,7 @@
 
 ## 2. コネクタツールに組織が承認要求とブロックを強制
 
-claude.ai コネクタのツールに、組織がツール単位の制御をかけられるようになりました。Claude Code は起動時にこの設定を読み込み、ローカルで強制します。どのツールにどの設定が効いているかは `/mcp` で確認できます。ツールが `ask` に設定されている場合、Claude Code は毎回「Your organization requires approval for this tool」という理由でプロンプトを出します。このプロンプトは `acceptEdits`・`auto`・`bypassPermissions` の各[権限モード](https://code.claude.com/docs/en/permissions#permission-modes)でも表示され、選択を記憶するオプションは提供されず、ツールに一致する allow ルールでもスキップされません。プロンプトを一切出さない `dontAsk` モードでは、代わりにその呼び出しを拒否します。ツールが `blocked` に設定されている場合、Claude Code はそのツールを Claude が見る前に除外するため、ツール一覧に現れません。
+claude.ai コネクタのツールに、組織がツール単位の制御をかけられるようになりました。Claude Code は起動時にこの設定を読み込み、ローカルで強制します。どのツールにどの設定が効いているかは `/mcp` で確認できます。ツールが `ask` に設定されている場合、Claude Code は毎回「Your organization requires approval for this tool」という理由でプロンプトを出します。このプロンプトは `acceptEdits`・`auto`・`bypassPermissions` の各[日本語](https://code.claude.com/docs/ja/permissions#permission-modes) / [権限モード](https://code.claude.com/docs/en/permissions#permission-modes)でも表示され、選択を記憶するオプションは提供されず、ツールに一致する allow ルールでもスキップされません。プロンプトを一切出さない `dontAsk` モードでは、代わりにその呼び出しを拒否します。ツールが `blocked` に設定されている場合、Claude Code はそのツールを Claude が見る前に除外するため、ツール一覧に現れません。
 
 この制御の強制には Claude Code v2.1.129 以降が必要で、それ以前のバージョンは設定を無視して標準の権限フローを適用します。この挙動は権限・権限モード・フック・サンドボックス・スケジュールタスク・ヘッドレス・Agent SDK など多数のページに横断的に反映され、いずれも「コネクタツールの `ask` と、MCP ツールの `requiresUserInteraction` 指定は、フックが `allow` を返してもプロンプトを出す」という一貫した記述になっています（大幅更新 6 参照）。
 
@@ -56,7 +56,7 @@ claude.ai コネクタのツールに、組織がツール単位の制御をか�
 
 LLM ゲートウェイ接続ページに、ゲートウェイ経路の外へ出るトラフィックを止める節が新設されました。ゲートウェイはモデルリクエストを運びますが、Claude Code はそれとは別に、バージョンチェック・テレメトリ・エラーレポート・リリースノートなどの非必須なバックグラウンド通信を Anthropic や GitHub のような第三者サービスへ送ります。egress をゲートウェイのみに許可したネットワークでは、これらのリクエストが失敗し、egress 監視でブロックされた接続として現れます。このトラフィックを止めるには、ゲートウェイ変数と同じシェルエクスポートまたは設定ファイルの `env` ブロックで `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1` を設定します。
 
-設定すると次の効果と制限があります。自動更新が無効になるため、パッケージマネージャや managed 配布など別の更新経路を用意する必要があります。[fast mode](https://code.claude.com/docs/en/fast-mode) の可用性チェックが抑制され、以前のチェックで有効化済みでない限り `/fast` は利用不可と表示します。ゲートウェイ自身に問い合わせる[ゲートウェイモデル検出](https://code.claude.com/docs/en/llm-gateway-connect#add-gateway-models-to-the-model-picker)も止まり、既検出モデルはローカルキャッシュから使えますが一覧は更新されません。WebFetch のドメイン安全性チェックは影響を受けず引き続き `api.anthropic.com` を呼ぶため、そのホストがブロックされる場合は `skipWebFetchPreflight: true` で別途無効化します。
+設定すると次の効果と制限があります。自動更新が無効になるため、パッケージマネージャや managed 配布など別の更新経路を用意する必要があります。[日本語](https://code.claude.com/docs/ja/fast-mode) / [fast mode](https://code.claude.com/docs/en/fast-mode) の可用性チェックが抑制され、以前のチェックで有効化済みでない限り `/fast` は利用不可と表示します。ゲートウェイ自身に問い合わせる[ゲートウェイモデル検出](https://code.claude.com/docs/en/llm-gateway-connect#add-gateway-models-to-the-model-picker)も止まり、既検出モデルはローカルキャッシュから使えますが一覧は更新されません。WebFetch のドメイン安全性チェックは影響を受けず引き続き `api.anthropic.com` を呼ぶため、そのホストがブロックされる場合は `skipWebFetchPreflight: true` で別途無効化します。
 
 - [Connect Claude Code to an LLM gateway (Turn off traffic outside the gateway path) - Claude Code Docs (English)](https://code.claude.com/docs/en/llm-gateway-connect#turn-off-traffic-outside-the-gateway-path)
 
@@ -145,7 +145,7 @@ LLM ゲートウェイ接続ページの主変更は、非必須トラフィッ�
 
 作業ディレクトリの節には、macOS のバックグラウンドセッションが `~/Desktop`・`~/Documents`・`~/Downloads` のような保護フォルダへのアクセスを、ターミナルとは別にセッションホストが要求する挙動と、`Operation not permitted` で読み取りが失敗する場合の対処への参照が加わりました。
 
-- [Configure permissions (Permission modes) - Claude Code Docs (English)](https://code.claude.com/docs/en/permissions#permission-modes)
+- [日本語](https://code.claude.com/docs/ja/permissions#permission-modes) / [Configure permissions (Permission modes) - Claude Code Docs (English)](https://code.claude.com/docs/en/permissions#permission-modes)
 
 ## 軽微な更新
 
@@ -155,24 +155,24 @@ LLM ゲートウェイ接続ページの主変更は、非必須トラフィッ�
 **新機能**
 
 - `--forward-subagent-text` フラグと `CLAUDE_CODE_FORWARD_SUBAGENT_TEXT` 環境変数が追加され、stream-json 出力にサブエージェントのテキストと thinking を含められるようになった。
-- managed 設定 `disableBrowserExternalNavigation` が追加された。Browser ペインの外部ブラウジングを完全に止め、組織の allowlist 上のサイトも含めてブロックする（localhost 開発サーバーとファイルプレビューは動作。値は JSON ブール値 `true` のみ有効で文字列 `"true"` は無視）。ユーザーにも Claude にも外部サイトを見せたくない場合に、`browserExternalPageTools`（Claude のツールだけ止める）と使い分ける。 — [English](https://code.claude.com/docs/en/settings#available-settings)
+- managed 設定 `disableBrowserExternalNavigation` が追加された。Browser ペインの外部ブラウジングを完全に止め、組織の allowlist 上のサイトも含めてブロックする（localhost 開発サーバーとファイルプレビューは動作。値は JSON ブール値 `true` のみ有効で文字列 `"true"` は無視）。ユーザーにも Claude にも外部サイトを見せたくない場合に、`browserExternalPageTools`（Claude のツールだけ止める）と使い分ける。 — [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
 - managed 設定 `pluginSuggestionMarketplaces` が追加され、どのマーケットプレイスのプラグインを文脈的インストール提案に出せるか allowlist できるようになった。 — [English](https://code.claude.com/docs/en/plugin-marketplaces#managed-marketplace-restrictions)
 - GitHub の `owner/repo` 短縮ソースは既定で SSH でクローンされるが、`CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` で HTTPS クローンに切り替えられるようになった。 — [English](https://code.claude.com/docs/en/plugin-marketplaces#private-repositories)
-- ログイン時のプロンプトで「3rd-party platform」を選ぶと、Bedrock と Vertex AI 向けの対話セットアップウィザードが起動するようになった（認証ページに追記）。あわせて managed 設定 `forceLoginMethod`/`forceLoginOrgUUID` が設定されている場合、`ANTHROPIC_API_KEY`・`ANTHROPIC_AUTH_TOKEN`・`apiKeyHelper` で認証したセッションは起動時にブロックされることが明記された（クラウドプロバイダーのセッションは非対象）。 — [English](https://code.claude.com/docs/en/authentication)
+- ログイン時のプロンプトで「3rd-party platform」を選ぶと、Bedrock と Vertex AI 向けの対話セットアップウィザードが起動するようになった（認証ページに追記）。あわせて managed 設定 `forceLoginMethod`/`forceLoginOrgUUID` が設定されている場合、`ANTHROPIC_API_KEY`・`ANTHROPIC_AUTH_TOKEN`・`apiKeyHelper` で認証したセッションは起動時にブロックされることが明記された（クラウドプロバイダーのセッションは非対象）。 — [日本語](https://code.claude.com/docs/ja/authentication) / [English](https://code.claude.com/docs/en/authentication)
 
 **機能改善**
 
-- `UserPromptSubmit` フックで文脈を注入する `additionalContext` は `hookSpecificOutput` の内側にネストする必要があり、トップレベルに置くと黙って無視されることが、例つきで明記された。あわせて `"Edit|Write"` のようなマッチャーは v2.1.191 以降カンマ区切り `"Edit, Write"` でも同義になった。 — [English](https://code.claude.com/docs/en/hooks-guide)
-- サンドボックスの読み取りルールが重なった場合、より限定的なパスが勝つことが表で示された（`denyRead: ["~/"]` + `allowRead: ["~/projects"]` は projects だけ読める、`allowRead: ["~/"]` + `denyRead: ["~/.env"]` は .env だけブロックのまま）。 — [English](https://code.claude.com/docs/en/sandboxing)
-- シェルで `CLAUDE_CODE_USE_*` プロバイダー変数や非既定の `ANTHROPIC_BASE_URL` をエクスポートすると、server-managed 設定のフェッチがスキップされ、その `env` ブロックではエクスポートを打ち消せない（フェッチ前に適格性が判定されるため）ことが明記された。復旧はシェルからエクスポートを外すか、ユーザー設定 `env` で当該変数を `""` にする。 — [English](https://code.claude.com/docs/en/server-managed-settings)
-- Web の Claude Code で、`GH_TOKEN`/`GITHUB_TOKEN` を自分で設定するとコンテナへそのまま渡り、未設定だと両変数がプレースホルダ `proxy-injected` になり GitHub プロキシが実認証情報を差し込む挙動が明記された（`GITHUB_TOKEN` を直接読むスクリプトはプレースホルダを受け取る）。 — [English](https://code.claude.com/docs/en/claude-code-on-the-web)
-- `/setup-bedrock` はモデルピン工程を現在のピンから始め、`~/.claude/settings.json`（`CLAUDE_CONFIG_DIR` 設定時はそちら）へ書き込むことが明記された。SSO プロファイル手順のプレースホルダ表記も整理された。 — [English](https://code.claude.com/docs/en/amazon-bedrock)
+- `UserPromptSubmit` フックで文脈を注入する `additionalContext` は `hookSpecificOutput` の内側にネストする必要があり、トップレベルに置くと黙って無視されることが、例つきで明記された。あわせて `"Edit|Write"` のようなマッチャーは v2.1.191 以降カンマ区切り `"Edit, Write"` でも同義になった。 — [日本語](https://code.claude.com/docs/ja/hooks-guide) / [English](https://code.claude.com/docs/en/hooks-guide)
+- サンドボックスの読み取りルールが重なった場合、より限定的なパスが勝つことが表で示された（`denyRead: ["~/"]` + `allowRead: ["~/projects"]` は projects だけ読める、`allowRead: ["~/"]` + `denyRead: ["~/.env"]` は .env だけブロックのまま）。 — [日本語](https://code.claude.com/docs/ja/sandboxing) / [English](https://code.claude.com/docs/en/sandboxing)
+- シェルで `CLAUDE_CODE_USE_*` プロバイダー変数や非既定の `ANTHROPIC_BASE_URL` をエクスポートすると、server-managed 設定のフェッチがスキップされ、その `env` ブロックではエクスポートを打ち消せない（フェッチ前に適格性が判定されるため）ことが明記された。復旧はシェルからエクスポートを外すか、ユーザー設定 `env` で当該変数を `""` にする。 — [日本語](https://code.claude.com/docs/ja/server-managed-settings) / [English](https://code.claude.com/docs/en/server-managed-settings)
+- Web の Claude Code で、`GH_TOKEN`/`GITHUB_TOKEN` を自分で設定するとコンテナへそのまま渡り、未設定だと両変数がプレースホルダ `proxy-injected` になり GitHub プロキシが実認証情報を差し込む挙動が明記された（`GITHUB_TOKEN` を直接読むスクリプトはプレースホルダを受け取る）。 — [日本語](https://code.claude.com/docs/ja/claude-code-on-the-web) / [English](https://code.claude.com/docs/en/claude-code-on-the-web)
+- `/setup-bedrock` はモデルピン工程を現在のピンから始め、`~/.claude/settings.json`（`CLAUDE_CONFIG_DIR` 設定時はそちら）へ書き込むことが明記された。SSO プロファイル手順のプレースホルダ表記も整理された。 — [日本語](https://code.claude.com/docs/ja/amazon-bedrock) / [English](https://code.claude.com/docs/en/amazon-bedrock)
 - managed 設定に検証失敗エントリがある場合、`/doctor` でソースファイルとフィールド付きで除去されたエントリを一覧できるようになった。 — [English](https://code.claude.com/docs/en/settings#invalid-entries-in-managed-settings)
-- Agent SDK のツール検索リファレンスに「Tool output exceeds maximum allowed tokens」のトラブルシューティング節が追加された。 — [English](https://code.claude.com/docs/en/agent-sdk/tool-search)
-- Agent SDK のコスト追跡の説明で、最終的な output トークン表示はトップレベルのエージェントループ分で、サブエージェントのトークンは含まれないことが明記された。 — [English](https://code.claude.com/docs/en/agent-sdk/cost-tracking)
-- managed-mcp の allowlist/denylist が `--mcp-config` CLI フラグで渡したサーバーにも適用される（`--strict-mcp-config` は読み込む設定ファイルを絞るだけで、どちらのリストもバイパスしない）ことが明記され、`allowedMcpServers`/`deniedMcpServers` 表にはエントリがスキーマ検証に失敗した場合の挙動（settings の Invalid entries）への参照が加わった。 — [English](https://code.claude.com/docs/en/managed-mcp)
-- auto モード設定で、`environment`/`allow`/`soft_deny`/`hard_deny` を `"$defaults"` なしで上書きした場合に失われる組み込みルールの内訳が整理され、auto-mode bypass ルールが `soft_deny` 側に、データ持ち出しルールのみが `hard_deny` 側に明記された。 — [English](https://code.claude.com/docs/en/auto-mode-config)
-- Claude in Chrome で、利用可能なブラウザツールの一覧は `/mcp` → `claude-in-chrome` → **View tools** で見ることが案内され、最初のブラウザ操作で `claude-in-chrome` スキルの使用許可を求める旨が追記された。 — [English](https://code.claude.com/docs/en/chrome)
+- Agent SDK のツール検索リファレンスに「Tool output exceeds maximum allowed tokens」のトラブルシューティング節が追加された。 — [日本語](https://code.claude.com/docs/ja/agent-sdk/tool-search) / [English](https://code.claude.com/docs/en/agent-sdk/tool-search)
+- Agent SDK のコスト追跡の説明で、最終的な output トークン表示はトップレベルのエージェントループ分で、サブエージェントのトークンは含まれないことが明記された。 — [日本語](https://code.claude.com/docs/ja/agent-sdk/cost-tracking) / [English](https://code.claude.com/docs/en/agent-sdk/cost-tracking)
+- managed-mcp の allowlist/denylist が `--mcp-config` CLI フラグで渡したサーバーにも適用される（`--strict-mcp-config` は読み込む設定ファイルを絞るだけで、どちらのリストもバイパスしない）ことが明記され、`allowedMcpServers`/`deniedMcpServers` 表にはエントリがスキーマ検証に失敗した場合の挙動（settings の Invalid entries）への参照が加わった。 — [日本語](https://code.claude.com/docs/ja/managed-mcp) / [English](https://code.claude.com/docs/en/managed-mcp)
+- auto モード設定で、`environment`/`allow`/`soft_deny`/`hard_deny` を `"$defaults"` なしで上書きした場合に失われる組み込みルールの内訳が整理され、auto-mode bypass ルールが `soft_deny` 側に、データ持ち出しルールのみが `hard_deny` 側に明記された。 — [日本語](https://code.claude.com/docs/ja/auto-mode-config) / [English](https://code.claude.com/docs/en/auto-mode-config)
+- Claude in Chrome で、利用可能なブラウザツールの一覧は `/mcp` → `claude-in-chrome` → **View tools** で見ることが案内され、最初のブラウザ操作で `claude-in-chrome` スキルの使用許可を求める旨が追記された。 — [日本語](https://code.claude.com/docs/ja/chrome) / [English](https://code.claude.com/docs/en/chrome)
 - セッション/週次の使用枠は同時に消費されるため、大きなワークフローのファンアウトのような一時的な大量利用が、セッション枠のリセット前に週次枠を使い切りうることが追記された。 — [English](https://code.claude.com/docs/en/errors#usage-limits)
 - プラグインマーケットプレイスの更新で、ブランチ/タグ `ref` で追加したマーケットプレイスはその ref の最新コミットに更新される（リポジトリの既定ブランチではない）ことが明記された。 — [English](https://code.claude.com/docs/en/plugin-marketplaces#plugin-marketplace-update)
 
