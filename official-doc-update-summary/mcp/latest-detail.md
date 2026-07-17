@@ -1,13 +1,13 @@
 ---
-対象期間: 2026年07月10日 〜 2026年07月12日
-作成日: 2026-07-12
+対象期間: 2026年07月12日 〜 2026年07月16日
+作成日: 2026-07-16
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の原文差分は、リモート MCP サーバー／ローカル MCP サーバーへの接続手順を、現行の Claude Desktop・ブラウザ版 Claude の UI に合わせて書き直した記述のみでした。プロトコル仕様・SDK・設定ファイルの書式に実体的な変更はなく、今回取り上げるべきハイライトはありません。
+今回の対象期間の原文差分は、SEP-2549「TTL for List Results」仕様ページ 1 ページのみで、いずれもリスト結果キャッシュ用フィールド（`ttlMs` / `cacheScope`）の仕様本文に対する軽微な文書修正でした。プロトコルの型・挙動・SDK 要件に実体的な変更はなく、今回取り上げるべきハイライトはありません。
 ```
 <!-- light:summary:end -->
 
@@ -32,26 +32,24 @@
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の対象期間に更新されたのは 2 ページで、いずれも Claude 側の UI 変更にドキュメントの手順記述を追従させるものです。
+今回の対象期間に更新されたのは SEP-2549「TTL for List Results」の 1 ページで、いずれも仕様本文の文言に関する軽微な修正です。
 
 **機能改善**
 
-- 「Connect to remote MCP Servers」ページの「Connecting to a Remote MCP Server」節で、設定画面（Connectors）を開くまでの手順が、Claude Desktop とブラウザ版に分けて記述されるようになりました。Desktop はキーボードショートカット `Ctrl+Comma`、またはウィンドウ左上のメニューアイコンから「File」→「Settings」を選択、ブラウザ版はキーボードショートカット `⌘⇧,`（macOS）、またはプロフィールアイコンから「Settings」を選択し、そのうえでサイドバーの「Connectors」を開く、という流れです。従来はブラウザ版のプロフィールアイコン経由の手順のみが書かれていました。 — [Connect to remote MCP Servers](https://modelcontextprotocol.io/docs/develop/connect-remote-servers#connecting-to-a-remote-mcp-server)
-- 同節の「Add a Custom Connector」手順で、カスタムコネクタの追加方法が現行 UI に合わせて改められました。従来は「Connectors セクションの最下部までスクロールして『Add custom connector』ボタンを押す」でしたが、新しい記述では「ウィンドウ右上の『Add』ボタンを押し、ドロップダウンから『Add custom connector』を選ぶ」となっています。あわせて、読者が手順をそのまま試せるように、例示用のリモートサーバー URL `https://example-server.modelcontextprotocol.io/mcp` が手順内に追加されました。 — [Connect to remote MCP Servers](https://modelcontextprotocol.io/docs/develop/connect-remote-servers#connecting-to-a-remote-mcp-server)
-- 同節の「Access Resources and Prompts」手順で、接続済みリモートサーバーのリソース・プロンプトを会話に取り込む導線が更新されました。従来は「メッセージ入力欄のクリップ（paperclip）アイコンをクリックして添付メニューを開く」でしたが、新しい記述では「メッセージ入力欄の左下にある『Add files, connectors, and more /』インジケーターをクリックし、『Connectors』にカーソルを合わせ、さらに『Add to Example Remote Server』にカーソルを移動すると添付メニューが表示される」に変わっています。 — [Connect to remote MCP Servers](https://modelcontextprotocol.io/docs/develop/connect-remote-servers#connecting-to-a-remote-mcp-server)
+- 「Error handling」節に、後方互換に関する記述が追記されました。`ttlMs` フィールドが欠落している場合、クライアントは既定の `ttlMs` を 0（即時に陳腐化とみなす）と仮定し、独自のキャッシュ判断やサーバー通知に依拠すべき（SHOULD）、という内容です。従来この記述は末尾の「Backward Compatibility」節にのみ書かれていましたが、`ttlMs` 欠落時の挙動を扱う「Error handling」節にも明示され、負値が指定された場合の既存記述と並べて参照できるようになりました。 — [SEP-2549: TTL for List Results](https://modelcontextprotocol.io/seps/2549-TTL-for-list-results#error-handling)
 
 **その他**
 
-- 「Connect to local MCP servers」ページの「Installing the Filesystem Server」節で、Claude Desktop 再起動後に押すインジケーターの表記が、現行 UI のラベルに合わせて「Add files, connectors and more」から「Add files, connectors, and more /」に修正されました。あわせて操作の言い回しが「scroll over『Connectors』」から「move the mouse over『Connectors』」に改められ、「view the the Filesystem Server's available tools」という語の重複によるタイポも修正されています。手順そのもの（インジケーター → Connectors → Manage connectors → filesystem を選択）に変更はありません。 — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/develop/connect-local-servers#installing-the-filesystem-server)
+- 「Backward Compatibility」節で、`ttlMs` 欠落時の挙動を述べる記述にあった綴り誤り「heuristincs」が「heuristics」に修正されました。記述の意味に変更はありません。 — [SEP-2549: TTL for List Results](https://modelcontextprotocol.io/seps/2549-TTL-for-list-results#backward-compatibility)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-10.md](./archives/latest/2026-07-10.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-10.md](./archives/latest-detail/2026-07-10.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-12.md](./archives/latest/2026-07-12.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-12.md](./archives/latest-detail/2026-07-12.md)
 
 <!--
-base_commit: ffddd087c516310fe994c988f8b0ffd8fba71e59
-head_commit: ad04427077fcdb5fbb719e1ab9462aa953c5ca81
-generated_at_full: 2026-07-13T15:01:12+09:00
+base_commit: ad04427077fcdb5fbb719e1ab9462aa953c5ca81
+head_commit: 5cf373da86d5703c50540e7e49df4d79e33d4c76
+generated_at_full: 2026-07-17T15:21:54+09:00
 -->
