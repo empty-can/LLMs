@@ -29,7 +29,7 @@
 `CLAUDE_CODE_PROCESS_WRAPPER` はラッパー実行ファイルへの argv プレフィックス（例 `/opt/corp/launcher`）として指定し、agent view をホストするバックグラウンドサービス、それが spawn する各セッション、更新完了のための Claude Code の自己再起動を対象に含めます。値の先頭トークンは `exec "$@"` で終わる実行ファイルの絶対パスでなければならず、値はシェルコマンドではなく引数リストとして解釈されます（空白でトークン分割、二重引用符でスペースを含むパスをグループ化、`[` 始まりは JSON 文字列配列）。デタッチされたバックグラウンドサービスが継承できるよう、シェルの export ではなくユーザー設定または managed 設定の `env` ブロックに置く必要があり（プロジェクト／ローカル設定では指定不可）、Windows では無視されます。VS Code 拡張は独自の `claudeProcessWrapper` 設定で別に構成します。値が使えない場合、Claude Code は該当プロセスをラップなしで起動する代わりに起動を拒否し、変数名で始まる理由付きメッセージを表示します（修正後は `claude daemon stop --any` で再起動）。シェルコマンドをラップする `CLAUDE_CODE_SHELL_PREFIX` とは別系統の制御です。ランチャーは環境変数のほか設定項目としても構成でき（`network-config` に「Configure a corporate launcher as a setting」の導線が追加されている）、索引の説明でも `CLAUDE_CODE_PROCESS_WRAPPER` と `processWrapper` 設定の双方が経路として示されています。ページは「ランチャーがカバーするもの」「ランチャーのセットアップ」「ランチャーコントラクト」「`CLAUDE_CODE_SHELL_PREFIX` との関係」などの節で構成されています。
 
 - [企業ランチャーの背後で Claude Code を実行する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/corporate-launcher)
-- [Run Claude Code behind a corporate launcher - Claude Code Docs (English)](https://code.claude.com/docs/en/corporate-launcher)
+- [日本語](https://code.claude.com/docs/ja/corporate-launcher) / [Run Claude Code behind a corporate launcher - Claude Code Docs (English)](https://code.claude.com/docs/en/corporate-launcher)
 
 ## 新規追加されたページ
 
@@ -43,7 +43,7 @@
 `CLAUDE_CODE_PROCESS_WRAPPER` による企業ランチャー統合を解説する専用ページが、ドキュメント索引に新規追加されました。内容の詳細はハイライト1を参照してください（環境変数自体は v2.1.208 で追加済みで、本ページはその使い方を独立したガイドにまとめ直したものです）。
 
 - [企業ランチャーの背後で Claude Code を実行する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/corporate-launcher)
-- [Run Claude Code behind a corporate launcher - Claude Code Docs (English)](https://code.claude.com/docs/en/corporate-launcher)
+- [日本語](https://code.claude.com/docs/ja/corporate-launcher) / [Run Claude Code behind a corporate launcher - Claude Code Docs (English)](https://code.claude.com/docs/en/corporate-launcher)
 
 ## 大幅に更新されたページ
 

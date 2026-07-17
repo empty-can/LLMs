@@ -40,7 +40,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/monitoring-usage#events": {
@@ -68,7 +68,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/commands#all-commands": {
@@ -152,7 +152,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/skills#pass-arguments-to-skills": {
@@ -180,7 +180,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/agent-view#manage-sessions-from-the-shell": {
@@ -208,7 +208,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/troubleshoot-install#check-network-connectivity": {
@@ -236,7 +236,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-08::https://code.claude.com/docs/en/admin-setup#review-data-handling": {
@@ -250,7 +250,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/advisor": {
@@ -334,7 +334,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/troubleshooting#your-organization-has-disabled-api-key-authentication": {
@@ -348,7 +348,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/desktop#device-management-policies": {
@@ -376,7 +376,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/amazon-bedrock#2-configure-aws-credentials": {
@@ -390,7 +390,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/sub-agents#available-tools": {
@@ -404,7 +404,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage": {
@@ -432,7 +432,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/remote-control#check-connection-status": {
@@ -446,7 +446,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#manage-permissions": {
@@ -460,7 +460,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#additional-directories-grant-file-access-not-configuration": {
@@ -530,7 +530,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/settings#available-settings": {
@@ -586,7 +586,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/monitoring-usage#interpret-metrics-and-events-data": {
@@ -670,7 +670,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/agent-view#where-state-is-stored": {
@@ -684,7 +684,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/permissions#tool-name-wildcards": {
@@ -712,7 +712,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-17",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/whats-new/2026-w23": {
@@ -754,7 +754,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-18",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/amazon-bedrock#2-configure-aws-credentials": {
@@ -782,7 +782,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-18",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage": {
@@ -810,7 +810,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-18",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/permissions#manage-permissions": {
@@ -824,7 +824,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-18",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/artifacts": {
@@ -852,7 +852,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/mcp#disable-claude-ai-connectors": {
@@ -866,7 +866,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/skills#evaluate-and-iterate-on-a-skill": {
@@ -880,7 +880,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default": {
@@ -894,7 +894,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/cli-reference#slash-commands": {
@@ -908,7 +908,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/settings#attribution-settings": {
@@ -922,7 +922,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/cli-reference#cli-flags": {
@@ -992,7 +992,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/mcp": {
@@ -1132,7 +1132,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/amazon-bedrock": {
@@ -1188,7 +1188,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-02::https://code.claude.com/docs/en/workflows": {
@@ -1230,7 +1230,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-02::https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode": {
@@ -1244,7 +1244,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-02::https://code.claude.com/docs/en/whats-new/2026-w21": {
@@ -1300,7 +1300,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-05::https://code.claude.com/docs/en/prompt-caching#turning-on-fast-mode": {
@@ -1314,7 +1314,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-05::https://code.claude.com/docs/en/context-window#when-your-context-fills-up": {
@@ -1328,7 +1328,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-05::https://code.claude.com/docs/en/workflows#pass-input-to-a-saved-workflow": {
@@ -1342,7 +1342,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/model-config#model-aliases": {
@@ -1356,7 +1356,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/amazon-bedrock#4-pin-model-versions": {
@@ -1370,7 +1370,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/server-managed-settings": {
@@ -1398,7 +1398,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/hooks#add-context-for-claude": {
@@ -1412,7 +1412,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/headless#background-tasks-at-exit": {
@@ -1426,7 +1426,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-06::https://code.claude.com/docs/en/plugins": {
@@ -1468,7 +1468,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-08::https://code.claude.com/docs/en/skills#frontmatter-reference": {
@@ -1482,7 +1482,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-08::https://code.claude.com/docs/en/zero-data-retention": {
@@ -1510,7 +1510,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/model-config#fallback-model-chains": {
@@ -1524,7 +1524,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/model-config#automatic-model-fallback": {
@@ -1538,7 +1538,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/settings#invalid-entries-in-managed-settings": {
@@ -1552,7 +1552,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/server-managed-settings#invalid-entries-in-delivered-settings": {
@@ -1566,7 +1566,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-09::https://code.claude.com/docs/en/model-config": {
@@ -1594,7 +1594,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-11::https://code.claude.com/docs/en/code-review#review-a-diff-locally": {
@@ -1608,7 +1608,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-11::https://code.claude.com/docs/en/setup": {
@@ -1636,7 +1636,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-11::https://code.claude.com/docs/en/troubleshoot-install#verify-your-path": {
@@ -1650,7 +1650,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-11::https://code.claude.com/docs/en/sessions#resume-a-session": {
@@ -1664,7 +1664,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-11::https://code.claude.com/docs/en/cli-reference#cli-flags": {
@@ -1678,7 +1678,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-11::https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers": {
@@ -1692,7 +1692,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/sub-agents#spawn-nested-subagents": {
@@ -1706,7 +1706,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/model-config#restrict-model-selection": {
@@ -1720,7 +1720,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/amazon-bedrock#3-configure-claude-code": {
@@ -1734,7 +1734,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-12::https://code.claude.com/docs/en/vs-code#check-account-and-usage": {
@@ -1748,7 +1748,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-13::https://code.claude.com/docs/en/jetbrains#installation": {
@@ -1762,7 +1762,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-13::https://code.claude.com/docs/en/model-config#merge-behavior": {
@@ -1776,7 +1776,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-13::https://code.claude.com/docs/en/settings#available-settings": {
@@ -1790,7 +1790,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-13::https://code.claude.com/docs/en/model-config#opusplan-model-setting": {
@@ -1804,7 +1804,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/sub-agents#spawn-nested-subagents": {
@@ -1818,7 +1818,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/debug-your-config#test-against-a-clean-configuration": {
@@ -1832,7 +1832,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/permission-modes#enable-auto-mode-on-bedrock-vertex-ai-or-foundry": {
@@ -1846,7 +1846,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-15::https://code.claude.com/docs/en/permission-modes#protected-paths": {
@@ -1860,7 +1860,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/permissions#match-by-input-parameter": {
@@ -1874,7 +1874,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/settings#footer-link-badges": {
@@ -1888,7 +1888,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/sub-agents#choose-the-subagent-scope": {
@@ -1902,7 +1902,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/skills#where-skills-live": {
@@ -1916,7 +1916,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-16::https://code.claude.com/docs/en/advisor#choose-an-advisor-model": {
@@ -1930,7 +1930,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::linkless::1::ストリームストール時のヒント表示の変更": {
@@ -1974,7 +1974,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/mcp#disable-claude-ai-connectors": {
@@ -1988,7 +1988,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/skills#evaluate-and-iterate-on-a-skill": {
@@ -2002,7 +2002,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default": {
@@ -2016,7 +2016,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/cli-reference#slash-commands": {
@@ -2030,7 +2030,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/settings#attribution-settings": {
@@ -2044,7 +2044,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/cli-reference#cli-flags": {
@@ -2114,7 +2114,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/mcp": {
@@ -2254,7 +2254,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-21",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20::https://code.claude.com/docs/en/amazon-bedrock": {
@@ -2324,7 +2324,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-24",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#the-supervisor-process": {
@@ -2338,7 +2338,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-24",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#dispatch-fails-with-could-not-resolve-authentication-method": {
@@ -2352,7 +2352,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-24",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-20_1501::linkless::1::ストリームストール時のヒント表示の変更": {
@@ -2396,7 +2396,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-24",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-22::https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background": {
@@ -2410,7 +2410,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-24",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-22::https://code.claude.com/docs/en/interactive-mode#shell-mode-with-prefix": {
@@ -2424,7 +2424,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-24",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-22::https://code.claude.com/docs/en/ultrareview": {
@@ -2452,7 +2452,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-25",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/model-config#surface-coverage": {
@@ -2466,7 +2466,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-25",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/sandboxing#protect-credentials": {
@@ -2480,7 +2480,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-25",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/server-managed-settings#platform-availability": {
@@ -2494,7 +2494,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-25",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/llm-gateway-connect": {
@@ -2648,7 +2648,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-25",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-23::https://code.claude.com/docs/en/agent-view#the-supervisor-process": {
@@ -2662,7 +2662,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-25",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-23::https://code.claude.com/docs/en/agent-view#dispatch-fails-with-could-not-resolve-authentication-method": {
@@ -2676,7 +2676,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-25",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/llm-gateway": {
@@ -2704,7 +2704,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-26",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/hooks#matcher-patterns": {
@@ -2718,7 +2718,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-26",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/feature-availability": {
@@ -2746,7 +2746,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-26",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-24::https://code.claude.com/docs/en/model-config#restrict-model-selection": {
@@ -2760,7 +2760,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-26",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-24::https://code.claude.com/docs/en/model-config#surface-coverage": {
@@ -2774,7 +2774,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-26",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-24::https://code.claude.com/docs/en/sandboxing#protect-credentials": {
@@ -2788,7 +2788,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-26",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-24::https://code.claude.com/docs/en/server-managed-settings#platform-availability": {
@@ -2802,7 +2802,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-26",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/code-review#set-up-code-review": {
@@ -2816,7 +2816,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-27",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/feature-availability#availability-by-model-provider": {
@@ -2830,7 +2830,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-27",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/fast-mode": {
@@ -2858,7 +2858,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-27",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/fullscreen#enable-fullscreen-rendering": {
@@ -2872,7 +2872,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-27",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-teams": {
@@ -2914,7 +2914,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-27",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/whats-new/2026-w25": {
@@ -2956,7 +2956,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-27",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-25::https://code.claude.com/docs/en/hooks#matcher-patterns": {
@@ -2970,7 +2970,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-27",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/gateways#how-a-gateway-works": {
@@ -2984,7 +2984,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-apps-gateway#quickstart": {
@@ -2998,7 +2998,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-apps-gateway-spend-limits#set-a-cap": {
@@ -3012,7 +3012,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-apps-gateway-config#managed": {
@@ -3026,7 +3026,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/llm-gateway-protocol#api-formats": {
@@ -3040,7 +3040,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/gateways": {
@@ -3138,7 +3138,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-apps-gateway#availability-and-limitations": {
@@ -3152,7 +3152,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-apps-gateway-config#upstreams": {
@@ -3166,7 +3166,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-apps-gateway-deploy#deployment": {
@@ -3180,7 +3180,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-apps-gateway-on-gcp#what-youll-build": {
@@ -3194,7 +3194,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/cli-reference": {
@@ -3262,9 +3262,9 @@
       "kind": "ja-section",
       "term": "CLAUDE_CODE_ENABLE_AUTO_MODE=1",
       "strong": true,
-      "status": "pending",
+      "status": "ready",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/network-config": {
@@ -3292,7 +3292,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-26::https://code.claude.com/docs/en/feature-availability#availability-by-model-provider": {
@@ -3306,7 +3306,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-26::https://code.claude.com/docs/en/sessions#access-conversations-from-scripts": {
@@ -3320,7 +3320,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-26::https://code.claude.com/docs/en/fullscreen#enable-fullscreen-rendering": {
@@ -3334,7 +3334,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-26::https://code.claude.com/docs/en/troubleshoot-install#find-your-error": {
@@ -3348,7 +3348,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-26::https://code.claude.com/docs/en/whats-new/2026-w25": {
@@ -3390,7 +3390,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-27::https://code.claude.com/docs/en/agent-sdk/slash-commands#sending-slash-commands": {
@@ -3404,7 +3404,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-27::https://code.claude.com/docs/en/errors#thinkingtypeenabled-is-not-supported-for-this-model": {
@@ -3418,7 +3418,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-06-30",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-27::https://code.claude.com/docs/en/whats-new/2026-w25": {
@@ -3492,7 +3492,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/model-config#extended-context": {
@@ -3506,7 +3506,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/auto-mode-config#route-all-shell-commands-through-the-classifier": {
@@ -3520,7 +3520,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#from-inside-a-session": {
@@ -3534,7 +3534,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#version-history": {
@@ -3548,7 +3548,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/tools-reference#websocket-source": {
@@ -3562,7 +3562,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/tools-reference": {
@@ -3590,7 +3590,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/mcp#authenticate-with-remote-mcp-servers": {
@@ -3604,7 +3604,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/desktop-linux#install": {
@@ -3618,7 +3618,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugin-marketplaces#rename-or-remove-a-plugin": {
@@ -3632,7 +3632,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-sdk/typescript#query-object": {
@@ -3646,7 +3646,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/gateways#how-a-gateway-works": {
@@ -3660,7 +3660,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/claude-apps-gateway#quickstart": {
@@ -3674,7 +3674,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/claude-apps-gateway-spend-limits#set-a-cap": {
@@ -3688,7 +3688,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/claude-apps-gateway-config#managed": {
@@ -3702,7 +3702,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/llm-gateway-protocol#api-formats": {
@@ -3716,7 +3716,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/gateways#choose-a-gateway": {
@@ -3730,7 +3730,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/claude-apps-gateway#availability-and-limitations": {
@@ -3744,7 +3744,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/claude-apps-gateway-config#upstreams": {
@@ -3758,7 +3758,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/claude-apps-gateway-deploy#deployment": {
@@ -3772,7 +3772,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/claude-apps-gateway-on-gcp#what-youll-build": {
@@ -3786,7 +3786,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-06-29::https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode": {
@@ -3798,10 +3798,10 @@
       "kind": "ja-section",
       "term": "CLAUDE_CODE_ENABLE_AUTO_MODE=1",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-02",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "live::https://code.claude.com/docs/en/artifacts#availability": {
       "name": "live",
@@ -3814,7 +3814,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/artifacts#share-an-artifact": {
@@ -3828,7 +3828,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background": {
@@ -3842,7 +3842,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/chrome": {
@@ -3870,7 +3870,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/interactive-mode#task-list": {
@@ -3884,7 +3884,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/best-practices": {
@@ -3912,7 +3912,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/model-config#sonnet-5-context-window": {
@@ -3926,7 +3926,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/model-config#extended-context": {
@@ -3940,7 +3940,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/auto-mode-config#route-all-shell-commands-through-the-classifier": {
@@ -3954,7 +3954,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default": {
@@ -3968,7 +3968,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/agent-view#from-inside-a-session": {
@@ -3982,7 +3982,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/agent-view#version-history": {
@@ -3996,7 +3996,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/tools-reference#websocket-source": {
@@ -4010,7 +4010,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/mcp#managing-your-servers": {
@@ -4024,7 +4024,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/mcp#authenticate-with-remote-mcp-servers": {
@@ -4038,7 +4038,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/desktop-linux#install": {
@@ -4052,7 +4052,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/hooks#matcher-patterns": {
@@ -4066,7 +4066,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/plugin-marketplaces#rename-or-remove-a-plugin": {
@@ -4080,7 +4080,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/agent-sdk/typescript#query-object": {
@@ -4094,7 +4094,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-01::https://code.claude.com/docs/en/agent-teams#choose-a-display-mode": {
@@ -4108,7 +4108,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-03",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/google-vertex-ai": {
@@ -4136,7 +4136,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permission-modes#permission-modes": {
@@ -4150,7 +4150,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#the-response-above-may-be-incomplete": {
@@ -4164,7 +4164,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#agent-terminated-early-due-to-an-api-error": {
@@ -4178,7 +4178,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#workspace-has-not-been-trusted": {
@@ -4192,7 +4192,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#model-is-not-a-recognized-model-id": {
@@ -4206,7 +4206,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/model-config#organization-default-model": {
@@ -4220,7 +4220,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/model-config#organization-effort-limits": {
@@ -4234,7 +4234,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust": {
@@ -4248,7 +4248,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/mcp#require-approval-for-a-specific-tool": {
@@ -4262,7 +4262,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/mcp#tool-input-schemas-with-a-root-level-combinator": {
@@ -4276,7 +4276,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/sandboxing#mask-environment-variables": {
@@ -4290,7 +4290,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/sub-agents#api-errors-in-subagents": {
@@ -4304,7 +4304,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-02::https://code.claude.com/docs/en/artifacts#availability": {
@@ -4318,7 +4318,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-02::https://code.claude.com/docs/en/artifacts#share-an-artifact": {
@@ -4332,7 +4332,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-02::https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background": {
@@ -4346,7 +4346,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-02::https://code.claude.com/docs/en/workflows#example-workflow-prompts": {
@@ -4360,7 +4360,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-02::https://code.claude.com/docs/en/model-config#organization-model-restrictions": {
@@ -4374,7 +4374,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-02::https://code.claude.com/docs/en/interactive-mode#task-list": {
@@ -4388,7 +4388,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-02::https://code.claude.com/docs/en/permissions#allow-only-pre-approved-tools-with-dontask-mode": {
@@ -4402,7 +4402,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-04",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/google-vertex-ai#sign-in-with-agent-platform": {
@@ -4416,7 +4416,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permission-modes#enable-auto-mode-on-bedrock-agent-platform-or-foundry": {
@@ -4430,7 +4430,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/claude-code-on-the-web#move-tasks-between-web-and-terminal": {
@@ -4444,7 +4444,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/permission-modes#permission-modes": {
@@ -4458,7 +4458,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/errors#the-response-above-may-be-incomplete": {
@@ -4472,7 +4472,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/errors#agent-terminated-early-due-to-an-api-error": {
@@ -4486,7 +4486,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/errors#workspace-has-not-been-trusted": {
@@ -4500,7 +4500,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/errors#model-is-not-a-recognized-model-id": {
@@ -4514,7 +4514,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/model-config#organization-default-model": {
@@ -4528,7 +4528,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/model-config#organization-effort-limits": {
@@ -4542,7 +4542,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust": {
@@ -4556,7 +4556,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/mcp#require-approval-for-a-specific-tool": {
@@ -4570,7 +4570,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/mcp#tool-input-schemas-with-a-root-level-combinator": {
@@ -4584,7 +4584,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/sandboxing#mask-environment-variables": {
@@ -4598,7 +4598,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-03::https://code.claude.com/docs/en/sub-agents#api-errors-in-subagents": {
@@ -4612,7 +4612,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-06",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/workflows#set-a-size-guideline": {
@@ -4626,7 +4626,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/settings#global-config-settings": {
@@ -4640,7 +4640,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#the-connection-dropped-while-downloading-the-update": {
@@ -4654,7 +4654,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/github-enterprise-server#plugin-marketplaces-on-ghes": {
@@ -4668,7 +4668,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/monitoring-usage#span-attributes": {
@@ -4682,7 +4682,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#permission-mode-model-and-effort": {
@@ -4724,7 +4724,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#read-and-edit": {
@@ -4738,7 +4738,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#read-only-commands": {
@@ -4752,7 +4752,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/remote-control": {
@@ -4780,7 +4780,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-04::https://code.claude.com/docs/en/google-vertex-ai#sign-in-with-agent-platform": {
@@ -4794,7 +4794,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-04::https://code.claude.com/docs/en/permission-modes#enable-auto-mode-on-bedrock-agent-platform-or-foundry": {
@@ -4808,7 +4808,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-07",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/desktop#browse-external-sites": {
@@ -4822,7 +4822,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/commands#all-commands": {
@@ -4836,7 +4836,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-sdk/typescript#sdkcontrolinterruptresponse": {
@@ -4850,7 +4850,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/skills#bundled-skills": {
@@ -4864,7 +4864,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#marketplace-is-registered-from-an-untrusted-source": {
@@ -4878,7 +4878,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#row-summaries": {
@@ -4892,7 +4892,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/cli-reference#cli-commands": {
@@ -4906,7 +4906,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/model-config#adjust-effort-level": {
@@ -4934,7 +4934,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/skills#skill-descriptions-are-cut-short": {
@@ -4962,7 +4962,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-06::https://code.claude.com/docs/en/settings#global-config-settings": {
@@ -4976,7 +4976,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-06::https://code.claude.com/docs/en/errors#the-connection-dropped-while-downloading-the-update": {
@@ -4990,7 +4990,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-06::https://code.claude.com/docs/en/github-enterprise-server#plugin-marketplaces-on-ghes": {
@@ -5004,7 +5004,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-06::https://code.claude.com/docs/en/monitoring-usage#span-attributes": {
@@ -5018,7 +5018,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-06::https://code.claude.com/docs/en/agent-view#permission-mode-model-and-effort": {
@@ -5046,7 +5046,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-06::https://code.claude.com/docs/en/permissions#read-and-edit": {
@@ -5060,7 +5060,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-06::https://code.claude.com/docs/en/permissions#read-only-commands": {
@@ -5074,7 +5074,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-07::https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers": {
@@ -5088,7 +5088,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-07::https://code.claude.com/docs/en/hooks#match-mcp-tools": {
@@ -5102,7 +5102,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-07::https://code.claude.com/docs/en/agent-sdk/permissions#permission-modes": {
@@ -5116,7 +5116,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-07::https://code.claude.com/docs/en/agent-sdk/custom-tools#handle-errors": {
@@ -5130,7 +5130,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-07::https://code.claude.com/docs/en/mcp#installing-mcp-servers": {
@@ -5144,7 +5144,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-07::https://code.claude.com/docs/en/agent-sdk/custom-tools#return-images-and-resources": {
@@ -5158,7 +5158,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-07::https://code.claude.com/docs/en/hooks#common-input-fields": {
@@ -5186,7 +5186,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/agent-view#the-supervisor-process": {
@@ -5200,7 +5200,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/agent-view": {
@@ -5228,7 +5228,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/troubleshooting#usage-policy-refusal": {
@@ -5242,7 +5242,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/troubleshooting#safety-measures-flagged-a-cybersecurity-topic": {
@@ -5256,7 +5256,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/workflows#turn-workflows-off": {
@@ -5270,7 +5270,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/workflows#let-claude-decide-with-ultracode": {
@@ -5284,7 +5284,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default": {
@@ -5298,7 +5298,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/mcp#option-3-add-a-local-stdio-server": {
@@ -5312,7 +5312,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/microsoft-foundry#2-configure-azure-credentials": {
@@ -5326,7 +5326,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/agent-sdk/typescript#sdkbackgroundtaskschangedmessage": {
@@ -5340,7 +5340,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/workflows#cost": {
@@ -5354,7 +5354,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/skills#add-per-directory-skills": {
@@ -5368,7 +5368,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/vs-code#use-the-prompt-box": {
@@ -5410,7 +5410,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/permission-modes#switch-permission-modes": {
@@ -5424,7 +5424,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields": {
@@ -5438,7 +5438,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-08::https://code.claude.com/docs/en/cli-reference#slash-commands": {
@@ -5452,7 +5452,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-10",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/model-config#model-aliases": {
@@ -5466,7 +5466,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-sdk/python#systempromptfile": {
@@ -5480,7 +5480,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#theres-an-issue-with-the-selected-model": {
@@ -5494,7 +5494,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/desktop-linux#unable-to-locate-package-claude-desktop": {
@@ -5508,7 +5508,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/glossary#surface": {
@@ -5522,7 +5522,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/overview#use-claude-code-everywhere": {
@@ -5536,7 +5536,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/troubleshooting": {
@@ -5592,7 +5592,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/model-config#restrict-model-selection": {
@@ -5606,7 +5606,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/commands#all-commands": {
@@ -5620,7 +5620,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/agent-sdk/typescript#sdkcontrolinterruptresponse": {
@@ -5634,7 +5634,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/skills#bundled-skills": {
@@ -5648,7 +5648,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/errors#marketplace-is-registered-from-an-untrusted-source": {
@@ -5662,7 +5662,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/agent-view#row-summaries": {
@@ -5676,7 +5676,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/mcp#managing-your-servers": {
@@ -5690,7 +5690,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default": {
@@ -5704,7 +5704,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/cli-reference#cli-commands": {
@@ -5718,7 +5718,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-09::https://code.claude.com/docs/en/headless#get-structured-output": {
@@ -5732,7 +5732,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-11",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#permission-system": {
@@ -5746,7 +5746,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/security#built-in-protections": {
@@ -5760,7 +5760,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/vs-code#use-the-prompt-box": {
@@ -5774,7 +5774,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/desktop-linux#install-from-a-downloaded-file": {
@@ -5788,7 +5788,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode": {
@@ -5802,7 +5802,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/model-config#model-aliases": {
@@ -5816,7 +5816,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/agent-sdk/python#systempromptfile": {
@@ -5830,7 +5830,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/errors#theres-an-issue-with-the-selected-model": {
@@ -5844,7 +5844,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/desktop-linux#unable-to-locate-package-claude-desktop": {
@@ -5858,7 +5858,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/glossary#surface": {
@@ -5872,7 +5872,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/overview#use-claude-code-everywhere": {
@@ -5886,7 +5886,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-12",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-10::https://code.claude.com/docs/en/whats-new/2026-w27": {
@@ -5928,7 +5928,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#file-is-covered-by-a-read-deny-rule": {
@@ -5940,9 +5940,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/remote-control#connection-and-security": {
@@ -5956,7 +5956,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/amazon-bedrock#streaming-errors-behind-a-gateway-or-proxy": {
@@ -5968,9 +5968,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#bedrock-streaming-response-has-an-unexpected-content-type": {
@@ -5982,9 +5982,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#how-file-edits-are-isolated": {
@@ -5998,7 +5998,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors": {
@@ -6066,9 +6066,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/errors#agent-would-be-spawned-with-zero-tools": {
@@ -6080,9 +6080,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-view#organize-the-list": {
@@ -6096,7 +6096,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/tools-reference#grep-tool-behavior": {
@@ -6110,7 +6110,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/tools-reference#read-tool-behavior": {
@@ -6124,7 +6124,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugins-reference#user-configuration": {
@@ -6138,7 +6138,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugins-reference#environment-variables": {
@@ -6152,7 +6152,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permission-modes#skip-all-checks-with-bypasspermissions-mode": {
@@ -6166,7 +6166,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/claude-code-on-the-web#organization-shared-environments": {
@@ -6178,9 +6178,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/interactive-mode#remap-insert-mode-key-sequences": {
@@ -6192,9 +6192,9 @@
       "kind": "ja-section",
       "term": "vimInsertModeRemaps",
       "strong": true,
-      "status": "pending",
+      "status": "ready",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-sdk/typescript#sdkthinkingtokensmessage": {
@@ -6206,9 +6206,9 @@
       "kind": "ja-section",
       "term": "SDKThinkingTokensMessage",
       "strong": true,
-      "status": "pending",
+      "status": "ready",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/worktrees#reuse-a-worktree-name": {
@@ -6220,9 +6220,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/costs#set-a-spend-limit-on-pro-and-max": {
@@ -6236,7 +6236,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/costs#using-the-usage-command": {
@@ -6250,7 +6250,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugin-marketplaces#configure-auto-updates": {
@@ -6264,7 +6264,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/worktrees#choose-the-base-branch": {
@@ -6292,7 +6292,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/mcp#installing-mcp-servers": {
@@ -6306,7 +6306,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/interactive-mode#keyboard-shortcuts": {
@@ -6320,7 +6320,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/commands#slash-commands": {
@@ -6334,7 +6334,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/checkpointing#how-checkpoints-work": {
@@ -6348,7 +6348,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/accessibility#turn-on-screen-reader-mode": {
@@ -6376,7 +6376,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/data-usage#data-access": {
@@ -6390,7 +6390,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/desktop#cowork": {
@@ -6404,7 +6404,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/troubleshooting#failed-to-fetch-version-from-downloadsclaudeai": {
@@ -6418,7 +6418,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/troubleshooting#performance-and-stability": {
@@ -6432,7 +6432,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-11::https://code.claude.com/docs/en/permissions#permission-system": {
@@ -6446,7 +6446,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-11::https://code.claude.com/docs/en/security#built-in-protections": {
@@ -6460,7 +6460,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-11::https://code.claude.com/docs/en/vs-code#use-the-prompt-box": {
@@ -6474,7 +6474,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-11::https://code.claude.com/docs/en/desktop-linux#install-from-a-downloaded-file": {
@@ -6488,7 +6488,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/permission-modes#eliminate-permission-prompts-with-auto-mode": {
@@ -6502,7 +6502,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/auto-mode-config#common-boundaries": {
@@ -6514,9 +6514,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/amazon-bedrock#4-pin-model-versions": {
@@ -6530,7 +6530,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/google-vertex-ai#5-pin-model-versions": {
@@ -6544,7 +6544,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/model-config#model-aliases": {
@@ -6558,7 +6558,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/amazon-bedrock#credential-caching-and-resolution-timeout": {
@@ -6570,9 +6570,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/errors#aws-default-chain-credential-resolve-timed-out": {
@@ -6584,9 +6584,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/plugins-reference#user-configuration": {
@@ -6600,7 +6600,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/errors#plugin-command-references-user-config": {
@@ -6612,9 +6612,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/hooks#exec-form-and-shell-form": {
@@ -6628,7 +6628,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/artifacts#share-an-artifact": {
@@ -6642,7 +6642,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/artifacts#control-public-sharing": {
@@ -6654,9 +6654,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/accessibility#turn-on-screen-reader-mode": {
@@ -6670,7 +6670,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/desktop-wsl#start-a-wsl-session": {
@@ -6684,7 +6684,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/errors": {
@@ -6738,9 +6738,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/errors#mcp-permission-prompt-tool-not-found": {
@@ -6752,9 +6752,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/desktop#network-access-requirements": {
@@ -6766,9 +6766,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/desktop#choose-a-permission-mode": {
@@ -6782,7 +6782,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/costs#manage-costs-for-your-organization": {
@@ -6796,7 +6796,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/costs#set-a-spend-limit-on-pro-and-max": {
@@ -6810,7 +6810,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/plugin-marketplaces#private-repositories": {
@@ -6824,7 +6824,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/agent-sdk/typescript#tool-output-types": {
@@ -6838,7 +6838,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/permissions#permission-system": {
@@ -6850,10 +6850,10 @@
       "kind": "ja-section",
       "term": "permissionExplainerEnabled",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/settings#pluginconfigs": {
       "name": "2026-07-13",
@@ -6864,10 +6864,10 @@
       "kind": "ja-section",
       "term": "pluginConfigs",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/env-vars": {
       "name": "2026-07-13",
@@ -6894,7 +6894,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/commands#all-commands": {
@@ -6922,7 +6922,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/vs-code#the-built-in-ide-mcp-server": {
@@ -6934,10 +6934,10 @@
       "kind": "ja-section",
       "term": "X-Claude-Code-Ide-Authorization",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/mcp#installing-mcp-servers": {
       "name": "2026-07-13",
@@ -6950,7 +6950,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/mcp#authenticate-with-remote-mcp-servers": {
@@ -6964,7 +6964,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/mcp#environment-variable-expansion-in-mcp-json": {
@@ -7004,10 +7004,10 @@
       "kind": "ja-section",
       "term": "Bash(dangerouslyDisableSandbox:true)",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/agent-view#peek-and-reply": {
       "name": "2026-07-13",
@@ -7020,7 +7020,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/checkpointing#how-checkpoints-work": {
@@ -7034,7 +7034,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/remote-control": {
@@ -7090,7 +7090,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/analytics#access-data-programmatically": {
@@ -7104,7 +7104,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/memory#path-specific-rules": {
@@ -7118,7 +7118,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/setup#auto-updates": {
@@ -7130,10 +7130,10 @@
       "kind": "ja-section",
       "term": "~/.local/bin/claude",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/large-codebases#check-out-only-the-directories-you-need": {
       "name": "2026-07-13",
@@ -7144,10 +7144,10 @@
       "kind": "ja-section",
       "term": "extensions.worktreeConfig",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/agent-sdk/overview#get-started": {
       "name": "2026-07-13",
@@ -7160,7 +7160,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/microsoft-foundry#troubleshooting": {
@@ -7172,10 +7172,10 @@
       "kind": "ja-section",
       "term": "ANTHROPIC_FOUNDRY_RESOURCE",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/claude-apps-gateway#prerequisites": {
       "name": "2026-07-13",
@@ -7244,7 +7244,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/desktop#deployment": {
@@ -7258,7 +7258,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-13::https://code.claude.com/docs/en/model-config#extended-context": {
@@ -7270,10 +7270,10 @@
       "kind": "ja-section",
       "term": "#context-window-sizes-by-model",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-15",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-13::https://code.claude.com/docs/en/common-workflows#work-with-images": {
       "name": "2026-07-13",
@@ -7300,7 +7300,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/artifacts#pull-live-data-with-mcp-connectors": {
@@ -7312,9 +7312,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/permissions#permission-modes": {
@@ -7340,9 +7340,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/llm-gateway-connect#add-gateway-models-to-the-model-picker": {
@@ -7356,7 +7356,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/llm-gateway-connect#turn-off-traffic-outside-the-gateway-path": {
@@ -7368,9 +7368,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/settings#enabledplugins": {
@@ -7384,7 +7384,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugin-dependencies#bundle-plugins-for-a-team": {
@@ -7396,9 +7396,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/data-usage#telemetry-services": {
@@ -7412,7 +7412,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings": {
@@ -7426,7 +7426,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/llm-gateway-connect#desktop-app": {
@@ -7440,7 +7440,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/feature-availability#features-available-on-every-provider": {
@@ -7454,7 +7454,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugin-marketplaces#managed-marketplace-restrictions": {
@@ -7466,9 +7466,9 @@
       "kind": "ja-section",
       "term": "pluginSuggestionMarketplaces",
       "strong": true,
-      "status": "pending",
+      "status": "ready",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugin-marketplaces#private-repositories": {
@@ -7480,9 +7480,9 @@
       "kind": "ja-section",
       "term": "CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1",
       "strong": true,
-      "status": "pending",
+      "status": "ready",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/hooks-guide": {
@@ -7550,9 +7550,9 @@
       "kind": "ja-section",
       "term": "/doctor",
       "strong": true,
-      "status": "pending",
+      "status": "ready",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/agent-sdk/tool-search": {
@@ -7622,7 +7622,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "live::https://code.claude.com/docs/en/plugin-marketplaces#plugin-marketplace-update": {
@@ -7636,7 +7636,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/tools-reference#edit-tool-behavior": {
@@ -7650,7 +7650,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/permissions#read-and-edit": {
@@ -7664,7 +7664,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/errors#file-is-covered-by-a-read-deny-rule": {
@@ -7676,9 +7676,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/remote-control#connection-and-security": {
@@ -7692,7 +7692,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/amazon-bedrock#streaming-errors-behind-a-gateway-or-proxy": {
@@ -7704,9 +7704,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/errors#bedrock-streaming-response-has-an-unexpected-content-type": {
@@ -7718,9 +7718,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/agent-view#how-file-edits-are-isolated": {
@@ -7734,7 +7734,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/errors#your-apikeyhelper-script-is-failing": {
@@ -7746,9 +7746,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/errors#agent-would-be-spawned-with-zero-tools": {
@@ -7760,9 +7760,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/agent-view#organize-the-list": {
@@ -7776,7 +7776,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/tools-reference#grep-tool-behavior": {
@@ -7790,7 +7790,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/tools-reference#read-tool-behavior": {
@@ -7804,7 +7804,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/plugins-reference#user-configuration": {
@@ -7818,7 +7818,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/plugins-reference#environment-variables": {
@@ -7832,7 +7832,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/permission-modes#skip-all-checks-with-bypasspermissions-mode": {
@@ -7846,7 +7846,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/claude-code-on-the-web#organization-shared-environments": {
@@ -7858,9 +7858,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/interactive-mode#remap-insert-mode-key-sequences": {
@@ -7872,10 +7872,10 @@
       "kind": "ja-section",
       "term": "vimInsertModeRemaps",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-14::https://code.claude.com/docs/en/agent-sdk/typescript#sdkthinkingtokensmessage": {
       "name": "2026-07-14",
@@ -7886,10 +7886,10 @@
       "kind": "ja-section",
       "term": "SDKThinkingTokensMessage",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-14::https://code.claude.com/docs/en/worktrees#reuse-a-worktree-name": {
       "name": "2026-07-14",
@@ -7900,9 +7900,9 @@
       "kind": "ja-section",
       "term": "",
       "strong": false,
-      "status": "pending",
+      "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/costs#set-a-spend-limit-on-pro-and-max": {
@@ -7916,7 +7916,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/costs#using-the-usage-command": {
@@ -7930,7 +7930,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/plugin-marketplaces#configure-auto-updates": {
@@ -7944,7 +7944,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/workflows#resume-after-a-pause": {
@@ -7958,7 +7958,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/mcp#installing-mcp-servers": {
@@ -7972,7 +7972,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/interactive-mode#keyboard-shortcuts": {
@@ -7986,7 +7986,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/commands#slash-commands": {
@@ -8000,7 +8000,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background": {
@@ -8012,10 +8012,10 @@
       "kind": "ja-section",
       "term": "/tasks",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-14::https://code.claude.com/docs/en/checkpointing#how-checkpoints-work": {
       "name": "2026-07-14",
@@ -8028,7 +8028,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/amazon-bedrock#2-configure-aws-credentials": {
@@ -8040,10 +8040,10 @@
       "kind": "ja-section",
       "term": "sso_region",
       "strong": true,
-      "status": "pending",
+      "status": "injected",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
-      "injected_at": null
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
     },
     "2026-07-14::https://code.claude.com/docs/en/headless#stream-responses": {
       "name": "2026-07-14",
@@ -8056,7 +8056,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/data-usage#data-access": {
@@ -8070,7 +8070,7 @@
       "strong": false,
       "status": "manual",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/desktop#cowork": {
@@ -8084,7 +8084,7 @@
       "strong": false,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/troubleshooting#failed-to-fetch-version-from-downloadsclaudeai": {
@@ -8098,7 +8098,7 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
       "injected_at": null
     },
     "2026-07-14::https://code.claude.com/docs/en/troubleshooting#performance-and-stability": {
@@ -8112,7 +8112,245 @@
       "strong": true,
       "status": "pending",
       "first_seen": "2026-07-16",
-      "last_checked": "2026-07-16",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "live::https://code.claude.com/docs/en/corporate-launcher": {
+      "name": "live",
+      "en_url": "https://code.claude.com/docs/en/corporate-launcher",
+      "ja_url": "https://code.claude.com/docs/ja/corporate-launcher",
+      "slug": "corporate-launcher",
+      "anchor": "",
+      "kind": "ja-page",
+      "term": "",
+      "strong": false,
+      "status": "injected",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
+    },
+    "2026-07-15::https://code.claude.com/docs/en/mcp#use-mcp-servers-from-claude-ai": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/mcp#use-mcp-servers-from-claude-ai",
+      "ja_url": "https://code.claude.com/docs/ja/mcp#use-mcp-servers-from-claude-ai",
+      "slug": "mcp",
+      "anchor": "use-mcp-servers-from-claude-ai",
+      "kind": "ja-section",
+      "term": ".mcp.json",
+      "strong": true,
+      "status": "pending",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/artifacts#pull-live-data-with-mcp-connectors": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/artifacts#pull-live-data-with-mcp-connectors",
+      "ja_url": "https://code.claude.com/docs/ja/artifacts#pull-live-data-with-mcp-connectors",
+      "slug": "artifacts",
+      "anchor": "pull-live-data-with-mcp-connectors",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/mcp#organization-controls-on-connector-tools": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/mcp#organization-controls-on-connector-tools",
+      "ja_url": "https://code.claude.com/docs/ja/mcp#organization-controls-on-connector-tools",
+      "slug": "mcp",
+      "anchor": "organization-controls-on-connector-tools",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/llm-gateway-connect#add-gateway-models-to-the-model-picker": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/llm-gateway-connect#add-gateway-models-to-the-model-picker",
+      "ja_url": "https://code.claude.com/docs/ja/llm-gateway-connect#add-gateway-models-to-the-model-picker",
+      "slug": "llm-gateway-connect",
+      "anchor": "add-gateway-models-to-the-model-picker",
+      "kind": "ja-section",
+      "term": "api.anthropic.com",
+      "strong": true,
+      "status": "pending",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/llm-gateway-connect#turn-off-traffic-outside-the-gateway-path": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/llm-gateway-connect#turn-off-traffic-outside-the-gateway-path",
+      "ja_url": "https://code.claude.com/docs/ja/llm-gateway-connect#turn-off-traffic-outside-the-gateway-path",
+      "slug": "llm-gateway-connect",
+      "anchor": "turn-off-traffic-outside-the-gateway-path",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/settings#enabledplugins": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/settings#enabledplugins",
+      "ja_url": "https://code.claude.com/docs/ja/settings#enabledplugins",
+      "slug": "settings",
+      "anchor": "enabledplugins",
+      "kind": "ja-section",
+      "term": "/reload-plugins",
+      "strong": true,
+      "status": "pending",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/plugin-dependencies#bundle-plugins-for-a-team": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/plugin-dependencies#bundle-plugins-for-a-team",
+      "ja_url": "https://code.claude.com/docs/ja/plugin-dependencies#bundle-plugins-for-a-team",
+      "slug": "plugin-dependencies",
+      "anchor": "bundle-plugins-for-a-team",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/data-usage#telemetry-services": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/data-usage#telemetry-services",
+      "ja_url": "https://code.claude.com/docs/ja/data-usage#telemetry-services",
+      "slug": "data-usage",
+      "anchor": "telemetry-services",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings",
+      "ja_url": "https://code.claude.com/docs/ja/mcp#mcp-output-limits-and-warnings",
+      "slug": "mcp",
+      "anchor": "mcp-output-limits-and-warnings",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/llm-gateway-connect#desktop-app": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/llm-gateway-connect#desktop-app",
+      "ja_url": "https://code.claude.com/docs/ja/llm-gateway-connect#desktop-app",
+      "slug": "llm-gateway-connect",
+      "anchor": "desktop-app",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/feature-availability#features-available-on-every-provider": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/feature-availability#features-available-on-every-provider",
+      "ja_url": "https://code.claude.com/docs/ja/feature-availability#features-available-on-every-provider",
+      "slug": "feature-availability",
+      "anchor": "features-available-on-every-provider",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/plugin-marketplaces#managed-marketplace-restrictions": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/plugin-marketplaces#managed-marketplace-restrictions",
+      "ja_url": "https://code.claude.com/docs/ja/plugin-marketplaces#managed-marketplace-restrictions",
+      "slug": "plugin-marketplaces",
+      "anchor": "managed-marketplace-restrictions",
+      "kind": "ja-section",
+      "term": "pluginSuggestionMarketplaces",
+      "strong": true,
+      "status": "injected",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
+    },
+    "2026-07-15::https://code.claude.com/docs/en/plugin-marketplaces#private-repositories": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/plugin-marketplaces#private-repositories",
+      "ja_url": "https://code.claude.com/docs/ja/plugin-marketplaces#private-repositories",
+      "slug": "plugin-marketplaces",
+      "anchor": "private-repositories",
+      "kind": "ja-section",
+      "term": "CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1",
+      "strong": true,
+      "status": "injected",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
+    },
+    "2026-07-15::https://code.claude.com/docs/en/settings#invalid-entries-in-managed-settings": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/settings#invalid-entries-in-managed-settings",
+      "ja_url": "https://code.claude.com/docs/ja/settings#invalid-entries-in-managed-settings",
+      "slug": "settings",
+      "anchor": "invalid-entries-in-managed-settings",
+      "kind": "ja-section",
+      "term": "/doctor",
+      "strong": true,
+      "status": "injected",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": "2026-07-17"
+    },
+    "2026-07-15::https://code.claude.com/docs/en/errors#usage-limits": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/errors#usage-limits",
+      "ja_url": "https://code.claude.com/docs/ja/errors#usage-limits",
+      "slug": "errors",
+      "anchor": "usage-limits",
+      "kind": "ja-section",
+      "term": "",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
+      "injected_at": null
+    },
+    "2026-07-15::https://code.claude.com/docs/en/plugin-marketplaces#plugin-marketplace-update": {
+      "name": "2026-07-15",
+      "en_url": "https://code.claude.com/docs/en/plugin-marketplaces#plugin-marketplace-update",
+      "ja_url": "https://code.claude.com/docs/ja/plugin-marketplaces#plugin-marketplace-update",
+      "slug": "plugin-marketplaces",
+      "anchor": "plugin-marketplace-update",
+      "kind": "ja-section",
+      "term": "ref",
+      "strong": false,
+      "status": "manual",
+      "first_seen": "2026-07-17",
+      "last_checked": "2026-07-17",
       "injected_at": null
     }
   }
