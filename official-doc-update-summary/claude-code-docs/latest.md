@@ -1,65 +1,88 @@
 ---
-対象期間: 2026年07月15日 〜 2026年07月16日
-作成日: 2026-07-16
+対象期間: 2026年07月16日 〜 2026年07月17日
+作成日: 2026-07-17
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、原文の全文（llms-full.txt）に本文変更がなく、索引（llms.txt）とナビゲーション用の構造マップ（docs_map）だけが追いついた「追従回」です。唯一の実質的な新規事項として、既報の環境変数 CLAUDE_CODE_PROCESS_WRAPPER を独立ページへ統合した「企業ランチャーの背後で Claude Code を実行する」が新設されました。
+今回の対象期間は、公式ドキュメントが Week 29（v2.1.207〜v2.1.212）のリリース群に追従した回です。新規ページ「Claude Code on mobile」と週刊ダイジェスト「Week 29」が索引に加わり、企業ランチャー統合ガイドの全文が集約全文（llms-full）にはじめて反映され、前回 pending だった各ページの本文もあわせて着地しました。
 
 主要なものを以下に挙げます。
 
-1. 企業の必須ランチャー経由で Claude Code の自己起動プロセスをラップする CLAUDE_CODE_PROCESS_WRAPPER（環境変数自体は v2.1.208 で既報）の使い方をまとめた専用ページ「企業ランチャーの背後で Claude Code を実行する」が新設された
+1. スマートフォンの Claude アプリ（iOS / Android）からクラウドセッション・Remote Control・プッシュ通知で Claude Code を操作する方法をまとめた新規ページ「Claude Code on mobile」が索引に追加された
+2. 公開したアーティファクトが閲覧のたびに MCP コネクタを呼び出し、各閲覧者自身の接続を通じてライブデータの取得・操作を行えるようになった（v2.1.209 以降。Week 29 の目玉機能）
+3. 視覚的なターミナル UI を線形テキストに置き換え VoiceOver / NVDA での読み上げに対応する「スクリーンリーダーモード」が Week 29 で紹介された（`--ax-screen-reader` / `CLAUDE_AX_SCREEN_READER` / `axScreenReader`）
+4. 前回ハイライトの企業ランチャー統合ガイド（`CLAUDE_CODE_PROCESS_WRAPPER` / `processWrapper`）の全文が、今回はじめて集約全文（llms-full）に反映された
 ```
 
 ## ハイライト
 
-1. [**コーポレートランチャー専用ページの新設**](./latest-detail.md#1-コーポレートランチャー専用ページの新設):  
-  企業の必須ランチャー経由で Claude Code の自己起動プロセスをラップする `CLAUDE_CODE_PROCESS_WRAPPER`（v2.1.208 で追加済み）の使い方が、独立した専用ページに統合された。argv プレフィックスの形式、`env` ブロックでの設定、ランチャーコントラクト、`CLAUDE_CODE_SHELL_PREFIX` との違いをまとめる。
+1. [**モバイル版 Claude Code ページの新設**](./latest-detail.md#1-モバイル版-claude-code-ページの新設):  
+  スマホの Claude アプリを Claude Code のクライアントとして使う方法（クラウドセッション / Remote Control / Dispatch / プッシュ通知）を集約した新規ページが索引に追加された。
+2. [**アーティファクトが MCP コネクタでライブデータを取得**](./latest-detail.md#2-アーティファクトが-mcp-コネクタでライブデータを取得):  
+  公開ページが表示のたびに閲覧者自身の MCP コネクタを呼び出し、最新データの表示や副作用を伴うアクション実行を行えるようになった（Claude Code v2.1.209 以降）。Week 29 の目玉機能。
+3. [**スクリーンリーダーモードでの Claude Code 利用**](./latest-detail.md#3-スクリーンリーダーモードでの-claude-code-利用):  
+  視覚的ターミナル UI を線形テキストに置き換え、VoiceOver / NVDA が順に読み上げられるようにするモード。Week 29 でアクセシビリティページとともに取り上げられた。
+4. [**企業ランチャー統合ガイドの本文が集約全文に反映**](./latest-detail.md#4-企業ランチャー統合ガイドの本文が集約全文に反映):  
+  前回は索引のみだった `CLAUDE_CODE_PROCESS_WRAPPER` / `processWrapper` の専用ガイド全文が、今回はじめて集約全文（llms-full）に着地した。
 
 ## 新規追加されたページ
 
-- [**企業ランチャーの背後で Claude Code を実行する**](./latest-detail.md#1-企業ランチャーの背後で-claude-code-を実行する) ([日本語](https://code.claude.com/docs/ja/corporate-launcher) / [English](https://code.claude.com/docs/en/corporate-launcher)):  
-  企業の必須ランチャー経由で Claude Code の自己起動プロセスを通すための `CLAUDE_CODE_PROCESS_WRAPPER` を解説する専用ページ（詳細はハイライト1参照）。
+- [**Claude Code on mobile**](./latest-detail.md#1-モバイルでの-claude-code-利用) ([English](https://code.claude.com/docs/en/mobile)):  
+  スマホの Claude アプリから Claude Code を操作する方法を集約した新規ページ（日本語ページは未作成のため英語のみ。詳細はハイライト1参照）。
 
 ## 大幅に更新されたページ
 
-今回の対象期間では、原文の全文（`llms-full.txt`）に本文変更がなかったため、大幅に更新されたページはありません。
+- [**Run Claude Code behind a corporate launcher**](./latest-detail.md#1-企業ランチャーの背後で-claude-code-を実行する) ([日本語](https://code.claude.com/docs/ja/corporate-launcher#what-the-launcher-covers) / [English](https://code.claude.com/docs/en/corporate-launcher#what-the-launcher-covers)):  
+  前回索引のみだった企業ランチャー統合ガイドの全文が、今回はじめて集約全文に反映された（詳細はハイライト4参照）。
 
 ## 軽微な更新
 
-今回の対象期間は原文の全文（`llms-full.txt`）に本文変更がなく、索引（`llms.txt`）とナビゲーション用の構造マップ（`docs_map`）だけが更新されました。以下は索引・マップ側にのみ現れた構造上の変更で、対応する本文はまだ集約全文エクスポートに反映されていないため、各セクションの内容要約は本文が反映された回に譲ります（そのため下記は見出しの記録のみで、個別リンクは付けません）。
+今回の対象期間は Week 29（v2.1.207〜v2.1.212）への追従回で、軽微な変更は大きく 2 系統に分かれます。①前回サマリで「`docs_map` に見出しは追加されたが本文が集約全文に未反映」と記録していた各ページ本文が、今回まとめて集約全文（`llms-full.txt`）に着地したもの。②今回新たに `docs_map` に追加された Week 29 分の見出し群で、対応本文はまだ集約全文に未反映のもの。いずれも構造・索引側の変化が主体のため、各項目の内容要約は本文が反映された回に譲り、下記は変更のあったページ・節の記録に留めます（個別リンクは付けません）。
 
-**その他**
+**機能改善**（前回 pending の本文が集約全文に着地）
 
-- 索引 `llms.txt` に新規ページ `corporate-launcher`（企業ランチャー）が追加された（本文はハイライト1・新規追加参照）。
-- ナビゲーションマップ `docs_map` が再生成され、以下のページに新しいセクション見出しが追加された（見出しのみ記録。対応本文は集約全文に未反映）:
-  - `sessions`: 「What a resumed session restores」（resume が復元する範囲）
-  - `sub-agents`: 「Subagent output scanning」（サブエージェント出力のスキャン）
-  - `workflows`: 「Dismiss or turn off the keyword」「Where the keyword works」（ワークフロー起動キーワードの無効化と有効範囲）
-  - `worktrees`: 「Clean up subagent and background-session worktrees」「Worktree removal on Windows」（サブエージェント／バックグラウンドセッションの worktree 掃除、Windows での worktree 削除）
-  - `chrome`: 「Upload files to web pages」「Save screenshots to disk」（Web ページへのファイルアップロード、スクリーンショットのディスク保存）
-  - `authentication`: 「Restrict login to your organization」（組織へのログイン制限）
-  - `auto-mode-config`: 「Add a human checkpoint」（人手チェックポイントの追加）
-  - `network-config`: 「Apply network settings to background agents」ほか（バックグラウンドエージェントへのネットワーク設定適用、企業ランチャーを設定として構成する導線）
-  - `zero-data-retention`: 「Route Claude Code traffic to your ZDR organization」（ZDR 組織へのトラフィックルーティング）
-  - `claude-platform-on-aws`「4. Launch and verify」／`google-vertex-ai`「6. Verify your configuration」（各セットアップ手順への検証ステップ追加）
-  - `tools-reference`: Bash ツール挙動に「What persists between commands」「Timeout and output limits」「Background commands」の各節が追加
-  - トラブルシュート項目の追加: `errors`「Memory index is over its read limit」「This session has no saved transcript」、`agent-view`「Opening a session says it has no saved transcript」、`claude-code-on-the-web`／`github-enterprise-server`「Unable to get organization UUID」系、`deep-links`「xdg-open is not found on Linux」
-- 参考: `CLAUDE_CODE_PROCESS_WRAPPER` 環境変数そのものは 2026-07-13（軽微な更新の v2.1.208 新機能まとめ）および 2026-07-14（エラーリファレンスの大幅更新）のサマリで既報。今回はそれを独立ページ化した点が新規。
+- `sessions`: 「What a resumed session restores」（resume が復元する範囲）
+- `sub-agents`: 「Subagent output scanning」（サブエージェント出力のスキャン）
+- `workflows`: 「Dismiss or turn off the keyword」「Where the keyword works」（起動キーワードの無効化と有効範囲）
+- `worktrees`: 「Clean up subagent and background-session worktrees」「Worktree removal on Windows」（サブエージェント／バックグラウンドセッションの worktree 掃除、Windows での削除）
+- `chrome`: 「Upload files to web pages」「Save screenshots to disk」（Web ページへのファイルアップロード、スクリーンショットのディスク保存）
+- `authentication`: 「Restrict login to your organization」（組織へのログイン制限）
+- `auto-mode-config`: 「Add a human checkpoint」（人手チェックポイントの追加）
+- `network-config`: 「Apply network settings to background agents」「Configure a corporate launcher as a setting」「Set network variables in settings, not the shell」（バックグラウンドエージェントへのネットワーク設定適用、ランチャーを設定として構成、設定ファイルでのネットワーク変数指定）
+- `zero-data-retention`: 「Route Claude Code traffic to your ZDR organization」（ZDR 組織へのトラフィックルーティング）
+- `claude-platform-on-aws`「4. Launch and verify」／`google-vertex-ai`「6. Verify your configuration」（各セットアップ手順への検証ステップ）
+- `tools-reference`: Bash ツール挙動に「What persists between commands」「Timeout and output limits」「Background commands」
+- トラブルシュート項目: `errors`「Memory index is over its read limit」「This session has no saved transcript」、`agent-view`「Opening a session says it has no saved transcript」、`claude-code-on-the-web`／`github-enterprise-server`「Unable to get organization UUID」系、`deep-links`「xdg-open is not found on Linux」
+
+**その他**（今回 `docs_map` に追加された Week 29 分の見出し。対応本文は集約全文に未反映）
+
+- `remote-control`: 「Session URL reminders」（セッション URL のリマインド）
+- `agent-view`: 「Send the session to the background」「Copy the session with /fork」「What carries over when you background」「List sessions as JSON」（`/fork` によるバックグラウンドセッション化、`claude agents --json` 相当のセッション一覧）
+- `sub-agents`: 「Session subagent limit」／`tools-reference`（WebSearch）「Session search limit」（サブエージェント生成・WebSearch のセッション上限。既定各 200）
+- `mcp`: 「Automatic backgrounding of long tool calls」（長時間 MCP ツール呼び出しの自動バックグラウンド化）
+- `skills`: 「Skills in Cowork and cloud sessions」（Cowork / クラウドセッションでのスキル）
+- `errors`: 「EUNKNOWN when starting a background session」（バックグラウンドセッション起動時の EUNKNOWN）
+- `fast-mode`: 「Use fast mode behind proxies and LLM gateways」（プロキシ／LLM ゲートウェイ配下での fast mode）
+- `worktrees`: セクション構成の大幅再編（「Set up the worktree environment」「Ask Claude to create a worktree」「Resume a worktree session」「Customize worktree creation」「Branch from a pull request」「Replace worktree creation with a hook」「What worktrees share with the main checkout」「Troubleshooting」ほか）
+- `mcp-quickstart`: 「Connection timing」（MCP サーバー接続のタイミング）
+- 用語集（glossary）に「Connector」「MCP server」を追加
+- SDK リファレンス: 型「TaskBudget」を追加、ツール「BashOutput」「KillBash」を「TaskOutput」「TaskStop」に改称
+- 参考: これら Week 29 分の各機能は、新着情報「Week 29」ダイジェストで機能単位に解説されています（本サマリ「新着情報」参照）。
 
 ## 新着情報
 
-今回の対象期間では、週刊ダイジェスト「新着情報」（`whats-new/`）の変更はありません（新規追加・更新ともになし）。
+- [**2026年07月13日～17日(Week 29)**](./latest-detail.md#2026年07月13日17日week-29) ([English](https://code.claude.com/docs/en/whats-new/2026-w29)):  
+  MCP コネクタ連携アーティファクトとスクリーンリーダーモードを目玉に、v2.1.207〜v2.1.212 の変更を集約した週刊ダイジェスト（日本語ページは未作成のため英語のみ）。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-15.md](./archives/latest/2026-07-15.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-15.md](./archives/latest-detail/2026-07-15.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-16.md](./archives/latest/2026-07-16.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-16.md](./archives/latest-detail/2026-07-16.md)
 
 <!--
-base_commit: fa4c4c546b211cf29cac5e7c4dcc5b3e95008594
-head_commit: 5cf373da86d5703c50540e7e49df4d79e33d4c76
-generated_at_full: 2026-07-17T15:06:39+09:00
+base_commit: 5cf373da86d5703c50540e7e49df4d79e33d4c76
+head_commit: 9ec2f2d1cbe194850dc2cd57ad42803d8aa90d80
+generated_at_full: 2026-07-18T15:01:04+09:00
 -->
