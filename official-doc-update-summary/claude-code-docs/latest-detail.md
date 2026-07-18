@@ -55,7 +55,7 @@ Week 29 のもう一つの目玉として、視覚的なターミナル UI を�
 出力はフラットテキストになり、罫線・色のみのキュー・未変更コンテンツの再描画がなくなり、表は `Header: value` の文として読み上げられます（v2.1.198 以降）。各メッセージは `you:` / `claude:` / `tool:` / `Permission Required:` 等のラベルで始まり、ターミナルのスクロールバック検索でセクション間をジャンプできます。メニューや権限プロンプトは番号付きリストになり、番号入力で選択、yes/no は `y` / `n` を入力して答えます。長時間ツールの完了や権限待ちではターミナルベルで通知します。なお、スクリーンリーダーが動いていても自動では有効化されない点、`-p` 非対話モードには影響しない点などが既知の制限として挙げられています。スクリーン拡大鏡向けの `CLAUDE_CODE_ACCESSIBILITY`、アニメーション抑制の `prefersReducedMotion`、色覚対応テーマ（`dark-daltonized` / `light-daltonized`）といったモード外の設定も同ページで案内されています。
 
 - [スクリーンリーダーで Claude Code を使用する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/accessibility#turn-on-screen-reader-mode)
-- [Use Claude Code with a screen reader - Claude Code Docs (English)](https://code.claude.com/docs/en/accessibility#turn-on-screen-reader-mode)
+- [日本語](https://code.claude.com/docs/ja/accessibility#turn-on-screen-reader-mode) / [Use Claude Code with a screen reader - Claude Code Docs (English)](https://code.claude.com/docs/en/accessibility#turn-on-screen-reader-mode)
 
 ## 4. 企業ランチャー統合ガイドの本文が集約全文に反映
 
