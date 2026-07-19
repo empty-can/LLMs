@@ -1,88 +1,83 @@
 ---
-対象期間: 2026年07月16日 〜 2026年07月17日
-作成日: 2026-07-17
+対象期間: 2026年07月17日 〜 2026年07月18日
+作成日: 2026-07-18
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、公式ドキュメントが Week 29（v2.1.207〜v2.1.212）のリリース群に追従した回です。新規ページ「Claude Code on mobile」と週刊ダイジェスト「Week 29」が索引に加わり、企業ランチャー統合ガイドの全文が集約全文（llms-full）にはじめて反映され、前回 pending だった各ページの本文もあわせて着地しました。
+今回の対象期間は、セキュリティ・権限まわりの新規変更に加え、前回まで索引・`docs_map` のみだった多数のページ本文が集約全文（llms-full.txt）へまとめて着地した「本文キャッチアップ」回です。新規の索引ページ・新着情報ページの追加はありませんでした。
 
 主要なものを以下に挙げます。
 
-1. スマートフォンの Claude アプリ（iOS / Android）からクラウドセッション・Remote Control・プッシュ通知で Claude Code を操作する方法をまとめた新規ページ「Claude Code on mobile」が索引に追加された
-2. 公開したアーティファクトが閲覧のたびに MCP コネクタを呼び出し、各閲覧者自身の接続を通じてライブデータの取得・操作を行えるようになった（v2.1.209 以降。Week 29 の目玉機能）
-3. 視覚的なターミナル UI を線形テキストに置き換え VoiceOver / NVDA での読み上げに対応する「スクリーンリーダーモード」が Week 29 で紹介された（`--ax-screen-reader` / `CLAUDE_AX_SCREEN_READER` / `axScreenReader`）
-4. 前回ハイライトの企業ランチャー統合ガイド（`CLAUDE_CODE_PROCESS_WRAPPER` / `processWrapper`）の全文が、今回はじめて集約全文（llms-full）に反映された
+1. 権限チェックのハードニングと会話終了ツール（EndConversation）を中心とする changelog リリース v2.1.214（2026年07月18日）が追加された
+2. 企業向けゲートウェイのドキュメントに、Claude Desktop の埋め込みセッションへポリシーを配信する `parentSettingsBehavior: "merge"` と、親設定を制限する `allowManaged*Only` ロック群という新セクションが加わった
+3. 組織ログイン制限の `forceLoginMethod` が、ターミナルだけでなく VS Code 拡張・Agent SDK・`claude setup-token`・`/install-github-app` を含む全ログイン経路で強制されることが明記された（v2.1.212 以降）
 ```
 
 ## ハイライト
 
-1. [**モバイル版 Claude Code ページの新設**](./latest-detail.md#1-モバイル版-claude-code-ページの新設):  
-  スマホの Claude アプリを Claude Code のクライアントとして使う方法（クラウドセッション / Remote Control / Dispatch / プッシュ通知）を集約した新規ページが索引に追加された。
-2. [**アーティファクトが MCP コネクタでライブデータを取得**](./latest-detail.md#2-アーティファクトが-mcp-コネクタでライブデータを取得):  
-  公開ページが表示のたびに閲覧者自身の MCP コネクタを呼び出し、最新データの表示や副作用を伴うアクション実行を行えるようになった（Claude Code v2.1.209 以降）。Week 29 の目玉機能。
-3. [**スクリーンリーダーモードでの Claude Code 利用**](./latest-detail.md#3-スクリーンリーダーモードでの-claude-code-利用):  
-  視覚的ターミナル UI を線形テキストに置き換え、VoiceOver / NVDA が順に読み上げられるようにするモード。Week 29 でアクセシビリティページとともに取り上げられた。
-4. [**企業ランチャー統合ガイドの本文が集約全文に反映**](./latest-detail.md#4-企業ランチャー統合ガイドの本文が集約全文に反映):  
-  前回は索引のみだった `CLAUDE_CODE_PROCESS_WRAPPER` / `processWrapper` の専用ガイド全文が、今回はじめて集約全文（llms-full）に着地した。
+1. [**権限チェックのハードニングと会話終了ツールの追加**](./latest-detail.md#1-権限チェックのハードニングと会話終了ツールの追加):  
+  changelog に v2.1.214（2026年07月18日）が追加。多数の権限バイパス修正と、悪用・脱獄試行のセッションを終了できる EndConversation ツールが目玉。
+2. [**企業向けゲートウェイの親設定制御**](./latest-detail.md#2-企業向けゲートウェイの親設定制御):  
+  Claude Desktop の埋め込みセッションへゲートウェイのポリシーを配信する `parentSettingsBehavior: "merge"` と、親設定を制限する 5 つの `allowManaged*Only` ロックの新セクションが追加された。
+3. [**forceLoginMethod の全ログイン経路への強制**](./latest-detail.md#3-forceloginmethod-の全ログイン経路への強制):  
+  組織ログイン制限がターミナル・VS Code 拡張・Agent SDK・`claude setup-token`・`/install-github-app` の全経路で `forceLoginMethod` を強制することが明記された（v2.1.212 以降）。
 
 ## 新規追加されたページ
 
-- [**Claude Code on mobile**](./latest-detail.md#1-モバイルでの-claude-code-利用) ([English](https://code.claude.com/docs/en/mobile)):  
-  スマホの Claude アプリから Claude Code を操作する方法を集約した新規ページ（日本語ページは未作成のため英語のみ。詳細はハイライト1参照）。
+（今回の対象期間では、`llms.txt`（索引）への新規ページ追加はありませんでした。前回索引のみだった「Claude Code on mobile」ページの本文が集約全文に着地しましたが、内容は前回サマリで既報のため「軽微な更新」に記録しています。）
 
 ## 大幅に更新されたページ
 
-- [**Run Claude Code behind a corporate launcher**](./latest-detail.md#1-企業ランチャーの背後で-claude-code-を実行する) ([日本語](https://code.claude.com/docs/ja/corporate-launcher#what-the-launcher-covers) / [English](https://code.claude.com/docs/en/corporate-launcher#what-the-launcher-covers)):  
-  前回索引のみだった企業ランチャー統合ガイドの全文が、今回はじめて集約全文に反映された（詳細はハイライト4参照）。
+- [**Claude apps gateway（親設定の配信と制限）**](./latest-detail.md#1-claude-apps-gateway-の親設定制御) ([English](https://code.claude.com/docs/en/claude-apps-gateway#restrict-parent-settings)):  
+  企業向けゲートウェイのページに、Claude Desktop へのポリシー配信と親設定の制限という 2 セクションが追加された（詳細はハイライト2参照）。
+- [**Run parallel sessions with worktrees（ページ再構成）**](./latest-detail.md#2-worktrees-ページの再構成) ([English](https://code.claude.com/docs/en/worktrees#ask-claude-to-create-a-worktree)):  
+  worktrees ページがセクション再構成され、`EnterWorktree` ツールによる worktree 作成/切替やクリーンアップ機構などの本文が集約全文に着地した。
 
 ## 軽微な更新
 
-今回の対象期間は Week 29（v2.1.207〜v2.1.212）への追従回で、軽微な変更は大きく 2 系統に分かれます。①前回サマリで「`docs_map` に見出しは追加されたが本文が集約全文に未反映」と記録していた各ページ本文が、今回まとめて集約全文（`llms-full.txt`）に着地したもの。②今回新たに `docs_map` に追加された Week 29 分の見出し群で、対応本文はまだ集約全文に未反映のもの。いずれも構造・索引側の変化が主体のため、各項目の内容要約は本文が反映された回に譲り、下記は変更のあったページ・節の記録に留めます（個別リンクは付けません）。
+今回の対象期間は、原文差分の大半が集約全文（`llms-full.txt`）における本文の反映・改訂です。changelog v2.1.214 の個別修正はハイライト1に、企業ゲートウェイと worktrees の大規模な本文着地は上記カテゴリにまとめました。ここではそれ以外の、通常ドキュメントページ側の記述変更を挙げます。多くは前回サマリで「`docs_map`（索引）に見出しは追加されたが本文が集約全文に未反映」と記録していた各ページ本文が、今回まとめて着地したものです（対応機能は Week 29 等で既報のため、下記は変更のあった記述の記録に留めます）。
 
-**機能改善**（前回 pending の本文が集約全文に着地）
+**新機能**（新規セクション・新エイリアス・新規イベント等）
 
-- `sessions`: 「What a resumed session restores」（resume が復元する範囲）
-- `sub-agents`: 「Subagent output scanning」（サブエージェント出力のスキャン）
-- `workflows`: 「Dismiss or turn off the keyword」「Where the keyword works」（起動キーワードの無効化と有効範囲）
-- `worktrees`: 「Clean up subagent and background-session worktrees」「Worktree removal on Windows」（サブエージェント／バックグラウンドセッションの worktree 掃除、Windows での削除）
-- `chrome`: 「Upload files to web pages」「Save screenshots to disk」（Web ページへのファイルアップロード、スクリーンショットのディスク保存）
-- `authentication`: 「Restrict login to your organization」（組織へのログイン制限）
-- `auto-mode-config`: 「Add a human checkpoint」（人手チェックポイントの追加）
-- `network-config`: 「Apply network settings to background agents」「Configure a corporate launcher as a setting」「Set network variables in settings, not the shell」（バックグラウンドエージェントへのネットワーク設定適用、ランチャーを設定として構成、設定ファイルでのネットワーク変数指定）
-- `zero-data-retention`: 「Route Claude Code traffic to your ZDR organization」（ZDR 組織へのトラフィックルーティング）
-- `claude-platform-on-aws`「4. Launch and verify」／`google-vertex-ai`「6. Verify your configuration」（各セットアップ手順への検証ステップ）
-- `tools-reference`: Bash ツール挙動に「What persists between commands」「Timeout and output limits」「Background commands」
-- トラブルシュート項目: `errors`「Memory index is over its read limit」「This session has no saved transcript」、`agent-view`「Opening a session says it has no saved transcript」、`claude-code-on-the-web`／`github-enterprise-server`「Unable to get organization UUID」系、`deep-links`「xdg-open is not found on Linux」
+- Agent SDK のフックリファレンス（「Available hooks」表）に、TypeScript SDK 限定の新規イベントとして `StopFailure`（API エラーでターン終了）・`PostCompact`（圧縮完了）・`PermissionDenied`（Auto モード分類器の拒否）・`TaskCreated`・`Elicitation` / `ElicitationResult`（MCP のユーザー入力要求と応答）・`InstructionsLoaded`（CLAUDE.md／rules の読み込み）・`CwdChanged`・`FileChanged` の各フックイベントを追加。
+- `remote-control`: 新セクション「Session URL reminders」を追加（長時間ターンや連続する許可プロンプト時に、電話・ブラウザへ切り替えるためのセッション URL リンクをプロンプト上部に表示。v2.1.208 以降。無効化不可）。
+- `routines`: `/schedule` コマンドに `/routines` エイリアスを追加。
 
-**その他**（今回 `docs_map` に追加された Week 29 分の見出し。対応本文は集約全文に未反映）
+**機能改善**（本文の着地・記述の明確化）
 
-- `remote-control`: 「Session URL reminders」（セッション URL のリマインド）
-- `agent-view`: 「Send the session to the background」「Copy the session with /fork」「What carries over when you background」「List sessions as JSON」（`/fork` によるバックグラウンドセッション化、`claude agents --json` 相当のセッション一覧）
-- `sub-agents`: 「Session subagent limit」／`tools-reference`（WebSearch）「Session search limit」（サブエージェント生成・WebSearch のセッション上限。既定各 200）
-- `mcp`: 「Automatic backgrounding of long tool calls」（長時間 MCP ツール呼び出しの自動バックグラウンド化）
-- `skills`: 「Skills in Cowork and cloud sessions」（Cowork / クラウドセッションでのスキル）
-- `errors`: 「EUNKNOWN when starting a background session」（バックグラウンドセッション起動時の EUNKNOWN）
-- `fast-mode`: 「Use fast mode behind proxies and LLM gateways」（プロキシ／LLM ゲートウェイ配下での fast mode）
-- `worktrees`: セクション構成の大幅再編（「Set up the worktree environment」「Ask Claude to create a worktree」「Resume a worktree session」「Customize worktree creation」「Branch from a pull request」「Replace worktree creation with a hook」「What worktrees share with the main checkout」「Troubleshooting」ほか）
-- `mcp-quickstart`: 「Connection timing」（MCP サーバー接続のタイミング）
-- 用語集（glossary）に「Connector」「MCP server」を追加
-- SDK リファレンス: 型「TaskBudget」を追加、ツール「BashOutput」「KillBash」を「TaskOutput」「TaskStop」に改称
-- 参考: これら Week 29 分の各機能は、新着情報「Week 29」ダイジェストで機能単位に解説されています（本サマリ「新着情報」参照）。
+- `mobile`（Claude Code on mobile）: 前回索引のみだったページ本文が集約全文に着地（iOS/Android の Claude アプリをクライアントとして、クラウドセッション／Remote Control／Dispatch／プッシュ通知で Claude Code を操作。内容は前回サマリのハイライト1で既報）。
+- `agent-view`: 前回 pending だった本文（「Send the session to the background」「Copy the session with /fork」「What carries over when you background」「List sessions as JSON」、および削除済みセッションを bare `/resume` ピッカーで復帰させる操作）が集約全文に着地。あわせて各所の「Before v2.1.xxx」版数注記を整理（実機能は Week 29 で既報）。
+- `tools-reference`: WebSearch の「Session search limit」（1 セッション最大 200 回、`CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION` で調整、`/clear` でリセット）本文が着地。あわせて SDK ツールリファレンスの Agent/Task ツールに `model` / `run_in_background` / `name` / `mode` / `isolation` フィールドと詳細な出力スキーマを追記。
+- `auto-mode-config`: `claude auto-mode defaults` / `config` の出力 JSON 例と、`claude auto-mode reset`（v2.1.212 以降。`--yes` で確認スキップ）の手順本文が着地。
+- `authentication`: `claude setup-token` が `/login` と同じブラウザ認可フローでトークンを発行する点、および発行トークンは推論のみで claude.ai コネクタ取得や Remote Control には使えないがローカル設定の MCP サーバーは動作する点を明確化。
+- `claude-apps-gateway-config` / `settings` / `server-managed-settings`: クライアント側管理設定への `parentSettingsBehavior: "merge"` 追加と、`policyHelper` 配下でのロックキー・親設定チェックの読み取り規則を明確化（ハイライト2関連）。
+- managed 設定の配信ページ（「Login enforcement」制御行）: `forceLoginMethod` / `forceLoginOrgUUID` の強制経路の差を追記（ハイライト3参照）。
+- `memory`（CLAUDE.md）: `/context` を実行して CLAUDE.md の読み込みを確認するヒントを追加。
+- `headless`: `claude -p` の 3 出力形式（`text` / `json` / `stream-json`）の違いを明記。
+- `monitoring-usage`: OTLP エクスポートに `Content-Length` ヘッダーを付与（v2.1.212。chunked 転送を拒む Azure Monitor 等の `411`/`400` エラーを回避）。`-p`／Agent SDK セッションで `TRACEPARENT` 設定時に OTLP イベントログへ `trace_id`/`span_id` を付与する挙動も追記。
+- `prompt-caching`: LLM ゲートウェイやカスタム `ANTHROPIC_BASE_URL` 経由でキャッシュブレークポイントが拒否された場合、そのブロックを外してリクエストを再試行し、以降そのブロックを非キャッシュ化する挙動を明記。
+
+**その他**
+
+- `claude-code-on-the-web`: クラウドセッションで利用不可な項目に「リポジトリの `.claude/settings.json` `env` ブロックのトランスポート変数（`NODE_EXTRA_CA_CERTS` や mTLS クライアント証明書変数）」の行を追加（ホスティング環境が API 接続を管理するため無視され、デバッグログに記録される）。
+- `chrome`（ブラウザ操作）: 記録した GIF にはログイン済みページのアカウント情報など画面に映るものがすべて含まれるため、チーム外へ共有する前に確認する注意を追加。
+- 集約全文（`llms-full.txt`）の構成変更: `sandboxing` ページの掲載位置がファイル前方へ移動（内容の実質的変更なし）。Week 29 週刊ダイジェスト本文および「What's new」索引の Week 29 エントリも着地（内容は前回サマリで既報）。
+- `fast-mode`: プロキシ／LLM ゲートウェイ配下での可用性チェックを回避する環境変数（`CLAUDE_CODE_SKIP_FAST_MODE_NETWORK_ERRORS` / `CLAUDE_CODE_SKIP_FAST_MODE_ORG_CHECK`）の新設を含むトラブルシュート節が着地。
+- 上記のほか、`code-review` / `plugins`（marketplace・依存関係・plugin-hints）/ `permission-modes` / `sub-agents` / `sessions` / `settings`（優先順位）/ `mcp` / `network-config`（mTLS）/ `agent-sdk`（python・typescript）/ `env-vars` / 各トラブルシュート（`errors` ほか）/ `data-usage`（エラー報告）/ `ultrareview` 等の多数ページで、記述の明確化やバージョン注記の整理（多くは前回 `docs_map` 追加分の本文着地）が行われました。
 
 ## 新着情報
 
-- [**2026年07月13日～17日(Week 29)**](./latest-detail.md#2026年07月13日17日week-29) ([English](https://code.claude.com/docs/en/whats-new/2026-w29)):  
-  MCP コネクタ連携アーティファクトとスクリーンリーダーモードを目玉に、v2.1.207〜v2.1.212 の変更を集約した週刊ダイジェスト（日本語ページは未作成のため英語のみ）。
+（今回の対象期間では、新規の新着情報ページ（`whats-new/`）の追加はありませんでした。前回取り上げた Week 29 ダイジェストの本文が集約全文に着地しましたが、内容は前回サマリで既報のため「軽微な更新」に記録しています。）
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-16.md](./archives/latest/2026-07-16.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-16.md](./archives/latest-detail/2026-07-16.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-07-17.md](./archives/latest/2026-07-17.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-17.md](./archives/latest-detail/2026-07-17.md)
 
 <!--
-base_commit: 5cf373da86d5703c50540e7e49df4d79e33d4c76
-head_commit: 9ec2f2d1cbe194850dc2cd57ad42803d8aa90d80
-generated_at_full: 2026-07-18T15:01:04+09:00
+base_commit: 9ec2f2d1cbe194850dc2cd57ad42803d8aa90d80
+head_commit: c7a24cbea7b808c9e8931fe91809d80b7495c53e
+generated_at_full: 2026-07-19T15:05:11+09:00
 -->
