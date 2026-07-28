@@ -65,11 +65,12 @@ $SITES = @(
 New-Item -ItemType Directory -Force -Path $LOG_DIR | Out-Null
 $LOG_FILE = Join-Path $LOG_DIR ("run-{0}.log" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
 
-# bash を解決する。PATH に無ければ Git for Windows 同梱の bash を探す
+# bash を解決する。Git for Windows 同梱の bash を最優先し、無ければ PATH を見る
 # （タスクスケジューラ実行時は PATH に Git の bin が通っていない構成があり得るため）。
+# 注: PATH 先頭の `bash` は WindowsApps の WSL 実行エイリアスに解決されることがあり、
+# ディストリ未導入だと即 exit 1 になる（2026-07-20 以降の毎日 FAILURE の原因）。
+# よって PATH 由来の候補からは WindowsApps 配下を除外する。
 function Resolve-BashExe {
-    $c = Get-Command bash -ErrorAction SilentlyContinue
-    if ($c) { return $c.Source }
     $g = Get-Command git -ErrorAction SilentlyContinue
     if ($g) {
         $gitRoot = Split-Path (Split-Path $g.Source -Parent) -Parent
@@ -78,7 +79,10 @@ function Resolve-BashExe {
             if (Test-Path $p) { return $p }
         }
     }
-    throw "bash が見つからない（PATH にも Git for Windows 同梱位置にも無い）。Git for Windows を導入するか PATH を通すこと"
+    $c = @(Get-Command bash -All -ErrorAction SilentlyContinue |
+        Where-Object { $_.Source -and $_.Source -notmatch '\\WindowsApps\\' }) | Select-Object -First 1
+    if ($c) { return $c.Source }
+    throw "bash が見つからない（Git for Windows 同梱位置にも PATH にも無い。PATH 上の WSL エイリアスは除外対象）。Git for Windows を導入するか PATH を通すこと"
 }
 
 # --- メイン -----------------------------------------------------------------
