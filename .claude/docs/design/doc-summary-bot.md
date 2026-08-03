@@ -4,7 +4,7 @@
 人間向けの changelog 風サマリとして LLM に生成させる無人バッチ。
 
 - 実体: `.claude/scripts/run-doc-summary.ps1`
-- 起動: タスクスケジューラ `CC-DocSummaryBot`（毎日 15:00 / Interactive logon / ExecutionTimeLimit **PT1H**）
+- 起動: タスクスケジューラ `CC-DocSummaryBot`（毎日 15:00 / Interactive logon / ExecutionTimeLimit **PT2H**）
 - 引数: `-Site all|claude-code-docs|mcp` / `-DryRun`（push のみ抑止）/ `-SkipDownload` / `-RestoreBranch`
 - 共通基盤: `doc-summary-common.ps1`（[README](./README.md) 参照）
 
@@ -209,7 +209,7 @@ push は `DryRun` でも生成失敗ありでも抑止し、実行時はブラ�
 | 症状 | 原因 | 防御・対処 |
 |---|---|---|
 | ログ 932 B・所要 0 秒で FAILURE | PATH 先頭の WindowsApps `bash.exe`（WSL 実行エイリアス）を掴む | `Resolve-BashExe` が Git 同梱 bash を最優先し、PATH 由来候補から `\WindowsApps\` を除外（2026-07-28 修正） |
-| `終了:` 行が無いまま途切れる | 生成が長引き ExecutionTimeLimit を超過して kill | **未対処**。PT1H → PT2H への引き上げが課題（実測 cc-docs 41 分 + mcp 15 分 = 56 分） |
+| `終了:` 行が無いまま途切れる | 生成が長引き ExecutionTimeLimit を超過して kill | 2026-08-03 に PT1H → **PT2H** へ引き上げ済（PT1H では実測 56 分＝cc-docs 41 分 + mcp 15 分で常時ギリギリだった）。それでも超える場合は生成物が未コミットで残るが、翌日の手順 1-2 が回収する |
 | 毎日 562 B で即 FAILURE | 前回の中断残留で作業ツリーが dirty | 手順 1-2 が自動回収して続行（2026-08-02 実装）。もはや停止しない |
 | merge 途中でツリーが残る | `main` 取り込みのコンフリクト、または前回の中断 | 手順 1-2 の冒頭で `MERGE_HEAD` 等を検出して abort。取り込めない場合も**取り込まずに dl を続行**する |
 | 人の作業中に bot が起動 | 同じ作業ツリーを共有している | bot 所有外の変更は `git stash` へ退避して続行。破棄しない（`git stash list` から復元） |
@@ -233,5 +233,5 @@ push は `DryRun` でも生成失敗ありでも抑止し、実行時はブラ�
 | 日付 | 内容 |
 |---|---|
 | 2026-07-28 | `Resolve-BashExe` を WSL エイリアス回避に修正（`4c608df`） |
-| 2026-08-03 | 手順 4.5 を追加し、生成の成否を待たずに取り込みコミットを先行 push するようにした |
+| 2026-08-03 | 手順 4.5 を追加し、生成の成否を待たずに取り込みコミットを先行 push するようにした。あわせて `CC-DocSummaryBot` の ExecutionTimeLimit を PT1H → PT2H へ引き上げ |
 | 2026-08-02 | 手順 1（前提チェック）と手順 2（ブランチ準備）を `Initialize-TreeForDownload` に統合し、**dl へ到達するまで throw しない**構造へ変更。中断状態の abort・bot 所有外変更の stash 退避・中断残留の救出/破棄・merge 失敗時の続行・HEAD への強制巻き戻しを段階的に試みる。commit 前のブランチ確認だけを停止条件として残した |
