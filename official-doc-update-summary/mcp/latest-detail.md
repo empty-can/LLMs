@@ -1,101 +1,239 @@
 ---
-対象期間: 2026年07月28日 〜 2026年08月01日
-作成日: 2026-08-01
+対象期間: 2026年08月01日 〜 2026年08月02日
+作成日: 2026-08-02
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は、2026年07月28日に公開された仕様リビジョン `2026-07-28` を受けた記述の整備が中心です。新規追加ページと大幅更新ページはなく、43 ページの軽微な更新にとどまりました。うち 41 ページは SEP ページ群への一斉注記追加で、残りはエラーコードの追従修正とバージョン表記の更新です。
+今回の対象期間は、MCP Inspector のドキュメントが 1 ページから 8 ページ構成へ全面的に再編されたのが中心です。新規追加 7 ページ・大幅更新 2 ページ・軽微更新 8 ページで、Inspector 以外の変更は SEP への追記・組織情報の更新・誤字修正にとどまります。
 
 主要なものを以下に挙げます。
 
-1. Final ステータスの SEP ページ 41 件すべてに、採択時点の設計の歴史的記録である旨の注記が追加された
-2. Tasks 拡張に残っていたエラーコード `-32003` が、現行仕様の採番に合わせて `-32021` に修正された
-3. Versioning ページの現行プロトコルバージョン表記が `2026-07-28` に更新された
+1. MCP Inspector のドキュメントが 8 ページ構成に再編され、Web / CLI / TUI の 3 クライアント体制が明文化された
+2. `2026-07-28` 前後の挙動差を、サーバー単位で切り替える「プロトコル世代」設定として整理したページが新設された
+3. CLI クライアントの終了コード体系と JSON 1 行のエラー出力が定義され、CI から失敗理由を機械的に分岐できるようになった
+4. OAuth トークンが 3 クライアント共通のストアに保存されることと、Web で取得したトークンを CLI へ引き継ぐ手順が示された
+5. SEP-2575 に「Final 化後の変更」節が追加され、確定済み SEP と現行仕様の乖離が SEP 側から追えるようになった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Final SEP への歴史的記録注記の一斉付与**](#1-final-sep-への歴史的記録注記の一斉付与):  
-  Final ステータスに達した SEP ページ 41 件すべての冒頭に、当該 SEP は採択時点の設計の歴史的記録であり最終化後の変更は反映されない旨の注記が置かれた。SEP Guidelines 側にも同じ方針が明文化されている。
-2. [**Tasks 拡張のエラーコードを現行採番に修正**](#2-tasks-拡張のエラーコードを現行採番に修正):  
-  `2026-07-28` でエラーコード割り当て方針が定められた際に `-32003` から `-32021` へ再採番された Missing Required Client Capability が、Tasks 拡張のページでは旧番号のまま残っていた。3 つの節にまたがる計 4 箇所が現行の `-32021` に修正された。
-3. [**現行プロトコルバージョン表記の更新**](#3-現行プロトコルバージョン表記の更新):  
-  Versioning ページの「Revisions」節で、current として示されるプロトコルバージョンが `2025-11-25` から `2026-07-28` に更新された。
+1. [**MCP Inspector ドキュメントの全面再編**](#1-mcp-inspector-ドキュメントの全面再編):  
+  機能一覧とベストプラクティスを並べた 1 ページ構成から、ハブページ + 7 つの専門ページという 8 ページ構成へ再編された。`@modelcontextprotocol/inspector` という 1 パッケージが Web・CLI・TUI の 3 クライアントを内包すること、共通コアにより接続の挙動が 3 者で一致することが前面に出ている。
+2. [**プロトコル世代の明示的な切り替え設定**](#2-プロトコル世代の明示的な切り替え設定):  
+  `2026-07-28` 前後の挙動差を、トランスポートとは独立したサーバー単位の設定 `protocolEra`（`legacy` / `auto` / `modern`）として扱う方針が文書化された。ログ・購読・タスク・MRTR・ヘッダー・セッションの各領域について、両世代の違いと再現用のテストサーバー設定が対比表で示されている。
+3. [**CLI クライアントの機械可読インターフェース**](#3-cli-クライアントの機械可読インターフェース):  
+  1 回の実行で 1 リクエストだけ投げて終了する CLI について、失敗の種類ごとに割り当てられた終了コード 0〜5 と、非ゼロ終了時に標準エラーへ 1 行で出る JSON エラーが定義された。CI がプロンプトの文面を読まずに失敗理由を分岐できる。
+4. [**Inspector の認可とトークン共有**](#4-inspector-の認可とトークン共有):  
+  3 クライアントが `~/.mcp-inspector/storage/oauth.json` という共通のストアを参照するため、一度サインインすればどのクライアントからも使える。CLI と TUI は固定のコールバック URL を共有し、Web で完了した認可をスクリプトへ引き継ぐ専用フラグも用意されている。
+5. [**SEP-2575 に Final 化後の変更履歴が追加**](#5-sep-2575-に-final-化後の変更履歴が追加):  
+  Final に達した SEP は更新されないという方針の下で、SEP-2575 に「Final 化後に仕様側で変わった点」を列挙する節が加わった。前回のサマリで取り上げた歴史的記録注記の一斉付与に続く、具体的な運用の第 1 例にあたる。
 <!-- light:highlight-list:end -->
 
-## 1. Final SEP への歴史的記録注記の一斉付与
+## 1. MCP Inspector ドキュメントの全面再編
 
-Final ステータスに達した SEP のページに、冒頭注記が一斉に追加されました。文面は全ページ共通で、本 SEP は Final に達しており採択された時点の設計の歴史的記録として保存されていること、最終化後にプロトコルへ加えられた変更はここに反映されないこと、権威ある要件は現行仕様とその changelog を参照すべきことを述べています。
+MCP Inspector のドキュメントが、単独の 1 ページからハブページ + 7 つの専門ページという 8 ページ構成に再編されました。`llms.txt` の一覧でも `tools/inspector` の下に `web` / `cli` / `tui` / `configuration` / `authorization` / `protocol-eras` / `recipes` の 7 エントリが加わり、ハブページ自身の説明文も「MCP サーバーをテスト・デバッグするための In-depth ガイド」から「ブラウザ・コマンドライン・ターミナルで動く対話的な開発者向けツール」に書き換えられています。
 
-今回の差分で変更された 43 ページのうち 41 ページがこの注記の追加によるものです。`llms-full.txt` に含まれる SEP ページは一覧ページ `/seps/index` を除いて 41 件で、そのすべてが対象になりました。SEP-414 のような古い番号から SEP-2663 まで、Standards Track・Extensions Track・ガバナンス系の区別なく一律に適用されています。
+再編の軸になっているのは、`@modelcontextprotocol/inspector` という単一パッケージが **1 つのバイナリの背後に 3 つのクライアントを持つ**という整理です。既定の Web（`npx @modelcontextprotocol/inspector`）、スクリプト向けの CLI（`--cli`）、ターミナル UI の TUI（`--tui`）が、いずれも同じ共通コアの上に載っています。そのため接続の挙動は 3 者で一致し、同じトランスポート・同じ設定ファイル・ディスク上の同じ OAuth 状態・同じプロトコル世代の交渉が共有されます。実行には Node 22.19.0 以上が必要である点も新たに明記されました。
 
-背景として、SEP Guidelines の「Reporting SEP Bugs or Updates」にも同じ方針を述べる段落が追加されました。Final SEP は最終化後に更新されないこと、SEP 確定後に仕様が変わった場合は現行仕様が権威を持つこと、そして各 Final SEP のページにその旨の告知を表示することが明記されています。`2026-07-28` では `initialize` ハンドシェイクの廃止や MRTR の導入といった大きな設計変更が入っており、確定済み SEP の記述と現行仕様が食い違う場面が生じ得ます。今回の注記は、読み手が SEP の記述を現行仕様と取り違えないようにするための措置と読めます。
+この構造から派生して、フラグの所有権という考え方も新設されました。`mcp-inspector` バイナリ自体は薄いランチャーであり、モードフラグ（`--web` / `--cli` / `--tui`）と `-h` / `--help` の 2 つしか持ちません。`--catalog` や `--method` を含むそれ以外のフラグはすべて各クライアントが定義しているため、あるクライアントで使えるフラグが別のクライアントでは未知になり得ます。モードフラグはコマンドラインの先頭でのみ解釈され、ランチャーが知らない最初のトークン以降はそのままクライアントへ転送されるので、`mcp-inspector --cli node server.js --cli` のように末尾の `--cli` をサーバー自身の引数として渡せます。
 
+- [MCP Inspector - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector#where-to-go-next)
+- [Configuration and flags - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration#the-launcher-owns-exactly-two-things)
+
+## 2. プロトコル世代の明示的な切り替え設定
+
+`2026-07-28` はプロトコルに大きな変更を入れたリビジョンであるため、Inspector はその前後を「プロトコル世代」として扱い、トランスポートとは独立したサーバー単位の設定に格上げしました。同じ HTTP URL を legacy として検査することも modern として検査することもできます。設定値は `legacy` / `auto` / `modern` の 3 つで、Web ではサーバー設定画面、カタログ・設定ファイルでは `protocolEra` フィールド、CLI と TUI ではそのファイル経由で指定します。
+
+既定は `legacy` で、接続時に素の `initialize` を送りプローブは一切行いません。`auto` はまず `server/discover` を試し、modern でない結果ならば `initialize` にフォールバックします。`modern` は `2026-07-28` に固定し、フォールバックしないので非対応サーバーでは明示的に失敗します。既定を `auto` にしない理由も明記されました。デバッグツールが勝手にプローブすると、無言の legacy stdio サーバーに対して停止し、記録されるトランスクリプトも汚れてしまうためで、`auto` や `modern` を選ぶことは意図的な行為として扱われます。
+
+機能ごとの差分も対比表で整理されました。ログは legacy のセッション単位（`logging/setLevel`）から、リクエストごとに `_meta["io.modelcontextprotocol/logLevel"]` を刻む方式に変わり、購読は `resources/subscribe` から長寿命ストリーム `subscriptions/listen` に変わります。タスクは `capabilities.tasks` の能力から拡張（SEP-2663）へ移り、UI タブの表示条件そのものが変わります。ほかに MRTR、SEP-2243 の `x-mcp-header` によるヘッダー写し取りと除外ツールの表示、`-32020` / `-32021` / `-32022` のエラー分類、セッションの有無が挙げられています。各節には Inspector リポジトリ同梱のテストサーバー設定で手元に再現する手順が付いています。
+
+なお、`Mcp-Param-*` のヘッダー写し取りはブラウザ環境で SDK 側が省略するため、Web クライアントからミラー対象のツールを呼ぶとヘッダーが付かず、厳格なサーバーは `-32020`（`HeaderMismatch`）を返すという注意も記載されました。Node 上で動く CLI と TUI では正しく写し取られます。
+
+- [Protocol eras - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras#the-protocol-era-setting)
+- [Configuration and flags - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration#catalog-file-format)
+
+## 3. CLI クライアントの機械可読インターフェース
+
+CLI クライアントは、1 回の実行につきサーバーへ接続し `--method` で指定した 1 リクエストだけを投げ、結果を出力して終了します。ストリームやセッションを前提とするメソッド（`logging/tail` など）は、プロセスが終了する以上ストリームを保持できないため拒否されます。`servers/list` と `servers/show` は接続せずにカタログを読むだけのメソッドとして用意されました。
+
+CI から扱いやすくするための取り決めが定義されたのが今回の要点です。終了コードは失敗の種類ごとに固定され、`0` 成功、`1` 用法または想定外のエラー、`2` ツールに MCP App が無い（`--app-info` プローブ）、`3` 認証が必要（401/403・`WWW-Authenticate`・OAuth）、`4` サーバーに到達できない（DNS・接続拒否・タイムアウト）、`5` ツールエラー（`isError: true` またはツール未検出）となります。あわせて非ゼロ終了時には標準エラーへ `{"error": {"code": ..., "message": ..., "status": ..., "url": ...}}` が **1 行の JSON** で書き出されるため、`2>&1 | tail -1 | jq .error` で拾えます。`isError: true` を返した `tools/call` は結果本体を出力したうえで `5` を返すので、`&&` チェーンが失敗を素通りしません。
+
+引数の渡し方も 2 系統に整理されました。`--tool-arg key=value` は値を JSON としてパースして型変換するため `count=1` は数値に、`"012"` は `12` になります。`--tool-args-json` は引数オブジェクト全体をそのまま渡すので `"012"` は文字列のまま残ります。両者は排他です。出力は既定の `--format text` に加えて `--format json` があり、後者はバナーを含まない単一の JSON オブジェクトを標準出力に出すのでそのままパイプできます。
+
+- [CLI client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#exit-codes-and-error-envelopes)
+- [Recipes - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes#development-workflow)
+
+## 4. Inspector の認可とトークン共有
+
+リモートの MCP サーバーは通常認可を要求するため、Inspector は 3 クライアントすべてで認可フローを実装し、得られたトークンをディスク上で共有します。フローは 6 ステップで整理されました。接続して `401` を受け取り、`WWW-Authenticate` が指す保護対象リソースメタデータと認可サーバーメタデータを取得し、クライアントを登録または識別（DCR・事前登録の静的クライアント・CIMD・エンタープライズ管理 IdP のいずれか）し、ブラウザで認可し、コールバックを受け取り、コードをトークンに交換して元のリクエストを自動で再試行します。
+
+コールバック URL はクライアントによって異なります。Web は自身のアプリサーバーに HTTP リスナーがあるため `http://localhost:6274/oauth/callback` を使い、CLI と TUI は動作中の Web Inspector と衝突しないよう `http://127.0.0.1:6276/oauth/callback` という専用のループバックリスナーを**共有**します。事前登録が必要な IdP では後者を 1 度登録すれば使い回せるという設計です。コールバック URL はループバックホスト（`localhost` / `127.0.0.0/8` / `[::1]`）でなければならず、平文 `http` で認可コードを受け取る以上これを上書きするフラグは存在しません。同時に 1 プロセスしかポートを保持できないため、2 つ目のフローは `EADDRINUSE` で失敗します。
+
+認証情報の保存先も明示されました。トークンとクライアント情報は正規化したサーバー URL をキーとして `~/.mcp-inspector/storage/oauth.json` に所有者のみ読める形で書かれ、インストール単位のクライアント設定は `~/.mcp-inspector/storage/client.json`（Web の Client Settings ダイアログが書くのと同じファイル）に入ります。セッション途中の `401` では再認可を、`403 insufficient_scope` では保持中と要求されたスコープの和集合で再認可するステップアップを行い、いずれも接続を落とさずに元のリクエストを再試行します。
+
+Web からスクリプトへの引き継ぎ用のフラグも揃いました。`--use-stored-auth` は保存済みトークンを注入し（リフレッシュトークンがあれば先に更新）、`--wait-for-auth <秒>` は人間のサインイン完了までポーリングし、`--print-handoff` はディープリンクやポートフォワードコマンドを含む JSON を出力します。CI 向けには `--stored-auth-only` があり、対話的な認可を一切開始せず保存済みトークンが無ければ即座に `auth_required` で失敗します。なお対話的な OAuth には stdin か stderr のいずれかが TTY であること（または `MCP_AUTO_OPEN_ENABLED=true`）が必要で、どちらでもない典型的な CI 環境では、誰も完了しないコールバックを最大 15 分待つのではなく即座に失敗する挙動になります。
+
+- [Authorization - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization#where-credentials-live)
+- [CLI client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#authorization-in-scripts)
+
+## 5. SEP-2575 に Final 化後の変更履歴が追加
+
+SEP-2575（Make MCP Stateless）に「Changes since SEP became Final」という節が追加されました。冒頭で、この SEP は採択された内容の歴史的記録として保存されるものであり、以下は Final 到達後に仕様へ加えられた変更の一覧であること、権威ある要件は現行仕様を参照すべきことを述べたうえで、3 項目を挙げています。クライアント識別情報 `io.modelcontextprotocol/clientInfo` が任意のリクエストメタデータになったこと、サーバー識別情報が結果メタデータ `io.modelcontextprotocol/serverInfo` へ移り重複を避けるため `DiscoverResult.serverInfo` が削除されたこと、そして `subscriptions/listen` にサーバー主導の正常終了を表す結果が定義され、購読には自然な完了結果が無いという SEP の記述が置き換えられたことです。各項目には根拠となる Pull Request 番号（#3002・#2953）が添えられています。
+
+前回のサマリで扱ったとおり、Final に達した SEP 41 件には「採択時点の設計の歴史的記録であり、最終化後の変更は反映されない」という注記が一斉に付与され、SEP Guidelines にも同じ方針が明文化されていました。今回の SEP-2575 は、その方針の下で**変更点を SEP 側からも追えるようにした最初の例**にあたります。注記だけでは読み手が「どこが現行仕様と違うのか」を自力で突き合わせる必要がありましたが、差分そのものが SEP に併記される形になりました。
+
+- [SEP-2575: Make MCP Stateless - MCP Docs](https://modelcontextprotocol.io/seps/2575-stateless-mcp#changes-since-sep-became-final)
 - [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#reporting-sep-bugs-or-updates)
-- [SEP-2575: Make MCP Stateless - MCP Docs](https://modelcontextprotocol.io/seps/2575-stateless-mcp)
-
-## 2. Tasks 拡張のエラーコードを現行採番に修正
-
-`2026-07-28` では、JSON-RPC が実装定義用に予約するサーバーエラー範囲を分割するエラーコード割り当て方針が定められました。`-32000`〜`-32019` は既存実装のために据え置き、`-32020`〜`-32099` を仕様専用としたもので、この際にドラフト段階で導入されていたエラーコードが再採番されています。Missing Required Client Capability は `-32003` から `-32021` に変わりました。
-
-Tasks 拡張の SEP-2663 のページには旧番号の `-32003` が残っていましたが、今回それが `-32021` に修正されました。修正箇所は「Capability Negotiation」節の説明文と JSON 例、「Task Status Notifications」節の JSON 例、「Error Handling」節のエラー一覧の計 4 箇所です。いずれも記述の意味そのものは変わっておらず、コア仕様の採番への追従にあたります。
-
-この修正により、`llms-full.txt` 上で `-32003` に言及している箇所は、再採番の経緯を説明する changelog の記載だけになりました。
-
-- [SEP-2663: Tasks Extension - MCP Docs](https://modelcontextprotocol.io/seps/2663-tasks-extension#error-handling)
-- [Overview - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#error-codes)
-
-## 3. 現行プロトコルバージョン表記の更新
-
-Versioning ページの「Revisions」節は、リビジョンが Draft・Current・Final のいずれかで示されることを説明したうえで、現行のプロトコルバージョンを 1 行で示しています。この行が `2025-11-25` から `2026-07-28` に更新され、リンク先も `/specification/2026-07-28/` になりました。
-
-仕様本体の切り替えは前回サマリで扱ったとおり 2026年07月28日のリリースで完了していましたが、学習ガイド側の Versioning ページには旧リビジョンの表記が残っていました。今回の更新で、ドキュメント全体の現行版表記が揃ったことになります。
-
-- [Versioning - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/learn/versioning#revisions)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回の対象期間では `llms.txt` のページ一覧に変更がなく、新規追加されたページはありません。
+- [**Web client**](#1-web-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web)):  
+  ブラウザ版 Inspector のタブ別解説。セッショントークンの扱い、各タブの表示条件、監視系タブをサイドバーへまとめるモニターグループ、外部から接続済み画面へ飛ばすディープリンクのパラメーターが示された。
+- [**CLI client**](#2-cli-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli)):  
+  スクリプト向けクライアントの解説。`--method` で指定できるメソッド一覧、引数の渡し方 2 系統、出力形式、終了コードとエラー封筒、CI 用のレシピが揃った（詳細はハイライト 3 参照）。
+- [**TUI client**](#3-tui-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui)):  
+  ターミナル UI 版の解説。8 タブとキー割り当ての一覧、HTTP サーバーの認可手順、固定コールバックポート `6276` を採用した理由と回避策が示された。
+- [**Configuration and flags**](#4-configuration-and-flags) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration)):  
+  フラグと環境変数を所有者（ランチャー / Web / CLI / TUI）別に整理したリファレンス。書き込み可能な `--catalog` と読み取り専用の `--config` の違い、カタログファイルの書式が定義された。
+- [**Authorization**](#5-authorization) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization)):  
+  Inspector の OAuth の全体像。6 ステップのフロー、クライアント別のコールバック URL、認証情報の保存先、セッション途中の再認可とステップアップがまとめられた（詳細はハイライト 4 参照）。
+- [**Protocol eras**](#6-protocol-eras) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras)):  
+  `2026-07-28` 前後の挙動差を機能ごとに対比したページ。ログ・購読・タスク・MRTR・ヘッダーとエラー分類・セッションの各領域について、両世代の違いと再現手順が示された（詳細はハイライト 2 参照）。
+- [**Recipes**](#7-recipes) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes)):  
+  実践的な手順集。stdio / HTTP の接続、他クライアントの設定ファイル取り込み、MCP App の自動レビュー、Docker 実行、ネットワーク公開時の注意点がまとまった。
 <!-- light:new-pages:end -->
+
+## 1. Web client
+
+Web クライアントは Inspector で最も機能が多い画面で、実際の MCP 接続を保持する小さな Node サーバーが背後にいる単一ページアプリです。モードフラグを付けなければここに来る既定のクライアントでもあります。この Node サーバーは自分のマシン上でプロセスを起動できてしまうため、`/api/*` への全リクエストが起動ごとのセッショントークンで守られます。ランチャーがトークン入りの URL を出力するので、`localhost:6274` を記憶で打つのではなくその URL を開く運用が推奨されています。ブラウザ側は `window.__INSPECTOR_API_TOKEN__`・クエリ文字列・`sessionStorage` の順にトークンを探します。
+
+タブは接続先の能力に応じて出し分けられます。Servers と Protocol は常時表示、Tools / Prompts / Resources は対応する能力があるとき、Tasks は legacy 世代の `capabilities.tasks` または modern 世代の tasks 拡張があるとき、Apps は MCP App ツールを公開しているときに現れます。stdio サーバーでは Console（サーバープロセスの `stderr`）が、HTTP / SSE サーバーでは Network が出るため、この 2 つが同時に並ぶことはありません。Tasks・Logs・Protocol・Network・Console はモニターグループを構成し、まとめてピン留めするとタブバーから右側の可変幅カラムへ移り、Tools や Resources を操作しながら通信を眺められます。
+
+サーバー一覧の出どころと編集可否は起動方法で決まります。既定では書き込み可能なカタログ `~/.mcp-inspector/mcp.json` が使われ、初回起動時に `/tmp` に限定した filesystem サーバーと everything リファレンスサーバーの 2 件が種として書き込まれます。`--config` を渡した場合は読み取り専用でシードもされず、`--server-url` や位置引数のコマンドを渡した場合はメモリ上の 1 件だけになります。このほか、ディープリンク（`serverUrl` / `transport` / `autoConnect`）と MCP App を直接描画する 3 パラメーター（`openApp` / `appArgs` / `autoOpen`）、既定の `localhost` バインドとオリジン検証、`HOST=0.0.0.0` が `DANGEROUSLY_BIND_ALL_INTERFACES=true` なしでは拒否されることが記載されています。
+
+- [Web client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web)
+
+## 2. CLI client
+
+CLI クライアントのページは、CI パイプライン・シェルのワンライナー・コーディングエージェントから Inspector を駆動するための全面的なリファレンスです。サーバーの指定方法は位置引数のコマンド（stdio）・`--server-url`（HTTP / SSE）・カタログや設定ファイル中の名前（`--config` + `--server`）の 3 通りで、ファイル由来の場合はヘッダー・タイムアウト・OAuth・プロトコル世代・roots といったサーバーごとの設定がそのまま接続に適用されます。
+
+ページの中心は、実行できるメソッドの一覧と、その結果を機械可読に扱うための取り決めです。終了コード・エラー封筒・引数の渡し方はハイライト 3 で扱ったとおりで、加えて MCP App を**ツールを呼ばずに**調べる `--app-info` が解説されています。単一ツールに対しては `hasApp` / `resourceUri` / `csp` / `permissions` を含む JSON を 1 行返し、`tools/list` と組み合わせると 1 接続で全ツール分を NDJSON で返します。プローブに失敗しても中断せず `resourceError` フィールドで報告するため、1 つの不正なツールが一覧全体を止めることはありません。
+
+末尾には CI での検証、失敗クラスによる分岐、UI を持つツールのスモークテスト、接続せずにカタログを確認する 4 つのレシピが載っています。`servers/show` は `env` の値や機微なヘッダー、OAuth のクライアントシークレットを伏せる一方、サーバー `url` に埋め込まれた認証情報や stdio の `args` は伏せないため、生の URL や `detail` は機微なものとして扱うべきという警告も添えられました。リモートの HTTP / SSE 接続は `HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` という慣習的なプロキシ変数に従い、Inspector 専用のフラグは不要です。
+
+- [CLI client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli)
+
+## 3. TUI client
+
+TUI は Inspector のターミナルインターフェースで、ツール・リソース・プロンプトを対話的に探索できる点は Web クライアントと同じです。SSH 越しのリモートホスト、ブラウザを使えない環境、ターミナルから離れたくない場合の選択肢として位置づけられています。動作には raw モードに対応した本物の TTY が必要で、ヘッドレスな CI ジョブでは実用にならないため、そこでは CLI を使うよう明記されました。
+
+サーバーの選び方は CLI と異なります。TUI には 1 件を選ぶ `--server` フラグが無く、カタログまたは設定ファイルに含まれるサーバーをすべて読み込んで画面上の一覧から選ばせます。`--catalog` も `--config` も指定せず、その場限りの接続先も与えなければ、既定の書き込み可能カタログ `~/.mcp-inspector/mcp.json` が使われます。ただし Web クライアントと違い、TUI（および CLI）が新規にシードするカタログは空の `{ "mcpServers": {} }` です。タブは Info / Auth / Resources / Prompts / Tools / Protocol / Network / Console の 8 つで、アクセラレータは頭文字の衝突を避けて割り当てられています（Protocol が `p` を取るため Prompts は `m`、`c` はグローバルな Connect なので Console は `o`）。
+
+認可については、HTTP / SSE サーバーで `c` を押すと必要に応じて自動的に OAuth が始まり、ブラウザのリダイレクトが TUI のループバックリスナーに届いた時点で 2 度目の `c` なしに接続が完了します。コールバックの既定値 `http://127.0.0.1:6276/oauth/callback` はポートを固定してあり、これは事前登録された静的クライアント・CIMD・エンタープライズ管理 IdP がいずれもリダイレクト URI を事前に知っている必要があるためです。トレードオフとして同時に 1 フローしかポートを保持できないので、`--callback-url` や `MCP_OAUTH_CALLBACK_URL` でインスタンスごとに別ポートを割り当てるか、`http://127.0.0.1:0/oauth/callback` で OS 割り当ての一時ポートを使う方法が示されています。
+
+- [TUI client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui)
+
+## 4. Configuration and flags
+
+フラグと環境変数を「どのクライアントが所有しているか」で分類したリファレンスページです。ランチャーが持つのはモードフラグと `-h` / `--help` の 2 つだけで、それ以外はすべて Web・CLI・TUI のいずれかが定義しているという前提に立って構成されています。同じ名前のフラグでも定義しているクライアントが異なれば挙動が違い得るため、この分類自体がページの骨格になっています。
+
+サーバー指定については `--catalog` と `--config` の対比表が中心です。`--catalog` は Inspector 自身の書き込み可能なサーバー一覧で、ファイルが無ければ作成・シードされ、Web UI からも編集できます。既定は `~/.mcp-inspector/mcp.json`（環境変数 `MCP_CATALOG_PATH` でも指定可）です。`--config` は読み取り専用で、書き込み・シード・マイグレーションを一切行わず、ファイルが無ければエラーになります。他人や別クライアントの設定ファイルを触らずに検査したいときの選択肢という位置づけです。両者は排他で、その場限りの接続先とも併用できません。Web と CLI は引数中の `--` で分割し、それ以降を対象コマンドの引数として渡します。
+
+環境変数も同じ分け方で整理されました。ランチャーが読むのは `MCP_DEBUG` と `DEBUG` の 2 つで、いずれも `0` / `false` / 空は「オフ」と解釈されます。CLI と TUI 側には `MCP_CATALOG_PATH`・`MCP_CLIENT_CONFIG_PATH`・`MCP_OAUTH_CALLBACK_URL`・`MCP_STORAGE_DIR`・`MCP_INSPECTOR_OAUTH_STATE_PATH`・`MCP_AUTO_OPEN_ENABLED` が、Web バックエンド側には `MCP_INSPECTOR_API_TOKEN`・`DANGEROUSLY_OMIT_AUTH`・`HOST`・`CLIENT_PORT`・`DANGEROUSLY_BIND_ALL_INTERFACES`・`ALLOWED_ORIGINS`・`MCP_SANDBOX_PORT`・プロキシ変数が属します。`DANGEROUSLY_OMIT_AUTH` と `DANGEROUSLY_BIND_ALL_INTERFACES` を同時に設定してはならないという警告と、カタログファイルの書式（`mcpServers` に `protocolEra` や `modernLogLevel`、`roots` を併記できる）も定義されました。
+
+- [Configuration and flags - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration)
+
+## 5. Authorization
+
+Inspector の OAuth を 1 ページにまとめたページです。全体の流れ、コールバック URL、認証情報の保存先、セッション途中の再認可とステップアップ、非対話実行、Web から CLI への引き継ぎという構成で、内容の要点はハイライト 4 で扱いました。
+
+補足として、ステップアップ時の CLI の挙動が具体的に記述されています。標準エラーに `Proceed with step-up authorization? [y/N]` と表示され、`y` で続行します。`echo y | ...` のようなパイプ入力も改行終端か stdin のクローズがあれば通り、`N` または無回答の EOF は拒否になります。TTY でない stdin が 5 秒以内に何も送らない場合は `auth_required` で失敗し、これは明示的な拒否とは区別されます。エンタープライズ管理のステップアップはプロンプトなしで再発行されます。
+
+保存済みトークンの再利用については注意も添えられました。保存エントリに有効期限が記録されていないため、`--use-stored-auth` の実行ごとにリフレッシュトークンが行使されます。ローテーションする（1 回限りの）リフレッシュトークンを使っている場合、同じ状態ファイルに対する同時実行が競合し得ること、リフレッシュ成功と書き戻しの間でクラッシュするとローテーション後のトークンが保存されないことの 2 つの窓が生じます。いずれも起こりにくく、Web クライアントで再認可すれば回復できるとされています。
+
+- [Authorization - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization)
+
+## 6. Protocol eras
+
+`legacy` / `auto` / `modern` というプロトコル世代の設定と、世代によって変わる機能の挙動を対比したページです。設定の意味と既定が `legacy` である理由、機能ごとの差分はハイライト 2 で扱いました。
+
+このページの実用面での特徴は、各節が必ず「手元で再現する方法」で終わっている点です。Inspector リポジトリには組み合わせ可能なテストサーバーが同梱されており、リポジトリを clone してビルドしたうえで、節が指定する JSON 設定（`test-servers/configs/logging-modern-http.json` など）に Inspector を向けると、その節が説明している挙動をそのまま観察できます。MRTR については `mrtr-showcase-http.json` が 1 つの modern サーバーに 6 種類のツールをまとめており、単発の elicitation、`requestState` を跨ぐ 2 段階、埋め込み sampling、無言で応答される `roots/list`、`inputRequests` のみ／`requestState` のみのラウンド、そして完了せずクライアント側の上限に当たるループを個別に試せます。
+
+世代差が実装上の制約として現れる例も挙げられています。modern 接続はセッションを持たずリクエストごとに完結するため、リクエストごとに構築されるステートレスなハンドラは呼び出し間で状態を保持できません。これが理由で、購読の modern 用テスト設定には legacy 用にある `update_resource` ツールが含まれていません。変更を起こしても使い捨てのサーバーインスタンスに対して実行され、次の読み取りからは見えないためです。
+
+- [Protocol eras - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras)
+
+## 7. Recipes
+
+具体的な作業手順を集めたページです。stdio サーバーでは位置引数がそのままコマンドラインになること、サーバー自身に渡す引数の前には `--` を置くこと、環境変数は `-e`・作業ディレクトリは `--cwd` で与えること、接続が理由不明で失敗したときはまず Console タブ（サーバープロセスの `stderr`）を見ることが示されています。HTTP / SSE では `--server-url` と `--transport`、必要なら `--header` を使い、保護されたサーバーには事前設定が不要で、`401` を受けた時点で認可フローが走り接続が再試行されます。
+
+他クライアントの設定を取り込む手順も加わりました。Servers 画面の Add Servers から Claude Desktop・Cursor・Cline・VS Code の設定ファイルと、MCP レジストリの `server.json` を直接パースできます。取り込みは有効なカタログへマージされるため既存エントリは壊れません。カタログに一切触れたくない場合は `--config` で対象ファイルを読み取り専用のまま開く方法が示されています。
+
+MCP App のレビュー手順は、自動化を想定して「JSON が返る検査はすべて CLI で行い、描画された UI を見るときだけブラウザを開く」という 5 ステップで書かれています。`--app-info` でツールを呼ばずにセキュリティ面（`csp` / `permissions`）を確認し、`--format json` で結果本体を取り、ループバック限定で Web を起動し、ディープリンク 1 発で描画済みウィジェットへ飛び、待ち時間は sleep ではなく `data-app-status` などの DOM 属性をポーリングして判定します。ほかに GitHub Container Registry で配布される Docker イメージ（`linux/amd64` / `linux/arm64`）の使い方、ポートを付け替えるなら `ALLOWED_ORIGINS` が要ること、ネットワークへ公開する際のバインド先とオリジン許可リストの組み合わせ表が載っています。
+
+- [Recipes - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-単一ページで 50 行以上に及ぶ変更はありませんでした。最も変更量の多いページでも 18 行（注記の追加と著者一覧の補完）にとどまります。変更のあった 43 ページはすべて下記「軽微な更新」に整理しています。
+- [**MCP Inspector**](#1-mcp-inspector) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector)):  
+  機能一覧とベストプラクティスを並べた単独ページから、3 クライアントの入口となるハブページへ全面改稿された。ランチャーとクライアントのどちらがフラグを所有するかという区別が新たに明文化されている（詳細はハイライト 1 参照）。
+- [**Understanding Authorization in MCP**](#2-understanding-authorization-in-mcp) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization)):  
+  C# のサンプルが `Program.cs` の断片だけだったものから、プロジェクトファイルとツール実装を含む動かせる構成に補完された。`ResourceMetadata` の設定も `Uri` を明示的に組み立てない書き方に改められている。
 <!-- light:updated-pages:end -->
+
+## 1. MCP Inspector
+
+Inspector のハブページは、旧版の構成（Getting started / Feature overview / Best practices / Next steps）をほぼ全面的に置き換えました。旧版はデバッグガイドの補足として Inspector の機能を掘り下げる位置づけで、サーバー接続ペイン・Resources / Prompts / Tools タブ・通知ペインを列挙し、開発ワークフローのベストプラクティスを 3 段階で述べる内容でした。新版はまず 3 クライアントの表を置き、Quickstart をクライアント別のタブで示し、末尾のカード群から 7 つの専門ページへ誘導する構成に変わっています。
+
+内容面で新たに加わったのは、Node 22.19.0 以上という前提、`--server-url` によるリモートサーバーへの接続例、そしてランチャーとクライアントのフラグ所有権の区別です。特に後者は、モードフラグがコマンドラインの先頭でのみ解釈され、それ以降は無変換でクライアントへ転送されるという解析規則と、`--help` がモードフラグの有無で異なる出力になるという挙動を含みます。詳細はハイライト 1 を参照してください。
+
+- [MCP Inspector - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector#quickstart)
+- [MCP Inspector - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector#launcher-flags-vs-client-flags)
+
+## 2. Understanding Authorization in MCP
+
+OAuth 2.1 で MCP サーバーを保護するチュートリアルの、C# タブが補完されました。従来は `Program.cs` に相当するコード片だけが載っており、そのままでは動かせない状態でしたが、今回サーバーのルートに `Program.cs` と `ProtectedMcpServer.csproj` を作り `Tools` フォルダを置くという配置の説明が加わり、`.csproj`（`net9.0`、`Microsoft.AspNetCore.Authentication.JwtBearer` 9.0.18 と `ModelContextProtocol` / `ModelContextProtocol.AspNetCore` 2.0.0 への参照）と、`Add` / `Multiply` の 2 ツールを実装した `Tools/MathTools.cs`、そして `dotnet run` での起動までが揃いました。
+
+あわせて既存のコードにも小さな変更が入っています。`ResourceMetadata` の設定で `Resource` と `ResourceDocumentation`、`AuthorizationServers` に `new Uri(...)` を明示的に渡していたものが、文字列や変数をそのまま代入する書き方に改められました。TypeScript タブと Python タブに変更はありません。
+
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#mcp-server-setup)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回変更のあった 43 ページは、内容としては以下に集約されます。
+Inspector 関連以外に変更のあったページは 8 件で、SEP への追記・組織情報の更新・誤字修正が中心です。
 
 **機能改善**
 
-- Final ステータスに達した SEP ページ 41 件すべての冒頭に、当該 SEP が採択時点の設計の歴史的記録であり、最終化後のプロトコル変更は反映されない旨の注記が追加された（詳細はハイライト 1 参照）
-- SEP Guidelines の「Reporting SEP Bugs or Updates」に、Final SEP は最終化後に更新されず、SEP 確定後に仕様が変わった場合は現行仕様が権威を持つ旨の段落が追加された（詳細はハイライト 1 参照） — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#reporting-sep-bugs-or-updates)
-- Versioning ページの「Revisions」で、current として示されるプロトコルバージョンが `2025-11-25` から `2026-07-28` に更新された（詳細はハイライト 3 参照） — [Versioning](https://modelcontextprotocol.io/docs/2026-07-28/learn/versioning#revisions)
+- SEP-2575（Make MCP Stateless）に、Final 化後に仕様側で変わった点を列挙する「Changes since SEP became Final」節が追加された（詳細はハイライト 5 参照） — [SEP-2575: Make MCP Stateless](https://modelcontextprotocol.io/seps/2575-stateless-mcp#changes-since-sep-became-final)
+- SDKs のティア表で Ruby SDK が Tier 3 から Tier 2 に引き上げられ、表内の並びも Tier 2 のグループへ移った — [SDKs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#available-sdks)
 
-**バグ修正**
+**その他**
 
-- Tasks 拡張（SEP-2663）に残っていた Missing Required Client Capability のエラーコード `-32003` が、現行仕様の採番である `-32021` に修正された（詳細はハイライト 2 参照） — [SEP-2663: Tasks Extension](https://modelcontextprotocol.io/seps/2663-tasks-extension#error-handling)
-- SEP-1865（MCP Apps）の著者一覧が末尾のカンマで途切れていたものが補完され、3 名から 9 名になった — [SEP-1865: MCP Apps - Interactive User Interfaces for MCP](https://modelcontextprotocol.io/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp)
-- SEP-2322（Multi Round-Trip Requests）の著者一覧が同様に補完され、Gabriel Zimmerman が加わって 3 名になった — [SEP-2322: Multi Round-Trip Requests](https://modelcontextprotocol.io/seps/2322-MRTR)
-- SEP-2575（Make MCP Stateless）の著者一覧が同様に補完され、Shaun Smith・Harvey Tuch・Kurtis Van Gent が加わって 5 名になった — [SEP-2575: Make MCP Stateless](https://modelcontextprotocol.io/seps/2575-stateless-mcp)
+- Tasks 拡張のリポジトリ参照が `experimental-ext-tasks` から `ext-tasks` に変更された（同ページ内のカードは以前から `ext-tasks` を指しており、本文のリンク先と表記がそれに揃った） — [Tasks](https://modelcontextprotocol.io/extensions/tasks/overview#specification)
+- Registry ワーキンググループの憲章で @tadasant が Lead を退き、@rdimitrov の単独 Lead になった。@tadasant は WG メンバーとして残り、変更履歴にも 2026年07月30日付で記載された — [Registry Charter](https://modelcontextprotocol.io/community/working-groups/registry#leadership)
+- SEP-1577（Sampling With Tools）で `Theses` が `These` に修正された — [SEP-1577: Sampling With Tools](https://modelcontextprotocol.io/seps/1577--sampling-with-tools#possible-follow-ups)
+- SEP-991（CIMD によるクライアント登録）で `motiviation` と `espcially` の 2 箇所の誤字が修正された — [SEP-991: Enable URL-based Client Registration using OAuth Client ID Metadata Documents](https://modelcontextprotocol.io/seps/991-enable-url-based-client-registration-using-oauth-c#risk-client-implementation-burden-especially-local-clients)
+- SEP-2260（サーバーリクエストのクライアントリクエストへの紐付け）で `recieving` が `receiving` に修正された — [SEP-2260: Require Server requests to be associated with a Client request.](https://modelcontextprotocol.io/seps/2260-Require-Server-requests-to-be-associated-with-Client-requests#for-client-implementers)
+- SEP-2322（Multi Round-Trip Requests）で `wit` と `taks` の 2 箇所の誤字が修正された — [SEP-2322: Multi Round-Trip Requests](https://modelcontextprotocol.io/seps/2322-MRTR#persistent-tool-workflow)
+- 原文 `llms-full.txt` 上で SEP-1865 から SEP-2549 までの 14 ページがファイル末尾へ移動した。ページ本文の内容に変更はなく、今回の行差分の大半はこの並び替えによるもの
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-07-28.md](./archives/latest/2026-07-28.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-07-28.md](./archives/latest-detail/2026-07-28.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-01.md](./archives/latest/2026-08-01.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-01.md](./archives/latest-detail/2026-08-01.md)
 
 <!--
-base_commit: 37f111d9d0c49fa9fd2ab79826f803c7de899551
-head_commit: 19822214b48ea654ba58df34a2f03353c8f7a40b
-generated_at_full: 2026-08-02T19:32:36+09:00
+base_commit: 19822214b48ea654ba58df34a2f03353c8f7a40b
+head_commit: cd5d9d06955862d48e3c3baead8d13981f95665d
+generated_at_full: 2026-08-03T15:04:43+09:00
 -->
