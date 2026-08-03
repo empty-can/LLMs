@@ -42,7 +42,14 @@
 - [Versioning](https://modelcontextprotocol.io/docs/2026-07-28/learn/versioning.md)
 - [SDKs](https://modelcontextprotocol.io/docs/2026-07-28/sdk.md): Official SDKs for building with Model Context Protocol
 - [Debugging](https://modelcontextprotocol.io/docs/2026-07-28/tools/debugging.md): A comprehensive guide to debugging Model Context Protocol (MCP) integrations
-- [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector.md): In-depth guide to using the MCP Inspector for testing and debugging Model Context Protocol servers
+- [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector.md): Interactive developer tooling for testing and debugging MCP servers, in the browser, on the command line, and in the terminal
+- [Authorization](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization.md): How the MCP Inspector performs OAuth, re-authorizes mid-session, and shares tokens between its clients
+- [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli.md): Scripting the MCP Inspector: methods, output formats, exit codes, and CI recipes
+- [Configuration and flags](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration.md): Catalog vs. config files, which client owns which flag, and every environment variable
+- [Protocol eras](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras.md): How the Inspector negotiates legacy vs. modern MCP, and how every feature is handled between protocol eras
+- [Recipes](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes.md): Practical guides for transports, importing configs, reviewing MCP Apps, Docker, and network hosting
+- [TUI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui.md): The terminal MCP Inspector: navigation, tabs, and keyboard reference
+- [Web client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web.md): A tab-by-tab walkthrough of the graphical MCP Inspector
 - [Understanding Authorization in MCP](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization.md): Learn how to implement secure authorization for MCP servers using OAuth 2.1 to protect sensitive resources and operations
 - [Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices.md): Security considerations, attack vectors, and best practices for MCP implementations
 - [Example Servers](https://modelcontextprotocol.io/examples.md): A list of example servers and implementations
