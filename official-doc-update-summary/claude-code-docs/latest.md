@@ -36,11 +36,11 @@
 
 ## 大幅に更新されたページ
 
-- [**フックリファレンス**](./latest-detail.md#1-フックリファレンス) ([English](https://code.claude.com/docs/en/hooks)):  
+- [**フックリファレンス**](./latest-detail.md#1-フックリファレンス) ([日本語](https://code.claude.com/docs/ja/hooks) / [English](https://code.claude.com/docs/en/hooks)):  
   新イベント `DirectoryAdded`（ハイライト 2 参照）が、ライフサイクル図・イベント一覧・matcher 一覧・exit code 表・JSON 出力表・対応フック形式の一覧まで一通りに反映された。
-- [**フックでアクションを自動化する**](./latest-detail.md#2-フックでアクションを自動化する) ([English](https://code.claude.com/docs/en/hooks-guide)):  
+- [**フックでアクションを自動化する**](./latest-detail.md#2-フックでアクションを自動化する) ([日本語](https://code.claude.com/docs/ja/hooks-guide) / [English](https://code.claude.com/docs/en/hooks-guide)):  
   イベント一覧への `DirectoryAdded` 追加に加えて、フック入力の説明が JSON 内コメントから地の文と箇条書きに再構成された。
-- [**インストールとログインのトラブルシューティング**](./latest-detail.md#3-インストールとログインのトラブルシューティング) ([English](https://code.claude.com/docs/en/troubleshoot-install)):  
+- [**インストールとログインのトラブルシューティング**](./latest-detail.md#3-インストールとログインのトラブルシューティング) ([日本語](https://code.claude.com/docs/ja/troubleshoot-install) / [English](https://code.claude.com/docs/en/troubleshoot-install)):  
   ダウンロードサーバーへの到達確認が macOS/Linux と Windows PowerShell の 2 タブに分かれ、成功判定の説明も両プラットフォームぶんに書き分けられた。
 
 ## 軽微な更新

@@ -40,7 +40,7 @@
 
 この既定の入れ替わりに合わせて、これまで「default renderer（既定のレンダラー）」と呼んでいたものが**クラシックレンダラー**という呼称に統一されました。インタラクティブモードのページでは、トランスクリプトビューアの `Ctrl+E`（全内容の表示トグル）がクラシックレンダラー専用であること、`Ctrl+R` の説明の「以下の手順は既定のインライン検索について述べたもの」が「以下の手順はクラシックレンダラーのインライン検索について述べたもの」に変わっています。キーバインドのページでも、`transcript:toggleShowAll` が効くのはクラシックレンダラーのみであること、`historySearch:next` などの既定バインドがクラシックレンダラーのインライン履歴検索に対応することが同じ言い方に揃えられました。どれも指している挙動は従来と同じで、既定側が入れ替わったことによる呼称の整理です。
 
-- [Fullscreen rendering - Claude Code Docs (English)](https://code.claude.com/docs/en/fullscreen)
+- [日本語](https://code.claude.com/docs/ja/fullscreen) / [Fullscreen rendering - Claude Code Docs (English)](https://code.claude.com/docs/en/fullscreen)
 - [Interactive mode - Claude Code Docs (English)](https://code.claude.com/docs/en/interactive-mode#transcript-viewer)
 
 ## 2. ディレクトリ追加で発火するフックイベント DirectoryAdded の新設
@@ -58,7 +58,7 @@
 
 関連する記述が周辺ページにも反映されました。プラグインの発見ページの「Claude Code は起動時に公式 Anthropic マーケットプレイスを自動で追加します」は「**初めて対話的に起動したとき**に自動で追加します」に変わり、自分で追加すべき理由に「ネットワークがダウンロードをブロックしている場合」に加えて「マーケットプレイスのポリシーが以前の試行をブロックした場合」が並びました。プラグイン作成ページの 2 つの公開マーケットプレイスの説明も同様です。環境変数 `CLAUDE_CODE_DISABLE_OFFICIAL_MARKETPLACE_AUTOINSTALL` は、従来の「初回実行時の公式プラグインマーケットプレイスの自動追加をスキップするには `1` を設定」から大きく書き足され、Claude Code がこの変数を読むのは**マーケットプレイスを登録しようとする時点**（通常はそのマシンの初回対話起動時）であること、その時点で設定されていれば登録を**恒久的に**スキップすること、あとから変数を解除してもスキップは取り消されないこと、`claude plugin marketplace add anthropics/claude-plugins-official` を実行すればいつでも登録できることが明記されました。
 
-- [Create and distribute a plugin marketplace - Claude Code Docs (English)](https://code.claude.com/docs/en/plugin-marketplaces#managed-marketplace-restrictions)
+- [日本語](https://code.claude.com/docs/ja/plugin-marketplaces#managed-marketplace-restrictions) / [Create and distribute a plugin marketplace - Claude Code Docs (English)](https://code.claude.com/docs/en/plugin-marketplaces#managed-marketplace-restrictions)
 - [Claude Code settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#strictknownmarketplaces)
 
 ## 4. ヘッドレス実行の終了コードと bare mode の認証要件が明記された
@@ -87,11 +87,11 @@ bare mode の認証の説明も、節の末尾からコード例の直前へ移�
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**フックリファレンス**](#1-フックリファレンス) ([English](https://code.claude.com/docs/en/hooks)):  
+- [**フックリファレンス**](#1-フックリファレンス) ([日本語](https://code.claude.com/docs/ja/hooks) / [English](https://code.claude.com/docs/en/hooks)):  
   新イベント `DirectoryAdded`（ハイライト 2 参照）が、ライフサイクル図・イベント一覧・matcher 一覧・exit code 表・JSON 出力表・対応フック形式の一覧まで一通りに反映された。
-- [**フックでアクションを自動化する**](#2-フックでアクションを自動化する) ([English](https://code.claude.com/docs/en/hooks-guide)):  
+- [**フックでアクションを自動化する**](#2-フックでアクションを自動化する) ([日本語](https://code.claude.com/docs/ja/hooks-guide) / [English](https://code.claude.com/docs/en/hooks-guide)):  
   イベント一覧への `DirectoryAdded` 追加に加えて、フック入力の説明が JSON 内コメントから地の文と箇条書きに再構成された。
-- [**インストールとログインのトラブルシューティング**](#3-インストールとログインのトラブルシューティング) ([English](https://code.claude.com/docs/en/troubleshoot-install)):  
+- [**インストールとログインのトラブルシューティング**](#3-インストールとログインのトラブルシューティング) ([日本語](https://code.claude.com/docs/ja/troubleshoot-install) / [English](https://code.claude.com/docs/en/troubleshoot-install)):  
   ダウンロードサーバーへの到達確認が macOS/Linux と Windows PowerShell の 2 タブに分かれ、成功判定の説明も両プラットフォームぶんに書き分けられた。
 <!-- light:updated-pages:end -->
 
