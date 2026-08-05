@@ -43,7 +43,7 @@
 なお、集約全文（`llms-full.txt`）には旧 ultraplan ページの本文がまだ残っており、権限モードのプラン承認オプションや Remote Control のトラブルシュートなど、周辺ページからの言及も未修正のままです。索引と見出しマップが先に更新され、本文側の追従は次回以降になる形です。
 
 - [日本語](https://code.claude.com/docs/ja/permission-modes#analyze-before-you-edit-with-plan-mode) / [Choose a permission mode - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#analyze-before-you-edit-with-plan-mode)
-- [Get started with Claude Code on the web - Claude Code Docs (English)](https://code.claude.com/docs/en/web-quickstart)
+- [日本語](https://code.claude.com/docs/ja/web-quickstart) / [Get started with Claude Code on the web - Claude Code Docs (English)](https://code.claude.com/docs/en/web-quickstart)
 
 ## 2. サンドボックスの認証情報ファイルのマスクと Bash 権限チェックの修正
 
@@ -189,7 +189,7 @@ Linux では `notify-send` がデスクトップ通知デーモンを必要と�
 - 同じページの bare mode の認証の説明が「bare mode は OAuth とシステムキーチェーンをスキップするので」から「bare mode では Claude Code が OAuth の認証情報もシステムキーチェーンも読むことはない」に書き換えられました。渡し方（`ANTHROPIC_API_KEY`、`--settings` の `apiKeyHelper`、各プロバイダの認証情報）は変わりません — [English](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode)
 - サブエージェントのページで、組み込みサブエージェントの権限の説明が「追加のツール制限とともに親の会話の権限を継承する」から「親の会話の権限を継承し、**ほとんどは**制限されたツールセットで動く」に改められました — [English](https://code.claude.com/docs/en/sub-agents#built-in-subagents)
 - 同じページのクイックスタートに、委譲がトランスクリプトでどう見えるか（`code-improver (Suggest code improvements)` のように、サブエージェント名とタスクの短い説明が並ぶツール呼び出しの行になる）が加わりました。サブエージェントファイルのコードブロックにも `.claude/agents/code-reviewer.md` というファイル名が付き、どこに置くファイルなのかが例から読めるようになっています — [English](https://code.claude.com/docs/en/sub-agents#quickstart-create-your-first-subagent)
-- 同じページの fork パネルのキー操作表で、`x` の説明が「選択中の fork の行に作用する。メインセッションの行や、`Enter` でトランスクリプトを開いた fork の行では、代わりにプロンプトへの入力になる」まで書かれるようになりました — [English](https://code.claude.com/docs/en/sub-agents#observe-and-steer-running-forks)
+- 同じページの fork パネルのキー操作表で、`x` の説明が「選択中の fork の行に作用する。メインセッションの行や、`Enter` でトランスクリプトを開いた fork の行では、代わりにプロンプトへの入力になる」まで書かれるようになりました — [日本語](https://code.claude.com/docs/ja/sub-agents#observe-and-steer-running-forks) / [English](https://code.claude.com/docs/en/sub-agents#observe-and-steer-running-forks)
 - コマンドのページで `/heapdump` の説明に、メモリの問題を報告するときは `-diagnostics.json` だけを添えること、コマンドメニューには出ないので全部打つ必要があることが加わりました。冒頭の案内も「`/` を打つと使えるコマンドが**すべて**表示される」から「使えるコマンドが表示される」に改められています — [English](https://code.claude.com/docs/en/commands#all-commands)
 - 動的ワークフローのページで、`agent()` の呼び出しは実行中に止めたときや回復不能な API エラーに当たったときに `null` を返すこと、`pipeline()` はその `null` を結果の配列に残すため例が `.filter(Boolean)` で終わっていることが説明されました — [English](https://code.claude.com/docs/en/workflows#what-the-saved-script-looks-like)
 - Agent SDK（TypeScript）のインストールの注記に、npm の `libc` フィールドを解釈しないパッケージマネージャ（Yarn 1.x など）では Linux で glibc と musl の両方のプラットフォームパッケージが入り、インストールサイズがおよそ倍になることが書かれました。SDK は正しい方を起動するので動作には影響せず、コンテナイメージで容量を取り戻すには合わない方を消せます（glibc の x64 実行環境なら `rm -rf node_modules/@anthropic-ai/claude-agent-sdk-linux-x64-musl`）。開発マシンでは Yarn が次の依存更新で入れ直すため一時的です — [English](https://code.claude.com/docs/en/agent-sdk/typescript#installation)
