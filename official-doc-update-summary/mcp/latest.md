@@ -1,85 +1,53 @@
 ---
-対象期間: 2026年08月01日 〜 2026年08月02日
-作成日: 2026-08-02
+対象期間: 2026年08月02日 〜 2026年08月05日
+作成日: 2026-08-05
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は、MCP Inspector のドキュメントが 1 ページから 8 ページ構成へ全面的に再編されたのが中心です。新規追加 7 ページ・大幅更新 2 ページ・軽微更新 8 ページで、Inspector 以外の変更は SEP への追記・組織情報の更新・誤字修正にとどまります。
+今回の対象期間は、Agents ワーキンググループの憲章が新規公開された 1 件が実質的な変更のすべてです。新規追加 1 ページ・大幅更新 0 ページ・軽微更新 1 ページで、残る 1 件はコアメンテナー一覧の異動にとどまります。
 
 主要なものを以下に挙げます。
 
-1. MCP Inspector のドキュメントが 8 ページ構成に再編され、Web / CLI / TUI の 3 クライアント体制が明文化された
-2. `2026-07-28` 前後の挙動差を、サーバー単位で切り替える「プロトコル世代」設定として整理したページが新設された
-3. CLI クライアントの終了コード体系と JSON 1 行のエラー出力が定義され、CI から失敗理由を機械的に分岐できるようになった
-4. OAuth トークンが 3 クライアント共通のストアに保存されることと、Web で取得したトークンを CLI へ引き継ぐ手順が示された
-5. SEP-2575 に「Final 化後の変更」節が追加され、確定済み SEP と現行仕様の乖離が SEP 側から追えるようになった
+1. エージェントを背後に持つシステムとの相互運用を扱う Agents ワーキンググループが発足し、憲章が公開された
+2. Tasks 拡張（SEP-2663）の安定化とコアプロトコルへの昇格が、この WG の第一の作業項目として明記された
+3. Agents Extension を新設するかどうかは予断せず、既存プリミティブで足りるかを含めて評価する段階と位置づけられた
 ```
 
 ## ハイライト
 
-1. [**MCP Inspector ドキュメントの全面再編**](./latest-detail.md#1-mcp-inspector-ドキュメントの全面再編):  
-  機能一覧とベストプラクティスを並べた 1 ページ構成から、ハブページ + 7 つの専門ページという 8 ページ構成へ再編された。`@modelcontextprotocol/inspector` という 1 パッケージが Web・CLI・TUI の 3 クライアントを内包すること、共通コアにより接続の挙動が 3 者で一致することが前面に出ている。
-2. [**プロトコル世代の明示的な切り替え設定**](./latest-detail.md#2-プロトコル世代の明示的な切り替え設定):  
-  `2026-07-28` 前後の挙動差を、トランスポートとは独立したサーバー単位の設定 `protocolEra`（`legacy` / `auto` / `modern`）として扱う方針が文書化された。ログ・購読・タスク・MRTR・ヘッダー・セッションの各領域について、両世代の違いと再現用のテストサーバー設定が対比表で示されている。
-3. [**CLI クライアントの機械可読インターフェース**](./latest-detail.md#3-cli-クライアントの機械可読インターフェース):  
-  1 回の実行で 1 リクエストだけ投げて終了する CLI について、失敗の種類ごとに割り当てられた終了コード 0〜5 と、非ゼロ終了時に標準エラーへ 1 行で出る JSON エラーが定義された。CI がプロンプトの文面を読まずに失敗理由を分岐できる。
-4. [**Inspector の認可とトークン共有**](./latest-detail.md#4-inspector-の認可とトークン共有):  
-  3 クライアントが `~/.mcp-inspector/storage/oauth.json` という共通のストアを参照するため、一度サインインすればどのクライアントからも使える。CLI と TUI は固定のコールバック URL を共有し、Web で完了した認可をスクリプトへ引き継ぐ専用フラグも用意されている。
-5. [**SEP-2575 に Final 化後の変更履歴が追加**](./latest-detail.md#5-sep-2575-に-final-化後の変更履歴が追加):  
-  Final に達した SEP は更新されないという方針の下で、SEP-2575 に「Final 化後に仕様側で変わった点」を列挙する節が加わった。前回のサマリで取り上げた歴史的記録注記の一斉付与に続く、具体的な運用の第 1 例にあたる。
+1. [**Agents ワーキンググループの新設**](./latest-detail.md#1-agents-ワーキンググループの新設):  
+  エージェントを背後に持つシステムとのやり取りを MCP 上で相互運用可能にすることを目的とする Working Group が発足した。リードは Luca Chang（Amazon Web Services）と Caitie McCaffrey（Microsoft）の 2 名で、週 1 回 30 分の作業セッションと Discord の `#agents-wg` チャンネルを持つ。Roadmap が「Agent Communication」の担い手として名前を挙げていたグループが、憲章を伴って正式に立ち上がった形になる。
+2. [**Tasks 拡張のコアプロトコル昇格が正式な作業項目に**](./latest-detail.md#2-tasks-拡張のコアプロトコル昇格が正式な作業項目に):  
+  `io.modelcontextprotocol/tasks` 拡張の安定化と、それを MCP のコアプロトコルへ昇格させることがスコープの筆頭に置かれた。成功基準にも「拡張からコアプロトコルへ昇格していること」が明記され、実装フィードバックの収集・曖昧さの解消・ライフサイクル変更案の評価が具体的な作業として挙げられている。
+3. [**Agents Extension は要否の評価から始める**](./latest-detail.md#3-agents-extension-は要否の評価から始める):  
+  憲章は Agents Extension を作ると決めていない。agent-as-tool・remote-agent・supervisor/sub-agent という利用パターンを検討したうえで、Tasks を発展させるか、Agents Extension を導入するか、既存プリミティブの使い方を文書化するかを選ぶ建て付けになっている。エージェントフレームワークの内部（計画・記憶・モデル選択・オーケストレーション）は明示的に対象外とされた。
 
 ## 新規追加されたページ
 
-- [**Web client**](./latest-detail.md#1-web-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web)):  
-  ブラウザ版 Inspector のタブ別解説。セッショントークンの扱い、各タブの表示条件、監視系タブをサイドバーへまとめるモニターグループ、外部から接続済み画面へ飛ばすディープリンクのパラメーターが示された。
-- [**CLI client**](./latest-detail.md#2-cli-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli)):  
-  スクリプト向けクライアントの解説。`--method` で指定できるメソッド一覧、引数の渡し方 2 系統、出力形式、終了コードとエラー封筒、CI 用のレシピが揃った（詳細はハイライト 3 参照）。
-- [**TUI client**](./latest-detail.md#3-tui-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui)):  
-  ターミナル UI 版の解説。8 タブとキー割り当ての一覧、HTTP サーバーの認可手順、固定コールバックポート `6276` を採用した理由と回避策が示された。
-- [**Configuration and flags**](./latest-detail.md#4-configuration-and-flags) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration)):  
-  フラグと環境変数を所有者（ランチャー / Web / CLI / TUI）別に整理したリファレンス。書き込み可能な `--catalog` と読み取り専用の `--config` の違い、カタログファイルの書式が定義された。
-- [**Authorization**](./latest-detail.md#5-authorization) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization)):  
-  Inspector の OAuth の全体像。6 ステップのフロー、クライアント別のコールバック URL、認証情報の保存先、セッション途中の再認可とステップアップがまとめられた（詳細はハイライト 4 参照）。
-- [**Protocol eras**](./latest-detail.md#6-protocol-eras) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras)):  
-  `2026-07-28` 前後の挙動差を機能ごとに対比したページ。ログ・購読・タスク・MRTR・ヘッダーとエラー分類・セッションの各領域について、両世代の違いと再現手順が示された（詳細はハイライト 2 参照）。
-- [**Recipes**](./latest-detail.md#7-recipes) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes)):  
-  実践的な手順集。stdio / HTTP の接続、他クライアントの設定ファイル取り込み、MCP App の自動レビュー、Docker 実行、ネットワーク公開時の注意点がまとまった。
+- [**Agents Charter**](./latest-detail.md#1-agents-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/agents)):  
+  MCP Agents ワーキンググループの憲章。ミッション・スコープ・関連グループ・リーダーシップ・意思決定権限・メンバーシップ・運営・リソース・成果物と成功基準が、既存の憲章ページと同じ節構成で定義された（詳細はハイライト 1〜3 参照）。
 
 ## 大幅に更新されたページ
 
-- [**MCP Inspector**](./latest-detail.md#1-mcp-inspector) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector)):  
-  機能一覧とベストプラクティスを並べた単独ページから、3 クライアントの入口となるハブページへ全面改稿された。ランチャーとクライアントのどちらがフラグを所有するかという区別が新たに明文化されている（詳細はハイライト 1 参照）。
-- [**Understanding Authorization in MCP**](./latest-detail.md#2-understanding-authorization-in-mcp) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization)):  
-  C# のサンプルが `Program.cs` の断片だけだったものから、プロジェクトファイルとツール実装を含む動かせる構成に補完された。`ResourceMetadata` の設定も `Uri` を明示的に組み立てない書き方に改められている。
+既存ページ本文に 50 行以上の変更があったページはありません。新規ページ以外の変更は 1 行の異動のみで、下記「軽微な更新」に整理しています。
 
 ## 軽微な更新
 
-Inspector 関連以外に変更のあったページは 8 件で、SEP への追記・組織情報の更新・誤字修正が中心です。
-
-**機能改善**
-
-- SEP-2575（Make MCP Stateless）に、Final 化後に仕様側で変わった点を列挙する「Changes since SEP became Final」節が追加された（詳細はハイライト 5 参照） — [SEP-2575: Make MCP Stateless](https://modelcontextprotocol.io/seps/2575-stateless-mcp#changes-since-sep-became-final)
-- SDKs のティア表で Ruby SDK が Tier 3 から Tier 2 に引き上げられ、表内の並びも Tier 2 のグループへ移った — [SDKs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#available-sdks)
+新規ページ以外に変更のあったページは 1 件で、メンテナー一覧の異動です。
 
 **その他**
 
-- Tasks 拡張のリポジトリ参照が `experimental-ext-tasks` から `ext-tasks` に変更された（同ページ内のカードは以前から `ext-tasks` を指しており、本文のリンク先と表記がそれに揃った） — [Tasks](https://modelcontextprotocol.io/extensions/tasks/overview#specification)
-- Registry ワーキンググループの憲章で @tadasant が Lead を退き、@rdimitrov の単独 Lead になった。@tadasant は WG メンバーとして残り、変更履歴にも 2026年07月30日付で記載された — [Registry Charter](https://modelcontextprotocol.io/community/working-groups/registry#leadership)
-- SEP-1577（Sampling With Tools）で `Theses` が `These` に修正された — [SEP-1577: Sampling With Tools](https://modelcontextprotocol.io/seps/1577--sampling-with-tools#possible-follow-ups)
-- SEP-991（CIMD によるクライアント登録）で `motiviation` と `espcially` の 2 箇所の誤字が修正された — [SEP-991: Enable URL-based Client Registration using OAuth Client ID Metadata Documents](https://modelcontextprotocol.io/seps/991-enable-url-based-client-registration-using-oauth-c#risk-client-implementation-burden-especially-local-clients)
-- SEP-2260（サーバーリクエストのクライアントリクエストへの紐付け）で `recieving` が `receiving` に修正された — [SEP-2260: Require Server requests to be associated with a Client request.](https://modelcontextprotocol.io/seps/2260-Require-Server-requests-to-be-associated-with-Client-requests#for-client-implementers)
-- SEP-2322（Multi Round-Trip Requests）で `wit` と `taks` の 2 箇所の誤字が修正された — [SEP-2322: Multi Round-Trip Requests](https://modelcontextprotocol.io/seps/2322-MRTR#persistent-tool-workflow)
-- 原文 `llms-full.txt` 上で SEP-1865 から SEP-2549 までの 14 ページがファイル末尾へ移動した。ページ本文の内容に変更はなく、今回の行差分の大半はこの並び替えによるもの
+- Governance and Stewardship ページで、Nick Aldridge が「Current Core Maintainers」の一覧から外れ、「Emeritus」へ `Core Maintainer Emeritus` として移った。Lead Maintainers（David Soria Parra / Den Delimarsky）と、残る 6 名のコアメンテナーに変更はない — [Governance and Stewardship](https://modelcontextprotocol.io/community/governance#emeritus)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-01.md](./archives/latest/2026-08-01.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-01.md](./archives/latest-detail/2026-08-01.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-02.md](./archives/latest/2026-08-02.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-02.md](./archives/latest-detail/2026-08-02.md)
 
 <!--
-base_commit: 19822214b48ea654ba58df34a2f03353c8f7a40b
-head_commit: cd5d9d06955862d48e3c3baead8d13981f95665d
-generated_at_full: 2026-08-03T15:04:43+09:00
+base_commit: cd5d9d06955862d48e3c3baead8d13981f95665d
+head_commit: 2d8e1c4da653076ba8407a1a3ad4fb3b54462e01
+generated_at_full: 2026-08-06T15:30:35+09:00
 -->
