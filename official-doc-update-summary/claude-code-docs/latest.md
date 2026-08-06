@@ -39,15 +39,15 @@
 
 ## 大幅に更新されたページ
 
-- [**Claude Code GitHub Actions**](./latest-detail.md#1-claude-code-github-actions) ([English](https://code.claude.com/docs/en/github-actions)):  
+- [**Claude Code GitHub Actions**](./latest-detail.md#1-claude-code-github-actions) ([日本語](https://code.claude.com/docs/ja/github-actions) / [English](https://code.claude.com/docs/en/github-actions)):  
   全面改稿。クラウドプロバイダー編を別ページへ出し、組織展開・アンインストール・GitHub App 権限・起動できる人の条件といった節が新たに立った。
-- [**サンドボックス化された Bash ツールを設定する**](./latest-detail.md#2-サンドボックス化された-bash-ツールを設定する) ([English](https://code.claude.com/docs/en/sandboxing)):  
+- [**サンドボックス化された Bash ツールを設定する**](./latest-detail.md#2-サンドボックス化された-bash-ツールを設定する) ([日本語](https://code.claude.com/docs/ja/sandboxing) / [English](https://code.claude.com/docs/en/sandboxing)):  
   認証情報ファイルのマスク（ハイライト 2 参照）に加えて、設定を保護する対象に `.mcp.json` が加わり、ファイルシステム分離を切ったときに何が残るかが表に整理された。
-- [**フックリファレンス**](./latest-detail.md#3-フックリファレンス) ([English](https://code.claude.com/docs/en/hooks)):  
+- [**フックリファレンス**](./latest-detail.md#3-フックリファレンス) ([日本語](https://code.claude.com/docs/ja/hooks) / [English](https://code.claude.com/docs/en/hooks)):  
   PowerShell 対応（ハイライト 4 参照）のほか、クラウドセッションでのフックの出どころと、非同期フックが `-p` の終了時にどうなるかが加わった。
-- [**サンドボックス環境を選ぶ**](./latest-detail.md#4-サンドボックス環境を選ぶ) ([English](https://code.claude.com/docs/en/sandbox-environments)):  
+- [**サンドボックス環境を選ぶ**](./latest-detail.md#4-サンドボックス環境を選ぶ) ([日本語](https://code.claude.com/docs/ja/sandbox-environments) / [English](https://code.claude.com/docs/en/sandbox-environments)):  
   sandbox runtime の節が 3 つに分かれ、必要なパッケージ、許可すべき書き込み先とドメイン、ランタイムが設定なしでブロックするものが具体的に書かれた。
-- [**エージェントビューで複数のエージェントを管理する**](./latest-detail.md#5-エージェントビューで複数のエージェントを管理する) ([English](https://code.claude.com/docs/en/agent-view)):  
+- [**エージェントビューで複数のエージェントを管理する**](./latest-detail.md#5-エージェントビューで複数のエージェントを管理する) ([日本語](https://code.claude.com/docs/ja/agent-view) / [English](https://code.claude.com/docs/en/agent-view)):  
   バックグラウンドセッションの後始末の方針が箇条書きに整理され、コミットとプッシュは必ず、ドラフト PR はタスクが求めるときだけ、という形になった。
 
 ## 軽微な更新
@@ -56,7 +56,7 @@
 
 **新機能**
 
-- 自動コンパクトのウィンドウを設定する経路として `/autocompact` コマンド、`--autocompact` フラグ、`autoCompactWindow` 設定が加わりました（詳細はハイライト 1 参照）（v2.1.221） — [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- 自動コンパクトのウィンドウを設定する経路として `/autocompact` コマンド、`--autocompact` フラグ、`autoCompactWindow` 設定が加わりました（詳細はハイライト 1 参照）（v2.1.221） — [日本語](https://code.claude.com/docs/ja/cli-reference#cli-flags) / [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
 - 認証情報ファイルの `mask` に付随する `extract` / `onExtractNoMatch` / `maskDuplicates` / `injectHosts` の 4 キーが設定リファレンスに載りました（詳細はハイライト 2 参照）（v2.1.221） — [English](https://code.claude.com/docs/en/settings#sandbox-settings)
 - VS Code 拡張の Focus view が拡張機能側のドキュメントにも載りました。ツール呼び出し・ツール結果・思考をターンごとの展開可能な 1 行の裏に隠し、あなたのプロンプトと Claude の返答だけを残します。切り替えは設定パネル、`Ctrl+Option+F`（Mac）/ `Ctrl+Alt+F`（Windows・Linux）、コマンドパレットの「Claude Code: Toggle Focus view」のいずれかで、拡張設定のキーは `focusView` です（v2.1.221） — [English](https://code.claude.com/docs/en/vs-code#use-the-prompt-box)
 - `disableAutoMode` を `permissions` の下（`permissions.disableAutoMode`）にも書けるようになりました — [English](https://code.claude.com/docs/en/settings#permission-settings)
@@ -65,7 +65,7 @@
 
 - Google Cloud の Agent Platform でのツール検索の既定が、モデル世代で決まるようになりました。Claude Opus 4.5 / Sonnet 4.5 / Haiku 4.5 以降では Anthropic API と同じく既定で有効、それより前のモデルはサービング側がベータヘッダーを拒否するため常に一括読み込みで、`ENABLE_TOOL_SEARCH=true` でも覆せません。従来は全モデルで既定無効でした（v2.1.221） — [English](https://code.claude.com/docs/en/mcp#configure-tool-search)
 - `/plugin` からのインストールが、その場でプラグインを有効化できるようになりました。インストールのサマリが `Plugin is now active.` か `Run /reload-plugins to activate.` のどちらを出すかで、`/reload-plugins` が要るかどうかが分かります（後者になるのは、有効化がプロンプトキャッシュを無効化する場合か、有効化の試行が失敗した場合）。カタログにプラグインが無いときも、マーケットプレイスの自動更新が有効ならカタログを 1 度更新してから再試行します（v2.1.221） — [English](https://code.claude.com/docs/en/discover-plugins#install-plugins)
-- `/reload-plugins` は、再読み込みがプロンプトキャッシュの全再読み込みを引き起こす場合に警告して止まり、`--force` を付けて再実行すると適用されます — [English](https://code.claude.com/docs/en/prompt-caching#enabling-or-disabling-a-plugin)
+- `/reload-plugins` は、再読み込みがプロンプトキャッシュの全再読み込みを引き起こす場合に警告して止まり、`--force` を付けて再実行すると適用されます — [日本語](https://code.claude.com/docs/ja/prompt-caching#enabling-or-disabling-a-plugin) / [English](https://code.claude.com/docs/en/prompt-caching#enabling-or-disabling-a-plugin)
 - ストリームが途中で切れたときの扱いが書き足されました。Claude がテキストブロックかツール呼び出しを完了させたあとに切れた場合、Claude Code は完了した内容を保持したうえで**完了していたツール呼び出しを実行し、その結果からターンを継続**します（従来は不完全レスポンスの通知を出して終わる、とだけ書かれていました） — [English](https://code.claude.com/docs/en/errors#socket-is-closed)
 - fast mode の使用クレジットを使い切ったときの挙動が書かれました。拒否された fast mode のリクエストは標準速度・標準価格で再試行されるためクールダウンはありません。対話セッションでは「Fast mode disabled · usage credits exhausted」の通知が出てそのセッションの間は fast mode が切れます（保存された設定は変わらず、`/fast` で戻せます）。`--output-format stream-json` の非対話モードと Agent SDK では、同じ文言が `notification` サブタイプの `system` メッセージとしてターンごとに 1 回流れ、fast mode は有効なままです（v2.1.221） — [English](https://code.claude.com/docs/en/fast-mode#handle-rate-limits)
 - fast mode 非対応モデルへの切り替えの説明が整理され、Opus 4.7 も他の非対応モデルと同じく「切り替えると fast mode がオフになる」に変わりました。従来は Opus 4.7 でだけ fast mode が残り、API がリクエストを拒否する状態でした（v2.1.221） — [English](https://code.claude.com/docs/en/fast-mode#switch-models-while-fast-mode-is-on)
@@ -73,9 +73,9 @@
 - Agent SDK の MCP 接続タイミングが表に整理されました。stdio サーバーとツール一覧のキャッシュがない HTTP/SSE サーバーは接続まで最初のターンを待たせ（タイムアウトは `MCP_TIMEOUT`、既定 30 秒）、キャッシュ済みのリモートサーバーは待たせずキャッシュされたツールを使い、インプロセスの SDK サーバーは決して待たせません。設定ファイル（`.mcp.json` など）から読まれたサーバーはこの待機の対象外で、init メッセージの時点で `pending` に見えるのが普通だ、という注意も加わりました — [English](https://code.claude.com/docs/en/agent-sdk/mcp#connection-timing)
 - Agent SDK が同梱バイナリを持たないケースが明記されました。pip がプラットフォームホイールではなくソース配布を入れた場合（ARM64 Windows など）と、TypeScript SDK で `npm ci --omit=optional` のように optional dependencies を飛ばした場合です — [English](https://code.claude.com/docs/en/agent-sdk/quickstart#setup)
 - TypeScript SDK の `skills` オプションが、正確なスキル名のみを受け付けることが明記されました。空文字・括弧やカンマや制御文字を含む名前・前後に空白のある名前・`*` や `:*` のようなワイルドカード形は、Claude Code のプロセスを起動する前に `query()` が例外を投げます。すべてのスキルを有効にするならワイルドカードではなく `skills: "all"` を使います — [English](https://code.claude.com/docs/en/agent-sdk/skills#using-skills-with-the-sdk)
-- 管理設定の無効エントリの扱いが変わりました。`sandbox.credentials` の `files` / `envVars` で、`path` または `name` と `mask` か `deny` の `mode` が有効なまま `extract` にキャプチャグループが無いといった不備があるエントリは、除去ではなく `mode: "deny"` へ**格下げ**され、直すまで「マスクされない代わりに読めない」状態になります（v2.1.221 より前はすべて除去されていました） — [English](https://code.claude.com/docs/en/settings#invalid-entries-in-managed-settings)
+- 管理設定の無効エントリの扱いが変わりました。`sandbox.credentials` の `files` / `envVars` で、`path` または `name` と `mask` か `deny` の `mode` が有効なまま `extract` にキャプチャグループが無いといった不備があるエントリは、除去ではなく `mode: "deny"` へ**格下げ**され、直すまで「マスクされない代わりに読めない」状態になります（v2.1.221 より前はすべて除去されていました） — [日本語](https://code.claude.com/docs/ja/settings#invalid-entries-in-managed-settings) / [English](https://code.claude.com/docs/en/settings#invalid-entries-in-managed-settings)
 - claude.ai や Claude アプリ、デスクトップアプリでのセッション名の変更が CLI 側の名前にも反映されるようになりました。プロンプトバーの表示と `claude agents` の一覧に同じ名前が出ます（v2.1.221） — [English](https://code.claude.com/docs/en/sessions#name-your-sessions)
-- `acceptEdits` モードの PowerShell の説明に、引用符を含む位置指定引数（`Set-Content .\notes.txt "It's done"` のアポストロフィなど）は範囲内のパスでも確認を求める旨が加わりました。引用の有無で読みが変わる引数は静的に検証できないためで、`-Value` のような名前付きパラメータで渡せば確認は出ません — [English](https://code.claude.com/docs/en/permission-modes#auto-approve-file-edits-with-acceptedits-mode)
+- `acceptEdits` モードの PowerShell の説明に、引用符を含む位置指定引数（`Set-Content .\notes.txt "It's done"` のアポストロフィなど）は範囲内のパスでも確認を求める旨が加わりました。引用の有無で読みが変わる引数は静的に検証できないためで、`-Value` のような名前付きパラメータで渡せば確認は出ません — [日本語](https://code.claude.com/docs/ja/permission-modes#auto-approve-file-edits-with-acceptedits-mode) / [English](https://code.claude.com/docs/en/permission-modes#auto-approve-file-edits-with-acceptedits-mode)
 - 権限モードを切り替えたときに保留中だった分類器の判定は、新しいモードなら要求しなかったはずのものであれば破棄され、代わりに承認を求める（`dontAsk` モードでは自動的に拒否する）ようになりました — [English](https://code.claude.com/docs/en/permission-modes#when-auto-mode-falls-back)
 - 非対話セッションでは `help` と `feedback` がターミナル専用の組み込みコマンド名として予約されなくなり、この名前のプラグインスキルがそのままのコマンド名で使えるようになりました（`/login` など他のターミナル専用組み込みの名前は引き続き予約されます） — [English](https://code.claude.com/docs/en/skills#how-a-skill-gets-its-command-name)
 - Claude apps gateway が親から渡された `sandbox.credentials` を剥ぎ落として転送することが明記されました。`deny` は `path` / `name` とモードだけ、ファイルの `mask` は `injectHosts` を空にしたファイル全体マスクとして（＝プロキシは親由来のエントリで実値を差し込まない）、`envVars` の `mask` は転送しない、という扱いです — [English](https://code.claude.com/docs/en/claude-apps-gateway#settings-the-locks-dont-cover)
@@ -112,7 +112,7 @@
 - 環境変数のページは 300 以上の行が再整形されましたが、記述が実際に変わったのは 6 件です。`BASH_MAX_OUTPUT_LENGTH` と `BASH_MAX_TIMEOUT_MS`（ハイライト 5 参照）、`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` と `CLAUDE_CODE_AUTO_COMPACT_WINDOW`（ハイライト 1 参照）、`CLAUDE_CODE_RESUME_INTERRUPTED_TURN`（v2.1.221 以降は `0` などの falsy 値が尊重されることを追記）、`ENABLE_TOOL_SEARCH`（Google Cloud の Agent Platform の条件をモデル世代で限定）です — [English](https://code.claude.com/docs/en/env-vars#variables)
 - ゲートウェイの `model` フィールドが文字列でない場合、`model must be a string` というメッセージとともに 400 で拒否され、上流に届かないことが明記されました（v2.1.221 以降のゲートウェイが必要）— [English](https://code.claude.com/docs/en/claude-apps-gateway-config#managed)
 - サブエージェントの組み込みエージェント表で、前回のサマリで指摘した `claude` 行の重複が解消され、1 行に統合されました — [English](https://code.claude.com/docs/en/sub-agents#built-in-subagents)
-- プラグインのインストール手順を含む各ページ（プラグインの発見、プラグインマーケットプレイスの作成、スキル、チャンネル、セキュリティガイダンス、Claude Security、大規模コードベース）が、いずれも「インストール後に `/reload-plugins`」から「インストールのサマリが `Run /reload-plugins to activate.` を出したら実行する」という書き方に揃えられました — [English](https://code.claude.com/docs/en/discover-plugins#apply-plugin-changes-without-restarting)
+- プラグインのインストール手順を含む各ページ（プラグインの発見、プラグインマーケットプレイスの作成、スキル、チャンネル、セキュリティガイダンス、Claude Security、大規模コードベース）が、いずれも「インストール後に `/reload-plugins`」から「インストールのサマリが `Run /reload-plugins to activate.` を出したら実行する」という書き方に揃えられました — [日本語](https://code.claude.com/docs/ja/discover-plugins#apply-plugin-changes-without-restarting) / [English](https://code.claude.com/docs/en/discover-plugins#apply-plugin-changes-without-restarting)
 - 見出しマップに現れた以下の新しい節は、本文がまだ集約全文（`llms-full.txt`）に取り込まれていないため、内容の確認は次回以降になります: worktree の「Claude Code がどう分離を強制するか」と 2 つのトラブルシュート項目（「Claude Code が worktree の使用を拒否する」「セッションが自分の worktree の外で再開される」。ハイライト 3 参照） — [English](https://code.claude.com/docs/en/worktrees#how-claude-code-enforces-isolation) 、エージェントビューの「ターミナルを離れずにセッションを切り替える」「セッションを削除すると何が消えるか」、エージェントチームの「エージェント間のメッセージ」、スキルの「Claude Code の外でスキルの frontmatter を使う」、エラーリファレンスの「claude.ai がセッショントークンを拒否した」「Anthropic のサービスに接続できない」「ベースブランチとのマージベースが見つからない」、ネットワーク設定の「ストリームのアイドル監視」、コストの「プランごとの使用量の内訳」「使用量リクエストが失敗したとき」、Remote Control の「組織のコンプライアンスポリシーにより Remote Control を利用できない」
 - 見出しマップ上での削除・改称も 2 件あります。サブエージェントのトラブルシュートから「Windows での長いプロンプトの失敗」が消え、Agent SDK のチェックポイントのエラー見出しが `"No file checkpoint found for message"` から `"No file checkpoint found for this message"` に変わりました
 
