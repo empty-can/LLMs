@@ -32,7 +32,7 @@
 
 **機能改善**
 
-- 「権限モードを選択する」ページの Desktop タブで、モードセレクタが Code タブのものであることと、Cowork タブが独自の権限モードを持つことが明確化されました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
+- 「権限モードを選択する」ページの Desktop タブで、モードセレクタが Code タブのものであることと、Cowork タブが独自の権限モードを持つことが明確化されました（詳細はハイライト 1 参照）— [日本語](https://code.claude.com/docs/ja/permission-modes#switch-permission-modes) / [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
 
 ## 新着情報
 

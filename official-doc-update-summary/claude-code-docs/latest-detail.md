@@ -28,7 +28,7 @@
 
 あわせて、**Cowork タブはこれらのモードを使わない**という段落が新設されました。Cowork は別途有効化される独自の権限モードを持ち、既定を超えるモードがアカウントで有効化されるまで、**Cowork タブにはモードセレクタが一切表示されません**。詳細は Cowork 側のドキュメントを参照するよう案内されています。Cowork の権限モードにどのようなものがあるかは、このページには書かれていません。
 
-- [Choose a permission mode - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
+- [日本語](https://code.claude.com/docs/ja/permission-modes#switch-permission-modes) / [Choose a permission mode - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
 
 ## 新規追加されたページ
 
@@ -49,7 +49,7 @@
 
 **機能改善**
 
-- 「権限モードを選択する」ページの Desktop タブで、モードセレクタが Code タブのものであることと、Cowork タブが独自の権限モードを持つことが明確化されました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
+- 「権限モードを選択する」ページの Desktop タブで、モードセレクタが Code タブのものであることと、Cowork タブが独自の権限モードを持つことが明確化されました（詳細はハイライト 1 参照）— [日本語](https://code.claude.com/docs/ja/permission-modes#switch-permission-modes) / [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
 <!-- light:minor-updates:end -->
 
 ## 新着情報
