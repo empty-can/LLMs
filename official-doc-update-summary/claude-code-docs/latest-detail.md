@@ -29,7 +29,7 @@
 これに伴い、「インタラクティブモード」ページのプロンプト提案の説明も、無効化手段を 3 通りの箇条書きに整理する形へ書き換えられました。すなわち ①`/config` で **Prompt suggestions** をオフにする、②設定ファイルで `promptSuggestionEnabled` を `false` にする、③環境変数 `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` を `false` にする（設定より優先される）、の 3 つです。さらに、**組織全体でオフにする場合の手順**が新たに追記されました。[管理設定](https://code.claude.com/docs/en/settings#settings-files)で `promptSuggestionEnabled` を `false` にするだけでなく、管理設定の [`env`](https://code.claude.com/docs/en/settings#environment-variables) キーでも `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` を `false` に設定するよう案内されています。環境変数のほうが設定より優先されるため、これを押さえておかないと利用者が自分の環境変数でプロンプト提案を再び有効化できてしまうためです。
 
 - [Interactive mode - Claude Code Docs (English)](https://code.claude.com/docs/en/interactive-mode#prompt-suggestions)
-- [Claude Code settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#available-settings)
+- [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [Claude Code settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#available-settings)
 
 ## 新規追加されたページ
 
@@ -50,7 +50,7 @@
 
 **新機能**
 
-- 設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を設定ファイルから無効化できるようになりました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/settings#available-settings)
+- 設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を設定ファイルから無効化できるようになりました（詳細はハイライト 1 参照）— [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
 
 **機能改善**
 

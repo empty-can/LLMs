@@ -32,7 +32,7 @@
 
 **新機能**
 
-- 設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を設定ファイルから無効化できるようになりました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/settings#available-settings)
+- 設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を設定ファイルから無効化できるようになりました（詳細はハイライト 1 参照）— [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
 
 **機能改善**
 
