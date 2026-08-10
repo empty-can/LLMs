@@ -1,34 +1,35 @@
 ---
-対象期間: 2026年08月07日 〜 2026年08月08日
-作成日: 2026-08-08
+対象期間: 2026年08月08日 〜 2026年08月09日
+作成日: 2026-08-09
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は changelog への追加がなく、通常ドキュメントページ側の変更 1 件のみでした。デスクトップアプリの権限モードセレクタが Code タブのものであることと、Cowork タブが独自の権限モードを持つことが明確化されています。
+今回の対象期間は changelog への追加がなく、検出された変更はプロンプト提案（プロンプト入力にグレー表示される予測）の制御手段に関する 1 件のみでした。これまで環境変数と /config のトグルだけだった無効化手段に設定ファイルのキーが加わり、管理設定と組み合わせて組織単位でオフにする手順も示されています。
 
 主要なものを以下に挙げます。
 
-1. デスクトップアプリの権限モードセレクタが Code タブのものだと明記され、Cowork タブは別途有効化する独自の権限モードを持つことが追記された
+1. プロンプト提案を設定ファイルから制御する promptSuggestionEnabled 設定が追加され、管理設定と併用することで組織全体でオフにできるようになった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Desktop の権限モードセレクタが Code タブ限定だと明確化された**](#1-desktop-の権限モードセレクタが-code-タブ限定だと明確化された):  
-  「権限モードを切り替える」の Desktop タブで、送信ボタンの横にあるモードセレクタが **Code タブ**のものであることが明記された。Cowork タブはこれらのモードを使わず、別途有効化される独自の権限モードを持つ。既定を超えるモードがアカウントで有効になるまで、Cowork タブにはモードセレクタが一切表示されない。
+1. [**プロンプト提案を設定ファイルで制御する promptSuggestionEnabled 設定が追加された**](#1-プロンプト提案を設定ファイルで制御する-promptsuggestionenabled-設定が追加された):  
+  設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を `settings.json` から無効化できるようになった。環境変数 `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` は両方が設定されている場合にこの設定より優先される。組織全体でオフにする場合は、管理設定で本設定を `false` にしたうえで、管理設定の `env` キーでも環境変数を `false` にする手順が案内されている。
 <!-- light:highlight-list:end -->
 
-## 1. Desktop の権限モードセレクタが Code タブ限定だと明確化された
+## 1. プロンプト提案を設定ファイルで制御する promptSuggestionEnabled 設定が追加された
 
-「権限モードを切り替える」セクションの Desktop タブに、適用範囲を明確にする加筆が入りました。「セッション中」の説明が「送信ボタンの横にあるモードセレクターを使用します」から「**Code タブで**、送信ボタンの横にあるモードセレクターを使用します」に変わり、このページが説明する権限モードとそのセレクタが、デスクトップアプリの **Code タブ**に限った話であることが明示されました。セレクタに出るモードの条件（**Auto** はアカウントが auto モードの要件を満たすときに表示される、**Bypass permissions** は Pro / Max プランでは Desktop 設定の **Allow bypass permissions mode** トグルが必要で Team / Enterprise プランでは組織ポリシーが制御する）という記述自体は変わっていません。
+設定一覧に `promptSuggestionEnabled` が新しく追加されました。既定値は `true` で、プロンプト提案 — セッションを最初に開いたときや Claude が応答したあとにプロンプト入力へグレー表示される予測 — を表示するかどうかを制御します。`false` に設定するか、`/config` の **Prompt suggestions**（プロンプト提案）をオフにすると無効になります。環境変数 [`CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION`](https://code.claude.com/docs/en/env-vars#variables) と両方が設定されている場合は、環境変数のほうが優先されます。
 
-あわせて、**Cowork タブはこれらのモードを使わない**という段落が新設されました。Cowork は別途有効化される独自の権限モードを持ち、既定を超えるモードがアカウントで有効化されるまで、**Cowork タブにはモードセレクタが一切表示されません**。詳細は Cowork 側のドキュメントを参照するよう案内されています。Cowork の権限モードにどのようなものがあるかは、このページには書かれていません。
+これに伴い、「インタラクティブモード」ページのプロンプト提案の説明も、無効化手段を 3 通りの箇条書きに整理する形へ書き換えられました。すなわち ①`/config` で **Prompt suggestions** をオフにする、②設定ファイルで `promptSuggestionEnabled` を `false` にする、③環境変数 `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` を `false` にする（設定より優先される）、の 3 つです。さらに、**組織全体でオフにする場合の手順**が新たに追記されました。[管理設定](https://code.claude.com/docs/en/settings#settings-files)で `promptSuggestionEnabled` を `false` にするだけでなく、管理設定の [`env`](https://code.claude.com/docs/en/settings#environment-variables) キーでも `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` を `false` に設定するよう案内されています。環境変数のほうが設定より優先されるため、これを押さえておかないと利用者が自分の環境変数でプロンプト提案を再び有効化できてしまうためです。
 
-- [日本語](https://code.claude.com/docs/ja/permission-modes#switch-permission-modes) / [Choose a permission mode - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
+- [Interactive mode - Claude Code Docs (English)](https://code.claude.com/docs/en/interactive-mode#prompt-suggestions)
+- [Claude Code settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings#available-settings)
 
 ## 新規追加されたページ
 
@@ -45,11 +46,16 @@
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の対象期間は changelog への追加がなく、検出された変更は通常ドキュメントページ 1 件のみです。そのため以下の 1 項目だけになります。
+今回の対象期間は changelog への追加がなく、検出された変更は `promptSuggestionEnabled` 設定の追加に伴う通常ドキュメントページ 3 件のみです。なお 3 ページとも日本語版がまだこの変更を反映していないため、参考リンクは英語版のみを記載しています。
+
+**新機能**
+
+- 設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を設定ファイルから無効化できるようになりました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/settings#available-settings)
 
 **機能改善**
 
-- 「権限モードを選択する」ページの Desktop タブで、モードセレクタが Code タブのものであることと、Cowork タブが独自の権限モードを持つことが明確化されました（詳細はハイライト 1 参照）— [日本語](https://code.claude.com/docs/ja/permission-modes#switch-permission-modes) / [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
+- 「インタラクティブモード」ページのプロンプト提案の説明で、無効化手段が `/config` のトグル・設定ファイル・環境変数の 3 通りの箇条書きに整理され、組織全体でオフにするための管理設定の手順が追記されました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/interactive-mode#prompt-suggestions)
+- 環境変数 `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` の説明に、`promptSuggestionEnabled` 設定より優先される旨が追記されました。あわせて、プロンプト提案の説明から「Claude が応答したあとに」という限定が削除され、表示タイミングを限定しない記述になりました — [English](https://code.claude.com/docs/en/env-vars#variables)
 <!-- light:minor-updates:end -->
 
 ## 新着情報
@@ -60,11 +66,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-07.md](./archives/latest/2026-08-07.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-07.md](./archives/latest-detail/2026-08-07.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-08.md](./archives/latest/2026-08-08.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-08.md](./archives/latest-detail/2026-08-08.md)
 
 <!--
-base_commit: ab982cbaca4a675ad130ec9259de91779ef89144
-head_commit: eefcc456a1f2c7dde2c95b399767a78ffc5e4bc9
-generated_at_full: 2026-08-09T15:06:01+09:00
+base_commit: eefcc456a1f2c7dde2c95b399767a78ffc5e4bc9
+head_commit: 66dc30f0152ca283a401532f5a6a6d3caa6b2f7f
+generated_at_full: 2026-08-10T15:04:41+09:00
 -->
