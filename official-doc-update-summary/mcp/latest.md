@@ -1,22 +1,22 @@
 ---
-対象期間: 2026年08月05日 〜 2026年08月06日
-作成日: 2026-08-06
+対象期間: 2026年08月06日 〜 2026年08月10日
+作成日: 2026-08-10
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の変更は、Tool Annotations インタレストグループのメンバー表に参加者が 1 名追加された 1 件のみです。新規追加ページ・大幅更新ページはなく、仕様・拡張・ガイドの本文に実質的な変更はありませんでした。
+今回の対象期間の変更は、`llms.txt` のエントリ並び順の全面的な再編 1 件のみです。掲載 144 件の内容（タイトル・URL・説明文）はいずれも変わっておらず、ページの新規追加・削除・本文更新はありませんでした。
 
 主要なものを以下に挙げます。
 
-1. Tool Annotations インタレストグループのメンバー表に Maxi Boch（Independent）が Participant として加わった
+1. llms.txt のエントリ順が URL パスの辞書順から、ドキュメント構成に沿った論理順（入門 → 仕様 → 拡張 → レジストリ → SEP → コミュニティ）に変更された
 ```
 
 ## ハイライト
 
-1. [**Tool Annotations IG への参加者追加**](./latest-detail.md#1-tool-annotations-ig-への参加者追加):  
-  Tool Annotations インタレストグループの Membership 表に、Maxi Boch（Independent、@maxiboch）が Participant として追加された。同表で Discord 欄に値が入った最初の行でもある。今回の対象期間で原文に生じた変更はこの 1 件のみで、仕様・拡張・ガイドの本文に変更はない。
+1. [**llms.txt のエントリ順序をドキュメント構成順に再編**](./latest-detail.md#1-llmstxt-のエントリ順序をドキュメント構成順に再編):  
+  掲載 144 件の並び順が、URL パスの辞書順から公式ドキュメントの構成に沿った論理順へ全面的に変更された。エントリの集合（タイトル・URL・説明文）は変更前後で完全に一致しており、144 件すべてが位置のみ移動している。SEP 一覧が番号昇順に整い、トップレベルのグループ順は `llms-full.txt` のページ出現順と揃った（旧版の辞書順では揃っていなかった）。
 
 ## 新規追加されたページ
 
@@ -24,23 +24,23 @@
 
 ## 大幅に更新されたページ
 
-既存ページ本文に 50 行以上の変更があったページはありません。今回の変更は 1 ページ・1 行の追加のみで、下記「軽微な更新」に整理しています。
+既存ページ本文に 50 行以上の変更があったページはありません。今回の変更は索引ファイル `llms.txt` の並び替えのみで、ページ本文には一切変更がありません。
 
 ## 軽微な更新
 
-変更のあったページは 1 件で、インタレストグループのメンバー表への参加者追加です。
+変更のあったファイルは `llms.txt` の 1 件で、内容の変更を伴わないエントリの並び替えです。
 
 **その他**
 
-- Tool Annotations Charter ページの Membership 表に、Maxi Boch（Independent、@maxiboch）が Participant として追加された（詳細はハイライト 1 参照） — [Tool Annotations Charter](https://modelcontextprotocol.io/community/interest-groups/tool-annotations#membership)
+- `llms.txt` の掲載 144 件の並び順が、URL パスの辞書順からドキュメント構成に沿った論理順へ変更された（内容の追加・削除・字句修正はなし。詳細はハイライト 1 参照）
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-05.md](./archives/latest/2026-08-05.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-05.md](./archives/latest-detail/2026-08-05.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-06.md](./archives/latest/2026-08-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-06.md](./archives/latest-detail/2026-08-06.md)
 
 <!--
-base_commit: 2d8e1c4da653076ba8407a1a3ad4fb3b54462e01
-head_commit: c9dddd90da6fb28e45cbc5136c3e674097b3a172
-generated_at_full: 2026-08-07T15:52:28+09:00
+base_commit: c9dddd90da6fb28e45cbc5136c3e674097b3a172
+head_commit: b06e86d6646918033115fbd60c61868f5f265af3
+generated_at_full: 2026-08-11T15:47:02+09:00
 -->

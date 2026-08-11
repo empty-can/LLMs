@@ -1,36 +1,36 @@
 ---
-対象期間: 2026年08月05日 〜 2026年08月06日
-作成日: 2026-08-06
+対象期間: 2026年08月06日 〜 2026年08月10日
+作成日: 2026-08-10
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の変更は、Tool Annotations インタレストグループのメンバー表に参加者が 1 名追加された 1 件のみです。新規追加ページ・大幅更新ページはなく、仕様・拡張・ガイドの本文に実質的な変更はありませんでした。
+今回の対象期間の変更は、`llms.txt` のエントリ並び順の全面的な再編 1 件のみです。掲載 144 件の内容（タイトル・URL・説明文）はいずれも変わっておらず、ページの新規追加・削除・本文更新はありませんでした。
 
 主要なものを以下に挙げます。
 
-1. Tool Annotations インタレストグループのメンバー表に Maxi Boch（Independent）が Participant として加わった
+1. llms.txt のエントリ順が URL パスの辞書順から、ドキュメント構成に沿った論理順（入門 → 仕様 → 拡張 → レジストリ → SEP → コミュニティ）に変更された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Tool Annotations IG への参加者追加**](#1-tool-annotations-ig-への参加者追加):  
-  Tool Annotations インタレストグループの Membership 表に、Maxi Boch（Independent、@maxiboch）が Participant として追加された。同表で Discord 欄に値が入った最初の行でもある。今回の対象期間で原文に生じた変更はこの 1 件のみで、仕様・拡張・ガイドの本文に変更はない。
+1. [**llms.txt のエントリ順序をドキュメント構成順に再編**](#1-llmstxt-のエントリ順序をドキュメント構成順に再編):  
+  掲載 144 件の並び順が、URL パスの辞書順から公式ドキュメントの構成に沿った論理順へ全面的に変更された。エントリの集合（タイトル・URL・説明文）は変更前後で完全に一致しており、144 件すべてが位置のみ移動している。SEP 一覧が番号昇順に整い、トップレベルのグループ順は `llms-full.txt` のページ出現順と揃った（旧版の辞書順では揃っていなかった）。
 <!-- light:highlight-list:end -->
 
-## 1. Tool Annotations IG への参加者追加
+## 1. llms.txt のエントリ順序をドキュメント構成順に再編
 
-Tool Annotations インタレストグループの憲章ページで、Membership 表に 1 行が追加されました。追加されたのは Maxi Boch（Organization は Independent、GitHub は [@maxiboch](https://github.com/maxiboch)）で、Level は Participant です。Discord 欄には `maxiboch` が記載されており、同表でこの欄に値が入った最初の行になります。既存の 8 名（Facilitator 2 名と Participant 6 名）に変更はなく、Leadership 表（Sam Morrow / Robert Reichel、いずれも Term は Initial）も据え置きです。今回の追加により、所属組織が GitHub・OpenAI・Cloudflare・Microsoft・Nordstrom といった特定企業に限られていたメンバー構成に、Independent の参加者が初めて加わりました。
+MCP 公式サイトの `llms.txt` で、掲載されている 144 件のエントリの並び順が全面的に組み替えられました。トップレベルのパス群で見ると、旧版は `community` → `development` → `docs` → `examples` → `extensions` → `registry` → `seps` → `specification` という URL パスの辞書順でしたが、新版は `docs` → `examples` → `specification` → `extensions` → `registry` → `seps` → `community` → `development`（`development/roadmap` が末尾）の順になりました。つまり「まず読み手が着手するドキュメント、次に仕様本体、その後に拡張・レジストリ・提案（SEP）、最後にコミュニティ運営と将来計画」という読み進め方に沿った配置です。変更前後のエントリを行単位の多重集合として比較すると完全に一致しており、追加・削除されたページは 1 件もなく、タイトル・URL・説明文の字句修正も発生していません。144 件すべてが位置だけ移動した、純粋な並び替えです。
 
-Tool Annotations IG は、MCP エコシステム全体で安全かつ実用的なエージェント的システムを実現するうえでツールアノテーションが果たす役割を検討するグループです。憲章のミッションでは、6 本の独立した SEP がそれぞれ実在の課題を解きながらアノテーション変更を提案している一方で、それらを横断する一貫した視点が欠けている、という現状認識が示されています。スコープには既存アノテーション（`readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`）の妥当性評価、提案中のアノテーション（信頼度・機微度、エージェンシー、モデル選好など）のレビュー、ランタイムアノテーションやツール応答アノテーションを含むアノテーションモデルの将来像の検討、ユースケースの収集、そしてワーキンググループや SEP 著者への勧告の作成が含まれます。拘束力のある仕様変更は SEP プロセスの側で行われ、IG は勧告を出す立場です。
+グループ内部の順序も辞書順から実際の学習導線に沿った順に変わりました。`docs` 群は「What is the Model Context Protocol (MCP)?」を先頭に、Architecture overview → Understanding MCP servers → Understanding MCP clients → Versioning（learn）→ Connect to local / remote MCP servers → Build with Agent Skills → Build an MCP server → Build an MCP client → Client Best Practices（develop）→ SDKs → セキュリティのチュートリアル 2 本 → MCP Inspector 系 → Debugging と並びます。旧版では同じ階層内も辞書順だったため、learn では Understanding MCP clients が Understanding MCP servers より前に来ており、Inspector 配下も Authorization → CLI client → Configuration and flags → Protocol eras → Recipes → TUI client → Web client の順でした。新版では概説の MCP Inspector に続いて Web client → CLI client → TUI client → Configuration and flags → Authorization → Protocol eras → Recipes と、クライアント 3 種を先に並べる構成になっています。
 
-なお、今回の差分はこの 1 行の追加に伴って表の列幅が揃え直されたもので、実質的な内容の変更は上記のメンバー追加に限られます。会合（Discussion、Frequency・Duration とも TBD）、Discord チャンネル `#tool-annotations-ig`、Discussion Topics のいずれにも変更はありません。
+仕様と SEP の並びも整理されました。`specification/2026-07-28` 群は Specification（index）→ Key Changes → Deprecated Features → Architecture → Basic（Overview → Versioning and Compatibility → Patterns → Transports → Authorization）→ Client（Roots / Sampling / Elicitation）→ Server（Overview → Discovery → Prompts → Resources → Tools → Utilities）→ Schema Reference という、仕様書としての読み順になりました。SEP 一覧は旧版が文字列の辞書順だったため SEP-1024・SEP-1034 …… SEP-2663 の後に SEP-414・SEP-932 が続くという番号が飛ぶ並びでしたが、新版は SEP のインデックスページに続いて SEP-414 → SEP-932 → SEP-973 → …… → SEP-2663 と番号の昇順に揃っています。`registry` 群も The MCP Registry → Quickstart → FAQ → Supported Package Types → Publishing Remote Servers → Authentication → Versioning → GitHub Actions → Moderation Policy → Registry Aggregators → Terms of Service という利用手順に沿った順序になりました。
 
-- [Tool Annotations Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/tool-annotations#membership)
+今回の差分に `llms-full.txt` は含まれておらず、全文展開版に変更はありません。その `llms-full.txt` のページ出現順をトップレベルのパス群で見ると `docs` → `examples` → `specification` → `extensions` → `registry` → `seps` → `community` → `development` となっており、これは新しい `llms.txt` のグループ順と一致します。旧版の `llms.txt`（辞書順）とは一致していなかったため、今回の再編で 2 ファイルの大枠の構成が揃ったことになります。ただし `llms-full.txt` はグループ内のページが URL パスの辞書順のままで、加えて SEP 群が 2 ブロックに分割され後半（SEP-1865 以降の 19 件）が `development/roadmap` の後ろに置かれているため、エントリ単位で見た順序が完全に一致するわけではありません。両ファイルの並びが対応している前提で処理しているツールがあれば確認が要ります。また `llms.txt` は 144 件すべてが位置を変えているため、行位置や行番号を基準に監視している場合は今回の取得分で大きな差分が出ますが、内容の変化ではありません。なお本件は索引ファイル `https://modelcontextprotocol.io/llms.txt` そのものに対する変更であり、これを解説する公式ドキュメントページが存在しないため、参考リンクは記載していません。
 
 ## 新規追加されたページ
 
@@ -41,26 +41,26 @@ Tool Annotations IG は、MCP エコシステム全体で安全かつ実用的�
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-既存ページ本文に 50 行以上の変更があったページはありません。今回の変更は 1 ページ・1 行の追加のみで、下記「軽微な更新」に整理しています。
+既存ページ本文に 50 行以上の変更があったページはありません。今回の変更は索引ファイル `llms.txt` の並び替えのみで、ページ本文には一切変更がありません。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-変更のあったページは 1 件で、インタレストグループのメンバー表への参加者追加です。
+変更のあったファイルは `llms.txt` の 1 件で、内容の変更を伴わないエントリの並び替えです。
 
 **その他**
 
-- Tool Annotations Charter ページの Membership 表に、Maxi Boch（Independent、@maxiboch）が Participant として追加された（詳細はハイライト 1 参照） — [Tool Annotations Charter](https://modelcontextprotocol.io/community/interest-groups/tool-annotations#membership)
+- `llms.txt` の掲載 144 件の並び順が、URL パスの辞書順からドキュメント構成に沿った論理順へ変更された（内容の追加・削除・字句修正はなし。詳細はハイライト 1 参照）
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-05.md](./archives/latest/2026-08-05.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-05.md](./archives/latest-detail/2026-08-05.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-06.md](./archives/latest/2026-08-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-06.md](./archives/latest-detail/2026-08-06.md)
 
 <!--
-base_commit: 2d8e1c4da653076ba8407a1a3ad4fb3b54462e01
-head_commit: c9dddd90da6fb28e45cbc5136c3e674097b3a172
-generated_at_full: 2026-08-07T15:52:28+09:00
+base_commit: c9dddd90da6fb28e45cbc5136c3e674097b3a172
+head_commit: b06e86d6646918033115fbd60c61868f5f265af3
+generated_at_full: 2026-08-11T15:47:02+09:00
 -->

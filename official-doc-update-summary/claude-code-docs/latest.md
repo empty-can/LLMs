@@ -1,55 +1,111 @@
 ---
-対象期間: 2026年08月08日 〜 2026年08月09日
-作成日: 2026-08-09
+対象期間: 2026年08月09日 〜 2026年08月10日
+作成日: 2026-08-10
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は changelog への追加がなく、検出された変更はプロンプト提案（プロンプト入力にグレー表示される予測）の制御手段に関する 1 件のみでした。これまで環境変数と /config のトグルだけだった無効化手段に設定ファイルのキーが加わり、管理設定と組み合わせて組織単位でオフにする手順も示されています。
+今回の対象期間は変更量が大きく、45 ページ（うち新規 2 ページ）に差分がありました。柱はセッション間メッセージングの拡張で、他マシンやクラウドのセッションへ自分から送信できるようになり、その記述が設定・ツール・機能可用性など十数ページへ波及しています。あわせて通知フックの発火タイミングが初めて数値付きで明文化され、Agent SDK ドキュメント 20 ページからは冗長な導入文と重複コード例が一斉に削除されました。新着情報は Week 30 と Week 32 の 2 本がまとめて公開されています。
 
 主要なものを以下に挙げます。
 
-1. プロンプト提案を設定ファイルから制御する promptSuggestionEnabled 設定が追加され、管理設定と併用することで組織全体でオフにできるようになった
+1. セッション間メッセージングが他マシンやクラウドのセッションへの送信に対応し、これまでの「返信のみ」という制約が解消された
+2. 通知フックの発火タイミングが「約 6 秒／約 60 秒の無入力」として明文化され、新しいマッチャが追加された
+3. Agent SDK ドキュメント 20 ページから冗長な導入文と重複コード例が一斉に削除された
+4. 自動コンパクトの閾値の説明が拡充され、未知のモデル ID を使う場合の挙動と対処が明文化された
 ```
 
 ## ハイライト
 
-1. [**プロンプト提案を設定ファイルで制御する promptSuggestionEnabled 設定が追加された**](./latest-detail.md#1-プロンプト提案を設定ファイルで制御する-promptsuggestionenabled-設定が追加された):  
-  設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を `settings.json` から無効化できるようになった。環境変数 `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` は両方が設定されている場合にこの設定より優先される。組織全体でオフにする場合は、管理設定で本設定を `false` にしたうえで、管理設定の `env` キーでも環境変数を `false` にする手順が案内されている。
+1. [**セッション間メッセージングが他マシンやクラウドのセッションへの送信に対応した**](./latest-detail.md#1-セッション間メッセージングが他マシンやクラウドのセッションへの送信に対応した):  
+  他マシン上のセッションに対して、これまでの「届いたメッセージへの返信」だけでなく自分から会話を開始できるようになった（v2.1.225 以降）。到達可能なセッションの一覧にクラウドセッションが独立項目として加わり、`claude -p` セッションで保留されたメッセージが期限切れで破棄され送信者に通知される挙動も追記された。
+2. [**通知フックの発火タイミングが明文化され新しいマッチャが追加された**](./latest-detail.md#2-通知フックの発火タイミングが明文化され新しいマッチャが追加された):  
+  `permission_prompt` は約 6 秒、`idle_prompt` は約 60 秒の無入力を条件に発火することが表と注記の両方で明示された。MCP サーバーがブラウザ URL を開くよう求めたときの `elicitation_url_dialog` マッチャが追加され、即座に反応したい場合は `PermissionRequest` イベントを使うよう案内が入った。
+3. [**Agent SDK ドキュメントから冗長な導入文と重複コード例が一斉に削除された**](./latest-detail.md#3-agent-sdk-ドキュメントから冗長な導入文と重複コード例が一斉に削除された):  
+  「このガイドでは〜を扱います」型の前置き、同じ設定を示すだけの重複コード例、旧バージョンの経緯説明が Agent SDK の 20 ページから削除された。Python / TypeScript リファレンスを筆頭に、削除のみで 50 行を超えるページが 4 本ある。
+4. [**自動コンパクトの閾値の説明が拡充された**](./latest-detail.md#4-自動コンパクトの閾値の説明が拡充された):  
+  `CLAUDE_CODE_DISABLE_1M_CONTEXT=1` を設定した場合の挙動と、Claude Code が認識できないモデル ID（LLM ゲートウェイのエイリアスなど）を使う場合の閾値の決まり方、およびその補正手段が新たに書かれた。
 
 ## 新規追加されたページ
 
-（今回の対象期間に新規追加されたページはありません）
+（今回の対象期間に新規追加されたリファレンス系ページはありません。新規ページ 2 件はいずれも新着情報のため、「新着情報」を参照してください）
 
 ## 大幅に更新されたページ
 
-（今回の対象期間に大幅更新されたページはありません）
+- [**Claude Code の設定**](./latest-detail.md#1-claude-code-の設定) ([English](https://code.claude.com/docs/en/settings#available-settings)):  
+  変更行数は最多だが、大半は表の桁揃えの整形。内容が変わったのは 4 行で、うちセッション間メッセージング関連が 2 行、残りが `parentSettingsBehavior` と `policyHelper`。
+- [**Agent SDK Python リファレンス**](./latest-detail.md#2-agent-sdk-python-リファレンス) ([English](https://code.claude.com/docs/en/agent-sdk/python#choosing-between-query-and-claudesdkclient)):  
+  `query()` と `ClaudeSDKClient` の使い分け、`ClaudeSDKClient` の特徴一覧、設定ソースの例など、削除のみで 141 行。
+- [**ツールリファレンス**](./latest-detail.md#3-ツールリファレンス) ([English](https://code.claude.com/docs/en/tools-reference)):  
+  こちらも大半は表の整形で、内容が変わったのは `ListAgents` と `SendMessage` の 2 行。特に `SendMessage` は説明が大きく削られ、詳細はセッション間メッセージングのページへの参照と要点の記述に置き換えられた。
+- [**フックリファレンス**](./latest-detail.md#4-フックリファレンス) ([English](https://code.claude.com/docs/en/hooks#notification)):  
+  `Notification` の発火タイミングの明文化と `elicitation_url_dialog` の追加（詳細はハイライト 2 参照）。
+- [**Agent SDK TypeScript リファレンス**](./latest-detail.md#5-agent-sdk-typescript-リファレンス) ([English](https://code.claude.com/docs/en/agent-sdk/typescript#settingsource)):  
+  `settingSources` の重複コード例 3 本を含め、削除のみで 65 行。
+- [**フックでアクションを自動化する**](./latest-detail.md#6-フックでアクションを自動化する) ([English](https://code.claude.com/docs/en/hooks-guide#get-notified-when-claude-needs-input)):  
+  マッチャ表がフックリファレンスと同じ内容に更新され、正確なタイミングはリファレンスを見るよう案内が入った。
+- [**SDK のスラッシュコマンド**](./latest-detail.md#7-sdk-のスラッシュコマンド) ([English](https://code.claude.com/docs/en/agent-sdk/slash-commands)):  
+  作成したカスタムコマンドを SDK 経由で呼び出す TypeScript / Python の例が削除された。
+- [**リアルタイムでのレスポンスストリーミング**](./latest-detail.md#8-リアルタイムでのレスポンスストリーミング) ([English](https://code.claude.com/docs/en/agent-sdk/streaming-output#message-flow)):  
+  「Stream text responses」節が削除され、要点 1 文に置き換えられた。
 
 ## 軽微な更新
 
-今回の対象期間は changelog への追加がなく、検出された変更は `promptSuggestionEnabled` 設定の追加に伴う通常ドキュメントページ 3 件のみです。なお 3 ページとも日本語版がまだこの変更を反映していないため、参考リンクは英語版のみを記載しています。
+対象期間には changelog へのリリース追加 1 件（v2.1.227）と、上記以外に 35 ページの更新がありました。なお本サマリの参考リンクは全て英語版のみです。今回変更のあったページは日本語版がまだ追従していないか（フックリファレンス・コンテキストウィンドウ・SDK の Agent Skills などで確認）、そもそも日本語版が存在しない（セッション間メッセージング、新着情報の Week 30 / Week 32）ためです。
 
 **新機能**
 
-- 設定一覧に `promptSuggestionEnabled`（既定 `true`）が追加され、プロンプト提案を設定ファイルから無効化できるようになりました（詳細はハイライト 1 参照）— [日本語](https://code.claude.com/docs/ja/settings#available-settings) / [English](https://code.claude.com/docs/en/settings#available-settings)
+- Claude apps gateway の OIDC 設定に `use_proxy` が追加されました。`true` にすると、ゲートウェイ自身の IdP への通信（discovery・JWKS・token・userinfo）を `HTTPS_PROXY` / `HTTP_PROXY` のフォワードプロキシ経由にできます（`NO_PROXY` も尊重）。未設定または `false` なら直接接続で、プロキシ変数がありながら未設定の場合は起動時に選択を促す通知が出ます。プロキシには IP アドレスへの `CONNECT` を許可させる必要がある点も明記されています（v2.1.227 以降）— [English](https://code.claude.com/docs/en/claude-apps-gateway-config#idp-requests-through-a-forward-proxy)
+- 稼働中の Claude apps gateway が `<public_url>/protocol` でプロトコル記述を配信するようになりました。使用量上限のレスポンスヘッダーと、ブロック時の `429` の形が列挙されます（v2.1.227 以降）— [English](https://code.claude.com/docs/en/claude-apps-gateway-spend-limits#how-enforcement-works)
 
 **機能改善**
 
-- 「インタラクティブモード」ページのプロンプト提案の説明で、無効化手段が `/config` のトグル・設定ファイル・環境変数の 3 通りの箇条書きに整理され、組織全体でオフにするための管理設定の手順が追記されました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/interactive-mode#prompt-suggestions)
-- 環境変数 `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` の説明に、`promptSuggestionEnabled` 設定より優先される旨が追記されました。あわせて、プロンプト提案の説明から「Claude が応答したあとに」という限定が削除され、表示タイミングを限定しない記述になりました — [English](https://code.claude.com/docs/en/env-vars#variables)
+- 権限モードのページに、auto モードの分類器が `SendMessage` で他のエージェントへ送るメッセージも配信前にレビューする旨が明記されました。プレーンなメッセージと構造化メッセージの両方が対象で、auto モードだけでなく分類器がコマンドをレビューするプランモードでも働きます（挙動自体は v2.1.222 以降。同趣旨の記述はツールリファレンスの `SendMessage` 行から削除され、こちらへ集約されました）— [English](https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode)
+- セッション間メッセージング本体のページが、他マシン・クラウドセッションへの送信対応に合わせて更新されました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/cross-session-messaging#message-sessions-on-other-machines)
+- 「エージェントを並列実行する」の関連リンクが、「このマシン上で一覧・送信、他マシンやウェブへは返信」から「このマシン・他マシン・ウェブのいずれのセッションも一覧して送信できる」という記述に改められました — [English](https://code.claude.com/docs/en/agents)
+- デスクトップアプリのページでも同様に、Code タブのセッションを扱うこの機能とは別にセッション間メッセージングが使える、という書き方に整理されました — [English](https://code.claude.com/docs/en/desktop#work-across-sessions)
+- 「カスタムサブエージェントを作成する」の `SendMessage` の説明が、他のセッションについて「このマシン上、またはそれを越えて」送れる形に改められました — [English](https://code.claude.com/docs/en/sub-agents#resume-subagents)
+- 機能可用性の脚注が書き換えられ、API キー認証ではこのマシン内のみ、Claude Code on the web のセッションに届かせるにはクラウドアクセスが、他マシンのセッションに届かせるには Remote Control の要件が必要、と条件別に整理されました — [English](https://code.claude.com/docs/en/feature-availability#admin-and-analytics)
+- Remote Control のページで、参照先の説明が「返信のみの配信ルール」から「クロスマシンの配信ルール」に改められました — [English](https://code.claude.com/docs/en/remote-control#connection-and-security)
+- Claude apps gateway の運用ページのトラブルシュートに、IdP へフォワードプロキシ経由でしか到達できない場合は `oidc.use_proxy: true` を設定する（v2.1.227 より前は各エンドポイントへの直接経路を用意する）という指針が追加されました — [English](https://code.claude.com/docs/en/claude-apps-gateway-deploy#troubleshooting)
+- コンテキストウィンドウのページで自動コンパクトの閾値の説明が拡充されました（詳細はハイライト 4 参照）— [English](https://code.claude.com/docs/en/context-window#set-the-auto-compact-window)
+- トークンカウントのエンドポイントが無い場合の挙動の説明が、「ローカルでコンテキスト使用量を推定する」から「推論エンドポイント経由でコンテキスト使用量をカウントする」に改められました。ゲートウェイ側への推奨も「正確な数値が欲しいならエンドポイントを公開する」から「トークンカウントが推論リクエストを消費しないようエンドポイントを公開する」に変わっています — [English](https://code.claude.com/docs/en/llm-gateway-protocol#optional-endpoints-and-startup-traffic)
+- 環境変数 `CLAUDE_CODE_USER_DIALOG_TIMEOUT_MS` の説明に、期限が来たときに既定で保留されたメッセージを破棄する旨が加わりました。`CLAUDE_SUBAGENT_BG_SHELL_MAX_MS` も、`0` を設定しても上限が外れず既定値が適用されることが分かりやすい書き方に整理されています — [English](https://code.claude.com/docs/en/env-vars#variables)
+- 端末設定のページで、通知イベントは「端末から離れているように見えるとき」に発火することが明記され、正確なタイミングはフックリファレンスの `Notification` 節を見るよう案内が加わりました — [English](https://code.claude.com/docs/en/terminal-config#get-a-terminal-bell-or-notification)
+- プラグイン依存のバージョン制約について、タグを探すリポジトリが明確化されました。`github` / `url` / `git-subdir` ソースではプラグイン自身のリポジトリ、マーケットプレイスが相対パスで参照するプラグインではマーケットプレイスのリポジトリです。プラグイン自身のリポジトリに条件を満たすタグが無い場合はインストールが失敗し、相対パス参照の場合はマーケットプレイスの現在のコピーを入れて読み込み時に制約を確認します。タグ解決が効かないソースとして `archive` も追記されました — [English](https://code.claude.com/docs/en/plugin-dependencies#tag-plugin-releases-for-version-resolution)
+- Agent SDK の以下のページで、冗長な前置きや重複例の削除、参照への置き換えが行われました（詳細はハイライト 3 参照）: [SDK のプラグイン](https://code.claude.com/docs/en/agent-sdk/plugins#multiple-plugin-sources)、[Claude Agent SDK への移行](https://code.claude.com/docs/en/agent-sdk/migration-guide#next-steps)、[ストリーミング入力](https://code.claude.com/docs/en/agent-sdk/streaming-vs-single-mode)、[SDK のサブエージェント](https://code.claude.com/docs/en/agent-sdk/subagents#what-subagents-inherit)、[チェックポイントによるファイル変更の巻き戻し](https://code.claude.com/docs/en/agent-sdk/file-checkpointing)、[SDK の Agent Skills](https://code.claude.com/docs/en/agent-sdk/skills)、[システムプロンプトの変更](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts)、[Agent SDK のホスティング](https://code.claude.com/docs/en/agent-sdk/hosting)、[AI エージェントの安全なデプロイ](https://code.claude.com/docs/en/agent-sdk/secure-deployment)、[Claude Code の機能を SDK で使う](https://code.claude.com/docs/en/agent-sdk/claude-code-features)、[ツール検索で多数のツールに対応する](https://code.claude.com/docs/en/agent-sdk/tool-search#how-tool-search-works)、[権限の設定](https://code.claude.com/docs/en/agent-sdk/permissions#how-permissions-are-evaluated)、[エージェントループの仕組み](https://code.claude.com/docs/en/agent-sdk/agent-loop#turns-and-budget)、[Todo リスト](https://code.claude.com/docs/en/agent-sdk/todo-tracking)、[フックによるエージェント挙動の制御](https://code.claude.com/docs/en/agent-sdk/hooks)、[Claude へのカスタムツールの提供](https://code.claude.com/docs/en/agent-sdk/custom-tools)
+- 上記のうち、ツール検索では対応モデルの列挙と `ENABLE_TOOL_SEARCH=false` の説明が、権限の設定では `canUseTool` シャドウ警告の対応バージョン注記が、エージェントループでは max-turns 到達時のキュー挙動に関する v2.1.205 以前の経緯が、それぞれ削除されました
+- Agent SDK のホスティングでは、`mirror_error` の説明から再試行回数とバックオフの詳細が削られ、配信できなければ破棄してクエリを続ける、という要点に整理されました。大量のサブエージェントを一度に起動するとレート制限に当たりうる、という注意書きは削除されています — [English](https://code.claude.com/docs/en/agent-sdk/hosting)
+
+**バグ修正**
+
+- 期限切れのログイントークンでセッションを開始した際に、利用者のサブスクリプション階層を反映せずに機能フラグが評価され、Max プランの利用者に Fable の usage credits を有効化するよう誤って促すことがある問題が修正されました（v2.1.227）
+- GitHub ホストのランナー上で `allowed_non_write_users` を指定した `claude-code-action` において、すべての Bash コマンドが失敗する問題が修正されました（v2.1.227）
+- 最初のメッセージより前まで巻き戻した会話が `/tui` で復活してしまう問題が修正されました（v2.1.227）
+- スラッシュコマンドメニューが改善され、青色は選択行だけを示すようになり、一致した文字は色を変えるのではなく太字で示され、絵文字やアクセント付きの名前も字形が保たれるようになりました（v2.1.227）
+- ファイルが見つからない場合のサジェストと at-mention のサイズチェックで、イベントループの停滞が減りました（v2.1.227）
+
+**その他**
+
+- Claude Tag へのリンク先が、ドキュメントの概要ページから製品ページ（`claude.com/product/tag`）に変更されました。Claude Tag ページ本体と、Claude Code in Slack ページの告知の両方が対象です — [English](https://code.claude.com/docs/en/claude-tag)
+- `llms.txt` のページ一覧の並び順が、URL パスのアルファベット順からドキュメントのナビゲーションに沿った論理順（Overview → Quickstart → changelog → …）へ変更されました。エントリの増減は新着情報 2 ページの追加のみで、説明文の変更はセッション間メッセージングの 1 件です
+- ページ見出しマップに、Fast mode ページの「Understand the cost tradeoff」配下として「See where fast mode spend appears」の見出しが追加されました。ただし本サマリの入力とした `llms-full.txt` にはまだ本文が反映されていないため、内容には触れません
 
 ## 新着情報
 
-（今回の対象期間に新着情報ページの更新はありません）
+- [**2026年07月20日～24日(Week 30)**](./latest-detail.md#2026年07月20日24日week-30) ([English](https://code.claude.com/docs/en/whats-new/2026-w30)):  
+  Claude Opus 5 が Claude Code の既定 Opus モデルになり、Claude Code Desktop に iOS Simulator ペインが加わり、Claude Security プラグインがコードベースの脆弱性をスキャンする（v2.1.214 → v2.1.219）。
+- [**2026年08月03日～07日(Week 32)**](./latest-detail.md#2026年08月03日07日week-32) ([English](https://code.claude.com/docs/en/whats-new/2026-w32)):  
+  Claude Code のセッション同士がメッセージを送り合えるようになり、セルフホスト環境で自組織のインフラ上のクラウドセッションが動き、auto モードが既定の権限モードになる（v2.1.220 → v2.1.224）。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-08.md](./archives/latest/2026-08-08.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-08.md](./archives/latest-detail/2026-08-08.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-09.md](./archives/latest/2026-08-09.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-09.md](./archives/latest-detail/2026-08-09.md)
 
 <!--
-base_commit: eefcc456a1f2c7dde2c95b399767a78ffc5e4bc9
-head_commit: 66dc30f0152ca283a401532f5a6a6d3caa6b2f7f
-generated_at_full: 2026-08-10T15:04:41+09:00
+base_commit: 66dc30f0152ca283a401532f5a6a6d3caa6b2f7f
+head_commit: b06e86d6646918033115fbd60c61868f5f265af3
+generated_at_full: 2026-08-11T15:00:29+09:00
 -->
