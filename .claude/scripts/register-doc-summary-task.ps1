@@ -17,7 +17,7 @@
   詳細手順は同フォルダ README-doc-summary-bot.md を参照。
 
 .PARAMETER At
-  起動時刻 "HH:mm"（24h）。既定 "07:00"。
+  起動時刻 "HH:mm"（24h）。既定 "15:00"（実運用値）。
 
 .PARAMETER TaskName
   登録タスク名。既定 "CC-DocSummaryBot"。
@@ -29,13 +29,13 @@
   実登録せず、登録内容（trigger / action / principal）を表示するだけにする。
 
 .EXAMPLE
-  pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 07:00 -WhatIfOnly
-  pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 07:00
+  pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 15:00 -WhatIfOnly
+  pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 15:00
 #>
 [CmdletBinding()]
 param(
     [ValidatePattern('^\d{2}:\d{2}$')]
-    [string]$At = "07:00",
+    [string]$At = "15:00",
     [string]$TaskName = "CC-DocSummaryBot",
     [switch]$RunWhenLoggedOff,
     [switch]$WhatIfOnly
@@ -65,8 +65,14 @@ if ($RunWhenLoggedOff) {
     # Interactive: ユーザーログオン中のみ。DPAPI 復号が確実
     $principal = New-ScheduledTaskPrincipal -UserId $me -LogonType Interactive -RunLevel Limited
 }
+# ExecutionTimeLimit は「翌日 15:00 の発火と衝突させない」ためだけの上限であり、
+# 所要時間の見積もりではない。実測は差分量に比例して伸びる（2026-08-11 で 68 分＝
+# claude-code-docs 42 分 + mcp 27 分）。1h では 2026-07-29 に kill され、残留生成物が
+# 以後 4 日間の取り込みを止めた。長期停止明けは差分が肥大して確実に超えるため、
+# 上限は十分に余らせる。超過して kill されても整地ロジック（Initialize-TreeForDownload）
+# が翌日の dl を守るので、上限を短く保つ動機はない。
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopOnIdleEnd `
-    -ExecutionTimeLimit (New-TimeSpan -Hours 1)
+    -ExecutionTimeLimit (New-TimeSpan -Hours 4)
 
 Write-Host "=== doc-summary-bot タスク登録内容 ==="
 Write-Host "TaskName    : $TaskName"

@@ -1,16 +1,27 @@
 <#
 .SYNOPSIS
-  run-ja-follow-watch.ps1 を Windows タスクスケジューラに日次登録するヘルパー。
+  run-ja-follow-watch.ps1 を Windows タスクスケジューラに週次登録するヘルパー。
 
 .DESCRIPTION
-  毎日 -At の時刻に `run-ja-follow-watch.ps1`（引数なし＝フル実行: scan→check→inject→
-  commit→bot 限定 push）を現在の Windows ユーザーとして登録する。
+  毎週 -DayOfWeek の -At 時刻に `run-ja-follow-watch.ps1`（引数なし＝フル実行:
+  scan→check→inject→commit→bot 限定 push）を現在の Windows ユーザーとして登録する。
 
-  生成 bot（CC-DocSummaryBot, 既定 15:00）とは別 bot として独立登録する。watch bot は
-  生成 bot が当日生成した最新サマリの en 単独リンクも拾うため、必ず生成 bot の後に走らせる
-  （既定 15:30）。同一 bot ブランチ bot/doc-summary を共有するので時間を重ねないこと
-  （万一重なっても git の index.lock で一方が失敗するだけで破壊はしないが、その日の実行は
-  取りこぼす）。生成 bot が長引いた場合に備え十分な間隔を空けるのが安全。
+  生成 bot（CC-DocSummaryBot, 15:00）とは別 bot として独立登録する。同一 bot ブランチ
+  bot/doc-summary と作業ツリーを共有するため、生成 bot の実行中に走ると作業ツリーが
+  dirty で弾かれる。ランナー側に 20 分の dirty 待機があるが、生成が 15:50 を跨ぐ日は
+  待機上限に達して失敗する（2026-07-14 / 08-07 / 08-08 / 08-11 に実発生）。生成の所要は
+  差分量で決まりこちらでは制御できないため、時間差を広げる方向では解決しない。
+
+  日次でなく週次にしているのは、日次で回す実益が観測されないため。2026-06-24 以降
+  24 回連続で注入 0 件であり、待ち行列は上流で詰まっている（人手 promote 待ち 569 件 /
+  公式 ja ページの出現待ち 314 件）。どちらも日単位では動かない。加えて watch.py の
+  iter_pairs は live と archives/ 配下の全スナップショットを走査するため、週次にしても
+  日次分の取りこぼしは発生しない。check のコストは pending+manual の件数に比例する
+  固定コストで、実行間隔には比例しない。
+
+  【暫定】最終形はジョブの直列化（dl → 要約 → ja 追従）で、ja 追従の先頭で実行日を
+  判定する。この時刻トリガはそれが実装されるまでの暫定措置であり、生成が
+  ExecutionTimeLimit（PT4H＝遅くとも 19:00）で必ず終わることを前提に 20:00 に置いている。
 
   ログオン種別は既定で「対話（ユーザーがログオン中のみ実行）」にする。push 認証で使う
   DPAPI 暗号化トークン（doc-summary-bot-token.xml）が、S4U（パスワードなし）ログオン下では
@@ -24,7 +35,10 @@
   詳細手順は同フォルダ README-doc-summary-bot.md を参照。
 
 .PARAMETER At
-  起動時刻 "HH:mm"（24h）。既定 "15:30"（生成 bot の後）。
+  起動時刻 "HH:mm"（24h）。既定 "20:00"（生成 bot の ExecutionTimeLimit 満了後）。
+
+.PARAMETER DayOfWeek
+  起動曜日。既定 Sunday（月曜の朝に前週分が反映済みの状態になるように）。
 
 .PARAMETER TaskName
   登録タスク名。既定 "CC-DocJaFollowBot"。
@@ -36,13 +50,15 @@
   実登録せず、登録内容（trigger / action / principal）を表示するだけにする。
 
 .EXAMPLE
-  pwsh -NoProfile -File .claude\scripts\register-ja-follow-task.ps1 -At 15:30 -WhatIfOnly
-  pwsh -NoProfile -File .claude\scripts\register-ja-follow-task.ps1 -At 15:30
+  pwsh -NoProfile -File .claude\scripts\register-ja-follow-task.ps1 -WhatIfOnly
+  pwsh -NoProfile -File .claude\scripts\register-ja-follow-task.ps1 -At 20:00 -DayOfWeek Sunday
 #>
 [CmdletBinding()]
 param(
     [ValidatePattern('^\d{2}:\d{2}$')]
-    [string]$At = "15:30",
+    [string]$At = "20:00",
+    [ValidateSet("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")]
+    [string]$DayOfWeek = "Sunday",
     [string]$TaskName = "CC-DocJaFollowBot",
     [switch]$RunWhenLoggedOff,
     [switch]$WhatIfOnly
@@ -63,7 +79,8 @@ if (-not $pwshExe) { throw "pwsh / powershell が PATH に見つからない" }
 # watch bot は引数なしのフル実行（-Site 不要・claude-code-docs のみが watch 対象）
 $argLine = '-NoProfile -ExecutionPolicy Bypass -File "{0}"' -f $RUNNER
 $action  = New-ScheduledTaskAction -Execute $pwshExe -Argument $argLine -WorkingDirectory $REPO_ROOT
-$trigger = New-ScheduledTaskTrigger -Daily -At ([datetime]::ParseExact($At, 'HH:mm', $null))
+$trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek $DayOfWeek `
+    -At ([datetime]::ParseExact($At, 'HH:mm', $null))
 
 $me = "$env:USERDOMAIN\$env:USERNAME"
 if ($RunWhenLoggedOff) {
@@ -79,7 +96,7 @@ $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopOnIdleEnd 
 Write-Host "=== ja-follow-watch-bot タスク登録内容 ==="
 Write-Host "TaskName    : $TaskName"
 Write-Host "実行ユーザー: $me ($([string]($principal.LogonType)))"
-Write-Host "起動        : 毎日 $At（生成 bot CC-DocSummaryBot の後に走らせること）"
+Write-Host "起動        : 毎週 $DayOfWeek $At（生成 bot CC-DocSummaryBot と重ねないこと）"
 Write-Host "コマンド    : $pwshExe $argLine"
 Write-Host "作業ディレクトリ: $REPO_ROOT"
 

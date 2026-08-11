@@ -1,10 +1,15 @@
 # doc-summary bot 設計書
 
+> **⚠ 再設計中（2026-08-11〜）**: 本バッチを「dl」と「要約」の 2 ジョブへ分割し、
+> ja 追従と合わせて直列起動する方針が決まっている。検討中の設計は Git 未追跡の
+> `.claude/work/flow-redesign/` にあり、合意後に本設計書を全面改訂する。
+> **以下は改訂前の現行実装の記述**である。
+
 公式ドキュメントの `llms.txt` / `llms-full.txt` を毎日取り込み、前回からの差分を
 人間向けの changelog 風サマリとして LLM に生成させる無人バッチ。
 
 - 実体: `.claude/scripts/run-doc-summary.ps1`
-- 起動: タスクスケジューラ `CC-DocSummaryBot`（毎日 15:00 / Interactive logon / ExecutionTimeLimit **PT2H**）
+- 起動: タスクスケジューラ `CC-DocSummaryBot`（毎日 15:00 / Interactive logon / ExecutionTimeLimit **PT4H**）
 - 引数: `-Site all|claude-code-docs|mcp` / `-DryRun`（push のみ抑止）/ `-SkipDownload` / `-RestoreBranch`
 - 共通基盤: `doc-summary-common.ps1`（[README](./README.md) 参照）
 
@@ -209,7 +214,7 @@ push は `DryRun` でも生成失敗ありでも抑止し、実行時はブラ�
 | 症状 | 原因 | 防御・対処 |
 |---|---|---|
 | ログ 932 B・所要 0 秒で FAILURE | PATH 先頭の WindowsApps `bash.exe`（WSL 実行エイリアス）を掴む | `Resolve-BashExe` が Git 同梱 bash を最優先し、PATH 由来候補から `\WindowsApps\` を除外（2026-07-28 修正） |
-| `終了:` 行が無いまま途切れる | 生成が長引き ExecutionTimeLimit を超過して kill | 2026-08-03 に PT1H → **PT2H** へ引き上げ済（PT1H では実測 56 分＝cc-docs 41 分 + mcp 15 分で常時ギリギリだった）。それでも超える場合は生成物が未コミットで残るが、翌日の手順 1-2 が回収する |
+| `終了:` 行が無いまま途切れる | 生成が長引き ExecutionTimeLimit を超過して kill | 2026-08-11 に **PT4H** へ引き上げ済（PT1H→PT2H が 08-03、PT2H→PT4H が 08-11）。所要は差分量に比例して伸びており、08-11 は 68 分＝cc-docs 42 分 + mcp 27 分。上限の役割は「翌日 15:00 の発火と衝突させない」ことだけで、超えて kill されても翌日の手順 1-2 が回収するため、上限を短く保つ動機はない |
 | 毎日 562 B で即 FAILURE | 前回の中断残留で作業ツリーが dirty | 手順 1-2 が自動回収して続行（2026-08-02 実装）。もはや停止しない |
 | merge 途中でツリーが残る | `main` 取り込みのコンフリクト、または前回の中断 | 手順 1-2 の冒頭で `MERGE_HEAD` 等を検出して abort。取り込めない場合も**取り込まずに dl を続行**する |
 | 人の作業中に bot が起動 | 同じ作業ツリーを共有している | bot 所有外の変更は `git stash` へ退避して続行。破棄しない（`git stash list` から復元） |
@@ -220,7 +225,7 @@ push は `DryRun` でも生成失敗ありでも抑止し、実行時はブラ�
 - **停止期間は日次差分に分けて復旧できない**。`download_list.tsv` の URL は日付指定のできない live URL で、
   上書きフラグ全行 TRUE のため中間スナップショットも残らない。復旧は「停止前最終 dl 〜 実行日」の
   集約 1 本になる
-- 定期実行中（15:00 / 15:30）に手動実行を重ねない。同一 bot ブランチを共有するため衝突する
+- 定期実行中（毎日 15:00 / 毎週日曜 20:00）に手動実行を重ねない。同一 bot ブランチを共有するため衝突する
 - `-DryRun` は **push だけ**を抑止する。dl も生成（＝ Opus 呼び出し）も実際に走る点に注意
 - frontmatter の `作成日` / `対象期間` が実コミット日付より 1 日前になるのは **仕様**（SKILL の
   「PT -1 日ルール」。`generated_at_full` だけが実時刻）。不具合ではないので直さないこと
@@ -232,6 +237,7 @@ push は `DryRun` でも生成失敗ありでも抑止し、実行時はブラ�
 
 | 日付 | 内容 |
 |---|---|
+| 2026-08-11 | `ExecutionTimeLimit` を PT2H → **PT4H** へ引き上げ（08-11 の実測 68 分に対し PT2H では余裕が 52 分しかなかった）。あわせて `CC-DocJaFollowBot` を日次 15:30 から**毎週日曜 20:00** へ変更し、生成との競合を解消（暫定措置。最終形は 3 ジョブの直列化）。`register-doc-summary-task.ps1` の既定値が実運用と乖離していた（`-At 07:00` / `-Hours 1`）ので実態へ追随 |
 | 2026-07-28 | `Resolve-BashExe` を WSL エイリアス回避に修正（`4c608df`） |
 | 2026-08-03 | 手順 4.5 を追加し、生成の成否を待たずに取り込みコミットを先行 push するようにした。あわせて `CC-DocSummaryBot` の ExecutionTimeLimit を PT1H → PT2H へ引き上げ |
 | 2026-08-02 | 手順 1（前提チェック）と手順 2（ブランチ準備）を `Initialize-TreeForDownload` に統合し、**dl へ到達するまで throw しない**構造へ変更。中断状態の abort・bot 所有外変更の stash 退避・中断残留の救出/破棄・merge 失敗時の続行・HEAD への強制巻き戻しを段階的に試みる。commit 前のブランチ確認だけを停止条件として残した |

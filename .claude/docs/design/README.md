@@ -1,20 +1,25 @@
-# 日次バッチ設計書インデックス
+# 定期バッチ設計書インデックス
 
-`empty-can/LLMs` リポジトリで Windows タスクスケジューラから毎日実行される 2 つのバッチの設計書。
+> **⚠ 再設計中（2026-08-11〜）**: フロー全体を「dl / 要約 / ja 追従」の 3 ジョブへ分割し、
+> 直列起動へ変える方針が決まっている。検討中の設計は Git 未追跡の
+> `.claude/work/flow-redesign/` にあり、合意後に本設計書を全面改訂する。
+> **本ファイルの内容は改訂前の現行実装を記述したもの**として読むこと。
+
+`empty-can/LLMs` リポジトリで Windows タスクスケジューラから定期実行される 2 つのバッチの設計書。
 **2 つは疎結合**（役割・入出力・失敗時の影響範囲が独立）なので、設計書もバッチ単位で分割している。
 
 | ドキュメント | バッチ | 起動 | 役割 |
 |---|---|---|---|
 | [doc-summary-bot.md](./doc-summary-bot.md) | `CC-DocSummaryBot` | 毎日 15:00 | 公式 `llms.txt` を取り込み、更新差分から人間向けサマリを LLM 生成する |
-| [ja-follow-watch-bot.md](./ja-follow-watch-bot.md) | `CC-DocJaFollowBot` | 毎日 15:30 | 既存サマリの en 単独リンクに、ja 翻訳が追いついた時点で `[日本語]` リンクを純追記する |
+| [ja-follow-watch-bot.md](./ja-follow-watch-bot.md) | `CC-DocJaFollowBot` | 毎週日曜 20:00 | 既存サマリの en 単独リンクに、ja 翻訳が追いついた時点で `[日本語]` リンクを純追記する |
 
 ## 2 つのバッチの関係
 
 ```mermaid
 flowchart LR
     subgraph sched["Windows タスクスケジューラ"]
-        T1["15:00 CC-DocSummaryBot"]
-        T2["15:30 CC-DocJaFollowBot"]
+        T1["毎日 15:00 CC-DocSummaryBot"]
+        T2["毎週日曜 20:00 CC-DocJaFollowBot"]
     end
     T1 --> S1["run-doc-summary.ps1<br/>原文 → サマリ生成"]
     T2 --> S2["run-ja-follow-watch.ps1<br/>既存サマリ → ja リンク注入"]
