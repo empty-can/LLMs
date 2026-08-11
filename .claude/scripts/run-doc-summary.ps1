@@ -389,7 +389,21 @@ try {
         if (-not $m) { Write-Log "[$($s.Slug)] head_commit 抽出失敗、スキップ" "WARN"; continue }
         $baseCommit = $m.Matches[0].Groups[1].Value
 
-        $diff = & git diff $baseCommit $headCommit -- $s.Input
+        # 終了コードを必ず見る。フッタの head_commit が到達不能（履歴書き換え・再 clone・
+        # 未参照オブジェクトの GC）になると git diff は stderr に fatal を出して exit 128 で
+        # 終わり stdout は空になる。exit を見ないと「原文差分なし」と誤判定し、そのサイトが
+        # 以後ずっと無言でスキップされ続ける（ログにも残らず SUCCESS で終わる）。
+        $diffRaw = & git diff $baseCommit $headCommit -- $s.Input 2>&1
+        $diffExit = $LASTEXITCODE
+        if ($diffExit -ne 0) {
+            Write-Log "[$($s.Slug)] git diff が失敗 (exit $diffExit)。base=$baseCommit が到達不能の可能性" "ERROR"
+            Write-Log (@($diffRaw | ForEach-Object { $_.ToString() }) -join "`n") "ERROR"
+            $hadFailure = $true
+            continue
+        }
+        # 2>&1 で混ざる stderr は ErrorRecord として来る。差分の有無は stdout だけで判定し、
+        # git が成功時に出す警告を「差分あり」と誤読しないようにする。
+        $diff = @($diffRaw | Where-Object { $_ -isnot [System.Management.Automation.ErrorRecord] })
         if (-not $diff) {
             Write-Log "[$($s.Slug)] 原文差分なし、生成スキップ"
             continue
@@ -418,11 +432,12 @@ try {
             Write-Log "[$($s.Slug)] 生成失敗 (exit=$cliExit is_error=$isError)。当該サイトの生成物を破棄し push 抑止" "ERROR"
             Write-Log $raw "ERROR"
             # 失敗サイトの生成途中物をロールバック（他サイト・dl commit は保持）。
-            # checkout で追跡ファイルを HEAD へ戻し、clean で手順10退避コピー等の
-            # 未追跡ファイルも除去する（次の git add で混入させない）。
-            $siteDir = Split-Path $s.Detail -Parent
-            Invoke-Git checkout -- $siteDir | Out-Null
-            & git clean -fd $siteDir 2>$null | Out-Null
+            # Reset-BotPath を使う。単なる `git checkout -- <dir>` は index から復元するため、
+            # SKILL が自分でステージした内容（$ALLOWED_TOOLS に Bash(git mv:*) があり、
+            # git mv は add 不要でステージする）が生き残り、手順 6 が成功メッセージのまま
+            # コミットしてしまう。Reset-BotPath は reset → checkout HEAD → clean の順で
+            # index ごと戻すので、ステージ済みの生成物も確実に破棄される。
+            Reset-BotPath ((Split-Path $s.Detail -Parent) -replace '\\', '/')
             $hadFailure = $true
         } else {
             Write-Log "[$($s.Slug)] 生成成功 (Phase 3 含む)"

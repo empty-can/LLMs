@@ -204,7 +204,11 @@ def main() -> int:
 
     light_path = detail_path.parent / LIGHT_FILENAME
     light_content = derive(detail_path.read_text(encoding='utf-8'))
-    light_path.write_text(light_content, encoding='utf-8')
+    # newline='\n' は必須。既定の newline=None は書き込み時に \n を os.linesep へ変換するため、
+    # Windows では LF が CRLF に化ける。実際に 2026-08-11 時点の latest.md は両サイトとも
+    # 全行 CRLF だった（latest-detail.md は LF）。同フォルダの archive_summary.py の _write も
+    # 同じ理由で newline を明示している。
+    light_path.write_text(light_content, encoding='utf-8', newline='\n')
     print(f'Generated: {light_path}')
     return 0
 

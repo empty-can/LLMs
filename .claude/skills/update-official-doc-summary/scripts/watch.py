@@ -311,8 +311,14 @@ def read_text(p: Path) -> str:
 
 
 def write_text(p: Path, s: str) -> None:
+    # 一時ファイルへ書いてから置換する。registry.json は 600KB を超えるため、宛先を直接
+    # truncate + write すると書き込み中の中断（kill / 電源断 / ディスク満杯）で壊れた JSON が
+    # 残り、以後 load_registry が毎回 JSONDecodeError で落ち続ける（復旧は git 履歴からの
+    # 手作業）。Path.replace は同一ディレクトリなら原子的に差し替わる。
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_bytes(s.encode("utf-8"))
+    tmp = p.with_name(p.name + ".tmp")
+    tmp.write_bytes(s.encode("utf-8"))
+    tmp.replace(p)
 
 
 def ja_url(en_url: str) -> str:
@@ -660,7 +666,10 @@ def cmd_inject(args) -> int:
     if args.apply and args.commit and changed:
         files = sorted(str(p) for p in changed)
         git("add", *files)
-        body = "\n".join(f"- {s.replace('  (applied)', '')}" for s in applied)
+        # 末尾の "(applied x2)" / "(applied insert)" / "(already present)" を落とす。
+        # 旧実装はリテラル "  (applied)" を replace していたが、2974519 の inject 刷新で
+        # 出力形式が変わって以降どれにも一致せず no-op になっていた。
+        body = "\n".join("- " + re.sub(r"\s*\([^)]*\)\s*$", "", s) for s in applied)
         msg = (
             "refactor(official-docs): ja 翻訳追従リンクを自動注入 "
             f"({len([s for s in applied if 'applied' in s])}件)\n\n"

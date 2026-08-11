@@ -161,6 +161,12 @@ for site in ("claude-code-docs", "mcp"):
     if d.is_file() and l.is_file():
         same = dl.derive(d.read_text(encoding="utf-8")) == l.read_text(encoding="utf-8")
         check(f"[live] {site}: derive(latest-detail) == latest", same)
+        # 上の比較は改行コードに盲目。read_text は universal newlines で CRLF を \n に潰すため、
+        # latest.md が CRLF でも PASS してしまう（実際に 2026-08-11 まで 2 か月間、
+        # derive_light.py の write_text が newline 未指定で CRLF を書いていたのを見逃した）。
+        # バイト列で明示的に確認する。
+        check(f"[live] {site}: latest.md の改行が LF のみ", b"\r\n" not in l.read_bytes())
+        check(f"[live] {site}: latest-detail.md の改行が LF のみ", b"\r\n" not in d.read_bytes())
 
 # --- report ----------------------------------------------------------------------
 print("=== derive_light.py regression tests ===")

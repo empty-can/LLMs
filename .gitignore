@@ -8,6 +8,10 @@ work/*.txt
 # カテゴリ別サマリの手動実行(run-category-summary.sh)の中間・成果物
 work/categorize-algorithm/output/manual-runs/
 
+# watch.py の原子的書き込みが使う一時ファイル。通常は書いた直後に replace されるが、
+# 異常終了で残った場合に bot の git add へ混入させないため無視する
+official-doc-update-summary/**/*.tmp
+
 # Python キャッシュ
 __pycache__/
 *.pyc

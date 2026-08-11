@@ -161,7 +161,12 @@ try {
     # 5. inject --apply（ready を detail+light へ純追記。--commit はせず PowerShell 側で制御）
     Write-Log "watch.py inject --apply"
     $injectOut = Invoke-WatchPy --root $REPO_ROOT inject --apply
-    $appliedLines = @($injectOut | Where-Object { $_ -match '\(applied\)' })
+    # watch.py は適用行を "  + <label>  (applied x<N>)" / "  (applied insert)"、スキップ行を
+    # "  - <label>: <理由>"、無変更を "  (already present)" で出力する。旧実装は
+    # リテラル '(applied)' を探していたが、2974519（2026-06-21 の inject 刷新）で出力形式が
+    # 変わって以降どれにも一致せず、注入が起きても件数 0・本文空でコミットされていた。
+    # 先頭 '+' と '(applied' の両方で判定し、no-op の '(already present)' は数えない。
+    $appliedLines = @($injectOut | Where-Object { $_ -match '^\s*\+' -and $_ -match '\(applied[\s)]' })
 
     # 6. 実 .md 注入の有無を git で判定して commit / revert を分岐。
     #    inject --apply は registry.json を常に書き換える（last_checked 等の churn）ため、
@@ -172,7 +177,7 @@ try {
         $injected = $true
         $count = $appliedLines.Count
         $bodyLines = @($appliedLines | ForEach-Object {
-                (($_ -replace '^\s*\+\s*', '') -replace '\s*\(applied\)\s*$', '')
+                (($_ -replace '^\s*\+\s*', '') -replace '\s*\(applied[^)]*\)\s*$', '')
             } | ForEach-Object { "- $_" })
 
         # コミットメッセージは BOM 無し UTF-8・LF で一時ファイルに書き、-F で渡す
