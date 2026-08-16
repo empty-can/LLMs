@@ -1,34 +1,31 @@
 ---
-対象期間: 2026年08月13日 〜 2026年08月14日
-作成日: 2026-08-14
+対象期間: 2026年08月14日 〜 2026年08月15日
+作成日: 2026-08-15
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間は 52 ページに差分がありました。新規ページと新着情報はありません。中心は auto モードが Pro・Max・Team プランの既定の開始モードになったことで、権限モードのページに「セッションがどのモードで始まるか」の節が新設され、十数ページの言い回しが「default モード」から「Manual モード」へ書き換えられています。
+今回の対象期間は 20 ページに差分がありました。新規ページと新着情報はなく、changelog にも差分はありません。ほぼ全てが 1 つの変更、すなわち Opus 4.8・Sonnet 5・Fable 5・Mythos 5 とそれ以降のバージョンではタスク追跡ツールが既定で提供されなくなった（v2.1.233）という挙動の文書化で、前回「ページ見出しマップにしか無く本文が無い」と書いた 2 つの節が今回本文に着地しました。
 
 主要なものを以下に挙げます。
 
-1. auto モードが Pro・Max・Team プランの既定の開始モードになった
-2. Claude が名前を付けたサブエージェントが、エージェントチーム有効時は確認なしにチームメイトとして起動する
-3. `/goal` の評価が 3 値になり、達成不可能と判定されるとゴールが終わる
-4. フックの標準出力を JSON と見なす条件と、スキルのフックが生きている期間が書き直された
-5. `--worktree` とエージェントビューが GitLab のマージリクエストに対応した
+1. 新しいモデルではタスク追跡ツールが既定で提供されなくなった
+2. 共有タスクリストを前提にしていた説明が「Task ツールを持つエージェント」条件に書き換わった
+3. Agent SDK にもオプトインの手順と対応バージョンが入った
+4. 認識できないモデル ID の診断行 `[claude-code:unrecognized_model]` が文書化された
 ```
 
 ## ハイライト
 
-1. [**auto モードが既定の開始モードになった**](./latest-detail.md#1-auto-モードが既定の開始モードになった):  
-  権限モードのページに、新しいセッションがどのモードで始まるかを決める 3 段の手順と、組み込み既定を示す 6 行の表が新設された。組み込み既定の `auto` は v2.1.228 以降（ネイティブ Windows は v2.1.233 以降）が前提で、「2026年08月14日から既定になる」と予告していた Note は現在形の記述に置き換わった。
-2. [**Claude が名付けたサブエージェントがチームメイトとして起動する**](./latest-detail.md#2-claude-が名付けたサブエージェントがチームメイトとして起動する):  
-  Claude は Agent ツールの `name` パラメータでサブエージェントに名前を付けられ、自分の判断で付けることもある。エージェントチームが有効な間、名前の付いたサブエージェントは代わりにチームメイトとして起動し、確認は求められない。「承認なしにチームメイトを起動しない」という記述は削除され、挙動を止める手順がトラブルシューティングとして新設された。
-3. [**`/goal` の評価が 3 値になった**](./latest-detail.md#3-goal-の評価が-3-値になった):  
-  評価器は「未達成」「達成」「達成不可能」のいずれかを返すようになり、達成不可能ならゴールをクリアして失敗エントリを記録する。Claude が進捗のないまま答え続けるとループを止めるようになり、サブエージェントやバックグラウンドコマンドが動いている間はそのターンの評価をスキップする。
-4. [**フックの標準出力の解釈とスキルのフックの寿命が明文化された**](./latest-detail.md#4-フックの標準出力の解釈とスキルのフックの寿命が明文化された):  
-  標準出力を JSON と読むかプレーンテキストと読むかは、先頭の 1 文字で決まると明記された。スキルのフックは呼び出し後セッションの残り全体で動き続け、1 回だけにするには `once: true` を使う。`TaskCreated` の決定制御も変わった。
-5. [**GitLab のマージリクエストに対応した**](./latest-detail.md#5-gitlab-のマージリクエストに対応した):  
-  `--worktree` が GitLab のマージリクエスト URL を受け付け、`origin` のホストで取得パスを切り替えるようになった。エージェントビューはマージリクエストのラベルを `!1234` と書き、URL を貼るとそのセッションの行を選ぶ。
+1. [**新しいモデルではタスク追跡ツールが提供されなくなった**](./latest-detail.md#1-新しいモデルではタスク追跡ツールが提供されなくなった):  
+  ツールリファレンスに **Task tool availability** 節が新設された。v2.1.233 以降、Opus 4.8・Sonnet 5・Fable 5・Mythos 5 とそれ以降のバージョンでは `TodoWrite` と 4 つの Task ツールが既定で提供されない。取り戻すには `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` などでオプトインする。
+2. [**共有タスクリストを前提にした説明が条件付きになった**](./latest-detail.md#2-共有タスクリストを前提にした説明が条件付きになった):  
+  タスクリストは対象モデルでは空のままになり、エージェントチームの協調はメッセージが主で共有タスクリストは「Task ツールを持つエージェント」限定という書き方に変わった。`TaskCreated` フックもツールの無いセッションでは発火しない。
+3. [**Agent SDK にもオプトインの手順が入った**](./latest-detail.md#3-agent-sdk-にもオプトインの手順が入った):  
+  Todo リストのページに **Model availability** 節が新設され、対象モデルでは `tool_use` ブロックが出ないことと 3 通りのオプトインが示された。TypeScript Agent SDK 0.3.233 以降・Python Agent SDK 0.2.139 以降が対象で、ページ内のコード例も全て書き換わった。
+4. [**認識できないモデル ID の診断行が文書化された**](./latest-detail.md#4-認識できないモデル-id-の診断行が文書化された):  
+  エラーリファレンスに **Unrecognized model ID on a request** 節が新設された。前回 changelog 由来で 1 行触れた診断行で、JSON の中身・出力先・書かれない条件・`modelOverrides` での止め方がまとまった。
 
 ## 新規追加されたページ
 
@@ -36,69 +33,42 @@
 
 ## 大幅に更新されたページ
 
-- [**権限モードを選択する**](./latest-detail.md#1-権限モードを選択する) ([English](https://code.claude.com/docs/en/permission-modes#which-mode-a-session-starts-in)):  
-  追加 102 行・削除 44 行で今回最大。開始モードに関する 2 つの節が新設され、2026年08月14日からの切り替えを予告していた Note が現在形の記述になった（詳細はハイライト 1 参照）。
-- [**Hooks リファレンス**](./latest-detail.md#2-hooks-リファレンス) ([English](https://code.claude.com/docs/en/hooks#exit-code-0)):  
-  追加 67 行・削除 56 行。標準出力の解析、スキルのフックの寿命、`TaskCreated` の決定制御がいずれも変わった（詳細はハイライト 4 参照）。
-- [**カスタムサブエージェントの作成**](./latest-detail.md#3-カスタムサブエージェントの作成) ([English](https://code.claude.com/docs/en/sub-agents#subagent-names)):  
-  追加 39 行・削除 24 行。サブエージェントの名前が加わり（詳細はハイライト 2 参照）、終了したサブエージェントの行がすぐ消えるようになった。
+- [**エラーリファレンス**](./latest-detail.md#1-エラーリファレンス) ([English](https://code.claude.com/docs/en/errors#unrecognized-model-id-on-a-request)):  
+  追加 48 行・削除 3 行で今回最大。`[claude-code:unrecognized_model]` の診断行を扱う節が新設された（詳細はハイライト 4 参照）。
+- [**Todo リスト**](./latest-detail.md#2-todo-リスト) ([English](https://code.claude.com/docs/en/agent-sdk/todo-tracking#model-availability)):  
+  追加 36 行・削除 14 行。**Model availability** 節が新設され、ページ内のコード例が全てオプトインを渡す形に書き換わった（詳細はハイライト 3 参照）。
 
 ## 軽微な更新
 
-対象期間には changelog へのリリース追加 1 件（v2.1.233）と、上記 3 ページ以外に 48 ページの更新がありました。単一リリースのため、バージョンの併記は changelog 由来の項目にのみ付けています。なお本サマリの参考リンクは全て英語版のみです。今回変更のあったページは日本語版がまだ追従していないためで、権限モードとゴールの 2 ページを実際に確認したところ、いずれも今回新設された開始モードの節や 3 値の評価が無く、旧記述のままでした。
+今回は changelog に差分がなく、20 ページ全てが本文側の更新です。上記 2 ページ以外に 18 ページの変更がありました。なお本サマリの参考リンクは全て英語版のみです。今回変更のあったページは日本語版がまだ追従していないためで、ツールリファレンス・エラーリファレンス・インタラクティブモード・Todo リストの 4 ページを実際に確認したところ、いずれも今回新設された節が無く、旧記述のままでした。
 
 **新機能**
 
-- Todo とタスク追跡のツール（`TaskCreate` / `TaskGet` / `TaskUpdate` / `TaskList` と `TodoWrite`）が、Opus 4.8・Sonnet 5・Fable 5・Mythos 5 とそれ以降のモデルでは使えなくなりました。戻すには `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` を設定します（v2.1.233）。ツールリファレンスと Agent SDK の Todo リストのページに対応する節が追加されていますが、現時点でページ見出しマップにしか現れず `llms-full.txt` には入っていないため、ここではリンクを示せません
-- mTLS のクライアント証明書が再起動なしで読み直されるようになりました。API リクエストが接続リセットや TLS ハンドシェイクエラーのような接続レベルのエラーで失敗すると、Claude Code は証明書と鍵を読み直して新しい組でリトライします。新設の小節が、読み直しの契機（置き換えた瞬間には何もせず、失敗後のリトライか次の設定適用のどちらか早い方）、ゲートウェイがハンドシェイクを完了して HTTP エラーを返した場合は読み直さないこと、書き込み途中の不整合な組を読んだ場合は前の組を保つこと、OTLP のテレメトリエクスポーターは最初に読んだ証明書を持ち続けるため再起動が要ること、取り込みを確認するデバッグ行を扱います。接続エラー時の読み直しは `CLAUDE_CODE_DISABLE_MTLS_RELOAD_ON_STALE_CONNECTION` で止められます — [English](https://code.claude.com/docs/en/network-config#mtls-authentication)
-- アーティファクトが Google Fonts から書体を読み込めるようになりました。アーティファクトのページが外部から読み込める唯一のフォントソースで、それ以外の書体は `@font-face` の data URI としてインライン化され、いずれもフォールバックのスタックが付きます。ページ制約の表の「外部リクエストなし」の行は「外部リクエスト」に改められ、アーティファクトとデスクトップアプリのネットワーク案内には `fonts.googleapis.com` と `fonts.gstatic.com` が任意のホストとして挙がりました（ブロックする場合は初回描画を遅らせないよう、黙って落とすのではなく即座に拒否することが勧められています）— [English](https://code.claude.com/docs/en/artifacts#improve-the-visual-design)
-- `--add-dir` と `/add-dir` が、追加したディレクトリの `.claude/skills/` に加えて `.claude/commands/` も自動で読み込むようになりました。名前が衝突した場合はプロジェクト側のコマンドが使われます。`permissions.additionalDirectories` 設定は従来どおりファイルアクセスのみを与えます — [English](https://code.claude.com/docs/en/skills#skills-from-additional-directories)
-- ルートに `SKILL.md` があり `skills/` サブディレクトリもマニフェストの `skills` フィールドも無いプラグインは、単一スキルのプラグインとして自動的に読み込まれるようになりました。この構成で `plugin.json` に `"skills": ["./"]` を書く必要はありません — [English](https://code.claude.com/docs/en/plugins-reference#path-behavior-rules)
-- apps gateway の Anthropic 上流に、サインイン中のユーザーの識別情報をヘッダーとして送るオプトインの `forward_user_identity` 設定が加わりました。ゲートウェイの背後のプロキシがユーザー単位で支出を帰属できるようにするためです（v2.1.233）
-- Linux の Bash ツールのコマンドに、オプトインのメモリ cgroup 対応（`CLAUDE_CODE_TOOL_MEMORY_LIMIT`）が加わりました。暴走したビルドがセッションを止めないようにするためです（v2.1.233）
-- `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` で WebFetch のセッション URL キャッシュの TTL を設定できるようになりました（既定は 15 分のまま。v2.1.233）
+- `CLAUDE_CODE_ENABLE_TODO_TOOLS` が環境変数リファレンスに加わりました。タスク追跡ツールが提供されないモデルでそれらを取り戻すオプトインで、Claude Code v2.1.233 以降が必要です（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/env-vars#variables)
 
 **機能改善**
 
-- 編集前の読み取り要件を満たすコマンドが増えました。パイプもリダイレクトも無い単一ファイルに対する `nl`・`bat`・`batcat`・`rg` が、従来の `cat`・`head`・`tail`・`sed -n`・`grep`・`egrep`・`fgrep` に加わっています — [English](https://code.claude.com/docs/en/tools-reference#edit-tool-behavior)
-- Remote Control の再開結果が、会話の再接続レコードを軸に書き直されました。サーバーが記録されたセッションを失われたと報告した場合、Claude Code が代わりのセッションを始めるのはレコードがサインイン中のアカウントを指しているときだけで、別のアカウントを指していれば何も表示せず新しいセッションを始め、どのアカウントのものか分からないレコードなら何も始めません。最後のケースのメッセージは `Remote Control could not resume the previous session under the current login` から `Previous session is unavailable — run /remote-control to start a new one` に改称されました。1 つ目のターミナルが Remote Control を握ったまま 2 つ目のターミナルで会話を再開すると、セッションを奪わずに通知を出して Remote Control をオフのままにするようになり、Claude Desktop や IDE 拡張で再開した場合は claude.ai 側に新しいセッションを追加せず既存のセッションに再接続するようになりました — [English](https://code.claude.com/docs/en/remote-control#resume-outcomes)
-- Remote Control の失敗表示の読み方が加わりました。下矢印キーで指示器を選んで `Enter` を押すと理由をもう一度読めます。理由が「他のデバイスやセッションに乗っ取られた」「別のデバイスやアプリで終了・アーカイブした」「サーバーが見つけられない」のいずれかを述べている場合、Claude Code は通常付ける `/remote-control` の案内を省くため、再接続する前に理由を読む必要があります。長時間のネットワーク断もモード別に分かれ、サーバーモードは約 10 分で諦めてプロセスが終了する一方、対話セッションは断が続く限りリトライして復帰時に自分で再接続します。プレゼンスのハートビートだけが失敗している場合は、約 30 分の再登録の後に専用のメッセージを出して切断します — [English](https://code.claude.com/docs/en/remote-control#check-connection-status)
-- 再開したセッションが何を復元するかに、権限モードの規則が明記されました。`plan` と `bypassPermissions` は復元されず、`auto` はアカウントが要件を満たしている場合のみ復元され、Manual は新しいセッションなら組み込み既定で auto モードになる場合でも Manual として復元されます（設定ファイルの `defaultMode` が効く場合はそのモードで再開します）— [English](https://code.claude.com/docs/en/sessions#what-a-resumed-session-restores)
-- フィーチャーフラグの取得を必要とする機能の一覧が、auto モード関連の 2 項目から始まる形になりました。Pro・Max・Team プランでもセッションが auto モードではなく Manual で始まること、VS Code 拡張が開始モードのために設定ファイルを一切読まなくなることの 2 つです — [English](https://code.claude.com/docs/en/env-vars#features-that-need-feature-flag-fetching)
-- スキルの規則がいくつか厳密になりました。プロジェクトのスキルは同名の同梱スキルを上書きしますが、そのエイリアスまでは上書きしないため、同梱の `/review` と打っても自分の `code-review` スキルは動きません。`.claude/commands/` のファイルでは `name` と `paths` のフロントマターが無視され、ファイル名で呼び出します。個人・プロジェクトのスキルのコマンド名はディレクトリ名から決まる（ファイル名ではない）と明確化され、`user-invocable: false` は単にメニューから隠れるのではなく `/name` と打っても動かないこと（Claude からは呼べること）が明記されました — [English](https://code.claude.com/docs/en/skills#where-skills-live)
-- セルフホスト環境のデプロイのページに、コネクタツールはランナーからではなく Anthropic 側から呼ばれるため、コネクタのトラフィックはネットワーク境界の内側からではなく `api.anthropic.com` を通ることが明記されました。許可リストに入れる 3 つのエンドポイント接頭辞が挙げられ、ツールのトラフィックを内側に留めたい場合はランナーイメージ上でローカル MCP サーバーとして同等のツールを動かす、という代替も示されています — [English](https://code.claude.com/docs/en/self-hosted-environments-deploy#connector-traffic-leaves-your-network)
-- セルフホスト環境で auto モードを固定する場合の注意が加わりました。セッションコンテナが既定拒否の外向き通信で動き、ハードニングの節の残りも整っている環境でのみ固定すべき、というものです — [English](https://code.claude.com/docs/en/self-hosted-environments-configuration#permissions-and-tool-approval)
-- インストールのトラブルシューティングは、ダウンロードサーバーに到達できない場合の手順を既存のネットワーク接続確認への参照にまとめ、ベストプラクティスは CLAUDE.md の置き場所とインポートの例をメモリのページへの参照にまとめて、いずれも重複していた記述を落としました — [English](https://code.claude.com/docs/en/troubleshoot-install#check-network-connectivity)
-- エージェントチームの待機通知がチームメイトの出力を運ばないことが明記されました（詳細はハイライト 2 参照）
-- Claude Security プラグインのページに、スキャンのエージェントが各ステップの承認なしに進める auto モードで最もよく機能する、と加わりました — [English](https://code.claude.com/docs/en/claude-security#scan-and-fix-your-codebase)
-- 音声ディクテーションに `Voice stream error: WebSocket upgrade rejected with HTTP <status>` のトラブルシューティング項目が加わりました。ネットワーク障害ではなくサーバーが接続を拒否した状態で、400 番台は古いサインイン、またはプロキシやボット対策サービスが文字起こしサービスの代わりに応答している場合が多い、と説明されています — [English](https://code.claude.com/docs/en/voice-dictation#troubleshooting)
-- 用語集のチームメイトの説明が、サブエージェントとの対比を直接述べる形になりました。サブエージェントは単一セッション内で動いて親にだけ報告するのに対し、チームメイトはそれぞれ独自のコンテキストウィンドウを持ち、どのチームメイトとも対話できる、というものです — [English](https://code.claude.com/docs/en/glossary#agent-teams)
-- Claude apps gateway の `desktop` ブロックの説明が全面的に書き直されました。従来は CLI に対応物のないフィーチャーゲート 11 キー（`chatTabEnabled` や `disableAutoUpdates` など）だけを受け付け、それ以外は起動時に拒否していましたが、今は Claude Desktop の管理設定リファレンスの設定をフラットなキー名で書けます（`bootstrapUrl` のように Claude Desktop が MDM やローカルファイルからしか読まないキーは除きます）。ゲートウェイは起動時に各ブロックを Claude Desktop 自身のスキーマで検証するため、誤りは接続中の全デスクトップに届く前に、キー名を挙げた起動エラーとして表面化します。未知のキー、Claude Desktop が拒否するか黙って捨てる値、ゲートウェイ自身が計算するキー（推論接続・モデル一覧・OTLP リレー）、現行キーの旧名エイリアスは、いずれも起動を失敗させます。`desktop` ブロックには `disabledBuiltinTools` と `coworkEgressAllowedHosts` も書けるようになり（ゲートウェイサーバー側に v2.1.232 以降が必要）、前者は `permissions.deny` から導かれる一覧との和集合、後者は導出値の置き換えになります。ロールポリシーは `match: {}` の総取りブロックから未設定のキーを埋め、`disabledBuiltinTools` は和集合、ベースで `allow` 以外にした `builtinToolPolicy` はロールポリシーが `allow` にしても維持され、それ以外のキーはロールポリシーの値で丸ごと置き換わります（`banner` のような入れ子オブジェクトも丸ごと差し替わるため、`banner.text` だけ書くとベースの `banner.backgroundColor` は落ちます）。ポリシーの `cli` ブロックの `mcpServers` は従来どおり起動時に拒否されますが、Claude Desktop 向けには `desktop` ブロックで `managedMcpServers` を配れることが明記されました — [English](https://code.claude.com/docs/en/claude-apps-gateway-config#claude-desktop-overlay)
-- `claude self-hosted-runner` のセッション開始が速くなりました。セッションブランチが作業ツリーを書き換えずに作られ、2 回のサーバーラウンドトリップがエージェントの起動をブロックしなくなりました（v2.1.233）
-- apps gateway のエラー転送が改善され、Vertex・Foundry・Claude Platform on AWS の上流が返す 400 と 413 のエラーが上流自身のメッセージを伝えるようになりました。apps gateway での自動コンパクションの不具合もこれで直っています（v2.1.233）
-- `claude plugin validate` が、素の `.claude/skills` ディレクトリも検査し、フロントマターを解析できない SKILL.md を報告するようになりました（v2.1.233）
-- スクリーンリーダーモードが改善され、`/effort` のセレクターが番号付きリストと数値入力のプロンプトとして描画されるようになり、ヒントとダイアログのテキストが切れなくなりました（v2.1.233）
-- print モードの診断が加わりました。Claude Code が認識しないモデル ID でリクエストが出ると `[claude-code:unrecognized_model]` の行が標準エラーに書かれます。`modelOverrides` で対応付ければ黙らせられます（v2.1.233）
-- GitHub アプリのセットアップの案内が、origin リモートが gitlab.com や bitbucket.org にあるリポジトリでは出なくなり、エンタープライズマーケットプレイスの案内が GitHub 以外の社内 git ホストもカバーするようになりました（v2.1.233）
-
-**バグ修正**
-
-- Claude が権限プロンプトを待っている間に環境がシャットダウンすると、クラウドセッションが失われたと記録されることがある問題が修正されました（v2.1.233）
-- MCP v2 の接続が、長時間保持したストリームを固定タイムアウトで切るサーバー（サーバーレスホストなど）に対して subscriptions/listen ストリームを延々と開き直す問題が修正されました（v2.1.233）
-- Claude Desktop や VS Code の配下で、権限プロンプトに対して Notification フックが発火しない問題が修正されました（v2.1.233）
-- Linux でサンドボックスを有効にしていると、アイドル中のセッションが CPU コアを 1 つ 100% 使い続けることがある問題が修正されました（v2.1.233）
-- ユーザーまたはプロジェクトのスキルが同梱スキルを覆っているとき、`/checkup` や `/review` のような同梱スキルのエイリアスが `-p` モードやプラグイン・MCP 読み込み時に "Unknown command" になる問題が修正されました（v2.1.233）
-- スキルとコマンドの引数展開で、引数の値がテンプレートのマーカーとして再展開されうる問題が修正されました（v2.1.233）
-- Windows で NT のデバイス接頭辞 `\??\` を使って書いたパスが UNC パスの検証を回避し、NTLM の資格情報漏洩の経路になる問題が修正されました（v2.1.233）
-- Windows で、`cd <dir> && <command> > file` のような通常の Bash コマンドに対して auto モードが繰り返し手動承認を求めて止まる問題（v2.1.232 での退行）が修正されました（v2.1.233）
-- v2.1.232 で入った Bash の権限の変更のうち、Windows の Cygwin 形式のシンボリックリンクと入力リダイレクト（`< file`）に関するものが差し戻されました。より範囲を絞った版が後のリリースで戻る予定です（v2.1.233）
+- `CLAUDE_CODE_ENABLE_TASKS` の説明が、ツールを有効・無効にするものから「タスク追跡ツールがあるセッションで、Task ツールと `TodoWrite` のどちらを提供するかを選ぶもの」に再定義されました — [English](https://code.claude.com/docs/en/env-vars#variables)
+- `CLAUDE_CODE_TASK_LIST_ID` によるセッション間のタスクリスト共有にも、Task ツールがあるセッションに限る、という限定が付きました — [English](https://code.claude.com/docs/en/env-vars#variables)
+- ツールリファレンスのツール一覧表で、`TaskCreate`・`TaskGet`・`TaskList`・`TaskUpdate` の 4 行に対象モデルでは提供されない旨が加わり、`TodoWrite` の行の再有効化もツールがあるセッションの中の話だと明示されました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/tools-reference#task-tool-availability)
+- サブエージェント定義をチームメイトとして使うときに Claude Code が許可リストへ何を足すかが具体的に書かれました（詳細はハイライト 2 参照）— [English](https://code.claude.com/docs/en/agent-teams#use-subagent-definitions-for-teammates)
+- 完了したバックグラウンドのサブエージェントが `/tasks` に残る期間が、「セッションがタスクリストを片付けるまで」から「フッターの案内が出ているのと同じ時間」に書き改められました — [English](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)
+- 自分で止めたサブエージェントをトランスクリプトへの入力で再開できるのは、その行がまだサブエージェントのパネルに残っている間だけ、という限定が加わりました — [English](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)
+- Agent SDK のフック一覧で `TaskCompleted` の説明が「バックグラウンドタスクが完了したとき」から「タスクが完了としてマークされたとき」に直され、Hooks リファレンスの該当節へのリンクと、タスクを閉じる前にテストの合格を求めるという用例に置き換わりました — [English](https://code.claude.com/docs/en/agent-sdk/hooks#available-hooks)
+- `--allowedTools` と `--tools` にタスク追跡ツールを名指しすると、権限の指定に加えてオプトインも兼ねることが CLI リファレンスに明記されました（詳細はハイライト 3 参照）— [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- 同じ内容が Agent SDK の権限ページとカスタムツールのページにも加わり、あわせて許可リストの説明が「リストにないツール」から「その他のリストにないツール」に直されました — [English](https://code.claude.com/docs/en/agent-sdk/permissions#allow-and-deny-rules)
+- エージェントループの組み込みツール表に、対象モデルでは `TaskCreate` と `TaskUpdate` がオプトインしたときだけ提供される、という注記が付きました — [English](https://code.claude.com/docs/en/agent-sdk/agent-loop#built-in-tools)
+- Claude Code を拡張するページで、エージェントチームの説明と機能比較表が共有タスクリスト前提からメッセージ主体の書き方に揃えられました（詳細はハイライト 2 参照）— [English](https://code.claude.com/docs/en/features-overview#compare-similar-features)
+- エージェントを並列実行するページの選択ガイドでも、チームメイトが直接メッセージを送り合うことが先に来て、共有タスクリストは Task ツールを持つ場合、という順序に直されました — [English](https://code.claude.com/docs/en/agents#choose-an-approach)
+- モデル設定のページに、プロバイダーやゲートウェイがモデル名を決めるため ID の検査が働かない場合でも、リクエスト時の診断行は全てのプロバイダーで書かれうることが加わりました（詳細はハイライト 4 参照）— [English](https://code.claude.com/docs/en/model-config#setting-your-model)
 
 **その他**
 
-- `llms.txt` の差分は今回ちょうど 1 行で、ゴールのページの説明が「条件が満たされるか、達成不可能と判断されるまで」で終わる形になりました（ハイライト 3 参照）。それ以外の差分は全て `llms-full.txt` とページ見出しマップにあります
-- 今回はページ見出しマップが `llms-full.txt` より先行しています。マップにはツールリファレンスの **Task tool availability** と Agent SDK の Todo リストの **Model availability** が載っており、いずれも新しいモデルから Todo とタスクのツールを外した v2.1.233 の変更に対応しますが、どちらの節も `llms-full.txt` にはまだ入っていません。マップにはこのほか、開始モードの新設節・**Subagent names**・チームメイトのトラブルシューティング項目・Remote Control のメッセージ改称も反映され、**How forks differ from named subagents** が改称後の見出しに置き換わっています
-- ワークフローの権限プロンプトについて、Manual と編集受け入れのモードでは、そのプロジェクトでそのワークフローに **Yes, and don't ask again** を選んでいない限り毎回出ることが表に加わりました — [English](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)
-- 大規模コードベースのページで、木のなじみのない場所を担当する人にどのプラグインがその領域を持っているかを伝える手段として `SessionStart` フックが提案されました。フックのページが今回明文化した、プレーンテキストの標準出力がコンテキストに入る規則をそのまま使うものです — [English](https://code.claude.com/docs/en/large-codebases#recommend-the-right-plugin-at-session-start)
+- Agent SDK のオブザーバビリティのページで、サブエージェントを起動するツールの呼称が「Task ツール」から「Agent ツール」に直されました — [English](https://code.claude.com/docs/en/agent-sdk/observability#read-agent-traces)
+- ウェブの Claude Code のページでも同じ呼称の修正が入りました — [English](https://code.claude.com/docs/en/claude-code-on-the-web#manage-context)
+- ページ見出しマップの差分は、エラーリファレンスに **Unrecognized model ID on a request** の項目が 1 行加わっただけです（ハイライト 4 参照）。前回はマップが `llms-full.txt` に先行していましたが、今回その先行分が本文に追いつきました
+- `llms.txt` には今回差分がありません。前回はゴールのページの 1 行だけが変わりましたが、今回の変更は全て `llms-full.txt` とページ見出しマップに現れています
+- changelog ページにも差分がありません。今回文書化された挙動はいずれも v2.1.233 のもので、リリース自体は前回の対象期間に追加済みです
 
 ## 新着情報
 
@@ -106,11 +76,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-13.md](./archives/latest/2026-08-13.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-13.md](./archives/latest-detail/2026-08-13.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-14.md](./archives/latest/2026-08-14.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-14.md](./archives/latest-detail/2026-08-14.md)
 
 <!--
-base_commit: d837a95ef745893def1444471ab9e621cc930a85
-head_commit: 2a513b807b46155ef1d11e37c87fa9afe0ab8b40
-generated_at_full: 2026-08-15T15:15:49+09:00
+base_commit: 2a513b807b46155ef1d11e37c87fa9afe0ab8b40
+head_commit: eda93f08dd15ec44722c9febe8803506e487e524
+generated_at_full: 2026-08-16T15:00:46+09:00
 -->

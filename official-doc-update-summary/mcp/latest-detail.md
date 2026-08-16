@@ -1,36 +1,39 @@
 ---
-対象期間: 2026年08月06日 〜 2026年08月10日
-作成日: 2026-08-10
+対象期間: 2026年08月10日 〜 2026年08月15日
+作成日: 2026-08-15
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の変更は、`llms.txt` のエントリ並び順の全面的な再編 1 件のみです。掲載 144 件の内容（タイトル・URL・説明文）はいずれも変わっておらず、ページの新規追加・削除・本文更新はありませんでした。
+今回の対象期間に本文が変わったのは「Build an MCP server」チュートリアル 1 ページのみで、その内容は Claude for Desktop の Linux 対応をドキュメントに反映するものです。全 8 言語タブから「Linux では Claude for Desktop をまだ利用できない」旨の注記が削除され、Linux 向けの設定ファイルパス・ログ出力先・アプリ終了手順が追記されました。
 
 主要なものを以下に挙げます。
 
-1. llms.txt のエントリ順が URL パスの辞書順から、ドキュメント構成に沿った論理順（入門 → 仕様 → 拡張 → レジストリ → SEP → コミュニティ）に変更された
+1. Claude for Desktop の Linux 非対応の注記が全 8 言語タブから削除され、代わりに Linux 向けの設定ファイルパス・ログ出力先・完全終了の手順が追記された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**llms.txt のエントリ順序をドキュメント構成順に再編**](#1-llmstxt-のエントリ順序をドキュメント構成順に再編):  
-  掲載 144 件の並び順が、URL パスの辞書順から公式ドキュメントの構成に沿った論理順へ全面的に変更された。エントリの集合（タイトル・URL・説明文）は変更前後で完全に一致しており、144 件すべてが位置のみ移動している。SEP 一覧が番号昇順に整い、トップレベルのグループ順は `llms-full.txt` のページ出現順と揃った（旧版の辞書順では揃っていなかった）。
+1. [**Claude for Desktop の Linux 対応がサーバー構築チュートリアルに反映**](#1-claude-for-desktop-の-linux-対応がサーバー構築チュートリアルに反映):  
+  「Build an MCP server」の全 8 言語タブ（Python / TypeScript / Java / Kotlin / C# / Ruby / Rust / Go）から「Claude for Desktop is not yet available on Linux」の注記が削除され、設定ファイルを開くコマンド例が `macOS/Linux` 一括から `Linux`（`~/.config/Claude/claude_desktop_config.json`）と `macOS` に分割された。トラブルシューティングにも Linux のログ出力先（`~/.config/Claude/logs/`）とアプリを完全終了する手順が追記されている。
 <!-- light:highlight-list:end -->
 
-## 1. llms.txt のエントリ順序をドキュメント構成順に再編
+## 1. Claude for Desktop の Linux 対応がサーバー構築チュートリアルに反映
 
-MCP 公式サイトの `llms.txt` で、掲載されている 144 件のエントリの並び順が全面的に組み替えられました。トップレベルのパス群で見ると、旧版は `community` → `development` → `docs` → `examples` → `extensions` → `registry` → `seps` → `specification` という URL パスの辞書順でしたが、新版は `docs` → `examples` → `specification` → `extensions` → `registry` → `seps` → `community` → `development`（`development/roadmap` が末尾）の順になりました。つまり「まず読み手が着手するドキュメント、次に仕様本体、その後に拡張・レジストリ・提案（SEP）、最後にコミュニティ運営と将来計画」という読み進め方に沿った配置です。変更前後のエントリを行単位の多重集合として比較すると完全に一致しており、追加・削除されたページは 1 件もなく、タイトル・URL・説明文の字句修正も発生していません。144 件すべてが位置だけ移動した、純粋な並び替えです。
+MCP サーバー構築チュートリアル「Build an MCP server」が、Claude for Desktop を Linux でも使える前提に書き換えられました。旧版は各言語タブの「Testing your server with Claude for Desktop」節の冒頭に「Claude for Desktop is not yet available on Linux」という注記があり、8 タブのうち 7 タブでは続けて「Linux ユーザーは代わりに [Building a client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client) チュートリアルへ進み、いま作ったサーバーに接続する MCP クライアントを作れます」と誘導していました（Java タブのみ誘導文のない 1 文だけの注記）。今回この注記が Python / TypeScript / Java / Kotlin / C# / Ruby / Rust / Go の全 8 タブから削除され、Linux の読者もそのままチュートリアルを最後まで進める構成になっています。
 
-グループ内部の順序も辞書順から実際の学習導線に沿った順に変わりました。`docs` 群は「What is the Model Context Protocol (MCP)?」を先頭に、Architecture overview → Understanding MCP servers → Understanding MCP clients → Versioning（learn）→ Connect to local / remote MCP servers → Build with Agent Skills → Build an MCP server → Build an MCP client → Client Best Practices（develop）→ SDKs → セキュリティのチュートリアル 2 本 → MCP Inspector 系 → Debugging と並びます。旧版では同じ階層内も辞書順だったため、learn では Understanding MCP clients が Understanding MCP servers より前に来ており、Inspector 配下も Authorization → CLI client → Configuration and flags → Protocol eras → Recipes → TUI client → Web client の順でした。新版では概説の MCP Inspector に続いて Web client → CLI client → TUI client → Configuration and flags → Authorization → Protocol eras → Recipes と、クライアント 3 種を先に並べる構成になっています。
+設定ファイルの場所も Linux 向けに補われました。設定ファイルを VS Code で開くコマンド例は、旧版では `macOS/Linux` と `Windows` の 2 タブからなるコードグループで、`macOS/Linux` タブが示していたのは macOS のパス `~/Library/Application\ Support/Claude/claude_desktop_config.json` でした。新版は `Linux` / `macOS` / `Windows` の 3 タブになり、先頭に置かれた Linux タブが `code ~/.config/Claude/claude_desktop_config.json` を案内します。この分割も 8 タブすべてに入っています。ただしコードグループ直前の散文は依然として「open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json`」と macOS のパスだけを挙げており、Linux のパスが書かれているのはコード例の側だけです。
 
-仕様と SEP の並びも整理されました。`specification/2026-07-28` 群は Specification（index）→ Key Changes → Deprecated Features → Architecture → Basic（Overview → Versioning and Compatibility → Patterns → Transports → Authorization）→ Client（Roots / Sampling / Elicitation）→ Server（Overview → Discovery → Prompts → Resources → Tools → Utilities）→ Schema Reference という、仕様書としての読み順になりました。SEP 一覧は旧版が文字列の辞書順だったため SEP-1024・SEP-1034 …… SEP-2663 の後に SEP-414・SEP-932 が続くという番号が飛ぶ並びでしたが、新版は SEP のインデックスページに続いて SEP-414 → SEP-932 → SEP-973 → …… → SEP-2663 と番号の昇順に揃っています。`registry` 群も The MCP Registry → Quickstart → FAQ → Supported Package Types → Publishing Remote Servers → Authentication → Versioning → GitHub Actions → Moderation Policy → Registry Aggregators → Terms of Service という利用手順に沿った順序になりました。
+ページ末尾の「Troubleshooting」にある「Claude for Desktop Integration Issues」でも 3 点が変わりました。1 点目はログの出力先で、`~/Library/Logs/Claude` 単独だった記述が「`~/Library/Logs/Claude`（macOS）または `~/.config/Claude/logs/`（Linux）」になりました。2 点目はログを追尾するコマンドで、ラベルのないコードブロック 1 本だったものが `macOS` / `Linux` のラベル付き 2 本に分かれ、Linux 側は `tail -n 20 -f ~/.config/Claude/logs/mcp*.log` です。3 点目はアプリを完全に終了する手順で、Windows（システムトレイのアイコンを右クリックして「Quit」または「Exit」）と macOS（Cmd+Q かメニューバーから「Quit Claude」）の 2 項目に Linux が加わり、システムトレイのアイコンを右クリックして「Quit」を選ぶか、ターミナルから `pkill -f claude-desktop` を実行する、と案内されました。
 
-今回の差分に `llms-full.txt` は含まれておらず、全文展開版に変更はありません。その `llms-full.txt` のページ出現順をトップレベルのパス群で見ると `docs` → `examples` → `specification` → `extensions` → `registry` → `seps` → `community` → `development` となっており、これは新しい `llms.txt` のグループ順と一致します。旧版の `llms.txt`（辞書順）とは一致していなかったため、今回の再編で 2 ファイルの大枠の構成が揃ったことになります。ただし `llms-full.txt` はグループ内のページが URL パスの辞書順のままで、加えて SEP 群が 2 ブロックに分割され後半（SEP-1865 以降の 19 件）が `development/roadmap` の後ろに置かれているため、エントリ単位で見た順序が完全に一致するわけではありません。両ファイルの並びが対応している前提で処理しているツールがあれば確認が要ります。また `llms.txt` は 144 件すべてが位置を変えているため、行位置や行番号を基準に監視している場合は今回の取得分で大きな差分が出ますが、内容の変化ではありません。なお本件は索引ファイル `https://modelcontextprotocol.io/llms.txt` そのものに対する変更であり、これを解説する公式ドキュメントページが存在しないため、参考リンクは記載していません。
+なお今回の書き換えは「Build an MCP server」ページの中で完結しています。Claude Desktop を扱う他のページは対象期間中に変更されておらず、「Connect to local MCP servers」は設定ファイルの場所として macOS と Windows の 2 つだけを挙げ、前提条件の節も「Claude Desktop is available for macOS and Windows」のまま、ログ取得のコード例も `macOS/Linux` ラベルで macOS のパスを示しています。「Debugging」ページの Viewing logs も出力先は macOS と Windows のみです。Linux で作業する読者が Linux 向けの記述を得られるのは、現時点では「Build an MCP server」だけということになります。
+
+- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#testing-your-server-with-claude-for-desktop)
+- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#troubleshooting)
 
 ## 新規追加されたページ
 
@@ -41,26 +44,35 @@ MCP 公式サイトの `llms.txt` で、掲載されている 144 件のエン�
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-既存ページ本文に 50 行以上の変更があったページはありません。今回の変更は索引ファイル `llms.txt` の並び替えのみで、ページ本文には一切変更がありません。
+- [**Build an MCP server**](#1-build-an-mcp-server) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server)):  
+  Claude for Desktop の Linux 非対応の注記が全 8 言語タブから削除され、Linux 向けの設定ファイルパス・ログ出力先・アプリ終了手順が追記された。今回の対象期間で本文に変更があったのはこのページだけで、差分は 48 行の追加と 42 行の削除（詳細はハイライト 1 参照）。
 <!-- light:updated-pages:end -->
+
+## 1. Build an MCP server
+
+天気サーバーを題材に MCP サーバーを実装し、Claude for Desktop に接続するまでを扱うチュートリアルページです。今回の差分で本文に変更があったのはこのページだけでした。変更はいずれも Claude for Desktop の Linux 対応に関するもので、各変更の中身と背景はハイライト 1 で扱っています。ここでは変更がページのどこに入ったかを整理します。
+
+- 各言語タブの「Testing your server with Claude for Desktop」節: 冒頭の Linux 非対応の注記を削除（8 タブ）
+- 同節の設定ファイルを開くコマンド例: `macOS/Linux` の一括タブを `Linux` と `macOS` の 2 タブに分割（8 タブ）
+- ページ末尾の「Troubleshooting」: ログ出力先・ログ追尾コマンド・アプリの完全終了手順に Linux を追記（1 箇所）
+
+変更が入ったのは上記の範囲に限られ、サーバー実装のコードや構築手順そのものには手が入っていません。対応言語タブの構成（Python / TypeScript / Java / Kotlin / C# / Ruby / Rust / Go の 8 種）と、ページ冒頭の説明文「Get started building your own server to use in Claude for Desktop and other clients.」も変更前後で同じです。
+
+- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#testing-your-server-with-claude-for-desktop)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-変更のあったファイルは `llms.txt` の 1 件で、内容の変更を伴わないエントリの並び替えです。
-
-**その他**
-
-- `llms.txt` の掲載 144 件の並び順が、URL パスの辞書順からドキュメント構成に沿った論理順へ変更された（内容の追加・削除・字句修正はなし。詳細はハイライト 1 参照）
+今回の対象期間に、上記以外の変更はありません。差分が出たファイルは `llms-full.txt` の 1 件のみで、その中身も「Build an MCP server」ページに閉じています。索引ファイル `llms.txt` は掲載 144 件のエントリ・並び順とも変更がありません。
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-06.md](./archives/latest/2026-08-06.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-06.md](./archives/latest-detail/2026-08-06.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-10.md](./archives/latest/2026-08-10.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-10.md](./archives/latest-detail/2026-08-10.md)
 
 <!--
-base_commit: c9dddd90da6fb28e45cbc5136c3e674097b3a172
-head_commit: b06e86d6646918033115fbd60c61868f5f265af3
-generated_at_full: 2026-08-11T15:47:02+09:00
+base_commit: b06e86d6646918033115fbd60c61868f5f265af3
+head_commit: eda93f08dd15ec44722c9febe8803506e487e524
+generated_at_full: 2026-08-16T15:30:56+09:00
 -->

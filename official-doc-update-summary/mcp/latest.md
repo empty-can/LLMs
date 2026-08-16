@@ -1,22 +1,22 @@
 ---
-対象期間: 2026年08月06日 〜 2026年08月10日
-作成日: 2026-08-10
+対象期間: 2026年08月10日 〜 2026年08月15日
+作成日: 2026-08-15
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の変更は、`llms.txt` のエントリ並び順の全面的な再編 1 件のみです。掲載 144 件の内容（タイトル・URL・説明文）はいずれも変わっておらず、ページの新規追加・削除・本文更新はありませんでした。
+今回の対象期間に本文が変わったのは「Build an MCP server」チュートリアル 1 ページのみで、その内容は Claude for Desktop の Linux 対応をドキュメントに反映するものです。全 8 言語タブから「Linux では Claude for Desktop をまだ利用できない」旨の注記が削除され、Linux 向けの設定ファイルパス・ログ出力先・アプリ終了手順が追記されました。
 
 主要なものを以下に挙げます。
 
-1. llms.txt のエントリ順が URL パスの辞書順から、ドキュメント構成に沿った論理順（入門 → 仕様 → 拡張 → レジストリ → SEP → コミュニティ）に変更された
+1. Claude for Desktop の Linux 非対応の注記が全 8 言語タブから削除され、代わりに Linux 向けの設定ファイルパス・ログ出力先・完全終了の手順が追記された
 ```
 
 ## ハイライト
 
-1. [**llms.txt のエントリ順序をドキュメント構成順に再編**](./latest-detail.md#1-llmstxt-のエントリ順序をドキュメント構成順に再編):  
-  掲載 144 件の並び順が、URL パスの辞書順から公式ドキュメントの構成に沿った論理順へ全面的に変更された。エントリの集合（タイトル・URL・説明文）は変更前後で完全に一致しており、144 件すべてが位置のみ移動している。SEP 一覧が番号昇順に整い、トップレベルのグループ順は `llms-full.txt` のページ出現順と揃った（旧版の辞書順では揃っていなかった）。
+1. [**Claude for Desktop の Linux 対応がサーバー構築チュートリアルに反映**](./latest-detail.md#1-claude-for-desktop-の-linux-対応がサーバー構築チュートリアルに反映):  
+  「Build an MCP server」の全 8 言語タブ（Python / TypeScript / Java / Kotlin / C# / Ruby / Rust / Go）から「Claude for Desktop is not yet available on Linux」の注記が削除され、設定ファイルを開くコマンド例が `macOS/Linux` 一括から `Linux`（`~/.config/Claude/claude_desktop_config.json`）と `macOS` に分割された。トラブルシューティングにも Linux のログ出力先（`~/.config/Claude/logs/`）とアプリを完全終了する手順が追記されている。
 
 ## 新規追加されたページ
 
@@ -24,23 +24,20 @@
 
 ## 大幅に更新されたページ
 
-既存ページ本文に 50 行以上の変更があったページはありません。今回の変更は索引ファイル `llms.txt` の並び替えのみで、ページ本文には一切変更がありません。
+- [**Build an MCP server**](./latest-detail.md#1-build-an-mcp-server) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server)):  
+  Claude for Desktop の Linux 非対応の注記が全 8 言語タブから削除され、Linux 向けの設定ファイルパス・ログ出力先・アプリ終了手順が追記された。今回の対象期間で本文に変更があったのはこのページだけで、差分は 48 行の追加と 42 行の削除（詳細はハイライト 1 参照）。
 
 ## 軽微な更新
 
-変更のあったファイルは `llms.txt` の 1 件で、内容の変更を伴わないエントリの並び替えです。
-
-**その他**
-
-- `llms.txt` の掲載 144 件の並び順が、URL パスの辞書順からドキュメント構成に沿った論理順へ変更された（内容の追加・削除・字句修正はなし。詳細はハイライト 1 参照）
+今回の対象期間に、上記以外の変更はありません。差分が出たファイルは `llms-full.txt` の 1 件のみで、その中身も「Build an MCP server」ページに閉じています。索引ファイル `llms.txt` は掲載 144 件のエントリ・並び順とも変更がありません。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-06.md](./archives/latest/2026-08-06.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-06.md](./archives/latest-detail/2026-08-06.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-10.md](./archives/latest/2026-08-10.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-10.md](./archives/latest-detail/2026-08-10.md)
 
 <!--
-base_commit: c9dddd90da6fb28e45cbc5136c3e674097b3a172
-head_commit: b06e86d6646918033115fbd60c61868f5f265af3
-generated_at_full: 2026-08-11T15:47:02+09:00
+base_commit: b06e86d6646918033115fbd60c61868f5f265af3
+head_commit: eda93f08dd15ec44722c9febe8803506e487e524
+generated_at_full: 2026-08-16T15:30:56+09:00
 -->
