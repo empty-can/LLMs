@@ -1,75 +1,78 @@
 ---
-対象期間: 2026年08月15日 〜 2026年08月21日
-作成日: 2026-08-21
+対象期間: 2026年08月21日 〜 2026年08月22日
+作成日: 2026-08-22
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間に本文が変わったのは 6 ページで、その中心は Authorization Interest Group の再チャーターをはじめとするコミュニティ運営文書の改訂です。認可まわりの Discord チャンネル 6 本と Enterprise-Managed Authorization IG が `#auth-ig` 1 本に集約され、あわせて SEP の Final 化要件の見直し、Rust SDK の Tier 1 昇格、Subscriptions の応答記述の修正が入りました。
+今回の対象期間で本文が変わったのは Roadmap ページ 1 件のみですが、優先領域が旧来の 4 つから新しい 5 つへ差し替えられ、各領域に責任者の Core Maintainer が明示される全面改訂となりました。今後 6〜12 か月で仕様がどこへ向かうか、そして SEP がどの順で審査されるかを示す内容です。
 
 主要なものを以下に挙げます。
 
-1. Authorization Interest Group が再チャーターされ、`#auth-wg-*` の 6 チャンネルと Enterprise-Managed Authorization IG が `#auth-ig` 1 本に統合された（定例コールもアジェンダ駆動に変更）
-2. SEP の Final 化要件が見直され、仕様変更（スキーマ・仕様本文・changelog エントリ）は SEP の PR 自体に含める形になり、SDK 実装は Final の要件から外れた
-3. Rust SDK が Tier 2 から Tier 1 に昇格し、Tier 1 は TypeScript / Python / C# / Go / Rust の 5 つになった
-4. Subscriptions のグレースフルクローズで返す応答の記述が「空の結果」から「完了結果」に改められ、標準の result フィールドとサブスクリプションのメタデータを含むことが明示された
+1. エージェント向けメッセージング基盤（Tasks・`subscriptions/listen`・進捗通知）を互いに組み合わせ可能にする領域が新設され、サーバー起点のイベント配信と、プリミティブ同士の整合レビューが今期の成果物になった
+2. リモートとローカルで二重化していたトランスポートを Streamable HTTP に一本化する方針が示され、stdio 上で HTTP/2 を話す「HTTP over stdio」と、ETag によるキャッシュの拡張が今期の対象になった
+3. エージェント自身の ID と権限委譲を扱う領域が立ち、今期発足予定の Agent Identity WG が DPoP の仕様確定と、Workload Identity Federation・ID-JAG・RFC 8693 トークン交換の整備を進める
+4. `tools/call` が `content` と `structuredContent` を同時に返せる点を含む戻り値の形を再設計し、あわせてサーバー側の段階的な提示（progressive discovery）を新規に立ち上げる
+5. SDK・リファレンスサーバー・クイックスタートを仕様と conformance テストから生成する実験が始まり、拡張のコントラクト定義とあわせて SDK WG が担当する
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Authorization Interest Group の再チャーターと認可関連チャンネルの統合**](#1-authorization-interest-group-の再チャーターと認可関連チャンネルの統合):  
-  Authorization IG の charter が 2026年08月17日付で全面改訂され、「問題を育てて Working Group を切り出す」インキュベーター型から「認可作業の唯一のチャーター済みの場」へ位置づけが変わった。`#auth-wg-*` の 6 チャンネルは読み取り専用でアーカイブされ、Enterprise-Managed Authorization IG も同じ形で吸収されて、議論はすべて `#auth-ig` のトピック別スレッドに集約される。隔週 45 分の定例はアジェンダ駆動になり、アジェンダが集まらない回は中止される。
-2. [**SEP の Final 化要件が見直され SDK 実装は不要に**](#2-sep-の-final-化要件が見直され-sdk-実装は不要に):  
-  SEP Guidelines の Finalization 手順が書き換えられ、受理後に著者が仕様変更（スキーマ変更・仕様本文・changelog エントリ）を SEP の PR そのものに追加する形になった。SDK 実装は SEP が `final` になるための要件ではないと明記され、作業が完了した時点でスポンサーがステータスを `final` に更新し PR をマージできる。conformance test の要件自体は従来どおりで変更はない。
-3. [**Rust SDK が Tier 1 に昇格**](#3-rust-sdk-が-tier-1-に昇格):  
-  SDKs ページの一覧で Rust SDK のバッジが Tier 2 から Tier 1 になり、表内の位置も Tier 1 グループの末尾（Go の下）へ移動した。これで Tier 1 は TypeScript / Python / C# / Go / Rust の 5 つになり、Java と Ruby が Tier 2、Swift / PHP / Kotlin が Tier 3 という構成になる。
-4. [**Subscriptions のグレースフルクローズ応答の記述修正**](#4-subscriptions-のグレースフルクローズ応答の記述修正):  
-  サーバー側からサブスクリプションを終了する際に返す応答が、「空の結果（empty result）」から「完了結果（completion result）」という表現に改められ、標準の result フィールドとサブスクリプションのメタデータ以外にメソッド固有のデータを持たない、という説明が加わった。同じ節のサンプル JSON は変更前から `"resultType": "complete"` と `_meta` を含んでおり、本文の記述をその実体に合わせた修正となる。
+1. [**エージェント向けメッセージング基盤の統合が最優先領域に**](#1-エージェント向けメッセージング基盤の統合が最優先領域に):  
+  リクエスト／レスポンスに収まらない処理（数分かかる作業、サーバーからのプッシュ、逐次的な結果、実行中の作業への介入）に対して MCP が持つ Tasks・`subscriptions/listen`・進捗通知が複数の Working Group にまたがっており、「サーバーがまだ終わっていない」に対する答えが 3 通りあってライフサイクル・キャンセル方式・エラー面を共有していない、という問題意識が新しく言語化された。今期は Triggers & Events WG によるサーバー起点のイベント配信（webhook を含むチャンネルとサブスクリプション）と、Agents / Transports / Triggers & Events の 3 WG による組み合わせレビューが成果物になる。
+2. [**HTTP ネイティブなトランスポートへの一本化**](#2-http-ネイティブなトランスポートへの一本化):  
+  2026年07月28日 のリリース（仕様バージョン 2026-07-28）でリモート MCP サーバーが通常の HTTP ワークロードになった結果、HTTP ネイティブな機能ごとに stdio 用の設計をもう 1 つ用意する必要が生じ、SDK は 2 系統のトランスポート実装を抱え、プロトコルのメタデータが HTTP ヘッダとメッセージ本体に二重化している。今期は Streamable HTTP を唯一のバインディングとし、それを stdin/stdout 上で話す「HTTP over stdio」（HTTP/2 による多重化とサブプロセスの安全性・ライフサイクル保証の両立）と、`ttlMs` / `cacheScope` に続く ETag 対応のキャッシュ拡張に取り組む。
+3. [**エージェント ID とエンタープライズ対応セキュリティ**](#3-エージェント-id-とエンタープライズ対応セキュリティ):  
+  MCP の認可は「同意の時点でブラウザの前に人がいる」ことを前提にしているが、実際の呼び出し元は自身の ID を持つクラウドワークロードであったり、不在のユーザーの代理であったり、親より狭い権限を与えるべきサブエージェントを生成したりする。今期発足予定の Agent Identity WG が、DPoP の仕様確定と普及、および Workload Identity Federation（SEP-1933）・Enterprise-Managed Authorization が用いる ID-JAG・RFC 8693 トークン交換を、IETF の OAuth / WIMSE と連携しながら進める。
+4. [**プリミティブの改善と progressive discovery**](#4-プリミティブの改善と-progressive-discovery):  
+  `tools/call` が `content` と `structuredContent` を同時に返せる仕様がサーバー・クライアント双方の実装者を混乱させ、実装が分岐しているという認識が明記され、今期発足予定の Core Primitives WG が戻り値の形を再設計する。あわせて、大量のツール・リソースをクライアントに一度に飲ませない progressive discovery を実験的なサーバー側の仕組みとして立ち上げ、コンテンツアノテーションをツール結果やリソースに広げるか否か（有用でなければ非推奨化も検討）を判断する。
+5. [**仕様からの生成を軸にした SDK 開発者体験の改善**](#5-仕様からの生成を軸にした-sdk-開発者体験の改善):  
+  SDK・リファレンスサーバー・クイックスタートが手作業で維持されている現状に対し、仕様と人手レビュー済みの conformance テストスイートを source of truth として成果物を導出し、リリースのたびに再生成・再検証する形を目指す方針が示された。今期は拡張のコントラクト（拡張がどのロールに紐づくか、SDK がネイティブに支えるべき範囲、パッケージング、機能追加の版管理）の定義と、仕様から Tier 1 SDK 候補とクイックスタートを生成して conformance テストで検証する実験を SDK WG が担当する。
 <!-- light:highlight-list:end -->
 
-## 1. Authorization Interest Group の再チャーターと認可関連チャンネルの統合
+## 1. エージェント向けメッセージング基盤の統合が最優先領域に
 
-MCP の認可を扱う Authorization Interest Group の charter が 2026年08月17日付で全面改訂されました。旧版のミッションは「実装者・IdP ベンダー・セキュリティ実務者が実世界の認可課題を持ち寄る場を提供し、ユースケースを集め、現行の OAuth 2.1 ベース認可仕様のギャップを文書化し、検証済みの問題を十分にスコープが固まるまで温めたうえで、標準のグループ作成プロセスを通じて focused な Working Group を提案する」というインキュベーター型のものでした。新版では「MCP の認可作業における唯一のチャーター済みの場（the single chartered venue）」と定義され、実世界の問題を洗い出し、それが解く価値のある問題か・MCP に属する問題かを判断し、著者が SEP や [ext-auth](https://github.com/modelcontextprotocol/ext-auth) のドラフト・プロトタイプ・デプロイ結果を持ち込んで横断的なフィードバックを受けられる場にする、という役割になっています。charter 本文は「議論とラフコンセンサスは 1 つのチャンネルと 1 つの定例コールで行い、成果物は新しい常設グループではなくドラフトとデモである」と明言しています。
+新しい優先領域の筆頭に「Agentic Messaging Primitives」が置かれました。責任者の Core Maintainer は Caitie McCaffrey / Clare Liguori / Peter Alexander の 3 名です。この領域が掲げる問題意識は、エージェント的なワークロードにはリクエストとレスポンスの往復では足りないメッセージングのパターン、すなわち数分にわたって走り続ける処理、サーバーからのプッシュ、逐次到着する結果、そして実行途中の作業に手を入れる手段が必要である、というものです。MCP はすでにそのための概念として Tasks 拡張、`subscriptions/listen`、進捗通知を持っていますが、これらが複数の Working Group に分散しているため、「サーバーがまだ終わっていない」という同じ状況に対して 3 通りの答えが存在し、ライフサイクルもキャンセルのモデルもエラーの表現も共有していない、というリスクがあると本文は述べています。目指すのはそれらが互いに組み合わさる状態です。
 
-もっとも目に見える変更が Discord チャンネルの統合です。`#auth-wg-client-registration`（動的クライアント登録）、`#auth-wg-mixup-protection`（認可サーバーの mix-up・トークンオーディエンス混同の緩和）、`#auth-wg-profiles`（Client Credentials・Enterprise-Managed Authorization・DPoP・Workload Identity Federation の各拡張）、`#auth-wg-tool-scopes`（ツール単位のスコープ提示・ステップアップ認可）、`#auth-wg-fine-grained-authz`（Rich Authorization Requests・構造化された拒否・修復ヒント）、`#auth-wg-improve-devx`（規範仕様の外側のベストプラクティスとチュートリアル）の 6 チャンネルが、この再チャーターをもって読み取り専用でアーカイブされました。旧版が「Working Group」の一覧表（Status と Charter の列を持ち、Tool Scopes と Fine-Grained Authorization が Active、他は Completed）だったのに対し、新版は「Former channel / Topic / State at consolidation / Continues as」の対照表になっており、統合時点で Active だった Tool Scopes は `#auth-ig` のスレッドへ、Fine-Grained Authorization は `#auth-ig` の SEP-2643 / fine-grained authorization スレッドへ、Profiles は DPoP と Workload Identity Federation のスレッドへ引き継がれると記載されています。Improve DevX の状態は旧表の Completed から Dormant に改められました。Enterprise-Managed Authorization IG も同じ扱いで吸収され、`#enterprise-managed-auth-ig` はアーカイブ、EMA の相互運用・デプロイの進捗は Auth IG コールの発表枠として持ち込む形になります。
+今期（this roadmap period）の成果物として 2 つが挙げられています。1 つは Triggers & Events WG が担当する **サーバー起点のイベント**で、webhook を含むプッシュ配信のためのチャンネルとサブスクリプションを扱います。Tasks やその他のイベントを通じて非同期のワークロードを引き受けるにつれ、コストの高いクライアント側ポーリングだけに頼らずにサーバーが作業完了をクライアントへ伝えられる拡張が必要になる、という位置づけです。もう 1 つは Agents / Transports / Triggers & Events の 3 つの WG による **組み合わせレビュー**で、Tasks や Triggers のように形成途上のプリミティブが互いにきれいに組み合わさり、具体的なユースケースに適合することを確認します。これらに加えて、Tasks（SEP-2663）は拡張をいずれコアプロトコルへ取り込むことを見据えて作業が続きます。
 
-運用ルールも書き換わりました。定例は「Discussion Call」から「Auth IG Call」に改称され、隔週 45 分という枠は据え置きですが、目的が「ユースケース共有・問題のトリアージ・WG 提案の決定」からアジェンダ駆動（問題の売り込み、SEP やドラフトの進捗、デモ、デプロイ報告）に変わりました。ファシリテーターが各コールの前に `#auth-ig` にアジェンダスレッドを立て、参加者はトピック・求めるもの（フィードバック / 決定 / 周知）・所要時間を返信して枠を要求します。アジェンダが薄ければその回は中止し、枠は次回に回されます。スコープ面では In Scope に「拡張の相互運用レポート」と「SEP およびドラフトへのフィードバック」が加わった一方、旧版にあった「Working Group の提案」が削除され、代わりに Out of Scope の先頭に「SEP や拡張の受理」が置かれました（IG はフィードバックと支持の表明までで、スポンサーシップと受理は Maintainers・Core Maintainers に残る）。問題の持ち込みに対しては「これは解く価値のある問題か」「その居場所はここか（コア仕様か、ext-auth の公式拡張か、非公式拡張か、上流の標準化団体か）」の 2 つの定型質問が必ず問われ、両方が Yes のときに通常の SEP プロセスへ進みます。トピックごとにサブグループやチャンネル、会議シリーズを作ることはせず、独自の意思決定権が本当に必要な成果物についてのみ、例外として別途 Working Group を提案できる、という位置づけです。
+- [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap#1-agentic-messaging-primitives)
 
-- [Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/auth#consolidated-channels)
-- [Enterprise-Managed Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization#changelog)
+## 2. HTTP ネイティブなトランスポートへの一本化
 
-## 2. SEP の Final 化要件が見直され SDK 実装は不要に
+第 2 の優先領域は「HTTP-Native Transport Unification and Hardening」で、責任者の Core Maintainer は Kurtis Van Gent / Nick Cooper の 2 名です。2026年07月28日 のリリース（仕様バージョン 2026-07-28）によってリモート MCP サーバーは普通の HTTP ワークロードになり、ヘッダやステータスコードといった HTTP 固有の仕組みにトランスポート層の情報を載せる度合いが増しました。その副作用として、HTTP ネイティブな機能を 1 つ入れるたびに stdio 向けの設計をもう 1 つ用意しなければローカルで動かない、SDK は 2 系統のトランスポートのパイプラインを維持することになる、プロトコルのメタデータが HTTP ヘッダとメッセージのフィールドに二重化してサーバー側で突き合わせ検証が要る、という状況が生まれています。この領域が目指すのは、単一のトランスポートモデルの上に標準的な HTTP の作法を載せる形です。
 
-SEP（Specification Enhancement Proposal）が `final` に到達するまでの要件が書き換えられました。旧版の Step-by-Step Process の第 9 段階「Finalization」は「受理されたらリファレンス実装を完成させなければならない。観測可能なプロトコル挙動を持つ Standards Track SEP では conformance test のマージも必要。完成して仕様に取り込まれたら、スポンサーがステータスを `final` に更新する」という記述でした。新版では、リファレンス実装と conformance test の要件はそのままに、「著者が仕様変更（スキーマ変更・仕様本文・changelog エントリ）を SEP のプルリクエストに追加する」「SDK 実装は SEP が `final` になるための要件ではない」「この作業が完了した時点でスポンサーがステータスを `final` に更新し、SEP の PR をマージできる」という 3 点が加わっています。
+今期の成果物は 2 つとも Transports WG が担当します。**HTTP over stdio** は、Streamable HTTP を唯一のバインディングとし、ローカルサーバーではそれを stdin/stdout 上で話すというもので、stdio 上の HTTP/2 によって多重化された HTTP トランスポートを得つつ、サブプロセスであることによるセキュリティとライフサイクルの保証を保てるはずだ、という見通しが述べられています。**キャッシュ**は、直近のプロトコル改訂が list 結果とリソース読み取りに `ttlMs` と `cacheScope` を追加した（SEP-2549）ことを踏まえ、その延長として ETag をサポートし、プリミティブの結果、とりわけツール呼び出しの結果にバージョンを付けられるようにするものです。この 2 つの先には、全面にわたるエラー処理の標準化、SEP-2575（ステートレス MCP）を受けたツール一覧の capability スコープ化、サーバーに安全な形で設定オプションを提供する仕組みが控えています。
 
-同じ内容が「SEP Review & Resolution」節にも反映されました。旧版は「受理された後はリファレンス実装を完成させなければならず、完成してメインリポジトリに取り込まれた時点でステータスが Final に変わる」という 1 文でしたが、新版は「受理された後、著者が仕様変更（スキーマ変更・仕様本文・changelog エントリ）を SEP の PR に追加する。リファレンス実装は、必要な conformance test とあわせて完成させなければならない。SDK 実装は不要である。この作業が完了した時点でステータスが Final に変わり、PR をマージできる」と展開されています。受理の判定基準（プロトタイプ実装があること・MCP エコシステムへの明確な利益・コミュニティの支持とコンセンサス）自体は変わっていません。
+- [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap#2-http-native-transport-unification-and-hardening)
 
-要点は、仕様変更を別の PR に切り出すのではなく SEP の PR そのものが仕様変更の PR を兼ねること、そして SDK 実装の完了を待たずに SEP を Final にできることが明示された点です。なお conformance test の要件（観測可能なプロトコル挙動を持つ Standards Track SEP は conformance リポジトリへのシナリオのマージが必要、Process / Informational SEP と観測可能な挙動を持たないものは免除）は従来から存在するもので、今回の差分では変更されていません。
+## 3. エージェント ID とエンタープライズ対応セキュリティ
 
-- [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
-- [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#sep-review--resolution)
+第 3 の優先領域は「Agent Identity and Enterprise-Ready Security」で、責任者の Core Maintainer は Paul Carleton / Den Delimarsky の 2 名です。現在の MCP の認可は、同意の時点で人がブラウザの前にいることを前提にしています。しかし呼び出し元は次第にエージェントになりつつあり、自分自身の ID を持つクラウドワークロードであったり、その場にいないユーザーの代理で動いていたり、親より狭い権限を与えるべきサブエージェントを生成したりします。既存の MCP サーバーは貼り付けられた API キーと長命なリフレッシュトークンに頼っている、という現状認識のもと、MCP サーバーがエージェントの ID を扱う標準的な方法が必要であり、既存の標準を採り入れる形でセキュリティを改善し続ける、と述べられています。
 
-## 3. Rust SDK が Tier 1 に昇格
+今期の成果物は 2 つで、いずれも今期のうちに発足予定の Agent Identity WG が担当します。**DPoP** は Demonstrating Proof of Possession の仕様を確定させ、広く採用されることに注力するものです。**エージェント ID と委譲** は、MCP サーバーがエージェント自身の ID か、ユーザーから委譲された ID のいずれかで到達される、明確な方針を持った方法を用意するもので、Workload Identity Federation（SEP-1933）、Enterprise-Managed Authorization が用いる Identity Assertion JWT Authorization Grant（ID-JAG）、RFC 8693 のトークン交換を対象に、IETF の OAuth ワーキンググループおよび WIMSE ワーキンググループと連携して進めます。これらの先には、対話的なクライアントとヘッドレスなエージェントを区別するための human-presence attestation をはじめ、いくつかの論点が議論中で、WG の発足に伴ってスコープに入る可能性があるとされています。
 
-SDKs ページの「Available SDKs」の一覧で、Rust SDK のバッジが Tier 2 から Tier 1 に変わりました。表内の行も移動しており、旧版では Tier 2 グループの Java と Ruby の間にあったものが、新版では Tier 1 グループの末尾（TypeScript / Python / C# / Go に続く 5 番目）に置かれています。この結果、Tier 1 は TypeScript / Python / C# / Go / Rust の 5 つ、Tier 2 は Java と Ruby の 2 つ、Tier 3 は Swift / PHP / Kotlin の 3 つという構成になりました。Java は Tier 2 のままで、今回動いたのは Rust の 1 行だけです。
+- [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap#3-agent-identity-and-enterprise-ready-security)
 
-SDK Tiering System によれば、Tier 1 は「非実験的な全機能と、sampling・elicitation のようなオプション機能を含む完全なプロトコル実装を備えた、フルサポートの SDK」と定義され、conformance test の 100% パス、新しいプロトコル機能への新仕様バージョンのリリース前の追従、2 営業日以内の issue トリアージ、7 日以内の重大バグ修正が求められます。Tier 2 は「完全なプロトコル仕様サポートに向けて作業中の、活発にメンテナンスされている SDK」で、conformance test は 80% パス、新機能への追従は 6 か月以内という水準です。今回の昇格は、Rust SDK がこの Tier 1 の水準を満たすと判断されたことを意味します。なお、今回の差分は SDKs ページの一覧表のみで、SDK Tiering System ページ側の Tier の定義や要件表には変更がありません。
+## 4. プリミティブの改善と progressive discovery
 
-- [SDKs - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#available-sdks)
-- [SDK Tiering System - MCP Docs](https://modelcontextprotocol.io/community/sdk-tiers#overview)
+第 4 の優先領域は「Improved Primitives」で、責任者の Core Maintainer は Kurtis Van Gent / Peter Alexander / Den Delimarsky の 3 名です。MCP のツール呼び出しのインターフェースはこれまで十分に役割を果たしてきたが、`tools/call` が `content` と `structuredContent` を同時に返せることがサーバー実装者・クライアント実装者の双方を混乱させ、実装の分岐を生んできた、という反省が明記されました。今期はこのインターフェースの形を改善して意味論を一貫させることに時間を使うとしています。あわせて、大量のツールやリソースなどのプリミティブをクライアントに案内するための選択肢がサーバーに足りない、というコミュニティからの繰り返しの声を受け、**progressive discovery**（段階的な提示）に的を絞った取り組みを開始し、実験的なサーバー側の discovery 機構がどのようなものになるかを定義するとしています。
 
-## 4. Subscriptions のグレースフルクローズ応答の記述修正
+今期の成果物は 3 つで、いずれも今期のうちに発足予定の Core Primitives WG が担当します。**ツール結果の形**は、戻り値の型ごとに再現性（fidelity）の差があることを解消し、構造化された出力と非構造化の出力の扱いを整理するために `tools/call` のインターフェースを再設計するものです。**Progressive discovery** は、クライアントがサーバーのツールとリソースのカタログを最初にまとめて取り込むのではなく必要に応じて知っていく形にするもので、優先領域 2 のキャッシュの作業との相互作用も定義します。**プリミティブのアノテーション**は、仕様上のコンテンツアノテーション（そのコンテンツの想定読者と優先度を宣言するもの）をツール結果やリソースへ適用すれば SEP-2200 が指摘する可視性の混乱を解消できる可能性がある一方、大半の実装者がこのアノテーションを採用しておらず目的も知られていないため、有用でないなら非推奨化を検討すべきだ、という判断を含みます。なお File Uploads WG は、スコープ付きのファイル操作と、範囲読み取りや階層的な一覧といったファイルシステム的なリソースの意味論の作業を継続します。
 
-仕様 2026-07-28 の Subscriptions ページで、サーバーが自分の判断でサブスクリプションを終了する際（たとえばシャットダウン時）に返す応答の記述が修正されました。「Graceful Closure」節は、旧版では「元の `subscriptions/listen` リクエストに対して**空の結果（an empty result）**を返してからストリームを閉じる**べき（SHOULD）**」となっていましたが、新版では「**完了結果（a completion result）**を返してからストリームを閉じるべき」に変わり、「その結果は、標準の result フィールドとサブスクリプションのメタデータを超えるメソッド固有のデータを持たない」という 1 文が加わりました。あわせて「Cancellation」節の箇条書きも、サーバーがサブスクリプションを畳む場合の説明が「**空の** `subscriptions/listen` レスポンスを送るべき」から「**成功した** `subscriptions/listen` レスポンスを送るべき」に書き換えられています。
+- [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap#4-improved-primitives)
 
-これは新しい機構の追加ではなく、記述と実体の食い違いの解消です。同じ節に置かれたサンプル JSON は変更前から `"result"` の中に `"resultType": "complete"` と `_meta` の `io.modelcontextprotocol/subscriptionId` を含んでおり、本文が言う「空の結果」とは整合していませんでした。今回の修正で本文がサンプルの実体に合わせられた形になります。SHOULD という規範性の強さ、応答が長命リクエストの `id` で対応付けられる JSON-RPC レスポンスであること、応答を伴わない突然のトランスポート切断と対比してグレースフルな終了を示すという位置づけ、そしてサンプル JSON 自体は変更されていません。
+## 5. 仕様からの生成を軸にした SDK 開発者体験の改善
 
-- [Subscriptions - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions#graceful-closure)
-- [Subscriptions - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions#cancellation)
+第 5 の優先領域は「Improved SDK Developer Experience」で、責任者の Core Maintainer は Den Delimarsky / David Soria Parra の 2 名です。SDK・リファレンスサーバー・クイックスタートはいずれも手作業で維持されており、それで回ってはいるものの、仕様と人手でレビューされた conformance テストスイートを source of truth として、より多くの成果物をそこから導出できるはずだ、という考えが示されています。狙いは、SDK もサンプルもリリースのたびに再生成・再検証されるようにし、リリース後に手当てする形から脱することです。
+
+今期の成果物は 2 つで、いずれも SDK WG が担当します（1 つ目は Core Maintainers と共同）。**拡張のコントラクト**は、拡張がどのロール（ホスト / クライアント / サーバー / エージェント）に紐づき、capability が宣言されたときに各ロールが何をするのか、SDK がネイティブに対応しなければならない範囲はどこまでか、拡張はどうパッケージされるのか、capability の追加を拡張のバージョン付き変更としてどう扱うか、を定めるもので、認可は独立した領域として扱われます。**生成物の実験**は、仕様から Tier 1 SDK の候補とそれに付随するクイックスタートのサンプルを生成し、双方を conformance テストスイートで検証したうえで、どの層を決定論的なコード生成にし、どの層をモデル支援にするかを含めて、次サイクルに向けた提言とともに結果を公開するものです。この先には、リファレンスサーバーとクイックスタートのリポジトリについて所有者と鮮度の期待値を見直すこと、そして生成の失敗によって浮かび上がった仕様の不明瞭さをドキュメントのバグとして扱うことが挙げられています。
+
+- [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap#5-improved-sdk-developer-experience)
 
 ## 新規追加されたページ
 
@@ -80,51 +83,45 @@ SDK Tiering System によれば、Tier 1 は「非実験的な全機能と、sam
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Authorization Charter**](#1-authorization-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/auth)):  
-  Authorization Interest Group の charter が再チャーターされ、ミッション・スコープ・運営ルール・成果物の定義が全面的に書き換えられた。差分は 53 行の追加と 26 行の削除で、今回の対象期間で 50 行を超えた唯一のページ（詳細はハイライト 1 参照）。
+- [**Roadmap**](#1-roadmap) ([MCP Docs](https://modelcontextprotocol.io/development/roadmap)):  
+  ロードマップが全面改訂され、優先領域が旧来の 4 つから新しい 5 つへ差し替えられた。各領域に責任者の Core Maintainer が明記され、旧版の「On the Horizon」「Validation」の 2 節は廃止。差分は 53 行の追加と 51 行の削除で、今回の対象期間で本文が変わった唯一のページ（詳細はハイライト 1〜5 参照）。
 <!-- light:updated-pages:end -->
 
-## 1. Authorization Charter
+## 1. Roadmap
 
-MCP の認可 Interest Group の charter ページです。今回の再チャーターで変更が入ったのはページのほぼ全域にわたるため、ここではどのセクションが何に変わったかを整理します。各変更の意味と背景はハイライト 1 で扱っています。
+MCP のロードマップページです。今回の改訂はページのほぼ全域に及ぶため、ここではどのセクションが何に変わったかを整理します。新しい各優先領域の中身はハイライト 1〜5 で扱っています。
 
-- **Mission Statement**: 「問題を集めてギャップを文書化し、focused な Working Group を提案する」インキュベーター型の記述から、「認可作業における唯一のチャーター済みの場」であり「成果物は新しい常設グループではなくドラフトとデモ」という記述へ全面書き換え
-- **Scope / In Scope**: 「拡張の相互運用レポート」（ext-auth 拡張の独立実装同士を IdP・クライアント・認可サーバーで突き合わせた結果）と「SEP およびドラフトへのフィードバック」の 2 項目を追加。「Working Group の提案」を削除。「スコープと権限の粒度」にスコープ文字列を超えた粒度（Rich Authorization Requests・構造化された拒否・修復ヒント）を追記し、「問題提起と要件」の共有先を GitHub Discussions への公開から `#auth-ig` スレッドと SEP のプルリクエストへ変更
-- **Scope / Out of Scope**: 「SEP や拡張の受理」を先頭に追加。IdP ベンダーが報告する制約もデプロイ経験としてスコープ内である旨の記述を、認可サーバーに加えて IdP にも広げる形で調整
-- **Scope / Related Groups**: Enterprise-Managed Authorization IG のエントリを削除し、代わりに Security IG（トークンオーディエンスの混同・issuer 検証・アカウント連携のリスクが両グループの境界にある）を追加。SDK Maintainers の項目に、SDK 横断の認可まわりのエルゴノミクスに加えて「デフォルト」も含める旨を追記
-- **Membership**: IdP ベンダー・認可対応を出荷しているクライアント／サーバー実装者・エンタープライズ IdP と統合する運用者を特に求めている、という 1 文を追加。参加導線は Discord のトピック別スレッド中心に整理され、GitHub Discussions の Authorization カテゴリと該当 WG チャンネルへの直接投稿の案内を削除
-- **Operations**: 定例の名称を「Discussion Call」から「Auth IG Call」へ改称し、目的をアジェンダ駆動の内容に変更。「One channel, threads per topic」「Agenda-driven calls」「From problem to SEP」の 3 セクションを新設し、旧「Working Group Incubation」セクションを削除
-- **Deliverables & Success Metrics**: 成果物の定義を「WG を提案する」型から「通過したドラフトとデモ（IG のフィードバックが記録された SEP・ext-auth 仕様、リファレンス実装と conformance シナリオ、相互運用とデプロイのレポート、公開された議事録）」型へ書き換え。配下の Working Group 一覧表を「Consolidated channels」節とアーカイブ済みチャンネルの対照表に差し替え
-- **Changelog**: 2026年08月17日付で「Re-charter: single venue and channel for authorization work; agenda-driven calls; SEP feedback in scope; `#auth-wg-*` channels and the Enterprise-Managed Authorization IG folded in」の行を追加
+- **メタ情報**: ページ冒頭の `Last updated` が 2026年03月05日 から 2026年08月22日 に更新。索引 `llms.txt` 側の説明文も「Our plans for evolving Model Context Protocol」から、Core Maintainers と Working Group が次の仕様リリースに向けて進めている優先領域と、それが SEP レビューをどう左右するかを扱う、という新しい文面に差し替え
+- **導入文**: 「戦略的優先事項と、それに対して Working Group / Interest Group に期待するものを説明するページ」という記述から、「今後 6〜12 か月にわたるプロトコルへの Core Maintainers のビジョンを示し、次の仕様更新およびその先で狙う目標を挙げる」という記述へ変更。6〜12 か月という時間軸が新たに明示された
+- **Note（非確約の断り書き）**: 文言は書き換えられたが趣旨は据え置き。ここに書かれたものは確約ではなく、優先度は変わりうるし、記載と異なる形で実現されたり先送りされたりすることも、ここに挙がっていない作業がリリースに入ることもある、という内容
+- **SEP Prioritization**: 優先領域に該当する SEP が優先的にレビューされ、領域外の SEP も自動的に却下されるわけではないが待ち行列は長く正当化のハードルは高い、という骨子は維持。新たに「各優先領域には責任者の Core Maintainer が明示されており、貢献に関心のある人は Discord で連絡できる」「各領域に列挙された項目は今期の優先成果物であり、領域の残りはオープンスコープで、Working Group がその中で追加の作業を定義し貢献することが期待される」という段落が追加された
+- **Priority Areas**: 旧版の 4 領域（Transport Evolution and Scalability / Agent Communication / Governance Maturation / Enterprise Readiness）が、新版の 5 領域（Agentic Messaging Primitives / HTTP-Native Transport Unification and Hardening / Agent Identity and Enterprise-Ready Security / Improved Primitives / Improved SDK Developer Experience）へ全面的に差し替え。各領域は「Core Maintainers」の明記 → 背景説明 → 「This roadmap period:」の成果物リスト → その先の展望、という共通の構成になった
+- **On the Horizon 節の削除**: 旧版で「コミュニティと Core Maintainer に関心はあるが最優先ではない」と位置づけられていた 4 項目のうち、Triggers and Event-Driven Updates は新領域 1 に、Security & Authorization（DPoP・Workload Identity Federation を含む）は新領域 3 に、それぞれ優先領域として引き上げられた。Result Type Improvements については新旧の対応関係が明示されておらず、戻り値の型ごとの再現性の差を解消するという新領域 4 の記述と、結果が逐次到着することを課題に挙げる新領域 1 の問題意識に分かれて引き継がれたように読める（参照ベースの結果への明示的な言及は新版に見当たらない）。Extensions Ecosystem は独立した項目としては姿を消し、拡張まわりの記述は新領域 5 の「拡張のコントラクト」と Get Involved 節の SEP-2133 への言及に分散している
+- **Validation 節の削除**: conformance テストスイート・SDK Tiers・リファレンス実装を列挙していた節が無くなった。conformance テストスイートは新領域 5 で生成物の検証基盤として、SDK の Tier は同じく新領域 5 で生成対象（Tier 1 SDK の候補）として、それぞれ本文中に組み込まれている
+- **優先領域から外れたもの**: Governance Maturation（Contributor Ladder の SEP、実績ある WG への受理権限の委任モデル、四半期ごとに見直す charter テンプレート）と Enterprise Readiness（監査証跡と可観測性、ゲートウェイ／プロキシのパターン、設定の可搬性）は優先領域から姿を消した。エンタープライズ向けの認可は新領域 3 の「Enterprise-Ready Security」として引き継がれている。あわせて、旧版にあった「今サイクルでは公式トランスポートを追加しない」という明示的な宣言、および MCP Server Cards と Server Card WG への言及も無くなった（Server Card WG の charter ページ自体は存続している）
+- **Get Involved**: 「MCP のロードマップはコミュニティによって作られる」という導入から、「上記のすべての優先領域には Working Group が付いているか発足しつつあり、いずれも貢献者を受け入れる余地がある」という導入に変更。4 つの参加導線（WG / IG への参加、SEP の提案とコメント、実験的拡張の開始、直接の貢献）は維持されたが、実験的拡張の SEP-2133 のリンク先が GitHub の issue から docs 内の SEP ページへ差し替えられた
 
-Leadership 節のファシリテーター 3 名（Aaron Parecki / Darin McAdams / Paul Carleton）と Group Type（Interest Group）、Discord チャンネル `#auth-ig` の URL は変更されていません。定例の頻度（隔週）と所要時間（45 分）も据え置きです。
+Priority Areas 以外では、ページのセクション構成が「SEP Prioritization → Priority Areas → Get Involved」の 3 本に絞られた点が最も大きな変化です。
 
-- [Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/auth#mission-statement)
+- [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap#sep-prioritization)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms-full.txt` の 1 件のみで、索引ファイル `llms.txt` は掲載 144 件のエントリ・並び順とも変更がありません。本文が変わった 6 ページのうち、上記の Authorization Charter を除く 5 ページは以下のとおりです。
-
-**機能改善**
-
-- SDKs: Rust SDK の Tier バッジが Tier 2 から Tier 1 になり、表内の並びも Tier 1 グループへ移動した（詳細はハイライト 3 参照） — [SDKs - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#available-sdks)
-- Subscriptions: サーバー主導でサブスクリプションを終了する際に返す応答の記述が、「空の結果」から「完了結果」に修正された（詳細はハイライト 4 参照） — [Subscriptions - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions#graceful-closure)
-- SEP Guidelines: Final 化の手順が書き換えられ、仕様変更を SEP の PR に含めること・SDK 実装は不要であることが明記された（詳細はハイライト 2 参照） — [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
-- Working and Interest Groups: Working Group の設立要件が、`docs/community/working-groups/<name>/overview.mdx` を追加する PR（Maintainers 承認）と charter を追加する PR（Core Maintainers 承認）の 2 本立てから、charter を `docs/community/working-groups/<name>.mdx` として追加する PR 1 本に一本化された。この PR は Group Charter Template に沿って書き、`docs/docs.json` への対応するナビゲーションエントリを含める必要があり、CODEOWNERS で Core Maintainers の承認が必須となる。Interest Group 側も、スポンサーが付いた後にファシリテーターが charter を作る手順が「charter を作成する」だけの記述から、同じテンプレートに沿った `docs/community/interest-groups/<name>.mdx` を追加する PR として提出し、ナビゲーションエントリを含め Core Maintainers の承認を得る、という具体的な手順に置き換えられた — [Working and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#lifecycle)
+今回差分が出たファイルは `llms-full.txt` と索引ファイル `llms.txt` の 2 件ですが、本文が変わったページは Roadmap の 1 件のみ（`llms-full.txt` 内で 53 行の追加と 51 行の削除）で、ページ単位の軽微な更新に該当するものはありませんでした。
 
 **その他**
 
-- Enterprise-Managed Authorization Charter: ページ冒頭に、2026年08月17日をもって当 Interest Group が Authorization IG に統合された旨の注記が追加された。EMA の相互運用とデプロイの進捗は Auth IG コールのアジェンダ枠で発表し、議論は `#auth-ig` のスレッドで継続、`#enterprise-managed-auth-ig` はアーカイブされる。ページ自体は参照用として残される。あわせて changelog に 2026年08月17日「Folded into the Authorization IG; channel archived」の行が追加された（詳細はハイライト 1 参照） — [Enterprise-Managed Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization#changelog)
+- Roadmap: 索引 `llms.txt` 上のエントリ位置が、末尾（Tool Annotations Charter の後）から Group Charter Template と Design Principles の間へ移動した。あわせて 1 行説明もページの新しい内容に合わせて差し替えられている。掲載件数は前後とも 144 件で変わらない（詳細は大幅更新 1 参照） — [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-15.md](./archives/latest/2026-08-15.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-15.md](./archives/latest-detail/2026-08-15.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-21.md](./archives/latest/2026-08-21.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-21.md](./archives/latest-detail/2026-08-21.md)
 
 <!--
-base_commit: eda93f08dd15ec44722c9febe8803506e487e524
-head_commit: d2a47b6c691946fa1f35bf733b795510e9048022
-generated_at_full: 2026-08-22T15:45:02+09:00
+base_commit: d2a47b6c691946fa1f35bf733b795510e9048022
+head_commit: 38adb8c17987c2872a55345390bf77b43146ab00
+generated_at_full: 2026-08-23T16:11:18+09:00
 -->
