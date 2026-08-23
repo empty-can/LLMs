@@ -122,6 +122,7 @@
 - [Contributor Communication](https://modelcontextprotocol.io/community/communication.md): Communication strategy and framework for the Model Context Protocol community
 - [Working and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups.md): Governance rules for the two forms of collaborative groups within the Model Context Protocol community — Working Groups and Interest Groups.
 - [Group Charter Template](https://modelcontextprotocol.io/community/charter-template.md): Template for MCP Working Group and Interest Group charters.
+- [Roadmap](https://modelcontextprotocol.io/development/roadmap.md): The Model Context Protocol roadmap, covering the priority areas Core Maintainers and Working Groups are driving for the next specification release and how they shape SEP review.
 - [Design Principles](https://modelcontextprotocol.io/community/design-principles.md): The core design principles that guide the development of the Model Context Protocol.
 - [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines.md): Specification Enhancement Proposal (SEP) guidelines for proposing changes to the Model Context Protocol
 - [Governance and Stewardship](https://modelcontextprotocol.io/community/governance.md): Learn about the Model Context Protocol's governance structure and how to participate in the community
@@ -145,4 +146,3 @@
 - [Primitive Grouping Charter](https://modelcontextprotocol.io/community/interest-groups/primitive-grouping.md): Charter for the MCP Primitive Grouping Interest Group.
 - [Security Charter](https://modelcontextprotocol.io/community/interest-groups/security.md): Charter for the MCP Security Interest Group.
 - [Tool Annotations Charter](https://modelcontextprotocol.io/community/interest-groups/tool-annotations.md): Charter for the MCP Tool Annotations Interest Group.
-- [Roadmap](https://modelcontextprotocol.io/development/roadmap.md): Our plans for evolving Model Context Protocol
