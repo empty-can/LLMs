@@ -55,7 +55,7 @@ Claude Code 側から実行を持ちかける導線も入りました。auto モ
 
 索引ページ（What's new）にも両週のダイジェストが加わり、Week 34 が先頭に来ています。索引の要約は各週ページの本文とは別に書き起こされたもので、Week 34 では 3 件の主役に加えて `ANTHROPIC_DEFAULT_MODEL`、Week 33 では `@` によるセッションのメンションが挙げられています。
 
-- [What's new - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/index)
+- [日本語](https://code.claude.com/docs/ja/whats-new/index) / [What's new - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/index)
 - [Week 34 · August 17–21, 2026 - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/2026-w34)
 
 ## 3. claude.ai から同期されるプラグイン `@synced`
@@ -78,7 +78,7 @@ Claude Code 側から実行を持ちかける導線も入りました。auto モ
 設定リファレンスの差分（追加 329 行・削除 327 行）が今回最大なのは、この 110 行の修正に表の桁揃えの入れ替えが重なったためです。ページの中身としての変更は `disableSideloadFlags` の 1 件のみで、そちらは大幅更新 1 で扱います。
 
 - [Claude Code settings reference - Claude Code Docs (English)](https://code.claude.com/docs/en/settings-reference#all-settings)
-- [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills)
+- [日本語](https://code.claude.com/docs/ja/skills) / [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills)
 
 ## 5. 管理操作の主体が Owner または admin から Owner へ
 
@@ -238,7 +238,7 @@ Chat タブの有効化手段も加わりました。Claude Desktop の管理構
 このほか、末尾近くに残っていた空要素 `<a />` が 1 個取り除かれました（その他参照）。
 
 - [Use Claude Code in VS Code - Claude Code Docs (English)](https://code.claude.com/docs/en/vs-code#work-with-git)
-- [Run parallel sessions with worktrees - Claude Code Docs (English)](https://code.claude.com/docs/en/worktrees)
+- [日本語](https://code.claude.com/docs/ja/worktrees) / [Run parallel sessions with worktrees - Claude Code Docs (English)](https://code.claude.com/docs/en/worktrees)
 
 ## 13. Claude Code の仕組み
 
@@ -247,7 +247,7 @@ Chat タブの有効化手段も加わりました。Claude Desktop の管理構
 代わりに、節の導入文に「具体的なプロンプト、検証、計画については**ベストプラクティス**を参照」という 1 文が加わっています。残ったのは **Ask Claude Code for help**、**It's a conversation**（配下の **Interrupt and steer** を含む）、**Delegate, don't dictate** の 3 節で、助言の重複が整理されてベストプラクティス側に集約された形です。あわせて、ページ末尾のカードのリンク 2 本が `/en/...` から `/docs/en/...` に直されました（ハイライト 4 参照）。
 
 - [How Claude Code works - Claude Code Docs (English)](https://code.claude.com/docs/en/how-claude-code-works#work-effectively-with-claude-code)
-- [Claude Code best practices - Claude Code Docs (English)](https://code.claude.com/docs/en/best-practices)
+- [日本語](https://code.claude.com/docs/ja/best-practices) / [Claude Code best practices - Claude Code Docs (English)](https://code.claude.com/docs/en/best-practices)
 
 ## 軽微な更新
 
@@ -263,7 +263,7 @@ Chat タブの有効化手段も加わりました。Claude Desktop の管理構
 
 - クラウドセッションに `gh` CLI がプリインストールされるようになりました（詳細は大幅更新 8 参照）— [English](https://code.claude.com/docs/en/cloud-environments#installed-tools)
 - Slack のルーティングに 2 つのモードがあることが明記されました。**Code + Chat** モードでは @Claude へのメンションがコーディングタスクかどうかを自動判定し、コーディングタスクだけを Claude Code on the web に回して他は通常のチャット返信になります。**Code only** モードでは全てのメンションが Claude Code に回ります — [English](https://code.claude.com/docs/en/slack#how-it-works)
-- Chrome 拡張のタブグループの後始末が明文化されました。Claude が開いたタブはセッションに紐づくタブグループにまとめられ、ローカルセッションでは終わり方によって扱いが変わります。`/clear` の場合は開いているページごとグループを閉じます（`/clear` をまたいで残る作業が動いている場合を除く）。`/resume` などでのセッション切り替え・Claude Code の終了・作業が残っている状態での `/clear` では、空の新規タブしか無いときだけ閉じ、読みかけのページは残します — [English](https://code.claude.com/docs/en/chrome)
+- Chrome 拡張のタブグループの後始末が明文化されました。Claude が開いたタブはセッションに紐づくタブグループにまとめられ、ローカルセッションでは終わり方によって扱いが変わります。`/clear` の場合は開いているページごとグループを閉じます（`/clear` をまたいで残る作業が動いている場合を除く）。`/resume` などでのセッション切り替え・Claude Code の終了・作業が残っている状態での `/clear` では、空の新規タブしか無いときだけ閉じ、読みかけのページは残します — [日本語](https://code.claude.com/docs/ja/chrome) / [English](https://code.claude.com/docs/en/chrome)
 - モバイルアプリから添付した写真の扱いが箇条書きに整理されました。写真は従来どおりメッセージの一部として Claude が直接見るのに加え、`~/.claude/uploads/` 配下に保存され、そのパスが Claude に伝えられるようになりました。Claude が作るファイルに画像をコピーできます（保存先は大幅更新 7 参照）— [English](https://code.claude.com/docs/en/mobile#continue-a-local-session-with-remote-control)
 - ルーティンのページに、Desktop のサイドバーに **Routines** が出ない場合はアカウントでルーティンが使えないことを示す、という案内が加わりました。組織ポリシーによる無効化の節へ導線が張られています — [English](https://code.claude.com/docs/en/routines#create-a-routine)
 - Desktop のローカル定期タスクに、Claude Desktop 1.1.5368 より前のバージョンでは利用できない旨が加わりました。サイドバーに **Routines** が無い場合は Desktop アプリを更新し、組織側で無効化されていないか確認するよう案内されます — [English](https://code.claude.com/docs/en/desktop-scheduled-tasks#create-a-scheduled-task)
@@ -273,14 +273,14 @@ Chat タブの有効化手段も加わりました。Claude Desktop の管理構
 - オンボーディングが **Default** クラウド環境を作る条件に「まだ環境を持っていなければ」という前提が加わりました。クラウド環境の設定・web のクイックスタート・Claude Code on the web の 3 ページで同じ書き足しです — [English](https://code.claude.com/docs/en/cloud-environments#the-default-environment)
 - 音声ディクテーションの要件から、HIPAA コンプライアンスが有効でない組織では使えないという記述が外れました。トラブルシューティングの説明も「組織のコンプライアンス設定が無効にしている」から「組織の管理者ポリシーが無効にしている」という一般的な書き方に改められています — [English](https://code.claude.com/docs/en/voice-dictation#requirements)
 - `MEMORY.md` の行数チェックの説明から、frontmatter とブロック HTML コメントが計測から除かれる旨の記述（v2.1.211 以降の挙動）が削除されました。CLAUDE.md の読み込み方の説明も、ディレクトリツリーを遡る手順の描写から「現在の作業ディレクトリとその上の全ディレクトリから読み込む」という結果の記述に簡潔化されています — [English](https://code.claude.com/docs/en/memory#how-claudemd-files-load)
-- プロンプトキャッシュの `/model` 切り替え確認の説明が、経過時間の場合分けから「キャッシュが温かい間だけ確認を求める。温かさは最後のリクエストまたは応答から 1 TTL 続く」という 1 段落に整理されました — [English](https://code.claude.com/docs/en/prompt-caching#switching-models)
+- プロンプトキャッシュの `/model` 切り替え確認の説明が、経過時間の場合分けから「キャッシュが温かい間だけ確認を求める。温かさは最後のリクエストまたは応答から 1 TTL 続く」という 1 段落に整理されました — [日本語](https://code.claude.com/docs/ja/prompt-caching#switching-models) / [English](https://code.claude.com/docs/en/prompt-caching#switching-models)
 - コンピュータ使用のロックの説明が、ロックを取る主体を「Claude Code」から「セッション」に改め、2 つ目のセッションの試行は「ロックを持つセッションを名指ししたエラーで失敗する」と具体化されました — [English](https://code.claude.com/docs/en/computer-use#one-session-at-a-time)
 - ディープリンクの `repo` パラメータの説明が、結論（最後に `claude` を実行したクローンまたは worktree を開く）を先に述べる形に組み替えられました — [English](https://code.claude.com/docs/en/deep-links#choose-between-cwd-and-repo)
 - `--bare` を付けない `-p` セッションの説明が、主語を「Claude Code」から「`-p` セッション」に揃えて 2 文に整理されました。挙動そのものは変わりません — [English](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode)
-- ゲートウェイプロトコルの API 形式の説明で、形式を選ぶ主体がクライアントであることが明確化され、Google Cloud の Agent Platform に関する補足が独立した段落に分けられました — [English](https://code.claude.com/docs/en/llm-gateway-protocol)
-- ステータスラインのスクリプトの説明が、stdin から JSON を受け取り stdout に出力する、という 1 文に簡潔化されました — [English](https://code.claude.com/docs/en/statusline)
+- ゲートウェイプロトコルの API 形式の説明で、形式を選ぶ主体がクライアントであることが明確化され、Google Cloud の Agent Platform に関する補足が独立した段落に分けられました — [日本語](https://code.claude.com/docs/ja/llm-gateway-protocol) / [English](https://code.claude.com/docs/en/llm-gateway-protocol)
+- ステータスラインのスクリプトの説明が、stdin から JSON を受け取り stdout に出力する、という 1 文に簡潔化されました — [日本語](https://code.claude.com/docs/ja/statusline) / [English](https://code.claude.com/docs/en/statusline)
 - プルリクエスト作成の説明で、セッションと PR の紐づけの記述が、まず探し方（`claude --from-pr 1234`）を述べてから紐づく条件を挙げる順に組み替えられました — [English](https://code.claude.com/docs/en/common-workflows#create-pull-requests)
-- クイックスタートで、資格情報の保存についての `<Tip>` ブロックがログイン手順の本文に統合されました — [English](https://code.claude.com/docs/en/quickstart)
+- クイックスタートで、資格情報の保存についての `<Tip>` ブロックがログイン手順の本文に統合されました — [日本語](https://code.claude.com/docs/ja/quickstart) / [English](https://code.claude.com/docs/en/quickstart)
 - セッション管理のページの「関連ページ」に、セッションと並列実行の仕組みを扱うページ群である旨の導入文が加わりました — [English](https://code.claude.com/docs/en/sessions#see-also)
 
 **バグ修正**
@@ -305,7 +305,7 @@ Chat タブの有効化手段も加わりました。Claude Desktop の管理構
   102 行の新規ページ。v2.1.234〜v2.1.239 が対象で、`/design` スキル、Concise 出力スタイル、スマホからのローカルセッション開始の 3 本立て。
 - [**2026年08月10日～14日(Week 33)**](#2026年08月10日14日week-33) ([English](https://code.claude.com/docs/en/whats-new/2026-w33)):  
   84 行の新規ページ。v2.1.225〜v2.1.233 が対象で、Desktop の使用量上限後の自動継続、fork モードの既定 ON、GitLab 対応の 3 本立て。
-- [**新着情報の索引ページ**](#2-新着情報が-week-33-と-week-34-の-2-週分まとめて掲載された) ([English](https://code.claude.com/docs/en/whats-new/index)):  
+- [**新着情報の索引ページ**](#2-新着情報が-week-33-と-week-34-の-2-週分まとめて掲載された) ([日本語](https://code.claude.com/docs/ja/whats-new/index) / [English](https://code.claude.com/docs/en/whats-new/index)):  
   追加 16 行。Week 34 と Week 33 のダイジェスト（各 3〜4 行の要約と各週ページへの導線）が先頭に加わった。
 - [**Week 32 のページ**](#5-管理操作の主体が-owner-または-admin-から-owner-へ) ([English](https://code.claude.com/docs/en/whats-new/2026-w32)):  
   追加 2 行・削除 2 行。セルフホスト環境の有効化操作の主体が「Owner または admin」から「Owner」になった。
