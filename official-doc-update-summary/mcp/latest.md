@@ -1,34 +1,22 @@
 ---
-対象期間: 2026年08月21日 〜 2026年08月22日
-作成日: 2026-08-22
+対象期間: 2026年08月22日 〜 2026年08月24日
+作成日: 2026-08-24
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間で本文が変わったのは Roadmap ページ 1 件のみですが、優先領域が旧来の 4 つから新しい 5 つへ差し替えられ、各領域に責任者の Core Maintainer が明示される全面改訂となりました。今後 6〜12 か月で仕様がどこへ向かうか、そして SEP がどの順で審査されるかを示す内容です。
+今回の対象期間で本文が変わったのは「What is the Model Context Protocol (MCP)?」ページの 2 行だけで、いずれも意味内容を変えない文言整理です。新規追加ページ・大幅更新ページはなく、索引 llms.txt にも変更はありません（掲載 144 件のまま）。
 
 主要なものを以下に挙げます。
 
-1. エージェント向けメッセージング基盤（Tasks・`subscriptions/listen`・進捗通知）を互いに組み合わせ可能にする領域が新設され、サーバー起点のイベント配信と、プリミティブ同士の整合レビューが今期の成果物になった
-2. リモートとローカルで二重化していたトランスポートを Streamable HTTP に一本化する方針が示され、stdio 上で HTTP/2 を話す「HTTP over stdio」と、ETag によるキャッシュの拡張が今期の対象になった
-3. エージェント自身の ID と権限委譲を扱う領域が立ち、今期発足予定の Agent Identity WG が DPoP の仕様確定と、Workload Identity Federation・ID-JAG・RFC 8693 トークン交換の整備を進める
-4. `tools/call` が `content` と `structuredContent` を同時に返せる点を含む戻り値の形を再設計し、あわせてサーバー側の段階的な提示（progressive discovery）を新規に立ち上げる
-5. SDK・リファレンスサーバー・クイックスタートを仕様と conformance テストから生成する実験が始まり、拡張のコントラクト定義とあわせて SDK WG が担当する
+1. MCP の意義を説明する節で、AI アプリケーション／エージェント向けとエンドユーザー向けの利点説明 2 行が書き換えられた。指示対象の明確化・時制の正規化・二人称から三人称への統一という文法上の調整で、述べている内容そのものは変わっていない
 ```
 
 ## ハイライト
 
-1. [**エージェント向けメッセージング基盤の統合が最優先領域に**](./latest-detail.md#1-エージェント向けメッセージング基盤の統合が最優先領域に):  
-  リクエスト／レスポンスに収まらない処理（数分かかる作業、サーバーからのプッシュ、逐次的な結果、実行中の作業への介入）に対して MCP が持つ Tasks・`subscriptions/listen`・進捗通知が複数の Working Group にまたがっており、「サーバーがまだ終わっていない」に対する答えが 3 通りあってライフサイクル・キャンセル方式・エラー面を共有していない、という問題意識が新しく言語化された。今期は Triggers & Events WG によるサーバー起点のイベント配信（webhook を含むチャンネルとサブスクリプション）と、Agents / Transports / Triggers & Events の 3 WG による組み合わせレビューが成果物になる。
-2. [**HTTP ネイティブなトランスポートへの一本化**](./latest-detail.md#2-http-ネイティブなトランスポートへの一本化):  
-  2026年07月28日 のリリース（仕様バージョン 2026-07-28）でリモート MCP サーバーが通常の HTTP ワークロードになった結果、HTTP ネイティブな機能ごとに stdio 用の設計をもう 1 つ用意する必要が生じ、SDK は 2 系統のトランスポート実装を抱え、プロトコルのメタデータが HTTP ヘッダとメッセージ本体に二重化している。今期は Streamable HTTP を唯一のバインディングとし、それを stdin/stdout 上で話す「HTTP over stdio」（HTTP/2 による多重化とサブプロセスの安全性・ライフサイクル保証の両立）と、`ttlMs` / `cacheScope` に続く ETag 対応のキャッシュ拡張に取り組む。
-3. [**エージェント ID とエンタープライズ対応セキュリティ**](./latest-detail.md#3-エージェント-id-とエンタープライズ対応セキュリティ):  
-  MCP の認可は「同意の時点でブラウザの前に人がいる」ことを前提にしているが、実際の呼び出し元は自身の ID を持つクラウドワークロードであったり、不在のユーザーの代理であったり、親より狭い権限を与えるべきサブエージェントを生成したりする。今期発足予定の Agent Identity WG が、DPoP の仕様確定と普及、および Workload Identity Federation（SEP-1933）・Enterprise-Managed Authorization が用いる ID-JAG・RFC 8693 トークン交換を、IETF の OAuth / WIMSE と連携しながら進める。
-4. [**プリミティブの改善と progressive discovery**](./latest-detail.md#4-プリミティブの改善と-progressive-discovery):  
-  `tools/call` が `content` と `structuredContent` を同時に返せる仕様がサーバー・クライアント双方の実装者を混乱させ、実装が分岐しているという認識が明記され、今期発足予定の Core Primitives WG が戻り値の形を再設計する。あわせて、大量のツール・リソースをクライアントに一度に飲ませない progressive discovery を実験的なサーバー側の仕組みとして立ち上げ、コンテンツアノテーションをツール結果やリソースに広げるか否か（有用でなければ非推奨化も検討）を判断する。
-5. [**仕様からの生成を軸にした SDK 開発者体験の改善**](./latest-detail.md#5-仕様からの生成を軸にした-sdk-開発者体験の改善):  
-  SDK・リファレンスサーバー・クイックスタートが手作業で維持されている現状に対し、仕様と人手レビュー済みの conformance テストスイートを source of truth として成果物を導出し、リリースのたびに再生成・再検証する形を目指す方針が示された。今期は拡張のコントラクト（拡張がどのロールに紐づくか、SDK がネイティブに支えるべき範囲、パッケージング、機能追加の版管理）の定義と、仕様から Tier 1 SDK 候補とクイックスタートを生成して conformance テストで検証する実験を SDK WG が担当する。
+1. [**MCP の意義を説明する箇所の文言整理**](./latest-detail.md#1-mcp-の意義を説明する箇所の文言整理):  
+  「What is the Model Context Protocol (MCP)?」ページの「Why does MCP matter?」節にある立場別の利点説明 3 行のうち、AI アプリケーション／エージェント向けとエンドユーザー向けの 2 行が書き換えられた。関係代名詞の指示対象を `them` / `their` で明示する、`will enhance` を `enhances` に改めて時制をそろえる、`your data` / `on your behalf` を `user data` / `on the user's behalf` として二人称を三人称に統一する、の 3 点で、意味内容の変更は伴わない。
 
 ## 新規追加されたページ
 
@@ -36,24 +24,23 @@
 
 ## 大幅に更新されたページ
 
-- [**Roadmap**](./latest-detail.md#1-roadmap) ([MCP Docs](https://modelcontextprotocol.io/development/roadmap)):  
-  ロードマップが全面改訂され、優先領域が旧来の 4 つから新しい 5 つへ差し替えられた。各領域に責任者の Core Maintainer が明記され、旧版の「On the Horizon」「Validation」の 2 節は廃止。差分は 53 行の追加と 51 行の削除で、今回の対象期間で本文が変わった唯一のページ（詳細はハイライト 1〜5 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。原文側の差分は `llms-full.txt` の 2 行（2 行の追加と 2 行の削除）のみです。
 
 ## 軽微な更新
 
-今回差分が出たファイルは `llms-full.txt` と索引ファイル `llms.txt` の 2 件ですが、本文が変わったページは Roadmap の 1 件のみ（`llms-full.txt` 内で 53 行の追加と 51 行の削除）で、ページ単位の軽微な更新に該当するものはありませんでした。
+今回差分が出たファイルは `llms-full.txt` の 1 件のみで、索引ファイル `llms.txt` に変更はありません（掲載件数は前後とも 144 件）。
 
 **その他**
 
-- Roadmap: 索引 `llms.txt` 上のエントリ位置が、末尾（Tool Annotations Charter の後）から Group Charter Template と Design Principles の間へ移動した。あわせて 1 行説明もページの新しい内容に合わせて差し替えられている。掲載件数は前後とも 144 件で変わらない（詳細は大幅更新 1 参照） — [Roadmap - MCP Docs](https://modelcontextprotocol.io/development/roadmap)
+- What is the Model Context Protocol (MCP)?: 「Why does MCP matter?」節の利点説明 2 行を、指示対象の明確化・時制の正規化・二人称から三人称への統一という観点で書き換え。意味内容の変更は伴わない（詳細はハイライト 1 参照） — [What is the Model Context Protocol (MCP)? - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro#why-does-mcp-matter)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-21.md](./archives/latest/2026-08-21.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-21.md](./archives/latest-detail/2026-08-21.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-22.md](./archives/latest/2026-08-22.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-22.md](./archives/latest-detail/2026-08-22.md)
 
 <!--
-base_commit: d2a47b6c691946fa1f35bf733b795510e9048022
-head_commit: 38adb8c17987c2872a55345390bf77b43146ab00
-generated_at_full: 2026-08-23T16:11:18+09:00
+base_commit: 38adb8c17987c2872a55345390bf77b43146ab00
+head_commit: 961fa881bd3d4366c49a34b34508be3172b7c2fc
+generated_at_full: 2026-08-25T15:36:45+09:00
 -->
