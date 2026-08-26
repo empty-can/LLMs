@@ -1,46 +1,53 @@
 ---
-対象期間: 2026年08月22日 〜 2026年08月24日
-作成日: 2026-08-24
+対象期間: 2026年08月24日 〜 2026年08月25日
+作成日: 2026-08-25
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間で本文が変わったのは「What is the Model Context Protocol (MCP)?」ページの 2 行だけで、いずれも意味内容を変えない文言整理です。新規追加ページ・大幅更新ページはなく、索引 llms.txt にも変更はありません（掲載 144 件のまま）。
+今回の対象期間に差分が出たのは索引ファイル `llms.txt` の 1 件のみで、ページ本文を収める `llms-full.txt` には変更がありません。索引の収録範囲が現行プロトコルバージョンのみから全リビジョンへ拡大し、エントリは 144 件から 348 件になりました。
 
 主要なものを以下に挙げます。
 
-1. MCP の意義を説明する節で、AI アプリケーション／エージェント向けとエンドユーザー向けの利点説明 2 行が書き換えられた。指示対象の明確化・時制の正規化・二人称から三人称への統一という文法上の調整で、述べている内容そのものは変わっていない
+1. 索引 `llms.txt` の収録範囲が、現行バージョン 2026-07-28 のドキュメント／仕様だけだったところから、過去の確定版 4 系統（2025-11-25 / 2025-06-18 / 2025-03-26 / 2024-11-05）と draft を加えた全リビジョンへ拡大した。バージョン別エントリが 54 件から 252 件になり、索引全体は 144 件から 348 件になった
+2. Transports Working Group の charter ページ `community/working-groups/transports` が索引に加わった。バージョン系統以外で今回増えた唯一のページで、同 WG は SEP-2243・SEP-2260 の起草者として既に活動していたが、charter ページが載るのは今回が初めて
 ```
 
 ## ハイライト
 
-1. [**MCP の意義を説明する箇所の文言整理**](./latest-detail.md#1-mcp-の意義を説明する箇所の文言整理):  
-  「What is the Model Context Protocol (MCP)?」ページの「Why does MCP matter?」節にある立場別の利点説明 3 行のうち、AI アプリケーション／エージェント向けとエンドユーザー向けの 2 行が書き換えられた。関係代名詞の指示対象を `them` / `their` で明示する、`will enhance` を `enhances` に改めて時制をそろえる、`your data` / `on your behalf` を `user data` / `on the user's behalf` として二人称を三人称に統一する、の 3 点で、意味内容の変更は伴わない。
+1. [**索引が全プロトコルバージョンを収録するよう拡大**](./latest-detail.md#1-索引が全プロトコルバージョンを収録するよう拡大):  
+  `llms.txt` に、これまで載っていた現行バージョン 2026-07-28 に加えて、draft と過去の確定版 4 系統（2025-11-25 / 2025-06-18 / 2025-03-26 / 2024-11-05）の `docs/` `specification/` 配下が追加された。バージョン別エントリは 54 件から 252 件に増え、索引全体では 144 件が 348 件（ユニーク URL 343 件）になっている。draft のページ構成は 2026-07-28 と完全に一致する一方、過去の確定版は当時の構成のまま収録されている。
+2. [**Transports Working Group の charter ページが新設**](./latest-detail.md#2-transports-working-group-の-charter-ページが新設):  
+  `community/working-groups/transports`（説明文「Charter for the MCP Transports Working Group.」）が索引に追加された。バージョン系統の追加を除くと、今回増えた唯一のページ。同 WG は SEP-2243（Streamable HTTP の HTTP ヘッダー標準化）と SEP-2260（サーバー発リクエストのクライアントリクエスト紐付け必須化）の起草者として `llms-full.txt` に既に登場しており、活動実体が先行していた形になる。
 
 ## 新規追加されたページ
 
-今回の対象期間に新規追加されたページはありません。掲載ページ数は対象期間の前後とも 144 件で変わっていません。
+今回索引に増えたユニーク URL 199 件のうち、198 件は draft と過去の確定版 4 系統について既存ページ構成をそのまま収録したもので、収録範囲の拡大にあたります（詳細はハイライト 1 参照）。それを除いた新規ページは次の 1 件です。
+
+- [**Transports Charter**](./latest-detail.md#1-transports-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports)):  
+  MCP Transports Working Group の charter ページ。バージョン系統の追加を除くと今回唯一の新規ページで、本文は `llms-full.txt` に未収録のため中身は確認できない（詳細はハイライト 2 参照）。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。原文側の差分は `llms-full.txt` の 2 行（2 行の追加と 2 行の削除）のみです。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、既存ページの記述内容は変わっていません。
 
 ## 軽微な更新
 
-今回差分が出たファイルは `llms-full.txt` の 1 件のみで、索引ファイル `llms.txt` に変更はありません（掲載件数は前後とも 144 件）。
+今回差分が出たファイルは索引 `llms.txt` の 1 件のみです。収録範囲の拡大と新規ページ 1 件（ハイライト 1・2 参照）を除くと、索引ファイル自体の体裁に関する変更が 2 点あります。いずれも対応するドキュメントページの変更ではないため、参考リンクはありません。
 
 **その他**
 
-- What is the Model Context Protocol (MCP)?: 「Why does MCP matter?」節の利点説明 2 行を、指示対象の明確化・時制の正規化・二人称から三人称への統一という観点で書き換え。意味内容の変更は伴わない（詳細はハイライト 1 参照） — [What is the Model Context Protocol (MCP)? - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro#why-does-mcp-matter)
+- 索引冒頭にあった `## Docs` セクション見出しと直後の空行が削除された（削除 2 行はこの 2 行のみ）。これにより `llms.txt` からセクション見出しが完全に無くなり、タイトル行の直後からエントリの箇条書きが始まる構成になった
+- `Example Servers`（`/examples`）のエントリが、各バージョンのドキュメントブロックの末尾に 1 件ずつ置かれる形になり、ファイル全体で同一 URL が 6 回登場するようになった。エントリ行数 348 件に対してユニーク URL が 343 件にとどまるのはこのため
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-22.md](./archives/latest/2026-08-22.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-22.md](./archives/latest-detail/2026-08-22.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-24.md](./archives/latest/2026-08-24.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-24.md](./archives/latest-detail/2026-08-24.md)
 
 <!--
-base_commit: 38adb8c17987c2872a55345390bf77b43146ab00
-head_commit: 961fa881bd3d4366c49a34b34508be3172b7c2fc
-generated_at_full: 2026-08-25T15:36:45+09:00
+base_commit: 961fa881bd3d4366c49a34b34508be3172b7c2fc
+head_commit: 9183e5fb58ed21ba3079f4e0f6a528c4e46d1ea7
+generated_at_full: 2026-08-26T15:36:50+09:00
 -->
