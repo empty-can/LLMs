@@ -1,53 +1,52 @@
 ---
-対象期間: 2026年08月24日 〜 2026年08月25日
-作成日: 2026-08-25
+対象期間: 2026年08月25日 〜 2026年08月26日
+作成日: 2026-08-26
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間に差分が出たのは索引ファイル `llms.txt` の 1 件のみで、ページ本文を収める `llms-full.txt` には変更がありません。索引の収録範囲が現行プロトコルバージョンのみから全リビジョンへ拡大し、エントリは 144 件から 348 件になりました。
+今回の対象期間に差分が出たのはページ本文を収める `llms-full.txt` の 1 件のみで、索引ファイル `llms.txt` には変更がありません。追加 159 行・削除 6 行のうち 153 行は、前回索引に加わったばかりの Transports Charter の本文です。
 
 主要なものを以下に挙げます。
 
-1. 索引 `llms.txt` の収録範囲が、現行バージョン 2026-07-28 のドキュメント／仕様だけだったところから、過去の確定版 4 系統（2025-11-25 / 2025-06-18 / 2025-03-26 / 2024-11-05）と draft を加えた全リビジョンへ拡大した。バージョン別エントリが 54 件から 252 件になり、索引全体は 144 件から 348 件になった
-2. Transports Working Group の charter ページ `community/working-groups/transports` が索引に加わった。バージョン系統以外で今回増えた唯一のページで、同 WG は SEP-2243・SEP-2260 の起草者として既に活動していたが、charter ページが載るのは今回が初めて
+1. MCP Transports Working Group の charter 本文 153 行が `llms-full.txt` に収録された。前回時点では索引にエントリがあるだけで本文が欠けていたが、今回それが解消し、スコープ・リーダーシップ・意思決定権限・運営方法が確認できるようになった。charter 自体の初版制定は 2026年08月23日
+2. 既存 6 ページ（Authorization / Security / Agents / Interceptors / SDK / Triggers and Events の各 charter）の `Related Groups` で、Transports WG への言及がサイト内リンクに書き換えられた。うち Agents Charter の 1 件は外部 GitHub リポジトリ URL からサイト内パスへの切り替え
 ```
 
 ## ハイライト
 
-1. [**索引が全プロトコルバージョンを収録するよう拡大**](./latest-detail.md#1-索引が全プロトコルバージョンを収録するよう拡大):  
-  `llms.txt` に、これまで載っていた現行バージョン 2026-07-28 に加えて、draft と過去の確定版 4 系統（2025-11-25 / 2025-06-18 / 2025-03-26 / 2024-11-05）の `docs/` `specification/` 配下が追加された。バージョン別エントリは 54 件から 252 件に増え、索引全体では 144 件が 348 件（ユニーク URL 343 件）になっている。draft のページ構成は 2026-07-28 と完全に一致する一方、過去の確定版は当時の構成のまま収録されている。
-2. [**Transports Working Group の charter ページが新設**](./latest-detail.md#2-transports-working-group-の-charter-ページが新設):  
-  `community/working-groups/transports`（説明文「Charter for the MCP Transports Working Group.」）が索引に追加された。バージョン系統の追加を除くと、今回増えた唯一のページ。同 WG は SEP-2243（Streamable HTTP の HTTP ヘッダー標準化）と SEP-2260（サーバー発リクエストのクライアントリクエスト紐付け必須化）の起草者として `llms-full.txt` に既に登場しており、活動実体が先行していた形になる。
+1. [**Transports WG charter の本文が収録**](./latest-detail.md#1-transports-wg-charter-の本文が収録):  
+  `community/working-groups/transports` の本文 153 行が `llms-full.txt` に加わった。前回サマリの時点では索引 `llms.txt` にエントリがあるだけで本文が未収録という状態だったが、今回この欠落が解消した。ミッション・スコープ・リーダーシップ・意思決定権限・運営が確認でき、charter の Changelog には 2026年08月23日 に初版が制定されたと記録されている。
+2. [**既存 charter からの Transports WG 参照がリンク化**](./latest-detail.md#2-既存-charter-からの-transports-wg-参照がリンク化):  
+  6 つの charter ページの `Related Groups` にあった Transports WG への言及が、いずれもサイト内リンク `/community/working-groups/transports` になった。今回の削除 6 行はすべてこの書き換えによるもので、5 件は太字プレーンテキストからのリンク化、Agents Charter の 1 件は外部 GitHub リポジトリ URL からサイト内パスへの切り替え。
 
 ## 新規追加されたページ
 
-今回索引に増えたユニーク URL 199 件のうち、198 件は draft と過去の確定版 4 系統について既存ページ構成をそのまま収録したもので、収録範囲の拡大にあたります（詳細はハイライト 1 参照）。それを除いた新規ページは次の 1 件です。
+今回本文が新たに収録されたページは次の 1 件です。索引 `llms.txt` には前回すでにエントリが載っていたため、索引側の件数（348 件）に変化はありません。
 
 - [**Transports Charter**](./latest-detail.md#1-transports-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports)):  
-  MCP Transports Working Group の charter ページ。バージョン系統の追加を除くと今回唯一の新規ページで、本文は `llms-full.txt` に未収録のため中身は確認できない（詳細はハイライト 2 参照）。
+  MCP Transports Working Group の charter 本文 153 行が `llms-full.txt` に収録された。トランスポートバインディング・スケーラビリティと信頼性・トランスポート隣接のプロトコルアーキテクチャ・トランスポートセキュリティを扱い、WG リードは Kurtis Van Gent。上流の GitHub リポジトリに詳細を委ねつつ、境界の定義はこの charter 側に留保する構成になっている。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、既存ページの記述内容は変わっていません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページに対する変更は 6 ページで各 1 行のみです（詳細はハイライト 2 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは索引 `llms.txt` の 1 件のみです。収録範囲の拡大と新規ページ 1 件（ハイライト 1・2 参照）を除くと、索引ファイル自体の体裁に関する変更が 2 点あります。いずれも対応するドキュメントページの変更ではないため、参考リンクはありません。
+今回差分が出たファイルは `llms-full.txt` の 1 件のみで、Transports Charter 本文の収録（ハイライト 1 参照）を除くと、既存ページ側の変更は次の 1 点にまとまります。
 
 **その他**
 
-- 索引冒頭にあった `## Docs` セクション見出しと直後の空行が削除された（削除 2 行はこの 2 行のみ）。これにより `llms.txt` からセクション見出しが完全に無くなり、タイトル行の直後からエントリの箇条書きが始まる構成になった
-- `Example Servers`（`/examples`）のエントリが、各バージョンのドキュメントブロックの末尾に 1 件ずつ置かれる形になり、ファイル全体で同一 URL が 6 回登場するようになった。エントリ行数 348 件に対してユニーク URL が 343 件にとどまるのはこのため
+- 6 つの charter ページ（Working Group 4 件・Interest Group 2 件）の `Related Groups` で、Transports WG への言及がサイト内リンクに書き換えられた。削除 6 行・追加 6 行はすべてこの変更によるもの（詳細はハイライト 2 参照）
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-24.md](./archives/latest/2026-08-24.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-24.md](./archives/latest-detail/2026-08-24.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-25.md](./archives/latest/2026-08-25.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-25.md](./archives/latest-detail/2026-08-25.md)
 
 <!--
-base_commit: 961fa881bd3d4366c49a34b34508be3172b7c2fc
-head_commit: 9183e5fb58ed21ba3079f4e0f6a528c4e46d1ea7
-generated_at_full: 2026-08-26T15:36:50+09:00
+base_commit: 9183e5fb58ed21ba3079f4e0f6a528c4e46d1ea7
+head_commit: 1178d4a1adaaa1829aeb0ab27ac4940eb1bd90bb
+generated_at_full: 2026-08-27T15:33:42+09:00
 -->

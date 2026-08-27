@@ -1,91 +1,89 @@
 ---
-対象期間: 2026年08月24日 〜 2026年08月25日
-作成日: 2026-08-25
+対象期間: 2026年08月25日 〜 2026年08月26日
+作成日: 2026-08-26
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間に差分が出たのは索引ファイル `llms.txt` の 1 件のみで、ページ本文を収める `llms-full.txt` には変更がありません。索引の収録範囲が現行プロトコルバージョンのみから全リビジョンへ拡大し、エントリは 144 件から 348 件になりました。
+今回の対象期間に差分が出たのはページ本文を収める `llms-full.txt` の 1 件のみで、索引ファイル `llms.txt` には変更がありません。追加 159 行・削除 6 行のうち 153 行は、前回索引に加わったばかりの Transports Charter の本文です。
 
 主要なものを以下に挙げます。
 
-1. 索引 `llms.txt` の収録範囲が、現行バージョン 2026-07-28 のドキュメント／仕様だけだったところから、過去の確定版 4 系統（2025-11-25 / 2025-06-18 / 2025-03-26 / 2024-11-05）と draft を加えた全リビジョンへ拡大した。バージョン別エントリが 54 件から 252 件になり、索引全体は 144 件から 348 件になった
-2. Transports Working Group の charter ページ `community/working-groups/transports` が索引に加わった。バージョン系統以外で今回増えた唯一のページで、同 WG は SEP-2243・SEP-2260 の起草者として既に活動していたが、charter ページが載るのは今回が初めて
+1. MCP Transports Working Group の charter 本文 153 行が `llms-full.txt` に収録された。前回時点では索引にエントリがあるだけで本文が欠けていたが、今回それが解消し、スコープ・リーダーシップ・意思決定権限・運営方法が確認できるようになった。charter 自体の初版制定は 2026年08月23日
+2. 既存 6 ページ（Authorization / Security / Agents / Interceptors / SDK / Triggers and Events の各 charter）の `Related Groups` で、Transports WG への言及がサイト内リンクに書き換えられた。うち Agents Charter の 1 件は外部 GitHub リポジトリ URL からサイト内パスへの切り替え
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**索引が全プロトコルバージョンを収録するよう拡大**](#1-索引が全プロトコルバージョンを収録するよう拡大):  
-  `llms.txt` に、これまで載っていた現行バージョン 2026-07-28 に加えて、draft と過去の確定版 4 系統（2025-11-25 / 2025-06-18 / 2025-03-26 / 2024-11-05）の `docs/` `specification/` 配下が追加された。バージョン別エントリは 54 件から 252 件に増え、索引全体では 144 件が 348 件（ユニーク URL 343 件）になっている。draft のページ構成は 2026-07-28 と完全に一致する一方、過去の確定版は当時の構成のまま収録されている。
-2. [**Transports Working Group の charter ページが新設**](#2-transports-working-group-の-charter-ページが新設):  
-  `community/working-groups/transports`（説明文「Charter for the MCP Transports Working Group.」）が索引に追加された。バージョン系統の追加を除くと、今回増えた唯一のページ。同 WG は SEP-2243（Streamable HTTP の HTTP ヘッダー標準化）と SEP-2260（サーバー発リクエストのクライアントリクエスト紐付け必須化）の起草者として `llms-full.txt` に既に登場しており、活動実体が先行していた形になる。
+1. [**Transports WG charter の本文が収録**](#1-transports-wg-charter-の本文が収録):  
+  `community/working-groups/transports` の本文 153 行が `llms-full.txt` に加わった。前回サマリの時点では索引 `llms.txt` にエントリがあるだけで本文が未収録という状態だったが、今回この欠落が解消した。ミッション・スコープ・リーダーシップ・意思決定権限・運営が確認でき、charter の Changelog には 2026年08月23日 に初版が制定されたと記録されている。
+2. [**既存 charter からの Transports WG 参照がリンク化**](#2-既存-charter-からの-transports-wg-参照がリンク化):  
+  6 つの charter ページの `Related Groups` にあった Transports WG への言及が、いずれもサイト内リンク `/community/working-groups/transports` になった。今回の削除 6 行はすべてこの書き換えによるもので、5 件は太字プレーンテキストからのリンク化、Agents Charter の 1 件は外部 GitHub リポジトリ URL からサイト内パスへの切り替え。
 <!-- light:highlight-list:end -->
 
-## 1. 索引が全プロトコルバージョンを収録するよう拡大
+## 1. Transports WG charter の本文が収録
 
-今回の差分は索引ファイル `llms.txt` に限られ、追加 204 行・削除 2 行という内訳です。最大の変更は収録範囲の拡大で、これまで `docs/` `specification/` 配下は現行バージョンである 2026-07-28 の分（ドキュメント 23 件・仕様 31 件の計 54 件）しか載っていませんでしたが、ここに draft（23 件・31 件の計 54 件）、2025-11-25（16 件・22 件の計 38 件）、2025-06-18（16 件・21 件の計 37 件）、2025-03-26（16 件・19 件の計 35 件）、2024-11-05（16 件・18 件の計 34 件）が加わりました。バージョン別エントリは 54 件から 252 件になり、索引全体のエントリ行数は 144 件から 348 件になっています。ただしユニーク URL は 343 件で、これは各バージョンのドキュメントブロックの末尾に置かれる `Example Servers` の参照先がバージョン非依存の同一 URL（`/examples`）であるためです。追加 204 行の内訳は、バージョン別の 198 件、後述の Transports Charter 1 件、そして `Example Servers` の重複 5 行となります。
+今回の差分はページ本文を収める `llms-full.txt` に限られ、追加 159 行・削除 6 行という内訳です。索引 `llms.txt` には 1 行の変更もありません。追加分の大半にあたる 153 行が `Transports Charter`（`community/working-groups/transports`）の本文で、収録位置は Skills Over MCP Charter と Triggers and Events Charter の間、つまり索引と同じアルファベット順の並びです。
 
-「Versioning」ページによれば、MCP の仕様リビジョンは draft（策定中で利用向けではない）・current（現行版で後方互換な変更は続く）・final（変更されない過去の確定仕様）の 3 状態に分かれ、current は 2026-07-28 です。今回の変更は、索引がこのうち current だけを扱っていた状態から、draft と final を含む全リビジョンを扱う状態へ移ったものと読めます。実際に収録されたページ構成を見ると、draft は 2026-07-28 とドキュメント・仕様のパスが 1 件残らず一致しており、draft 固有の未リリースページはありません。一方で過去の確定版は当時の構成のままで、たとえば 2025-11-25 の仕様には `basic/authorization`・`basic/lifecycle`・`basic/transports` や `basic/utilities/` 配下の `cancellation` / `ping` / `progress` / `tasks` が単独ページとして並びます。これに対して 2026-07-28 では認可が `basic/authorization/` 配下の 4 ページに、`basic/patterns/` 配下に `cancellation` / `progress` / `subscriptions` / `mrtr` などが、トランスポートが `basic/transports/` 配下の `stdio` / `streamable-http` に分割され、`basic/versioning`・`deprecated`・`server/discover`・`server/utilities/caching` が加わった構成になっています。ドキュメント側も同様で、2026-07-28 と draft にある MCP Inspector の下位 7 ページ（`web` / `cli` / `tui` / `configuration` / `authorization` / `protocol-eras` / `recipes`）は過去 4 バージョンには存在しません。
-
-なお、ページ本文を収める `llms-full.txt` には今回まったく差分がなく、既存ページの記述内容は変わっていません。今回追加されたバージョン別 URL の本文も `llms-full.txt` には含まれないため、索引側だけが先に全リビジョンをカバーした状態です。バージョンを指定した参照先を探す用途では索引の網羅性が上がった一方、本文をまとめて取得する用途では従来どおり現行バージョン中心の内容になります。
-
-- [Versioning - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/learn/versioning#revisions)
-
-## 2. Transports Working Group の charter ページが新設
-
-コミュニティの Working Group charter 一覧に `Transports Charter`（`community/working-groups/transports`、説明文は「Charter for the MCP Transports Working Group.」）が加わりました。索引上の位置は Skills Over MCP Charter と Triggers and Events Charter の間で、既存の charter 群と同じ命名規則・アルファベット順に沿っています。バージョン系統の一括追加を除くと、今回の差分で増えた URL はこの 1 件だけです。
-
-Transports Working Group 自体は今回が初出ではありません。`llms-full.txt`（今回差分なし）に収録されている SEP のうち、SEP-2243「HTTP Header Standardization for Streamable HTTP Transport」（Standards Track・Final・2026年02月04日作成）と SEP-2260「Require Server requests to be associated with a Client request.」（Standards Track・Final・2026年02月16日作成）の 2 件が、著者欄に「MCP Transports Working Group」を挙げています。つまり同 WG は仕様提案の起草主体として先に活動しており、そこへ charter ページが後から用意された形です。
-
-ページ本文は `llms-full.txt` にまだ取り込まれていません。同ファイルには Agents / File Uploads / Inspector V2 / Interceptors / Registry / SDK / Server Card / Skills Over MCP / Triggers and Events といった他の Working Group charter が本文つきで収録されている一方、Transports Charter だけが欠けています。このためミッション・スコープ・リーダーシップといった charter の中身は、今回の入力からは確認できません。
+前回のサマリでは、このページが索引 `llms.txt` に追加された一方で本文が `llms-full.txt` に未収録であること、そのためミッション・スコープ・リーダーシップといった charter の中身が入力からは確認できないことを記していました。今回の差分はその欠落を解消するもので、索引が先に更新され本文が翌日追いついた形になります。charter 本文の Changelog に記録された初版制定日は 2026年08月23日 で、索引に載った日より前です。charter の具体的な中身は次の「新規追加されたページ」で扱います。
 
 - [Transports Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports)
+
+## 2. 既存 charter からの Transports WG 参照がリンク化
+
+charter 本文の収録と同時に、既存 6 ページの `Related Groups` セクションにあった Transports WG への言及がサイト内リンクへ書き換えられました。対象は Authorization Charter（Auth IG、認可が現状 HTTP トランスポート層で規定されているため資格情報の運搬先がトランスポート変更の影響を受けるという文脈）、Security Charter（Security IG、stdio のプロセス分離と未認証のメソッド面）、Agents Charter（タスクのポーリング・複数往復のリクエスト・ステートレス動作・リクエスト紐付けがトランスポートとメッセージフローのセマンティクスに依存するという文脈）、Interceptors Charter（インターセプターが動作する MCP メッセージフローの配送挙動はトランスポートに依存する）、SDK Working Group Charter（トランスポート実装は各 SDK の相当部分を占めるため transport SEP 着地時のロールアウト順序を調整する）、Triggers and Events Charter（配送・順序の保証はトランスポート能力に依存し、コールバックのセマンティクスは stdio・Streamable HTTP・将来のトランスポートで一貫している必要がある）の 6 件です。周辺の説明文はいずれも変更されておらず、変わったのは参照の表記だけです。
+
+6 件のうち 5 件は `**Transports WG**` という太字のプレーンテキスト（リンクなし）からの変更で、参照先ページが存在しなかったこれまでの状態に対応しています。残る Agents Charter の 1 件だけは、もともと上流リポジトリ `https://github.com/modelcontextprotocol/transports-wg` を指す外部リンクになっており、これがサイト内パス `/community/working-groups/transports` へ差し替えられました。なお、新設された Transports Charter 側の `Related Groups` が挙げているのは SDK WG・Agents WG・Triggers and Events WG・Auth IG・Security IG の 5 つで、Interceptors Charter からの参照だけは片方向のままです。
+
+- [Agents Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/agents#related-groups)
+- [Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/auth#related-groups)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回索引に増えたユニーク URL 199 件のうち、198 件は draft と過去の確定版 4 系統について既存ページ構成をそのまま収録したもので、収録範囲の拡大にあたります（詳細はハイライト 1 参照）。それを除いた新規ページは次の 1 件です。
+今回本文が新たに収録されたページは次の 1 件です。索引 `llms.txt` には前回すでにエントリが載っていたため、索引側の件数（348 件）に変化はありません。
 
 - [**Transports Charter**](#1-transports-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports)):  
-  MCP Transports Working Group の charter ページ。バージョン系統の追加を除くと今回唯一の新規ページで、本文は `llms-full.txt` に未収録のため中身は確認できない（詳細はハイライト 2 参照）。
+  MCP Transports Working Group の charter 本文 153 行が `llms-full.txt` に収録された。トランスポートバインディング・スケーラビリティと信頼性・トランスポート隣接のプロトコルアーキテクチャ・トランスポートセキュリティを扱い、WG リードは Kurtis Van Gent。上流の GitHub リポジトリに詳細を委ねつつ、境界の定義はこの charter 側に留保する構成になっている。
 <!-- light:new-pages:end -->
 
 ## 1. Transports Charter
 
-索引に追加されたのはタイトル `Transports Charter`・パス `community/working-groups/transports`・説明文「Charter for the MCP Transports Working Group.」の 1 行です。説明文は他の Working Group charter と同じ定型（「Charter for the MCP <名称> Working Group.」）で、配置も `community/working-groups/` 配下の SDK・Server Card・Skills Over MCP・Triggers and Events と並ぶ位置にあります。
+Transports Working Group のミッションは、ローカル／リモート双方の配備で実装が相互運用可能・スケーラブル・信頼でき運用しやすい状態を保てるよう、MCP のトランスポートバインディングとトランスポート隣接のプロトコルアーキテクチャを進化させることと定義されています。成果物はトランスポート提案・SEP・実装エビデンス・ガイダンスの 4 種です。In Scope は 6 項目で、**Transport Bindings**（フレーミング、配送、リクエストとエンベロープのメタデータ、キャンセルと終了、接続ライフサイクル、後方互換性。バインディングとコアプロトコルのセマンティクスの境界は仕様の transport overview が定める）、**Scalability and Reliability**（接続管理、リソース効率、多重化、負荷分散、エラー処理、再接続、再開、配送と順序の保証）、**Transport-Adjacent Protocol Architecture**（リクエスト紐付け、リクエスト単位のメタデータ、ステートレス動作、レガシーな初期化・トランスポートセッションモデルからの移行）、**Transport Security**（Origin 検証・TLS・mTLS・証明書の扱い。Security IG と協調し、資格情報の運搬は Auth IG と協調）、**Validation and Guidance**（リファレンス実装・実験・実装エビデンス・ドキュメント。適合性テストにはシナリオと要件を提供するが、スイート自体はその保守担当が所有する）、**Cross-Cutting Coordination**（他グループの作業がトランスポートに与える影響の調整。アプリケーション層の機能自体は引き取らない）が挙がっています。
 
-このページの本文は今回の入力に含まれていないため、charter の内容そのものについてここで述べられることはありません。同 WG の関心領域を推し量る材料としては、`llms-full.txt` に収録済みの SEP-2243（Streamable HTTP のルーティング情報を HTTP ヘッダーへ露出させ、ロードバランサやプロキシが JSON-RPC ペイロードを解析せずに処理できるようにする提案）と SEP-2260（`roots/list`・`sampling/createMessage`・`elicitation/create` をクライアント発リクエストに紐付けることを必須とする提案）があり、いずれも同 WG が著者となっています。
+Out of Scope も明示的で、ツール・リソース・プロンプト・タスク・エージェント・イベントといった MCP プリミティブのアプリケーション層挙動（アプリケーション状態、アプリケーションセッションの意味、タスクのライフサイクル、イベント／サブスクリプションのセマンティクスを含む）、ドメイン固有の拡張と製品・ビジネス上の関心事、トランスポートと無関係な SDK API、認可プロトコルの機構・資格情報とトークンのセマンティクス・アプリケーション identity・認可ポリシー、そして適合性スイートの所有権が除外されています。特徴的なのは上流ドキュメントとの関係の扱い方で、技術的な焦点や提案戦略の詳細は上流リポジトリ `modelcontextprotocol/transports-wg` の `CHARTER.md` に委ねる一方、上流の scope statement はあくまで補足的な文脈を与えるもので、この charter が定める境界を拡大することはできないと釘を刺しています。
+
+運営面では、WG リードは Kurtis Van Gent です。意思決定権限は 8 行の表で整理されており、会議のロジスティクスとスケジューリング・WG 内の提案優先順位付け・スコープ内 SEP のトリアージとクローズ（根拠の文書化が条件）は WG リードの裁量、スコープ内の技術設計は WG コンセンサス、追加的な仕様変更は WG コンセンサスに加えてコアメンテナー承認、破壊的・根本的な仕様変更にはさらに広範なレビューが必要、スコープ拡大はコアメンテナー承認必須、という段階構成です。会議は週次で、時刻と参加方法は meet.modelcontextprotocol.io に掲載され、非同期の議論は MCP Discord の `#transports-wg` で行われます。作業手順は問題定義を先に置くワークフローで、①WG リポジトリに core problem statement を作成して問題と要件について合意する、②関心のある参加者と解決策を定義する、③WG のフィードバックを踏まえてレビューと反復を行う、④WG が意思決定プロセスに沿って合意に達した後、SEP プロセスを通じてコアメンテナーへ提示する、の 4 段階です。Changelog は 2026年08月23日 の「Initial charter」1 行のみで、今回が初版の公開にあたります。
 
 - [Transports Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、既存ページの記述内容は変わっていません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページに対する変更は 6 ページで各 1 行のみです（詳細はハイライト 2 参照）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは索引 `llms.txt` の 1 件のみです。収録範囲の拡大と新規ページ 1 件（ハイライト 1・2 参照）を除くと、索引ファイル自体の体裁に関する変更が 2 点あります。いずれも対応するドキュメントページの変更ではないため、参考リンクはありません。
+今回差分が出たファイルは `llms-full.txt` の 1 件のみで、Transports Charter 本文の収録（ハイライト 1 参照）を除くと、既存ページ側の変更は次の 1 点にまとまります。
 
 **その他**
 
-- 索引冒頭にあった `## Docs` セクション見出しと直後の空行が削除された（削除 2 行はこの 2 行のみ）。これにより `llms.txt` からセクション見出しが完全に無くなり、タイトル行の直後からエントリの箇条書きが始まる構成になった
-- `Example Servers`（`/examples`）のエントリが、各バージョンのドキュメントブロックの末尾に 1 件ずつ置かれる形になり、ファイル全体で同一 URL が 6 回登場するようになった。エントリ行数 348 件に対してユニーク URL が 343 件にとどまるのはこのため
+- 6 つの charter ページ（Working Group 4 件・Interest Group 2 件）の `Related Groups` で、Transports WG への言及がサイト内リンクに書き換えられた。削除 6 行・追加 6 行はすべてこの変更によるもの（詳細はハイライト 2 参照）
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-24.md](./archives/latest/2026-08-24.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-24.md](./archives/latest-detail/2026-08-24.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-25.md](./archives/latest/2026-08-25.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-25.md](./archives/latest-detail/2026-08-25.md)
 
 <!--
-base_commit: 961fa881bd3d4366c49a34b34508be3172b7c2fc
-head_commit: 9183e5fb58ed21ba3079f4e0f6a528c4e46d1ea7
-generated_at_full: 2026-08-26T15:36:50+09:00
+base_commit: 9183e5fb58ed21ba3079f4e0f6a528c4e46d1ea7
+head_commit: 1178d4a1adaaa1829aeb0ab27ac4940eb1bd90bb
+generated_at_full: 2026-08-27T15:33:42+09:00
 -->
