@@ -343,6 +343,7 @@
 - [Transports Charter](https://modelcontextprotocol.io/community/working-groups/transports.md): Charter for the MCP Transports Working Group.
 - [Triggers and Events Charter](https://modelcontextprotocol.io/community/working-groups/triggers-events.md): Charter for the MCP Triggers and Events Working Group.
 - [Authorization Charter](https://modelcontextprotocol.io/community/interest-groups/auth.md): Charter for the MCP Authorization Interest Group.
+- [Enterprise Interest Group Charter](https://modelcontextprotocol.io/community/interest-groups/enterprise.md): Charter for the MCP Enterprise Interest Group.
 - [Enterprise-Managed Authorization Charter](https://modelcontextprotocol.io/community/interest-groups/enterprise-managed-authorization.md): Charter for the MCP Enterprise-Managed Authorization Interest Group.
 - [Financial Services Charter](https://modelcontextprotocol.io/community/interest-groups/financial-services.md): Charter for the MCP Financial Services Interest Group.
 - [Primitive Grouping Charter](https://modelcontextprotocol.io/community/interest-groups/primitive-grouping.md): Charter for the MCP Primitive Grouping Interest Group.
