@@ -1,101 +1,79 @@
 ---
-対象期間: 2026年08月28日 〜 2026年08月29日
-作成日: 2026-08-29
+対象期間: 2026年08月29日 〜 2026年08月30日
+作成日: 2026-08-30
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回は 1 日分の取り込みで、51 ページに差分がありました。差分行は 2 ファイル合計 846 行（`llms-full.txt` 827 行 / ページ見出しマップ 19 行）で、`llms.txt` は前後で完全に同一（収録 URL 202 件）、展開ページ数も前後とも 191 でページの新規追加・削除はありません。今回は changelog に差分が無く、リリースではなくドキュメント側の追いつきが中心の 1 日でした。前回 changelog だけで報じて「対応する通常ページの記述がまだ無い」と書いた 2 件（モデル切り替えフックと SessionStart の再開コスト）が、今回そろってリファレンスに載っています。あわせて 15 ページ以上で「powerful」「at scale」といった誇張表現を外す文章整理が入りました。
+今回は 1 日分の取り込みで、18 ページに差分がありました。差分行は 2 ファイル合計 165 行（`llms-full.txt` 158 行 / ページ見出しマップ 7 行）で、`llms.txt` は前後で完全に同一（収録 URL 202 件）、展開ページ数も前後とも 191 でページの新規追加・削除はありません。今回も changelog に差分がなく、新機能の追加ではなく既存ページの記述を直す 1 日でした。ページ単位の差分も最大 38 行で、大幅更新に分類できるページはありません。目立つのは「これまで回避策として案内していたものを取り下げる」種類の訂正が 2 件あったことです。
 
 主要なものを以下に挙げます。
 
-1. モデル切り替えを止められる `PreModelSwitch` と、切り替え後に指示を足せる `PostModelSwitch` の 2 フックがリファレンスに載った
-2. クラウド環境に API キーを預けておくと、Claude にキーを見せないまま API を呼ばせられるようになった
-3. GitHub 未接続リポジトリのアップロードから、`.env` や `*.pem` の未コミット変更が外れるようになった
-4. セッションを再開したとき、SessionStart フックが「どれだけ古いか」と再キャッシュ費用の見積もりを受け取れるようになった
-5. Claude Desktop と Cowork のトランスクリプトだけに保持期限を付けられる設定キーが加わった
+1. Bedrock をゲートウェイ越しに使うときの環境変数が「エラーを消すだけで遅くなる」と位置づけを変え、回避策ではなくなった
+2. 管理設定のポリシーヘルパーが失敗する条件と、そのとき Claude Code が何をするかが独立した節にまとまった
+3. auto モードが使えない理由に「Anthropic がサーバー側で切っている」が加わり、「一時的な障害ではない」という断定が消えた
+4. Claude Code がコマンドを構文的に分解できないと、許可ルールの照合も自動バックグラウンド化も効かなくなることが 2 ページで明記された
+5. クラウド環境に API 認証情報を追加できるロールが、Team・Enterprise では Owner のみ（Admin は不可）に訂正された
 ```
 
 ## ハイライト
 
-1. [**モデル切り替えを制御する `PreModelSwitch` と `PostModelSwitch` が載った**](./latest-detail.md#1-モデル切り替えを制御する-premodelswitch-と-postmodelswitch-が載った):  
-  `/model` やピッカー、SDK からのモデル変更を、適用前にフックで拒否・確認できるようになった。切り替えが捨てるプロンプトキャッシュの再作成コストがフック入力に入るので、切り替える前に金額を出せる。切り替え後に走る `PostModelSwitch` はモデル別の指示を Claude に渡せる。どちらも v2.1.251 以降。
-2. [**クラウド環境に API キーを預けて Claude に見せずに使えるようになった**](./latest-detail.md#2-クラウド環境に-api-キーを預けて-claude-に見せずに使えるようになった):  
-  環境に登録したキーは、リクエストがセッションの VM を出た後に Anthropic のエージェントプロキシが付与する。キーは Claude にも、Claude が実行するコマンドにも、環境変数にも現れない。登録には組織管理者ロールが要り、自己ホスト環境では使えない。
-3. [**ローカルリポジトリのアップロードから認証情報ファイルの未コミット変更が外れた**](./latest-detail.md#3-ローカルリポジトリのアップロードから認証情報ファイルの未コミット変更が外れた):  
-  GitHub 未接続のリポジトリで `claude --cloud` を使うとリポジトリ全体がバンドルされてアップロードされるが、macOS・Linux・WSL では `.env`・`*.tfvars`・`id_rsa`・`*.pem` の**未コミット変更だけ**が除外され、除外したファイル名が表示される。ultrareview と `/code-review ultra` も同じ規則に従う。
-4. [**セッション再開時に SessionStart フックが再開コストの見積もりを受け取るようになった**](./latest-detail.md#4-セッション再開時に-sessionstart-フックが再開コストの見積もりを受け取るようになった):  
-  `source` が `resume` / `fork` で、かつ会話に Claude の応答が 1 つ以上ある場合、最後の応答からの経過秒数・再送するトークン数・キャッシュが切れている見込み・再キャッシュ費用の 4 フィールドが渡る。古い会話を再開する前に費用を出せる。v2.1.251 以降。
-5. [**Claude Desktop と Cowork のトランスクリプトに保持期限を付けられるようになった**](./latest-detail.md#5-claude-desktop-と-cowork-のトランスクリプトに保持期限を付けられるようになった):  
-  Claude Desktop / Cowork で開始・最終継続したセッションのトランスクリプトは、既定では年齢を問わず残る。新キー `desktopSessionCleanupPeriodDays` で、そちらにだけ日数の上限を付けられる。
+1. [**Bedrock ゲートウェイ経由のストリーミングで回避策の環境変数が推奨されなくなった**](./latest-detail.md#1-bedrock-ゲートウェイ経由のストリーミングで回避策の環境変数が推奨されなくなった):  
+  トラブルシュートの節が「ヘッダーを書き換えられた」「落とされた」「落としたうえで SSE に変換した」の 3 分岐に書き直された。従来は 1 番目の場合に `CLAUDE_CODE_DISABLE_BEDROCK_CONTENT_TYPE_GUARD=1` でチェックを飛ばせると案内していたが、今回「エラーが消えるだけで、書き換えられたヘッダーの下ではバイナリボディをデコードしないので遅い非ストリーミング経路に落ちる」と改まった。
+2. [**ポリシーヘルパーの失敗条件と挙動が独立した節にまとまった**](./latest-detail.md#2-ポリシーヘルパーの失敗条件と挙動が独立した節にまとまった):  
+  設定リファレンスの `policyHelper` 配下に **Helper failures** が新設され、失敗と見なす 5 条件が列挙された。起動時の失敗は Claude Code の起動そのものを拒否し、バックグラウンド更新の失敗は直前に成功したポリシーを保つ、という非対称も明文化されている。
+3. [**auto モードが使えない理由にサーバー側の一時停止が加わった**](./latest-detail.md#3-auto-モードが使えない理由にサーバー側の一時停止が加わった):  
+  従来「auto モードが使えないと出たら要件のどれかが満たされていない。これは一時的な障害ではない」と書かれていた箇所から、後半の断定が消えた。代わりに Anthropic がサーバー側で切っている場合とサーバーがアカウントに対して拒否した場合が加わり、どちらもセッションが終わるまで戻らないので新しいセッションを開き直せ、と案内される。
+4. [**パースできない複合コマンドは許可ルールにも自動バックグラウンド化にも乗らない**](./latest-detail.md#4-パースできない複合コマンドは許可ルールにも自動バックグラウンド化にも乗らない):  
+  `npm test &&` のように `&&` や `||` の後ろが空だと許可ルールの照合用にサブコマンドへ分割されず、`Bash(npm *)` では承認されない。`${VAR}` のようなパラメータ展開も同じくパース不能扱いで、`; exit "${PIPESTATUS[0]}"` で終わるコマンドは自動バックグラウンド化されずタイムアウトで止まる。
+5. [**クラウド環境の API 認証情報を追加できるのは Owner だけと訂正された**](./latest-detail.md#5-クラウド環境の-api-認証情報を追加できるのは-owner-だけと訂正された):  
+  前回サマリで「Admin / Owner が保持する管理者ロールが必要」と報じた要件が、**Team と Enterprise では Owner が持ち Admin は持たない**に訂正された。環境セレクタから共有環境を編集できるロールも「Admin か Owner」から「Owner」に直っている。
 
 ## 新規追加されたページ
 
-（今回の対象期間に新規追加・削除されたドキュメントページはありません。`llms-full.txt` に展開されているページ数は前後とも 191 で、`llms.txt` は前後で 1 バイトも変わらず収録 URL も 202 件のままです。前回・前々回と 2 回続いた `llms.txt` の見出し構成の組み替えも、今回は動きがありませんでした）
+（今回の対象期間に新規追加・削除されたドキュメントページはありません。`llms-full.txt` に展開されているページ数は前後とも 191 で、`llms.txt` は前後で 1 バイトも変わらず収録 URL も 202 件のままです。`llms.txt` に差分が無いのは前回に続いて 2 回連続です）
 
 ## 大幅に更新されたページ
 
-- [**フックリファレンス**](./latest-detail.md#1-フックリファレンス) ([English](https://code.claude.com/docs/en/hooks#hook-events)):  
-  差分 344 行（実質 264 行）で今回最大。`PreModelSwitch` / `PostModelSwitch` の 6 節新設（ハイライト 1）と `SessionStart` の再開コスト 4 フィールド（ハイライト 4）が中心で、matcher・タイムアウト・終了コードの各表も新イベント分が加わった。
-- [**クラウド環境の設定**](./latest-detail.md#2-クラウド環境の設定) ([English](https://code.claude.com/docs/en/cloud-environments#add-api-credentials)):  
-  差分 121 行（実質 83 行）。**Add API credentials** の 5 節新設（ハイライト 2）と、Claude Tag チャネルが使う環境の指定を独立させた 1 節の新設。
-- [**Agent SDK（TypeScript）**](./latest-detail.md#3-agent-sdktypescript) ([English](https://code.claude.com/docs/en/agent-sdk/typescript#premodelswitchhookinput)):  
-  差分 60 行（ほぼ全て追加）。`PreModelSwitchHookInput` / `PostModelSwitchHookInput` の 2 型と、`HookJSONOutput` の対応する 2 分岐が加わった。
+（今回は大幅更新に分類したページがありません。前回同様「実質の差分 50 行以上 かつ 内容の変更を伴うこと」を基準にしていますが、最大の**設定リファレンス**でも 38 行（追加 31・削除 7）で閾値に届きませんでした。同ページの内容はハイライト 2 で扱っています。次点の**権限モード**は差分 30 行ですが、表の桁揃えの差を除いた実質は 14 行で、内容はハイライト 3 のとおりです）
 
 ## 軽微な更新
 
-今回は 1 日分の取り込みで、`llms-full.txt` に差分のあったページは 51、差分行は 2 ファイル合計 846 行（`llms-full.txt` 827 行 / ページ見出しマップ 19 行）です。**`llms.txt` には差分がなく**、収録 URL は 202 件、展開ページ数も前後とも 191 で、ページの新規追加・削除はありません。本サマリで「実質 N 行」と書いた値は、各行の連続空白と連続ハイフンを潰したうえで数え直した概算です。**大幅更新に入れる基準は前回同様「実質の差分 50 行以上 かつ 内容の変更を伴うこと」**とし、今回は上記 3 ページが該当しました。差分 53 行の**フックのガイド**は、実質では 15 行（内容はモデル切り替えフックの追記のみで、残りは matcher 表の桁揃え）なので大幅更新には入れず、ハイライト 1 の参考リンクとして扱っています。差分 32 行の**チャンピオンキット**も実質 10 行で、内容は後述の文章整理だけです。
+今回は 1 日分の取り込みで、`llms-full.txt` に差分のあったページは 18、差分行は 2 ファイル合計 165 行（`llms-full.txt` 158 行 / ページ見出しマップ 7 行）です。**`llms.txt` には差分がなく**、収録 URL は 202 件、展開ページ数も前後とも 191 で、ページの新規追加・削除はありません。本サマリで「実質 N 行」と書いた値は、各行の連続空白と連続ハイフンを潰したうえで数え直した概算です。
 
-**今回は changelog に差分がありません**。バージョン番号は、各ページの本文が自ら述べているものだけを引いています。
+**今回も changelog に差分がありません**。バージョン番号は、各ページの本文が自ら述べているものだけを引いています。
 
-今回いちばん広く効いているのは、**15 ページ以上に散った文章整理**です。「powerful」「genuinely」「at scale」「effectively」といった強調・誇張の語を外し、具体的な言い換えに置き換える編集で、1 ページあたり 1〜2 文だけの変更が大半でした。例えば概要とワークフローの「subagents at scale」は「many subagents at once」に、Agent SDK 概要の「Everything that makes Claude Code powerful is available in the SDK.」は「These Claude Code capabilities are available in the SDK:」に、GitLab CI/CD の「Claude Code enables powerful CI/CD workflows that transform how you work with code:」は「In a GitLab pipeline, Claude Code can:」になっています。内容の変更を伴わないため、以下の分類では **その他** に 1 項目としてまとめました。
+差分のあった 18 ページのうち 12 ページは、ハイライト 1〜5 で扱った変更が中心です。残る 6 ページ（クイックスタート・サンドボックス・フックのガイド・コンピュータ使用・非対話モード・コマンド）の変更と、ハイライトに含めなかった細部を、以下の 4 分類に整理しました。**新機能**に入れた 3 件も、既存の仕組みに条件や節が足されたもので、新しいコマンドやフラグの追加ではありません。
 
-ページ見出しマップ（`claude_code_docs_map.md`）は、上記の新設セクション（フックの `PreModelSwitch` / `PostModelSwitch` 各 3 節、Agent SDK TypeScript の 2 型、クラウド環境の API 認証情報 5 節と Claude Tag チャネルの環境指定、管理設定のテレメトリー無効化、設定リファレンスの `desktopSessionCleanupPeriodDays`、ウェブクイックスタートの `workflow` スコープ警告）を取り込みました。生成時刻の表記は 2026年08月29日 04:34 UTC から 2026年08月29日 18:03 UTC に進んでいます。
-
-なお本サマリの参考リンクは全て英語版のみです。今回の変更に日本語版が追従していないためで、実際に取得して確認したところ、**日本語版の設定リファレンス（`/docs/ja/settings-reference`）と管理設定（`/docs/ja/managed-settings`）はいずれも 404 を返し**、**日本語版のフックリファレンスには `PreModelSwitch` / `PostModelSwitch` の節が存在せず**（冒頭のイベント一覧表に英語のまま 2 行あるだけ）、**日本語版のクラウド環境ページには API 認証情報の節も Claude Tag チャネルの環境指定の節も無く**、**日本語版の「ウェブ上の Claude Code」ページには認証情報ファイルの除外もセキュリティと分離の API 認証情報の項目も無い**（ページ構成自体が旧版のまま）ことを確認しました。他のページは個別には確認していませんが、いずれも直近 1〜2 日の変更であるため未追従とみなし、安全側に倒して英語版のみを載せています。
+なお本サマリの参考リンクは全て英語版のみです。今回の変更に日本語版が追従していないためで、実際に取得して確認したところ、**日本語版の Amazon Bedrock ページのストリーミングエラーの節は旧記述のまま**（`CLAUDE_CODE_DISABLE_BEDROCK_CONTENT_TYPE_GUARD` を回避策として案内しており、LLM ゲートウェイへの切り替えの段落も無い）、**日本語版の権限モードページには「これは一時的な停止ではありません」がそのまま残っており**サーバー側の言及が無い、**日本語版の権限ページの複合コマンドの節には `&&` の後ろが空の場合の記述が無い**、**日本語版のクラウド環境ページには API 認証情報の節自体が存在しない**（共有環境の節も「オーナーと管理者は」の旧記述のまま）ことを確認しました。他のページは個別には確認していませんが、いずれも直近 1〜2 日の変更であるため未追従とみなし、安全側に倒して英語版のみを載せています。
 
 **新機能**
 
-- 管理設定キー `desktopSessionCleanupPeriodDays` が加わりました（詳細はハイライト 5 参照）— [English](https://code.claude.com/docs/en/settings-reference#desktopsessioncleanupperioddays)
-- 管理設定のページに **Turn telemetry off for your organization** 節が新設され、各開発者のシェルに頼らず組織単位でテレメトリーを切る方法として、管理設定の `env` ブロックで `DISABLE_TELEMETRY` を配る手順が示されました。値 `1` は承認ダイアログを出さずに適用されます。切ると[日本語](https://code.claude.com/docs/ja/analytics) / [分析ダッシュボード](https://code.claude.com/docs/en/analytics)に流れる使用データが止まり、機能フラグの取得も止まるため Remote Control・既定の auto mode などが使えなくなる点も併記されています — [English](https://code.claude.com/docs/en/managed-settings#turn-telemetry-off-for-your-organization)
-- `retention_sweep` イベントに `transcripts_exempted_desktop` フィールドが加わりました（v2.1.248 以降。詳細はハイライト 5 参照）— [English](https://code.claude.com/docs/en/monitoring-usage#retention-sweep-event)
-- `/clear` に引数を渡すと、**離れる側の会話**に名前を付けられることが明記されました（`/clear release-prep` のように書くと、新しい会話は名前なしで始まります）。引数なしの場合は従来どおり `--name` や `/rename` で付けた名前を新しい会話が引き継ぎます — [English](https://code.claude.com/docs/en/sessions#manage-context-within-a-session)
-- ウェブクイックスタートのトラブルシュートに **`/web-setup` が `workflow` スコープの不足を警告する** 節が新設されました。そのまま続行できますが、GitHub Actions のワークフローファイルを変更するプッシュなどが拒否される場合があるため、`gh auth refresh -s workflow` を実行してから `/web-setup` をやり直します — [English](https://code.claude.com/docs/en/web-quickstart#web-setup-warns-that-your-token-doesnt-have-the-workflow-scope)
-- クラウドセッションの送信時エラーに `Couldn't verify your organization's policy for cloud sessions.` が加わりました。組織のポリシーを取得できなかった場合、Claude Code はクラウドセッションが許可されていると仮定せず送信を拒否します — [English](https://code.claude.com/docs/en/claude-code-on-the-web#send-local-repositories-without-github)
+- 通知フックの `agent_needs_input` の発火条件が広がりました。従来は[エージェントビュー](https://code.claude.com/docs/en/agent-view)を開いている間にバックグラウンドセッションが入力待ちに入ったときだけでしたが、**現在のセッションがエージェントチームのチームメイトの端末セットアップの質問を尋ねていて、6 秒ほど入力が無い**ときにも発火するようになりました（v2.1.248 以降）。フックリファレンスとフックのガイドの双方に同じ追記が入っています — [English](https://code.claude.com/docs/en/hooks#notification)
+- コンピュータ使用のページに、**Finder を承認すると Claude がデスクトップ・Dock・Finder ウィンドウをクリックできる**という 1 文が加わりました。アプリのカテゴリによって制御の度合いが変わる（ブラウザと取引プラットフォームは閲覧のみ、ターミナルと IDE はクリックのみ、それ以外は完全な制御）という既存の説明の手前に置かれています — [English](https://code.claude.com/docs/en/computer-use#approve-apps-per-session)
+- 設定リファレンスの `policyHelper` 配下に **Helper failures** の節が新設されました（詳細はハイライト 2 参照）— [English](https://code.claude.com/docs/en/settings-reference#helper-failures)
 
 **機能改善**
 
-- **管理設定の `disableAutoMode` が、実行中のセッションにも効くようになりました**（v2.1.251 以降）。設定が管理者配備のソースからそのセッションに届いた時点で auto mode を抜け、`auto mode disabled by settings` を表示します。それより前は、走っているセッションは終了するまで auto mode を保っていました — [English](https://code.claude.com/docs/en/permission-modes#auto-mode-on-bedrock-agent-platform-or-foundry)
-- **クラウドセッションではプラグインの言語サーバーが起動しないため LSP ツールが無効のままである**ことが、ツールリファレンス・プラグイン紹介ページの双方に明記されました。あわせて「セッション中に一度でも言語サーバーが使えたらツールを最後まで保持する」という記述が両ページとプロンプトキャッシュのページから外され、ツールセットの固定に関する説明が単純化されています — [English](https://code.claude.com/docs/en/tools-reference#lsp-tool-behavior)
-- `.claude` ディレクトリの保持ルールの説明が「4 つの例外」から「**`sessions/`・自動メモリ・Desktop / Cowork トランスクリプトはそれぞれ独自のルールに従う**」＋「スイープを丸ごと飛ばすケース」の 2 段構えに整理されました（詳細はハイライト 5 参照）— [English](https://code.claude.com/docs/en/claude-directory#cleaned-up-automatically)
-- OpenTelemetry の疎通確認で、**デバッグログの `[3P telemetry]` と `[Anthropic telemetry]` を読み分ける**ことが加わりました。前者が自分で設定したエクスポーターの失敗、後者は[Anthropic 自身の運用テレメトリー](https://code.claude.com/docs/en/data-usage#telemetry-services)の記録であり設定の問題を示すものではありません。SIEM 側の確認手順にも同じ区別が反映されています — [English](https://code.claude.com/docs/en/monitoring-usage#quick-start)
-- 環境変数 `DISABLE_TELEMETRY` の説明から、組織単位で配る手順への参照が張られました — [English](https://code.claude.com/docs/en/env-vars#variables)
-- エンタープライズ配備の概要に、**顧客管理暗号鍵（CMEK）を使いつつ LLM ゲートウェイや独自 `ANTHROPIC_BASE_URL` を経由する場合、それらのセッションの運用テレメトリーには CMEK が適用されない**ことが加わり、対処として管理設定での `DISABLE_TELEMETRY` 配布が案内されました — [日本語](https://code.claude.com/docs/ja/third-party-integrations#configure-proxies-and-gateways) / [English](https://code.claude.com/docs/en/third-party-integrations#configure-proxies-and-gateways)
-- **環境が回収された後にセッションを開き直すと、回収時点で走っていたサブエージェントやシェルコマンドなどのバックグラウンド作業は復元されない**ことが明記されました。会話履歴は従来どおり復元されます — [English](https://code.claude.com/docs/en/claude-code-on-the-web#environment-expired)
-- ルーチンの利用条件から「[日本語](https://code.claude.com/docs/ja/claude-code-on-the-web) / [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web) が有効であること」が外れ、Pro・Max・Team・Enterprise の各プランで使えると書かれるようになりました — [日本語](https://code.claude.com/docs/ja/routines) / [English](https://code.claude.com/docs/en/routines)
-- ルーチンの環境変数の説明が、**API キーは環境変数ではなく[クラウド環境の API 認証情報](https://code.claude.com/docs/en/cloud-environments#add-api-credentials)として保管せよ**という案内に改まりました（環境変数はその環境を使う誰からも読めるため。詳細はハイライト 2 参照）— [English](https://code.claude.com/docs/en/routines#create-from-the-web)
-- Desktop アプリでルーチンを作る導線に、サイドバーの **More** メニュー経由が加わりました（ルーチンのページと Desktop の定期タスクのページの両方）。あわせて定期タスクのページからは、**Routines** がサイドバーに無い場合の案内が外れています — [English](https://code.claude.com/docs/en/desktop-scheduled-tasks#create-a-scheduled-task)
-- WSL での管理設定の検証手順が具体化されました。`/status` の `Setting sources` 行が示すのは **Claude Code が選んだ管理ソース 1 つだけ**なので、サーバー管理設定を取得してキーを受け取ったセッションでは `Enterprise managed settings (remote)` になり Windows 側の配備が届いたかは分からないこと、それ以外のセッションでは `(HKLM)` がレジストリ配備を、`(file)` が Windows のファイルかディストリビューション自身の `/etc/claude-code/managed-settings.json` を指すことが説明されています。サーバー管理設定の取得タイミングも「認証時に届き 1 時間ごとに更新」から「**起動時に取得し、セッション中は 1 時間ごとに更新**」に改まりました — [日本語](https://code.claude.com/docs/ja/admin-setup#decide-how-settings-reach-devices) / [English](https://code.claude.com/docs/en/admin-setup#decide-how-settings-reach-devices)
-- サーバー管理設定の不正値の扱いに、**保持期間の 2 キー（`cleanupPeriodDays` / `desktopSessionCleanupPeriodDays`）の不正値はキャッシュに残るが適用されない**という例外が加わりました。payload 全体を拒否するのも「救出できるフィールドが無く、かつ問題がこの 2 キーだけではないとき」に限られます — [English](https://code.claude.com/docs/en/server-managed-settings#invalid-entries-in-delivered-settings)
-- `/terminal-setup` の説明が、端末ごとに何をするかを示す形に書き直されました。VS Code・Cursor・Devin Desktop・Alacritty・Zed では Shift+Enter の改行キーバインドを入れ、Apple Terminal では Option+Enter の改行と可聴ベルの無効化を、iTerm2 では `/copy` が動くようクリップボードアクセスを有効にします — [English](https://code.claude.com/docs/en/commands#all-commands)
-- Claude Code が `localhost`・`::1`・`127.0.0.0/8` 宛の WebSocket 接続をプロキシに通すことはないため、**`NO_PROXY` にループバックの項目を入れる必要はない**ことが明記されました — [English](https://code.claude.com/docs/en/network-config#environment-variables)
-- データ使用のページの保持期間の説明に、Claude Desktop / Cowork のトランスクリプトが既定でその上限の対象外である旨が加わりました（詳細はハイライト 5 参照）— [English](https://code.claude.com/docs/en/data-usage#data-retention)
-- プラグインリファレンスのフック一覧表に `PreModelSwitch` と `PostModelSwitch` の 2 行が加わりました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/plugins-reference#hooks)
-- Agent SDK のフックのページでも、利用可能なフック表に 2 行が加わり、タイムアウトの既定値（30 秒側）とタイムアウト時の挙動に **`PreModelSwitch` はモデル切り替えをブロックする**（答えないフックは切り替えを承認していない）ことが加わりました — [日本語](https://code.claude.com/docs/ja/agent-sdk/hooks#available-hooks) / [English](https://code.claude.com/docs/en/agent-sdk/hooks#available-hooks)
-- プロンプトキャッシュのページのモデル切り替えの節に、**warm なキャッシュがあるときの確認を `PreModelSwitch` フックで必須化したり飛ばしたりできる**ことが加わりました（詳細はハイライト 1 参照）— [日本語](https://code.claude.com/docs/ja/prompt-caching#switching-models) / [English](https://code.claude.com/docs/en/prompt-caching#switching-models)
-- ネットワーク上のファイルに関するエラーの説明が、「本当にネットワーク共有にあるファイル」から「**ネットワークパスで書いただけのローカルファイルではなく、実際にネットワーク共有にあるファイル**」という切り分けに改まりました — [English](https://code.claude.com/docs/en/errors#write-or-command-blocked-because-the-path-names-a-network-location)
-- Agent SDK の出力スタイルの説明に、**`keep-coding-instructions: true` は Claude Code の完全なシステムプロンプトを使うセッションでしか効かない**ことが加わりました。短い方のシステムプロンプトで走るセッションでは効果が無く、どちらを使うかは [`CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT`](https://code.claude.com/docs/en/env-vars#variables) で固定します — [English](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts#create-an-output-style)
+- `PreToolUse` フックの `updatedInput` の説明に、**Claude Code が権限ルールと Bash コマンドの自動バックグラウンド化の適格性を、Claude が送った入力ではなくフックが返した入力に対して評価する**ことが加わりました（詳細はハイライト 4 参照）— [English](https://code.claude.com/docs/en/hooks#pretooluse-decision-control)
+- `CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS` の意味が明確になりました。「最終ターン後の最大待ち時間」ではなく「**連続したアイドル待機の上限**」で、**キューに溜まったバックグラウンド結果を処理するターンが走るたびにカウントは数え直されます**。上限に達した時点で残りのバックグラウンドタスクを待つのをやめて終了します。あわせて v2.1.182 以降が必要である旨も加わり、非対話モードのページ側の説明も「10 分の連続したアイドル待機」に揃いました — [English](https://code.claude.com/docs/en/env-vars#variables)
+- サンドボックスの既定の書き込み先の列挙に **`permissions.additionalDirectories` が加わりました**。従来は作業ディレクトリ・`--add-dir` / `/add-dir` で足したディレクトリ・セッションの一時ディレクトリの 3 つを挙げていましたが、設定ファイルの `permissions.additionalDirectories` に書いたディレクトリも同じ扱いだと、サンドボックスのページ 3 か所と設定リファレンス 2 か所で明記されています。列挙の順序も「作業ディレクトリ → 一時ディレクトリ → 追加ディレクトリ」に揃えられました — [English](https://code.claude.com/docs/en/sandboxing#filesystem-isolation)
+- ゲートウェイプロトコルの Streaming の節が書き直され、**クライアントが Amazon Bedrock 形式を話す場合は `InvokeModelWithResponseStream` のレスポンスボディと `Content-Type: application/vnd.amazon.eventstream` ヘッダーをそのまま中継し、ストリームを SSE に変換しないこと**が加わりました（詳細はハイライト 1 参照）— [English](https://code.claude.com/docs/en/llm-gateway-protocol#streaming)
+- `policyHelper.path` の型が具体化され、**Windows ではドライブレターか UNC のパスで `.exe` で終わる**必要があると明記されました（詳細はハイライト 2 参照）— [English](https://code.claude.com/docs/en/settings-reference#policyhelper-path)
+- 管理設定ページの `policyHelper` の箇条書きが、失敗時の挙動を自前で述べる形から **Helper failures 節への参照**に置き換わりました（詳細はハイライト 2 参照）— [English](https://code.claude.com/docs/en/managed-settings#compute-the-policy-with-a-helper-program)
+- クイックスタートの初回セッションの説明が緩められました。「**インストール後の最初のセッションでは変更のたびに確認する**」という断定が「**確認された場合は Yes を選ぶ**」になり、インストール直後のセッションの扱いについては環境変数ページの該当節へ誘導する形になっています。auto モードが Pro・Max・Team のターミナルセッションの組み込み既定である（それ以外のプランは Manual）という記述自体は変わっていません — [English](https://code.claude.com/docs/en/quickstart#step-5-make-your-first-code-change)
+- 環境変数ページの「インストールやアップグレード後の最初のセッション」の説明が 2 段落に分かれ、**新規インストール直後は `claude -p`・Agent SDK・VS Code 拡張のような非対話セッションなら、開始時の権限モードを決める前に機能フラグを取得できることがある**という書き方に変わりました。「対話ターミナルセッションでは間に合わない」という言い切りは外れています。権限モードのページの開始モード表の該当行も同じ言い回しに揃いました — [English](https://code.claude.com/docs/en/env-vars#first-session-after-an-install-or-upgrade)
+- コマンドのページとエラーリファレンスの双方に、**組織のポリシーで無効化されたコマンドは `Unknown command` ではなく独自のメッセージを返すことがある**、と加わりました。従来はプラットフォーム・プラン・認証方法が要件を満たさない場合だけを挙げていました — [English](https://code.claude.com/docs/en/commands#how-the-command-menu-matches-what-you-type)
+- **`/` で始まるプロンプトを全てコマンドとして扱うわけではない**ことが明記されました。`/` の次の語が記号で始まる場合（Lean の doc comment を開く `/--` など）やパスの場合（`/var/log/syslog` など）は、通常のメッセージとして Claude に送られます — [English](https://code.claude.com/docs/en/errors#unknown-command)
+- auto モードがモードの選択肢に現れる条件の言い回しが「アカウントが要件を満たすとき」から「**auto モードが利用可能なとき**」に、CLI・VS Code・Desktop の各タブと Desktop ページの権限モード表の計 4 か所で統一されました（詳細はハイライト 3 参照）— [English](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)
 
 **その他**
 
-- **15 ページ以上で、強調・誇張の語を外す文章整理が入りました**。概要・ワークフロー・Agent SDK 概要の「orchestrate subagents at scale」系が「orchestrate many subagents at once」に、`managed-mcp` の「At scale」が「Across a fleet」に、エージェントチームの「genuinely benefits」が「benefits」に、サンドボックスの「leverages operating system security primitives」が「uses ...」に、`agent-sdk/subagents` の「more powerful model」が「more capable model」に、といった置き換えが中心です。対象は上記のほかベストプラクティス・アーティファクト・チャンピオンキット・worktrees・JetBrains・GitLab CI/CD・`agent-sdk/python`・`agent-sdk/secure-deployment`・`self-hosted-environments-identity`・`claude-apps-gateway` など。**これらのページはいずれも意味の変更を伴いません**（同じ整理は `skills`・`tools-reference`・`agent-sdk/typescript`・`agent-sdk/modifying-system-prompts` にも入っていますが、それらのページには別途内容の変更もあるため上記の各分類で扱っています）
-- エンタープライズ配備の概要で、見出し **Leverage MCP for integrations** が **Use MCP for integrations** に改称されました。この改称自体は前回ページ見出しマップ側で先に検出済みで、今回 `llms-full.txt` が追いついた形です — [English](https://code.claude.com/docs/en/third-party-integrations#use-mcp-for-integrations)
-- `/skills` メニューでスキルの表示状態を `.claude/settings.local.json` に保存するキーが、`Enter` から `Esc` に訂正されました — [日本語](https://code.claude.com/docs/ja/skills#override-skill-visibility-from-settings) / [English](https://code.claude.com/docs/en/skills#override-skill-visibility-from-settings)
-- 古い版番号の注記がいくつか外れました。コマンドメニューの「v2.1.236 より前は最も近い候補を実行していた」、ツールリファレンスとプロンプトキャッシュの「v2.1.235 より前は言語サーバーの状態でツールを出し入れしていた」がそれぞれ削除されています
-- 自己ホスト環境の配備ページで、Claude Tag チャネルの環境指定へのリンク先アンカーが、新設された節を指すよう更新されました — [English](https://code.claude.com/docs/en/self-hosted-environments-deploy#harden-your-deployment)
-- 用語集の「出力スタイル」の項から、カスタムスタイルが Claude Code の組み込み指示を含まない旨の 1 文が削除されました — [English](https://code.claude.com/docs/en/glossary#output-style)
-- 高度なセットアップのページで、インストール手順のコードフェンス 5 か所に重複していた `theme={null}` 属性が 1 つに整理されました（表示に影響しないメタ属性の掃除で、内容の変更はありません）— [English](https://code.claude.com/docs/en/setup#install-claude-code)
+- 使用ポリシー違反の拒否メッセージの説明から、**非対話モード（`-p`）では末尾が `Learn more:` とリンクだけになり `/feedback` の案内が出ない**、という記述が 2 か所とも削除されました。サイバーセキュリティ関連のフラグの節では「見え方はプロバイダーとモードによる」という導入と箇条書き自体が外れ、Amazon Bedrock・Google Cloud の Agent Platform・Microsoft Foundry では使用ポリシー拒否のメッセージになる、という 1 文だけが残っています — [English](https://code.claude.com/docs/en/errors#safety-measures-flagged-a-cybersecurity-topic)
+- Amazon Bedrock ページから「**v2.1.208 より前は、同じ設定ミスがレスポンス全体をバッファリングした後の `API Error: Truncated event message received` として現れた**」という注記が外れました。同じ注記はエラーリファレンス側には残っています — [English](https://code.claude.com/docs/en/amazon-bedrock#streaming-errors-behind-a-gateway-or-proxy)
+- クイックスタートのインストール手順で、コードフェンス 5 か所の `theme={null}` 属性がそれぞれ **12 個に重複**しました。表示に影響しないメタ属性で、コマンド自体は変わっていません — [English](https://code.claude.com/docs/en/quickstart#step-1-install-claude-code)
+- ページ見出しマップ（`claude_code_docs_map.md`）は `llms-full.txt` より新しい断面（生成時刻は 2026年08月29日 18:03 UTC から 2026年08月31日 05:54 UTC へ）を取り込んでおり、**本文がまだ届いていない見出しが 4 つ先行して現れています**。アーティファクトの `Draft a design canvas`、認証の `Sign in without an API key`（`Claude Console authentication` 配下）、設定リファレンスの `modelSettings`、Agent SDK のシステムプロンプト改変ページの `Cache the static part of a custom prompt` です。今回の `llms-full.txt` にはこれらの本文が無いため、内容には触れません（同時に検出された 5 つ目の `Helper failures` だけは本文も届いており、ハイライト 2 で扱いました）
 
 ## 新着情報
 
@@ -103,11 +81,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-28.md](./archives/latest/2026-08-28.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-28.md](./archives/latest-detail/2026-08-28.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-29.md](./archives/latest/2026-08-29.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-29.md](./archives/latest-detail/2026-08-29.md)
 
 <!--
-base_commit: f5de441e788b355b2a85c43da6cf29f85d714c19
-head_commit: 7d00c86bee78637a4cc97f3c3affae6dc053ee2d
-generated_at_full: 2026-08-30T15:08:13+09:00
+base_commit: 7d00c86bee78637a4cc97f3c3affae6dc053ee2d
+head_commit: e1ec6a5c1026e78db9ebf5bb0158a1e894a769ad
+generated_at_full: 2026-08-31T15:09:45+09:00
 -->

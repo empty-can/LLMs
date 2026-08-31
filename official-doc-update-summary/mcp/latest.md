@@ -1,52 +1,45 @@
 ---
-対象期間: 2026年08月25日 〜 2026年08月26日
-作成日: 2026-08-26
+対象期間: 2026年08月26日 〜 2026年08月30日
+作成日: 2026-08-30
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間に差分が出たのはページ本文を収める `llms-full.txt` の 1 件のみで、索引ファイル `llms.txt` には変更がありません。追加 159 行・削除 6 行のうち 153 行は、前回索引に加わったばかりの Transports Charter の本文です。
+今回の対象期間に差分が出たのは索引ファイル `llms.txt` の 1 行のみで、ページ本文を収める `llms-full.txt` には変更がありません。追加されたのは Enterprise Interest Group の charter ページ 1 件で、索引のエントリは 348 件から 349 件になりました。
 
 主要なものを以下に挙げます。
 
-1. MCP Transports Working Group の charter 本文 153 行が `llms-full.txt` に収録された。前回時点では索引にエントリがあるだけで本文が欠けていたが、今回それが解消し、スコープ・リーダーシップ・意思決定権限・運営方法が確認できるようになった。charter 自体の初版制定は 2026年08月23日
-2. 既存 6 ページ（Authorization / Security / Agents / Interceptors / SDK / Triggers and Events の各 charter）の `Related Groups` で、Transports WG への言及がサイト内リンクに書き換えられた。うち Agents Charter の 1 件は外部 GitHub リポジトリ URL からサイト内パスへの切り替え
+1. Enterprise Interest Group の charter ページ `community/interest-groups/enterprise` が索引に加わった。5 日間の対象期間で生じた変更はこの 1 行の追加だけで、削除はなし。本文は `llms-full.txt` に未収録のため、ミッション・スコープ・ファシリテーターといった charter の中身は今回の入力からは確認できない
 ```
 
 ## ハイライト
 
-1. [**Transports WG charter の本文が収録**](./latest-detail.md#1-transports-wg-charter-の本文が収録):  
-  `community/working-groups/transports` の本文 153 行が `llms-full.txt` に加わった。前回サマリの時点では索引 `llms.txt` にエントリがあるだけで本文が未収録という状態だったが、今回この欠落が解消した。ミッション・スコープ・リーダーシップ・意思決定権限・運営が確認でき、charter の Changelog には 2026年08月23日 に初版が制定されたと記録されている。
-2. [**既存 charter からの Transports WG 参照がリンク化**](./latest-detail.md#2-既存-charter-からの-transports-wg-参照がリンク化):  
-  6 つの charter ページの `Related Groups` にあった Transports WG への言及が、いずれもサイト内リンク `/community/working-groups/transports` になった。今回の削除 6 行はすべてこの書き換えによるもので、5 件は太字プレーンテキストからのリンク化、Agents Charter の 1 件は外部 GitHub リポジトリ URL からサイト内パスへの切り替え。
+1. [**Enterprise Interest Group の charter ページが索引に追加**](./latest-detail.md#1-enterprise-interest-group-の-charter-ページが索引に追加):  
+  `community/interest-groups/enterprise`（説明文「Charter for the MCP Enterprise Interest Group.」）が索引に加わった。今回の差分はこの 1 行の追加のみで、削除行はない。索引のエントリ行数は 348 件から 349 件、ユニーク URL は 343 件から 344 件になっている。本文は `llms-full.txt` に未収録で、charter の中身は入力から確認できない。
 
 ## 新規追加されたページ
 
-今回本文が新たに収録されたページは次の 1 件です。索引 `llms.txt` には前回すでにエントリが載っていたため、索引側の件数（348 件）に変化はありません。
+今回索引に増えたページは次の 1 件です。
 
-- [**Transports Charter**](./latest-detail.md#1-transports-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports)):  
-  MCP Transports Working Group の charter 本文 153 行が `llms-full.txt` に収録された。トランスポートバインディング・スケーラビリティと信頼性・トランスポート隣接のプロトコルアーキテクチャ・トランスポートセキュリティを扱い、WG リードは Kurtis Van Gent。上流の GitHub リポジトリに詳細を委ねつつ、境界の定義はこの charter 側に留保する構成になっている。
+- [**Enterprise Interest Group Charter**](./latest-detail.md#1-enterprise-interest-group-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise)):  
+  MCP Enterprise Interest Group の charter ページ。今回の差分はこのエントリ 1 行の追加だけで、本文は `llms-full.txt` に未収録のため中身は確認できない（詳細はハイライト 1 参照）。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページに対する変更は 6 ページで各 1 行のみです（詳細はハイライト 2 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、既存ページの記述内容は変わっていません。
 
 ## 軽微な更新
 
-今回差分が出たファイルは `llms-full.txt` の 1 件のみで、Transports Charter 本文の収録（ハイライト 1 参照）を除くと、既存ページ側の変更は次の 1 点にまとまります。
-
-**その他**
-
-- 6 つの charter ページ（Working Group 4 件・Interest Group 2 件）の `Related Groups` で、Transports WG への言及がサイト内リンクに書き換えられた。削除 6 行・追加 6 行はすべてこの変更によるもの（詳細はハイライト 2 参照）
+今回差分が出たファイルは索引 `llms.txt` の 1 件のみで、その内容は新規エントリ 1 行の追加（ハイライト 1 参照）に尽きます。削除行や既存エントリの書き換えはなく、索引ファイルの体裁に関する変更もないため、これとは別に挙げる軽微な更新はありません。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-25.md](./archives/latest/2026-08-25.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-25.md](./archives/latest-detail/2026-08-25.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-26.md](./archives/latest/2026-08-26.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-26.md](./archives/latest-detail/2026-08-26.md)
 
 <!--
-base_commit: 9183e5fb58ed21ba3079f4e0f6a528c4e46d1ea7
-head_commit: 1178d4a1adaaa1829aeb0ab27ac4940eb1bd90bb
-generated_at_full: 2026-08-27T15:33:42+09:00
+base_commit: 1178d4a1adaaa1829aeb0ab27ac4940eb1bd90bb
+head_commit: e1ec6a5c1026e78db9ebf5bb0158a1e894a769ad
+generated_at_full: 2026-08-31T15:28:53+09:00
 -->
