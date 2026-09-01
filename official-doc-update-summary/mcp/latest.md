@@ -1,45 +1,58 @@
 ---
-対象期間: 2026年08月26日 〜 2026年08月30日
-作成日: 2026-08-30
+対象期間: 2026年08月30日 〜 2026年08月31日
+作成日: 2026-08-31
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間に差分が出たのは索引ファイル `llms.txt` の 1 行のみで、ページ本文を収める `llms-full.txt` には変更がありません。追加されたのは Enterprise Interest Group の charter ページ 1 件で、索引のエントリは 348 件から 349 件になりました。
+今回の対象期間の差分はページ本文を収める `llms-full.txt` のみで、索引 `llms.txt` には変更がありません（エントリは 349 件のまま）。内訳は追加 163 行・削除 1 行で、Cargo（Rust）パッケージ対応の追記・Enterprise Interest Group charter 本文の収録・SEP の誤字修正の 3 件です。
 
 主要なものを以下に挙げます。
 
-1. Enterprise Interest Group の charter ページ `community/interest-groups/enterprise` が索引に加わった。5 日間の対象期間で生じた変更はこの 1 行の追加だけで、削除はなし。本文は `llms-full.txt` に未収録のため、ミッション・スコープ・ファシリテーターといった charter の中身は今回の入力からは確認できない
+1. MCP Registry の対応パッケージ種別に Cargo が加わり、`server.json` で `"registryType": "cargo"` を指定できるようになった。対応レジストリは crates.io のみで、`npx` / `uvx` / `dnx` に相当する都度実行ランナーが無いため、`cargo install` で 1 回インストールした後はバイナリ名で直接起動する
+2. Cargo の所有権検証では `mcp-name:` トークンを README に可視テキストとして書く必要がある。crates.io は markdown→HTML 変換で HTML コメントを除去するため、PyPI / NuGet で使える `<!-- mcp-name: ... -->` の隠しコメント形式は cargo では通らない
+3. 前回索引にだけ現れていた Enterprise Interest Group の charter 本文が収録された。企業が MCP を本番投入する際に残るプロトコルレベルの要件ギャップを洗い出し、該当 Working Group へ渡すことを役割とする Interest Group で、SEP の執筆自体はスコープ外
 ```
 
 ## ハイライト
 
-1. [**Enterprise Interest Group の charter ページが索引に追加**](./latest-detail.md#1-enterprise-interest-group-の-charter-ページが索引に追加):  
-  `community/interest-groups/enterprise`（説明文「Charter for the MCP Enterprise Interest Group.」）が索引に加わった。今回の差分はこの 1 行の追加のみで、削除行はない。索引のエントリ行数は 348 件から 349 件、ユニーク URL は 343 件から 344 件になっている。本文は `llms-full.txt` に未収録で、charter の中身は入力から確認できない。
+1. [**MCP Registry が Cargo パッケージに対応**](./latest-detail.md#1-mcp-registry-が-cargo-パッケージに対応):  
+  `registry/package-types` に `## Cargo (Rust) Packages` セクションが新設され、`server.json` の `packages` で `"registryType": "cargo"` を使えるようになった。対応レジストリは公式の crates.io のみ。Rust 著者向けの配布経路は cargo（ソース配布・利用者に Rust ツールチェーンが必要）と mcpb（ビルド済みバイナリ・ツールチェーン不要）の 2 本立てとして整理されている。
+2. [**Cargo の所有権検証は可視テキストのトークンが必須**](./latest-detail.md#2-cargo-の所有権検証は可視テキストのトークンが必須):  
+  検証は README を HTML 化したものに `mcp-name: $SERVER_NAME` 文字列が存在するかで行われる。crates.io は markdown→HTML 変換で HTML コメントを除去するため、PyPI / NuGet で通用する `<!-- mcp-name: ... -->` の隠しコメント形式は cargo では機能しない。可視の markdown テキストとして書く必要がある。
+3. [**Enterprise Interest Group charter の本文が公開**](./latest-detail.md#3-enterprise-interest-group-charter-の本文が公開):  
+  前回は索引の 1 行だけだった charter の本文 111 行が `llms-full.txt` に収録された。認証統合・アイデンティティ伝播・監査・ゲートウェイ挙動といった領域で、企業導入時に残るプロトコルレベルの要件ギャップを問題提起と推奨にまとめ、該当 Working Group へ渡すことを中核の役割としている。
 
 ## 新規追加されたページ
 
-今回索引に増えたページは次の 1 件です。
+今回本文が収録されたページは次の 1 件です。
 
-- [**Enterprise Interest Group Charter**](./latest-detail.md#1-enterprise-interest-group-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise)):  
-  MCP Enterprise Interest Group の charter ページ。今回の差分はこのエントリ 1 行の追加だけで、本文は `llms-full.txt` に未収録のため中身は確認できない（詳細はハイライト 1 参照）。
+- [**Enterprise Interest Group Charter**](./latest-detail.md#1-enterprise-interest-group-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise#scope)):  
+  MCP Enterprise Interest Group の charter。スコープ・関連グループ・体制・運営・意思決定プロセス・成果物の各節を備え、ファシリテーター 2 名と参加者 11 名が名を連ねる。SEP の執筆自体はスコープ外で、成果は問題提起・ユースケース・推奨までとされる（ミッションの詳細はハイライト 3 参照）。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、既存ページの記述内容は変わっていません。
+本文に 50 行以上の変更があったページは次の 1 件です。
+
+- [**MCP Registry Supported Package Types**](./latest-detail.md#1-mcp-registry-supported-package-types) ([MCP Docs](https://modelcontextprotocol.io/registry/package-types#cargo-rust-packages)):  
+  Cargo（Rust）パッケージの節が新設され、51 行が追加された。対応パッケージ種別は 5 種から 6 種になり、既存 5 種の記述に変更はない（詳細はハイライト 1・2 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは索引 `llms.txt` の 1 件のみで、その内容は新規エントリ 1 行の追加（ハイライト 1 参照）に尽きます。削除行や既存エントリの書き換えはなく、索引ファイルの体裁に関する変更もないため、これとは別に挙げる軽微な更新はありません。
+上記 2 ページ以外に本文差分が出たのは 1 ページで、内容は綴り誤りの修正 1 行のみです。索引 `llms.txt` には差分が無く、エントリ件数・記載内容とも前回から変わっていません。
+
+**その他**
+
+- SEP-2549「TTL for List Results」の Security Implications 節で、`serer` という綴り誤りが `server` に修正された。置換はこの 1 語のみで、TTL のヒントとしての位置づけやクライアント側の扱いに関する記述内容は変わっていない — [MCP Docs](https://modelcontextprotocol.io/seps/2549-TTL-for-list-results#security-implications)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-26.md](./archives/latest/2026-08-26.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-26.md](./archives/latest-detail/2026-08-26.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-30.md](./archives/latest/2026-08-30.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-30.md](./archives/latest-detail/2026-08-30.md)
 
 <!--
-base_commit: 1178d4a1adaaa1829aeb0ab27ac4940eb1bd90bb
-head_commit: e1ec6a5c1026e78db9ebf5bb0158a1e894a769ad
-generated_at_full: 2026-08-31T15:28:53+09:00
+base_commit: e1ec6a5c1026e78db9ebf5bb0158a1e894a769ad
+head_commit: e91ea8c5791ff294096b4c5eb5f6e51adac7736c
+generated_at_full: 2026-09-01T15:30:01+09:00
 -->
