@@ -1,58 +1,41 @@
 ---
-対象期間: 2026年08月30日 〜 2026年08月31日
-作成日: 2026-08-31
+対象期間: 2026年08月31日 〜 2026年09月02日
+作成日: 2026-09-02
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の差分はページ本文を収める `llms-full.txt` のみで、索引 `llms.txt` には変更がありません（エントリは 349 件のまま）。内訳は追加 163 行・削除 1 行で、Cargo（Rust）パッケージ対応の追記・Enterprise Interest Group charter 本文の収録・SEP の誤字修正の 3 件です。
-
-主要なものを以下に挙げます。
-
-1. MCP Registry の対応パッケージ種別に Cargo が加わり、`server.json` で `"registryType": "cargo"` を指定できるようになった。対応レジストリは crates.io のみで、`npx` / `uvx` / `dnx` に相当する都度実行ランナーが無いため、`cargo install` で 1 回インストールした後はバイナリ名で直接起動する
-2. Cargo の所有権検証では `mcp-name:` トークンを README に可視テキストとして書く必要がある。crates.io は markdown→HTML 変換で HTML コメントを除去するため、PyPI / NuGet で使える `<!-- mcp-name: ... -->` の隠しコメント形式は cargo では通らない
-3. 前回索引にだけ現れていた Enterprise Interest Group の charter 本文が収録された。企業が MCP を本番投入する際に残るプロトコルレベルの要件ギャップを洗い出し、該当 Working Group へ渡すことを役割とする Interest Group で、SEP の執筆自体はスコープ外
+今回の対象期間の原文差分は、「MCP Apps」ページの導入段落直後に画像の埋め込みが 4 行追加されただけで、削除行はありません。索引 `llms.txt` には差分が無く（エントリは 349 件のまま）、本文の説明文・見出し構成にも変更はないため、今回取り上げるべきハイライトはありません。
 ```
 
 ## ハイライト
 
-1. [**MCP Registry が Cargo パッケージに対応**](./latest-detail.md#1-mcp-registry-が-cargo-パッケージに対応):  
-  `registry/package-types` に `## Cargo (Rust) Packages` セクションが新設され、`server.json` の `packages` で `"registryType": "cargo"` を使えるようになった。対応レジストリは公式の crates.io のみ。Rust 著者向けの配布経路は cargo（ソース配布・利用者に Rust ツールチェーンが必要）と mcpb（ビルド済みバイナリ・ツールチェーン不要）の 2 本立てとして整理されている。
-2. [**Cargo の所有権検証は可視テキストのトークンが必須**](./latest-detail.md#2-cargo-の所有権検証は可視テキストのトークンが必須):  
-  検証は README を HTML 化したものに `mcp-name: $SERVER_NAME` 文字列が存在するかで行われる。crates.io は markdown→HTML 変換で HTML コメントを除去するため、PyPI / NuGet で通用する `<!-- mcp-name: ... -->` の隠しコメント形式は cargo では機能しない。可視の markdown テキストとして書く必要がある。
-3. [**Enterprise Interest Group charter の本文が公開**](./latest-detail.md#3-enterprise-interest-group-charter-の本文が公開):  
-  前回は索引の 1 行だけだった charter の本文 111 行が `llms-full.txt` に収録された。認証統合・アイデンティティ伝播・監査・ゲートウェイ挙動といった領域で、企業導入時に残るプロトコルレベルの要件ギャップを問題提起と推奨にまとめ、該当 Working Group へ渡すことを中核の役割としている。
+（今回の対象期間に取り上げるべきハイライトはありません）
 
 ## 新規追加されたページ
 
-今回本文が収録されたページは次の 1 件です。
-
-- [**Enterprise Interest Group Charter**](./latest-detail.md#1-enterprise-interest-group-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise#scope)):  
-  MCP Enterprise Interest Group の charter。スコープ・関連グループ・体制・運営・意思決定プロセス・成果物の各節を備え、ファシリテーター 2 名と参加者 11 名が名を連ねる。SEP の執筆自体はスコープ外で、成果は問題提起・ユースケース・推奨までとされる（ミッションの詳細はハイライト 3 参照）。
+（今回の対象期間に新規追加されたページはありません）
 
 ## 大幅に更新されたページ
 
-本文に 50 行以上の変更があったページは次の 1 件です。
-
-- [**MCP Registry Supported Package Types**](./latest-detail.md#1-mcp-registry-supported-package-types) ([MCP Docs](https://modelcontextprotocol.io/registry/package-types#cargo-rust-packages)):  
-  Cargo（Rust）パッケージの節が新設され、51 行が追加された。対応パッケージ種別は 5 種から 6 種になり、既存 5 種の記述に変更はない（詳細はハイライト 1・2 参照）。
+（今回の対象期間に大幅更新されたページはありません）
 
 ## 軽微な更新
 
-上記 2 ページ以外に本文差分が出たのは 1 ページで、内容は綴り誤りの修正 1 行のみです。索引 `llms.txt` には差分が無く、エントリ件数・記載内容とも前回から変わっていません。
+本文差分が出たのは 1 ページのみで、内容は図の埋め込み 1 か所の追加です。
 
-**その他**
+**機能改善**
 
-- SEP-2549「TTL for List Results」の Security Implications 節で、`serer` という綴り誤りが `server` に修正された。置換はこの 1 語のみで、TTL のヒントとしての位置づけやクライアント側の扱いに関する記述内容は変わっていない — [MCP Docs](https://modelcontextprotocol.io/seps/2549-TTL-for-list-results#security-implications)
+- 「MCP Apps」ページで、導入段落（「Text responses can only go so far.」で始まる、MCP Apps がデータ可視化・フォーム・ダッシュボードといった対話的な HTML インターフェースをチャット内に直接描画できることを述べた 3 行）の直後に、`<Frame>` で囲んだ画像の埋め込みが追加されました。alt テキストは「An Excalidraw MCP App drawing a sequence diagram inside a Claude conversation」で、Excalidraw の MCP App が Claude の会話の中でシーケンス図を描いている様子を示す図です。文章で説明していた「会話の中に描画される対話的 UI」を、直後に実例の図で見せる構成になりました。挿入位置は最初の見出し `## Why not just build a web app?` の手前で、追加は 4 行・削除は 0 行、既存の説明文や見出し構成には一切変更がありません — [MCP Apps - MCP Docs](https://modelcontextprotocol.io/extensions/apps/overview)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-30.md](./archives/latest/2026-08-30.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-30.md](./archives/latest-detail/2026-08-30.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-08-31.md](./archives/latest/2026-08-31.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-31.md](./archives/latest-detail/2026-08-31.md)
 
 <!--
-base_commit: e1ec6a5c1026e78db9ebf5bb0158a1e894a769ad
-head_commit: e91ea8c5791ff294096b4c5eb5f6e51adac7736c
-generated_at_full: 2026-09-01T15:30:01+09:00
+base_commit: e91ea8c5791ff294096b4c5eb5f6e51adac7736c
+head_commit: 2667e8110b59c2cec8b85dd866ec8f529a5fa572
+generated_at_full: 2026-09-03T15:36:12+09:00
 -->
