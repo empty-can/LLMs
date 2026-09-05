@@ -20,8 +20,18 @@ Skill 単体の仕様は `.claude/skills/update-official-doc-summary/README.md` 
           ※ DryRun / 生成失敗 / レビュー打ち切り 時は push 抑止
                   │
                   ▼
-  人手レビュー → bot → main へマージ（= 品質ゲート）
+  人手レビュー → anchor タグ到達性チェック → bot → main へマージ（= 品質ゲート）
 ```
+
+> **⚠ `main` へのマージは必ず merge で行う（rebase / squash 禁止）。** 外部文書が出典として引用している commit（ローカルの `anchor/*` タグが指す）に加え、本リポジトリの生成サマリのフッタ `base_commit` / `head_commit` も過去の commit を指しているため、履歴を書き換えると双方の参照が壊れる。**`anchor/*` タグはローカル限定で push しない**運用なので、リモート履歴を書き換えない規律が唯一の保全策である。マージ前に到達性を確認する:
+>
+> ```bash
+> for t in $(git tag -l 'anchor/*'); do
+>   git merge-base --is-ancestor "$t" HEAD || { echo "到達不能: $t"; exit 1; }
+> done
+> ```
+>
+> 詳細は `.claude/CLAUDE.md` の §タグ運用ルール。
 
 **設計の要点**: Claude の実行領域を最大化しつつ、品質は「セルフレビュー（Phase 1/2）→ 第三者
 Agent（Sonnet, Phase 3）→ 人間（main へのマージ）」の 3 層で担保する。生成は Opus、レビューは
@@ -137,3 +147,4 @@ pwsh -NoProfile -File .claude\scripts\register-doc-summary-task.ps1 -At 15:00
 - Skill 仕様: `.claude/skills/update-official-doc-summary/README.md`
 - 第三者レビューア: `.claude/agents/doc-summary-reviewer.md`
 - ブランチ運用ルール: `.claude/CLAUDE.md`（`main`（公開）＋ `bot/doc-summary`（bot push 先）、bot → 人手レビュー → main マージ）
+- タグ運用ルール: `.claude/CLAUDE.md` §タグ運用ルール（`anchor/*` = 外部文書が引用している断面の保全。**リモートへ push 厳禁・ローカル限定**、移動と履歴書き換えは禁止、削除は「引用元文書のアンカー更新と対で行う場合」のみ可）
