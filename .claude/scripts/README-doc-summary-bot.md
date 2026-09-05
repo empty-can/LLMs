@@ -23,15 +23,16 @@ Skill 単体の仕様は `.claude/skills/update-official-doc-summary/README.md` 
   人手レビュー → anchor タグ到達性チェック → bot → main へマージ（= 品質ゲート）
 ```
 
-> **⚠ `main` へのマージは必ず merge で行う（rebase / squash 禁止）。** 外部文書が出典として引用している commit（ローカルの `anchor/*` タグが指す）に加え、本リポジトリの生成サマリのフッタ `base_commit` / `head_commit` も過去の commit を指しているため、履歴を書き換えると双方の参照が壊れる。**`anchor/*` タグはローカル限定で push しない**運用なので、リモート履歴を書き換えない規律が唯一の保全策である。マージ前に到達性を確認する:
+> **⚠ `main` への合流は生の git コマンドではなく合流スクリプトで行う。**
 >
-> ```bash
-> for t in $(git tag -l 'anchor/*'); do
->   git merge-base --is-ancestor "$t" HEAD || { echo "到達不能: $t"; exit 1; }
-> done
+> ```powershell
+> pwsh -NoProfile -File .claude/scripts/merge-bot-to-main.ps1 -DryRun   # 検証のみ
+> pwsh -NoProfile -File .claude/scripts/merge-bot-to-main.ps1           # fast-forward マージ実行
 > ```
 >
-> 詳細は `.claude/CLAUDE.md` の §タグ運用ルール。
+> 外部文書が出典として引用している commit（ローカルの `anchor/*` タグが指す）に加え、本リポジトリの生成サマリのフッタ `base_commit` / `head_commit` も過去の commit を指しているため、**履歴を書き換えると双方の参照が壊れる**。`anchor/*` タグはローカル限定で push しない運用なので、リモート履歴を書き換えない規律が唯一の保全策であり、スクリプトは `--ff-only` 固定でその規律を強制する（`main` が先行して fast-forward できない場合は中止し、人の判断に委ねる）。push は行わないので、完了後に表示されるコマンドを人が実行する。
+>
+> 検証項目の一覧と、タグ運用の詳細は `.claude/CLAUDE.md` の §タグ運用ルール。
 
 **設計の要点**: Claude の実行領域を最大化しつつ、品質は「セルフレビュー（Phase 1/2）→ 第三者
 Agent（Sonnet, Phase 3）→ 人間（main へのマージ）」の 3 層で担保する。生成は Opus、レビューは
@@ -45,6 +46,7 @@ Sonnet とモデルを分けて確証バイアスを抑える。`main` へは構
 | `.claude/scripts/run-doc-summary.ps1` | 中核ラッパー。dl→生成→commit→bot 限定 push を無人実行 |
 | `.claude/scripts/register-doc-summary-task.ps1` | タスクスケジューラへの日次登録ヘルパー |
 | `.claude/scripts/notify-bot-branch.sh` | SessionStart で「bot に未確定生成あり」を通知（異常系の後追い検出） |
+| `.claude/scripts/merge-bot-to-main.ps1` | bot→main 合流。アンカー保全チェック 8 項目 ＋ `--ff-only` 固定。push はしない |
 | `.claude/agents/doc-summary-reviewer.md` | Phase 3 の第三者レビューア（Sonnet, read-only） |
 | `.claude/skills/update-official-doc-summary/` | 生成本体の Skill（Phase 3 ループ込み） |
 

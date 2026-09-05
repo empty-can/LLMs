@@ -143,21 +143,32 @@ git tag -a anchor/<YYYY-MM-DD> <commit> -F <メッセージファイル>
 
 `main` へのマージ前後、および履歴に触れる操作の後に実行する。
 
-```bash
-# 1. タグが消えていないか（削除は厳禁。本数は「現行の anchor タグ」表と一致すること）
-EXPECTED=3
-n=$(git tag -l 'anchor/*' | wc -l)
-[ "$n" -eq "$EXPECTED" ] || { echo "anchor タグ本数が不正: ${n}（期待 ${EXPECTED}）"; exit 1; }
+**`bot/doc-summary` → `main` の合流は、生の git コマンドではなく合流スクリプトで行う。** 検証の実施漏れを構造的に防ぐため。
 
-# 2. 各タグが現在の履歴から到達可能か
-for t in $(git tag -l 'anchor/*'); do
-  git merge-base --is-ancestor "$t" HEAD || { echo "到達不能: $t"; exit 1; }
-done
+```powershell
+# 検証のみ（分岐状態の確認にも使える）
+pwsh -NoProfile -File .claude/scripts/merge-bot-to-main.ps1 -DryRun
+
+# 実行（fast-forward マージのみ。push はしない）
+pwsh -NoProfile -File .claude/scripts/merge-bot-to-main.ps1
 ```
 
-> **本数チェックを省略しないこと。** タグを消してしまった場合、到達性ループは対象ゼロで素通りし「異常なし」に見えてしまう。アンカーを追加したら `EXPECTED` も更新する。
+スクリプトが実施する検証は次のとおり。**上記「現行の anchor タグ」表を正本として読み**、表・タグ・blob の三者一致を検証する（`EXPECTED` のような本数定数をスクリプト側に持たないので、表を更新するだけで追随する）。
+
+| # | 検証 | 中止する条件 |
+|---|---|---|
+| 1 | 表からアンカー定義を読む | 1 件も読めない（＝表の書式が変わった。**素通りさせない**） |
+| 2 | タグ本数の照合 | 表の件数と実タグ本数が不一致 |
+| 3 | タグ ⇔ commit ⇔ blob の一致 | タグ欠落／注釈タグでない／指す commit が表と違う（付け替え）／blob が表と違う |
+| 4 | 作業ツリー（tracked のみ） | 未コミットの変更あり |
+| 5 | リモートのタグ漏れ | `origin` に `anchor/*` が存在 |
+| 6 | `push.followTags` | 有効（後続の push がタグを巻き込むため） |
+| 7 | 分岐状態 | `main` が `bot/doc-summary` より先行（fast-forward 関係の破綻） |
+| 8 / 10 | マージ前後の到達性 | いずれかのアンカーが到達不能 |
+
+> **本数チェックを到達性チェックより前に置いている理由**: タグを消してしまった場合、到達性ループは対象ゼロで素通りし「異常なし」に見えてしまうため。
 >
-> 将来 `bot/doc-summary` → `main` の合流をスクリプト化する際は、この 2 つを合流スクリプトの事前チェックとして組み込む。
+> スクリプトは **`--ff-only` 固定**で、`--no-ff` や `--squash` を提供しない。真のマージが要る状況（`main` が先行している場合）は中止して人の判断に委ねる。**push も行わない**（`run-doc-summary.ps1` と同じく「`main` へは構造的に push しない」設計を維持し、実行すべきコマンドを表示するに留める）。
 
 ### 強制力の限界
 
@@ -226,6 +237,7 @@ LLMs/  (= リポジトリルート)
 │       ├── run-doc-summary.ps1             # 無人実行ラッパー（dl→生成→Phase3→commit→bot push）
 │       ├── dl_llms.sh / download_list.tsv  # 公式 llms.txt 取得
 │       ├── notify-bot-branch.sh            # SessionStart 通知
+│       ├── merge-bot-to-main.ps1           # bot→main 合流（アンカー保全チェック付き・--ff-only 固定・push しない）
 │       ├── register-doc-summary-task.ps1   # スケジューラ登録ヘルパー
 │       └── README-doc-summary-bot.md       # 運用手順の集約
 ├── official-llms-txts/                     # 入力（ナビは同 dir の README.md。CLAUDE.md は置かない）
