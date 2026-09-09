@@ -1,51 +1,75 @@
 ---
-対象期間: 2026年08月31日 〜 2026年09月02日
-作成日: 2026-09-02
+対象期間: 2026年09月02日 〜 2026年09月08日
+作成日: 2026-09-08
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の原文差分は、「MCP Apps」ページの導入段落直後に画像の埋め込みが 4 行追加されただけで、削除行はありません。索引 `llms.txt` には差分が無く（エントリは 349 件のまま）、本文の説明文・見出し構成にも変更はないため、今回取り上げるべきハイライトはありません。
+今回の対象期間の差分は、新設された Working Group の charter ページ 1 件の追加に尽きます。索引 `llms.txt` に 1 行、本文を収める `llms-full.txt` に 119 行が加わり、削除行は 0 行です。既存ページの記述には 1 行の変更もありません。
+
+主要なものを以下に挙げます。
+
+1. Resources を読み取り専用から双方向へ広げることを掲げた Filesystems Working Group の charter が追加された。create / update / delete と、本文を取得せずに存在・サイズ・最終更新を返すメタデータ読み取り `stat` を Extensions Track の SEP 1 本にまとめる方針で、楽観的並行性制御と、書き込みが `notifications/resources/updated`・`ttlMs`・`cacheScope`・`lastModified` とどう噛み合うかまでを射程に含む
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-（今回の対象期間に取り上げるべきハイライトはありません）
+1. [**Resources を双方向化する Filesystems Working Group の charter が追加**](#1-resources-を双方向化する-filesystems-working-group-の-charter-が追加):  
+  MCP Resources を読み取り専用から書き込み可能へ広げることを狙う新 Working Group の charter が収録された。エージェントが入力を読んだのと同じサーバーへ結果を書き戻せるようにするのが目的で、成果物は Extensions Track の SEP 1 本。Resources と並ぶ `files/*` プリミティブを別に立てる案（SEP-1708 が提案し 2026年01月23日 にクローズ済み）は明確に対象外とされ、あくまで Resources の拡張として進む。今回の差分はこのページの追加だけで、索引のエントリは 349 件から 350 件になった。
 <!-- light:highlight-list:end -->
+
+## 1. Resources を双方向化する Filesystems Working Group の charter が追加
+
+今回の対象期間で入力に生じた変更は、`community/working-groups/filesystems` の charter ページ 1 件の追加のみです。索引 `llms.txt` にエントリ 1 行、本文を収める `llms-full.txt` に 119 行が加わり、削除は 0 行でした。`llms-full.txt` の総行数は 42,346 行から 42,465 行、収録ページ数は 147 件から 148 件になっています。charter 自身の変更履歴には「2026年08月24日 Initial charter」の 1 行だけが記載されていますが、これは charter 文書上の日付であり、公式サイトへの掲載時期そのものを示すものではありません。今回の入力から確実に言えるのは、このページが本対象期間の断面で初めて取り込まれたということです。
+
+このグループが掲げるミッションは、**MCP Resources を双方向にする**こと ―― エージェントが入力を読み取ったのと同じサーバーへ、結果を書き戻せるようにすることです。charter はその根拠として、エージェント基盤がサービスをモデルに対してファイルシステムとして提示する方向へ収束しつつある一方、Resources は既に URI で内容を指す仕組みを持ち、その `file://` スキームを仕様が「ファイルシステムのように振る舞うリソースを識別する」ものと定義している点を挙げます（この記述は `specification/2026-07-28/server/resources` の `file://` 節として既に収録済みです）。つまり素地は揃っているが、現状の Resources はその面を**読み取り方向でしか担っていない**、という整理です。作業の成果物は Extensions Track の SEP 1 本に絞られ、書き込み操作・楽観的並行性制御・変更通知およびキャッシュとの相互作用の 3 点を 1 つの設計としてまとめる計画になっています。
+
+- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#mission-statement)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-（今回の対象期間に新規追加されたページはありません）
+今回索引に増えたページは次の 1 件です。
+
+- [**Filesystems Charter**](#1-filesystems-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems)):  
+  MCP Filesystems Working Group の charter ページ。Resources への書き込み操作（create / update / delete / `stat`）と楽観的並行性制御、変更通知・キャッシュとの噛み合わせを 1 本の Extensions Track SEP にまとめることを目標に掲げる。索引・本文とも今回の差分で同時に追加された。
 <!-- light:new-pages:end -->
+
+## 1. Filesystems Charter
+
+索引に追加されたのはタイトル `Filesystems Charter`・パス `community/working-groups/filesystems`・説明文「Charter for the MCP Filesystems Working Group.」の 1 行で、挿入位置は `File Uploads Charter` と `Inspector V2 Working Group Charter` の間、既存エントリと同じアルファベット順の並びです。これで索引のエントリ行数は 349 件から 350 件、ユニーク URL は 344 件から 345 件になり、`community/working-groups/` 配下の charter は 10 件から 11 件に増えました。直近では、索引にエントリだけが載り本文が遅れて収録される「索引が先・本文が後」の追加が続いていました（Enterprise Interest Group Charter が索引のみで追加された 2026年08月30日 作成分など）が、今回は索引エントリと本文 119 行が同じ断面で揃って入っています。
+
+スコープの中身は具体的です。対象内とされたのは、暫定名「Filesystem Operations for Resources」の Extensions Track SEP 1 本で、①create / update / delete に加え、本文を取得せずに 1 つの URI の存在・サイズ・最終更新を答えるメタデータ読み取り `stat` を定義すること、②2 人の書き手が更新を失わないようにする方法と、クライアントが「存在しなければ作成する」という事前条件でリソースを作る方法を定める楽観的並行性制御、③書き込みが `notifications/resources/updated`、生存期間とキャッシュ範囲を表す `ttlMs`・`cacheScope`、および `lastModified` アノテーションとどう相互作用するかの規定 ―― の 3 点です。これらのフィールド名はいずれも既存の仕様側で使われている用語で、新語の導入ではなく既存機構への接続として書かれています。あわせて、サーバー実装者がリソースへの書き込み経路とツールベースの経路のどちらを選ぶべきかの指針を文書化することも挙げられています。対象外として明示されたのは、Resources と並び立つ `files/*` プリミティブを別に立てること、ホスト側のサンドボックスやローカルディスクの意味論（リソースをモデル向けにどうファイルシステムとして実体化するかはホストの領分とする）、および書き込みに関する認可ポリシー（既存の MCP 認可仕様がどこに適用されるかを述べるにとどめる）の 3 点です。
+
+既存提案の交通整理も明確に役割として書かれています。`resources/create` と `resources/delete` を提案する SEP-2571（Resource Submission for Agent Coordination）、`resources/stream` を提案する SEP-2532（Resource Streaming for Binary Content Delivery）、そして Resources と並ぶ `files/*` メソッド群を提案し 2026年01月23日 にクローズした SEP-1708（MCP Client-Brokered Filesystem Access）が名指しされ、この領域に散らばった提案を 1 つの整合した設計に収斂させるとしています。実際、グループの最初の行動は「SEP-2571 を著者とともに引き取ること」と定められており、既に create と delete を扱っている点がその理由として挙げられています。なお `SEP-2571`・`SEP-2532`・`SEP-1708` および `resources/create`・`resources/stream` という文字列は、今回の入力全体を見てもこの charter ページの中にしか現れません。これらの提案自体はまだ公式ドキュメントの本文に反映されておらず、内容を追うには charter が張るリポジトリ上のリンクをたどる必要があります。
+
+体制面では、リードが Sambhav Kothari 氏（Bloomberg・[@sambhav](https://github.com/sambhav)）、Ola Hungerford 氏（Nordstrom・[@olaservo](https://github.com/olaservo)）、Daniel Temesgen 氏（Bloomberg・[@DanielTemesgen](https://github.com/DanielTemesgen)）の 3 名で、いずれも任期は Initial です。WG メンバーとして Michael Cheah 氏（Bloomberg・[@michaelcheah](https://github.com/michaelcheah)）が 1 名登録されています。会合は隔週 60 分の Working Session、Discord チャンネルは `#filesystems-wg` で、この頻度は最初の会合で決まるまでの暫定値である旨が注記されています。成功基準としては、create / update / delete / `stat` を扱い並行性制御と通知・キャッシュとの相互作用を定めた SEP が受理されること、SEP-2571 と SEP-2532 が取り込み・置き換え・スコープ外のいずれかで決着すること、Tier 1 SDK の少なくとも 2 つで参照実装が出ること、独立した 2 つのサーバー実装が共通のクライアントに対して書き込み経路を通すことの 4 点が挙げられています。関連グループとしては、内容をサーバーへ送る点で重なる File Uploads WG、charter が「ファイルシステム依存（書き込みアクセスの可否を含む）が 2026年03月24日 のオフィスアワーで議題に上がり未解決のまま」と記す Skills Over MCP WG、そして共有された書き込み経路の主たる需要元と位置づけられる Agents WG の 3 つが挙がっています。
+
+- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#scope)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-（今回の対象期間に大幅更新されたページはありません）
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。`llms-full.txt` の差分 119 行はすべて新規ページ 1 件の追加によるもので、既存ページの本文には追加・削除とも 1 行もありません。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-本文差分が出たのは 1 ページのみで、内容は図の埋め込み 1 か所の追加です。
-
-**機能改善**
-
-- 「MCP Apps」ページで、導入段落（「Text responses can only go so far.」で始まる、MCP Apps がデータ可視化・フォーム・ダッシュボードといった対話的な HTML インターフェースをチャット内に直接描画できることを述べた 3 行）の直後に、`<Frame>` で囲んだ画像の埋め込みが追加されました。alt テキストは「An Excalidraw MCP App drawing a sequence diagram inside a Claude conversation」で、Excalidraw の MCP App が Claude の会話の中でシーケンス図を描いている様子を示す図です。文章で説明していた「会話の中に描画される対話的 UI」を、直後に実例の図で見せる構成になりました。挿入位置は最初の見出し `## Why not just build a web app?` の手前で、追加は 4 行・削除は 0 行、既存の説明文や見出し構成には一切変更がありません — [MCP Apps - MCP Docs](https://modelcontextprotocol.io/extensions/apps/overview)
+今回差分が出たファイルは索引 `llms.txt` と本文 `llms-full.txt` の 2 件ですが、その内容はいずれも新規ページ 1 件の追加（新規追加されたページ 1 参照）に尽きます。既存エントリの書き換え・リンク先の変更・字句修正はなく、これとは別に挙げる軽微な更新はありません。
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-08-31.md](./archives/latest/2026-08-31.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-08-31.md](./archives/latest-detail/2026-08-31.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-02.md](./archives/latest/2026-09-02.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-02.md](./archives/latest-detail/2026-09-02.md)
 
 <!--
-base_commit: e91ea8c5791ff294096b4c5eb5f6e51adac7736c
-head_commit: 2667e8110b59c2cec8b85dd866ec8f529a5fa572
-generated_at_full: 2026-09-03T15:36:12+09:00
+base_commit: 2667e8110b59c2cec8b85dd866ec8f529a5fa572
+head_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
+generated_at_full: 2026-09-09T15:27:42+09:00
 -->
