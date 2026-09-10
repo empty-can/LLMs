@@ -1,81 +1,147 @@
 ---
-対象期間: 2026年09月05日 〜 2026年09月08日
-作成日: 2026-09-08
+対象期間: 2026年09月08日 〜 2026年09月09日
+作成日: 2026-09-09
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-今回は 3 回ぶんの定期取り込みをまとめた差分ですが、**`llms-full.txt` は 1 バイトも変わっていません**（blob が前回と同一）。差分はページ見出しマップの 19 行（追加 10・削除 9）と `llms.txt` の 4 行だけで、**ページ本文は 1 行も届いていません**。したがって今回わかるのは「見出しの構造が変わったこと」と「ページのタイトルが変わったこと」までで、その中身は次回以降の本文到着を待つことになります。前回が「見出しだけ先に来ていた 7 件に本文が全部追いついた回」だったのに対し、今回はその正反対で、**新たな持ち越しだけが積まれた回**です。持ち越しは見出しで数えて 11 件（移動 1・追加 3・削除 2・改称 5）、これにページタイトルの変更 2 件が加わります。ページの新規追加・削除はなく、`whats-new/` は 6 回連続で差分がありません。
+前回が「見出しだけが先に届いて本文がゼロだった回」だったのに対し、今回はその**本文が全部到着した回**です。前回の持ち越し 13 件（見出し 11・ページタイトル 2）はひとつ残らず本文が書かれ、あわせて **v2.1.265 という大型リリース（約 50 項目）と、その回帰を同日に潰した v2.1.266** が changelog に載りました。差分は 3 ファイル・481 行、本文が変わったページは 33 / 191 で、`llms-full.txt` は 93,967 行から 93,952 行へわずかに縮んでいます。一方で**新しい持ち越しも 40 件積まれました**（前回の 11 件から大幅増）。その大半はエラーリファレンスの 16 件と、管理設定から MCP サーバーを配る仕組みの 9 件です。ページの新規追加・削除はなく、`whats-new/` は 7 回連続で差分がありません。
 
 主要なものを以下に挙げます。
 
-1. 「出力スタイルの変更」が、キャッシュを保持する操作の側から無効にする操作の側へ移った
-2. スキルのページに「スキルの読み込み先を選ぶ」節が新設され、配下が全面的に改称された
-3. 設定ページと設定リファレンスのタイトルが入れ替わり、`All settings` がページタイトルへ移った
-4. セッションのページに「セッションデータの削除」の節が新設された
+1. 出力スタイルの変更が、セッション途中でも次のメッセージから効くようになった（前回の宿題に答えが出た）
+2. v2.1.265 が約 50 項目の大型リリースとして載り、同日の v2.1.266 がその回帰を潰した
+3. スキルのページが「どこに置くと、どのセッションで読み込まれるか」を軸に書き直された
+4. `/model` ピッカーが、ピン留めした ID を認識できればモデル名で表示するようになった
+5. 管理設定で MCP サーバーを配る `managedMcpServers` が Claude Desktop 限定から Claude Code へ広がることを示唆する見出しが届いた
 ```
 
 ## ハイライト
 
-1. [**出力スタイルの変更がキャッシュ無効化の側へ移った**](./latest-detail.md#1-出力スタイルの変更がキャッシュ無効化の側へ移った):  
-  見出しマップ上で `Changing output style` が **`Actions that keep the cache`（キャッシュを保持する操作）から `Actions that invalidate the cache`（キャッシュを無効にする操作）へ移動**した。ただし本文は届いておらず、現行の `llms-full.txt` は依然として「セッション途中で変えてもキャッシュは無効にならないが、変更も適用されない」と述べている。**分類が反転した以上この記述は書き換わるはずだが、どう変わるかは本文が来るまで判断できない**。
-2. [**スキルの読み込み先を選ぶ節が新設され配下が全面改称された**](./latest-detail.md#2-スキルの読み込み先を選ぶ節が新設され配下が全面改称された):  
-  「はじめに」の配下にあった h3 `Where skills live` が、**h2 `Choose where skills load` として 1 段階昇格**した。配下の 4 節はいずれも `Load skills in…` `Use skills in…` のような**動詞始まりの名前に改称**され、**`Resolve skills that share a name` と `Edit a skill during a session` の 2 節が新設**、**`Live change detection` が見出しから消えた**。今回の見出し差分 17 行のうち 11 行がこのページに集中している。
-3. [**設定ページと設定リファレンスのタイトルが入れ替わった**](./latest-detail.md#3-設定ページと設定リファレンスのタイトルが入れ替わった):  
-  `llms.txt` 上で `settings` のタイトルが `Claude Code settings` から **`Settings files and precedence`** に、`settings-reference` のタイトルが `Claude Code settings reference` から **`All settings`** になった。あわせて **`settings-reference` の先頭 h2 だった `All settings` は `Settings index` に改称**されており、`All settings` という呼称が節からページへ繰り上がった形になっている。
-4. [**セッションデータの削除の節が新設された**](./latest-detail.md#4-セッションデータの削除の節が新設された):  
-  セッションのページの `Export and locate session data`（セッションデータの書き出しと在り処）配下に、**`Delete session data` の節**が `Where transcripts are stored` と `Name the project directory yourself` の間へ挿入された。現行本文にこの節は無く、**削除の手段・対象・取り消し可否はいずれも未着**である。
+1. [**出力スタイルの変更がセッション途中で効くようになった**](./latest-detail.md#1-出力スタイルの変更がセッション途中で効くようになった):  
+  前回「分類だけが `Actions that keep the cache` から `Actions that invalidate the cache` へ移り、本文が追いついていない」と報告した件の**本文が到着**した。**`/config` や `outputStyle` でセッション途中に切り替えると、次のメッセージから新しいスタイルが適用され、その 1 回だけ会話履歴全体がキャッシュなしで読み直される**。**v2.1.251 より前は、キャッシュは保たれる代わりに変更も適用されなかった**。プロンプトキャッシング・出力スタイル・設定リファレンス・設定ファイルの 4 ページが揃って書き換わっている。
+2. [**v2.1.265 の大型リリースと同日の v2.1.266 ホットフィックス**](./latest-detail.md#2-v21265-の大型リリースと同日の-v21266-ホットフィックス):  
+  changelog に **57 行が追加**され、うち 55 行が **v2.1.265（2026年09月08日）の約 50 項目**。プロンプトキャッシュ再利用の修正が 3 件、プラグインの安全性・表示の修正が 5 件、Claude apps gateway 関連が 4 件と、範囲が広い。**同じ 2026年09月08日付の v2.1.266 は 1 項目だけで、v2.1.265 が入れてしまった回帰の修正**である ―― 未文書化の `CLAUDE_CODE_USE_GATEWAY` が単独で Cloud gateway サインインを強制するようになり、API キーや `apiKeyHelper` と併用していた構成が全リクエスト失敗していた。**なお v2.1.264 の項は changelog にない**。
+3. [**スキルのページが読み込み先を軸に書き直された**](./latest-detail.md#3-スキルのページが読み込み先を軸に書き直された):  
+  前回予告された構造変更の本文が届き、**今回唯一の大幅更新**（実質 115 行）になった。h3 `Where skills live` は **h2 `Choose where skills load` へ昇格**し、置き場所の表が **4 行から 7 行へ拡張**（ネスト・追加ディレクトリ・claude.ai アカウントが行として独立）。**名前衝突の解決は 6 行の表を持つ独立節に切り出され**、`Live change detection` は `Edit a skill during a session` に改称された。一方で `strictPluginOnlyCustomization` の 3 分類や `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD` の説明は**他ページへのポインタに畳まれ、正味 25 行減っている**。
+4. [**`/model` ピッカーがピン留めしたモデルを名前で表示するようになった**](./latest-detail.md#4-model-ピッカーがピン留めしたモデルを名前で表示するようになった):  
+  従来「サードパーティプロバイダーでピン留めすると、プロバイダー固有の ID がそのまま表示される」と書かれていた挙動が、**「Claude Code が ID を認識できればモデル名、できなければ生の ID」へ改められた**。`us.anthropic.claude-sonnet-4-5-20250929-v1:0` をピン留めすると行は `Sonnet 4.5` と読める。**Microsoft Foundry はデプロイメント名がユーザー定義なので、`modelOverrides` でマップしても認識されない**という例外も明記された。環境変数リファレンス側でも `_NAME` / `_DESCRIPTION` 系 9 行が同じ内容に揃えられている。
+5. [**管理設定で MCP サーバーを配る仕組みが Claude Code へ広がる**](./latest-detail.md#5-管理設定で-mcp-サーバーを配る仕組みが-claude-code-へ広がる):  
+  組織の MCP 制御ページに、**新しい h2 `Provide servers through managed settings` と配下 5 節、既存 h2 配下の 3 節、計 9 見出しが見出しマップに現れた**。`llms.txt` の同ページ説明文も「ユーザーが追加・接続できる MCP サーバーを制限する」から**「制限する、あるいは全ユーザーにサーバーを提供する」へ書き換えられている**。**`managedMcpServers` という設定自体は v2.1.259（2026年09月02日）で既に出荷済み**だが、**現行ドキュメントではサードパーティ Claude Desktop デプロイ限定**で、Claude apps gateway の設定リファレンスは今も「ポリシーの `cli` ブロック内の `mcpServers` はブート時に拒否する ―― グループ単位で Claude Code クライアントへ MCP サーバーを配布することはできない」と明記している。**今回の見出しは、この制限が Claude Code 側にも開かれることを示唆する**が、**本文は 5 節とも未着**である。
 
 ## 新規追加されたページ
 
-（今回の対象期間に新規追加・削除されたドキュメントページはありません。`llms.txt` の収録 URL は 202 件・全体 355 行のままで、差分はページタイトル 2 行のみです。`llms-full.txt` は前回と blob が同一のため、展開ページ数も 191 のまま動いていません）
+（今回の対象期間に新規追加・削除されたドキュメントページはありません。`llms.txt` の収録 URL は 202 件・全体 355 行のままで、差分はページ説明文 1 行のみです。`llms-full.txt` の展開ページ数も 191 のまま動いていません。ただし**見出しマップには 40 件の見出し変更が入っており、うち 39 件は本文がまだ無い持ち越し**です。詳細は「軽微な更新」を参照してください）
 
 ## 大幅に更新されたページ
 
-（本カテゴリの該当はありません。分類の基準は前回同様「実質の差分 50 行以上 かつ 内容の変更を伴うこと」ですが、**今回は `llms-full.txt` が完全に無差分**で、本文が 1 行も変わったページがありません。見出しの変更が最も多いスキルのページでも 11 行です）
+- [**スキル**](./latest-detail.md#1-スキル) ([English](https://code.claude.com/docs/en/skills#where-skills-live)):  
+  前回予告された構造変更の本文が到着し、置き場所の表が 7 行に拡張され、名前衝突の解決が独立した節に切り出された。**今回「実質の差分 50 行以上 かつ 内容の変更を伴うこと」を満たす唯一のページ**（実質 115 行 = 追加 45・削除 70。桁揃えや空要素のノイズはなし）。内容はハイライト 3 で詳述。
 
 ## 軽微な更新
 
-今回の差分は **2 ファイル・23 行**です。内訳はページ見出しマップ（`en/claude_code_docs_map.md`）が 19 行（追加 10・削除 9）、`llms.txt` が 4 行（追加 2・削除 2）で、**`llms-full.txt` は前回と blob が同一**（`a399f1b3…`）―― 総行数 93,967 行・展開ページ数 191 のいずれも動いていません。見出しマップの 19 行のうち 2 行は先頭の自動生成スタンプ（2026年09月05日 04時30分57秒 UTC → 2026年09月08日 19時23分06秒 UTC）なので、**見出しそのものの変更は 17 行（追加 9・削除 8）**になります。
+今回の差分は **3 ファイル・481 行**（追加 252・削除 229）です。内訳は `llms-full.txt` が 437 行（追加 211・削除 226）、ページ見出しマップ（`en/claude_code_docs_map.md`）が 42 行（追加 40・削除 2）、`llms.txt` が 2 行（追加 1・削除 1）。`llms-full.txt` の総行数は **93,967 行から 93,952 行へ 15 行縮み**、展開ページ数は 191 のままです。見出しマップの 2 行は先頭の自動生成スタンプ（2026年09月08日 19時23分06秒 UTC → 2026年09月09日 22時56分21秒 UTC）なので、**見出しそのものの変更は 40 行（追加 39・削除 1）**になります。
 
-今回の差分は**前回の起点から 3 回ぶんの定期取り込みを束ねたもの**ですが、**中間の 2 回は取得結果が前回と完全に同一**で、コミットもサマリ生成も発生していません（実行ログもいずれも「原文差分なし、生成スキップ」で終わっています）。見出しマップのスタンプが最後の 1 回の直前まで進んでいないことも、この 2 回が実際に無差分だったことと整合します。**したがって「取り込みが飛んだ 2 日ぶんの変更を取りこぼしている」という状態ではありません**が、その 2 日のあいだに変更されて元に戻された内容があれば、集約された差分には現れない点は原理的な限界として残ります。
+本文が変わったページは **33 / 191**、見出しマップが変わったページは **13** です。**前回の持ち越し 13 件（見出し 11 件・ページタイトル 2 件）は、ひとつ残らず本文が到着しました** ―― 出力スタイルのキャッシュ分類（ハイライト 1）、スキルのページの構造変更 5 件と新設 2 件・削除 1 件（ハイライト 3）、セッションデータの削除節、設定ページ 2 つのタイトル、デスクトップアプリのクイックスタートからの h2 削除です。**前回はゼロから積み直した回でしたが、今回はそれを全部消化したうえで 40 件を新たに積んだ**ことになります。
 
-差分のあったページは **6 ページ**（プロンプトキャッシング / スキル / セッション / 設定リファレンス / 設定 / デスクトップアプリのクイックスタート）で、**閾値に届くページは 1 つもなく、全件が軽微更新**です。ただし**いずれも本文が伴っていない ―― 次回以降に本文が届くのを待つ持ち越し**である点に注意してください。**持ち越しを見出しの単位で数えると 11 件**（移動 1・追加 3・削除 2・改称 5）で、これに `llms.txt` のページタイトル変更 2 件が加わります。**前回サマリの時点では持ち越しが 0 件だった**ので、今回はゼロから積み直した形になります。
-
-なお **changelog ページには今回の差分がありません**（`llms-full.txt` が無差分であるため）。したがって上記の変更はいずれも、**リリースノートに現れる前に見出しの構造だけが先行して届いたもの**です。バージョンの対応づけは今回の差分からは行えません。
+**changelog に載ったのは v2.1.265 と v2.1.266 の 2 リリース**（どちらも原文の日付表記は 2026年09月08日）です。下記の分類では、**changelog 由来の項目には版を併記**しています。**changelog にしか記述がない項目には参考リンクを付けていません**（本サマリは changelog ページの URL を参考リンクに使わない方針で、対応する通常ドキュメントページに書き下ろされていない項目はリンクを省きます）。
 
 **新機能**
 
-- **セッションのページに `Delete session data`（セッションデータを削除する）の節が現れました**。`Export and locate session data` の配下、`Where transcripts are stored` と `Name the project directory yourself` の間に入っています（詳細はハイライト 4 参照）— [Manage sessions - Claude Code Docs (English)](https://code.claude.com/docs/en/sessions#export-and-locate-session-data)
-- **スキルのページに `Resolve skills that share a name`（名前が衝突するスキルを解決する）の節が現れました**。相当する内容は現行本文では `Where skills live` の地の文に埋もれており、独立した節に切り出されるものと見られます（詳細はハイライト 2 参照）— [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills)
-- **スキルのページに `Edit a skill during a session`（セッション中にスキルを編集する）の節が現れました**。削除された `Live change detection` と入れ替わる格好ですが、同内容の改称か別物かは見出しからは判断できません（詳細はハイライト 2 参照）— [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills)
+- **セッションのページに `Delete session data`（セッションデータを削除する）の本文が届きました**。トランスクリプトは保持スイープのルールで期限切れになるが、プロジェクトのトランスクリプトと関連する状態を早く消すには `claude project purge` を実行する。`claude rm <id>` でバックグラウンドセッションを削除した場合、**そのトランスクリプトはディスクに残り `claude --resume` から使える**、という 3 文です。前回「削除の手段・対象・取り消し可否はいずれも未着」と書いた点が埋まりました — [日本語](https://code.claude.com/docs/ja/sessions#delete-session-data) / [English](https://code.claude.com/docs/en/sessions#delete-session-data)
+- **オートモードの分類器が既定でブロックする対象に、v2.1.261 の 1 項目が書き下ろされました**。**URL 自体が共有内容を運ぶ形で、公開のペースト・図表・データ共有サービスへのリンクを、メッセージ・PR / イシュー本文・ドキュメントなど「そのリンクが開かれる・取得される場所」に投稿または記述すること**が、そのサービスを利用者が名指ししていない限りブロックされます。v2.1.261 自体は 2026年09月04日リリースで既に changelog に載っていたものです — [日本語](https://code.claude.com/docs/ja/permission-modes#what-the-classifier-blocks-by-default) / [English](https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default)
+- Claude Desktop と Cowork が Claude apps gateway 経由で送るテレメトリに `user.email` と `user.groups` が加わり、ターミナルセッションと揃いました（v2.1.265）
+- `--plugin-dir` にプラグインの入ったフォルダを指定できるようになりました。マニフェストを持つ子フォルダがそれぞれ読み込まれ、実行中に増減した子フォルダも拾われます（v2.1.265）。**CLI リファレンスのフラグ表は今のところ「1 つのディレクトリまたは `.zip` を読む」の記述のままで、フォルダ指定にはまだ触れていません** — [English](https://code.claude.com/docs/en/cli-reference#cli-flags)
+- ディスクに保存するツール結果に 1 GB の上限が入り、保存ファイルが切り詰められた場合は会話中のプレビューがその旨を伝えます（v2.1.265）
+- \[VS Code] 一定期間使われていないセッションを自動でアーカイブするようになりました（新設の「Archive inactive sessions」設定・既定 14 日）（v2.1.265）
 
 **機能改善**
 
-- 出力スタイルの変更が、キャッシュを保持する操作の側から無効にする操作の側へ移りました。本文は未着で、現行の記述は 2 か所とも旧分類を前提にしたままです（詳細はハイライト 1 参照）— [How Claude Code uses prompt caching - Claude Code Docs (English)](https://code.claude.com/docs/en/prompt-caching#changing-output-style)
-- スキルのページで `Where skills live` が h2 `Choose where skills load` へ昇格し、配下 4 節が動詞始まりの名前へ全面的に改称されました（詳細はハイライト 2 参照）— [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills)
-- 設定ページと設定リファレンスのタイトルが入れ替わり、`settings-reference` の先頭 h2 も `All settings` から `Settings index` に改称されました。両ページとも `llms.txt` の説明文は無変更です（詳細はハイライト 3 参照）— [All settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings-reference)
+- 出力スタイルの変更が、セッション途中でも次のメッセージから適用されるようになりました。v2.1.251 より前はキャッシュを保つ代わりに適用もされませんでした（詳細はハイライト 1 参照） — [日本語](https://code.claude.com/docs/ja/prompt-caching#changing-output-style) / [English](https://code.claude.com/docs/en/prompt-caching#changing-output-style)
+- スキルのページが「どこに置くと、どのセッションで読み込まれるか」を軸に書き直され、置き場所の表が 7 行に、名前衝突の解決が独立した節になりました（詳細はハイライト 3 参照） — [English](https://code.claude.com/docs/en/skills#where-skills-live)
+- `/model` ピッカーが、ピン留めした ID を認識できればモデル名で表示するようになりました（詳細はハイライト 4 参照） — [English](https://code.claude.com/docs/en/model-config#customize-pinned-model-display-and-capabilities)
+- **設定ファイルと優先順位のページの導入部が組み替えられました**。「特定のキーを調べるなら『すべての設定』へ」という `<Tip>` が新設されて冒頭近くに置かれ、対象範囲を述べる `<Note>` はその後ろへ移動。「このページの使い方」を 3 点挙げていた段落は、設定ファイルの説明段落に統合されました。**あわせて、本文を持たない `<span />` 行が 31 個削除されています** — [日本語](https://code.claude.com/docs/ja/settings) / [English](https://code.claude.com/docs/en/settings)
+- **`/skill-doctor` のレポートの説明に 1 文が加わりました** ―― オフにする場所を教えてくれるスキルのうち、**コンテキストコストが最も高いものから手を付けるとよい**、という優先順位の指針です — [English](https://code.claude.com/docs/en/skills#skill-descriptions-are-cut-short)
+- **クラウド環境のページで、セットアップスクリプトと `SessionStart` フックの実行順序の説明が畳まれました**。「①キャッシュ済み環境が無いときだけ、Claude Code 起動前にセットアップスクリプトが走る ②Claude Code が起動して SessionStart フックが走る」という番号付きリストが削除され、**直後の比較表へ誘導する 1 文**に置き換わっています — [English](https://code.claude.com/docs/en/cloud-environments#setup-scripts)
+- **GitHub Actions のクラウドプロバイダーページから、Amazon Bedrock の入力例の YAML スニペットが削除されました**。「後述の完全なワークフロー例に各プロバイダーの入力が既に含まれている」という 1 文とセクションへのリンクに置き換わり、7 行減っています — [English](https://code.claude.com/docs/en/github-actions-cloud-providers#choose-your-provider)
+- **オートモードで既定許可される push と PR の説明が言い換えられました**。「秘密や機微データがリポジトリの外へ出る場合、または PR が別のリポジトリ・組織を対象とする場合を除く」という個別列挙から、**「その push または PR がブロック一覧に該当する場合を除く（例えば秘密や機微データの流出、別リポジトリ・組織向けの PR）」**という、ブロック一覧を正とする書き方になりました。**内容の変更ではなく参照の付け替え**です — [日本語](https://code.claude.com/docs/ja/permission-modes#what-the-classifier-blocks-by-default) / [English](https://code.claude.com/docs/en/permission-modes#what-the-classifier-blocks-by-default)
+- `--worktree` の起動が大きなリポジトリで速くなりました。新しい worktree のチェックアウトが並列化されています（git 2.32 以降）（v2.1.265）
+- `/workflows` のエージェント詳細が拡充されました。ツール呼び出しに実行中 / 失敗 / 完了の印が付き、サブエージェントがタスクリストを持つ場合はそれも表示され、Enter で各呼び出しの入力と結果を展開できます（v2.1.265）
+- プロンプト途中で入力したスラッシュコマンドの候補が、単一のサジェストではなくリストで表示されるようになりました（フルスクリーン外では Tab で開きます）。プラグインのスキルも素の名前で見つかります（v2.1.265）
+- サインインが要るリモート MCP サーバーに対して、実際に認証するまで OAuth クライアントを登録しなくなりました（v2.1.265）
+- 多数のファイルを読んだ長いセッションの再開が速くなりました（v2.1.265）
+- サイズ上限を超えた画像がデコードできないときのエラーが、上限を挙げるだけでなく原因と対処を示すようになりました（v2.1.265）
+- Artifact ツールが他人の書いたアーティファクトを読むとき、要約がそのページを信頼できないコンテンツとして扱い、埋め込まれた指示を中継せずフラグを立てるようになりました（v2.1.265）
+- `.claude` フォルダの権限オプションの文言が、実際に許可する範囲（そのセッションの間、プロジェクトの `.claude` フォルダまたは `~/.claude` 内のファイルを編集できること）を述べるよう更新されました（v2.1.265）
+- 管理設定に `forceLoginGatewayUrl` を持つマシンが、`forceLoginMethod: "gateway"` と同様に起動時点から Claude apps gateway セッションになりました。残っている claude.ai ログインや API キーは使われません（v2.1.265） — [English](https://code.claude.com/docs/en/settings-reference#forcelogingatewayurl)
+- 画像処理がランタイム組み込みの画像サポートを使うようになり、CLI がネイティブ画像モジュールを一時ディレクトリへ展開しなくなりました（v2.1.265）
+- プラグインの表示メタデータが、Installed タブと `claude plugin details` でマーケットプレイスのエントリを `plugin.json` より優先し、足りない項目を `plugin.json` で補うようになりました（v2.1.265）
+- Claude apps gateway セッションが、ゲートウェイの管理設定が `OTEL_EXPORTER_OTLP_ENDPOINT` で指定するコレクタへ OpenTelemetry を直接エクスポートするようになりました。コレクタ指定の無いセッションは従来どおり中継を使います（v2.1.265）
+
+**バグ修正**
+
+- フォアグラウンドで起動したサブエージェントを再開するとツール一覧とシステムプロンプト接頭辞が変わり、そのエージェントのプロンプトキャッシュ再利用が壊れる問題を修正（v2.1.265）
+- エージェントのチームメイトと再開したサブエージェントが、`SubagentStart` フックのコンテキストとプリロードされたスキルを 2 ターン目以降にプロンプト接頭辞の外へ動かし、キャッシュ再利用が壊れる問題を修正（v2.1.265）
+- ツール実行中に前のプロセスが落ちた後の再開を修正。最後のプロンプトが書き換えられなくなり、中断されたツール呼び出しは中断済みとして残るようになりました（v2.1.265）
+- `/model opusplan[1m]` が `Model not found` で拒否される問題を修正（v2.1.265）。**なお、この `Model not found` はエラーリファレンスの見出しとして今回の見出しマップに現れていますが、本文はまだ届いていません**
+- 権限プロンプトとメッセージ内の構文ハイライトが、Ruby の `?`、Erlang の `$`、Perl の `$` シジルの直後の 1 文字を落とすことがある問題を修正（v2.1.265）
+- スラッシュコマンドや @ ファイルのサジェストリストが開閉するたび、フルスクリーンのトランスクリプトが 1 行ぶん飛ぶ問題を修正（v2.1.265）
+- バックスラッシュを含むプラグインパスが macOS と Linux でシンボリックリンクの封じ込めチェックを迂回する問題を修正（v2.1.265）
+- 名前が 2 つのドットで始まるプラグインディレクトリが、誤ってプラグインルートの外として拒否される問題を修正（v2.1.265）
+- トークン更新中にセッションが閉じられたとき、VS Code と SDK のセッションが再ログインを要求することがある問題を修正（v2.1.265）
+- Remote Control のセッションが応答の最後のメッセージより先にターン終了シグナルを送り、最後の部分が届く前に Claude アプリ側で応答が完了したように見える問題を修正（v2.1.265）
+- アイドルタイムアウトの直前にメッセージが届くと、バックグラウンド（`--bg`）セッションがターンの途中で終了させられることがある問題を修正（v2.1.265）
+- Claude Code 自身の git ステータス / 差分の取得が、作業ツリー内のネストされたリポジトリが設定した clean フィルタを実行してしまう問題を修正（v2.1.265）
+- advisor ツールとその指示がリクエストごとにそのリクエストのモデルから決め直されていた問題を修正。判断は 1 回だけ行われ、変わったときは会話中に告知されるようになりました（v2.1.265）
+- アーティファクトの公開が、コネクタが公開していないコネクタツール名を受け付ける問題を修正。宣言されたツールが 1 つも存在しない場合は公開を拒否し、一部だけ存在しない場合は警告するようになりました（v2.1.265）
+- 管理設定がスキルだけをプラグインに固定しているとき `/add-dir <subdirectory>` がそのサブディレクトリのエージェントを読み込まず、エージェントだけが固定されているときは逆にエージェントを約束してしまう問題を修正（v2.1.265）
+- 2 打鍵のキーボードショートカットが、tmux 内などで 2 打目が 1 秒以上遅れると黙ってキャンセルされる問題を修正。3 秒待ち、タイムアウト時は通知を出すようになりました（v2.1.265）
+- フォークされたスキル（`context: fork`）が、キックオフプロンプトと、`--forward-subagent-text` 指定時のテキストターンを stream-json の進捗イベントとして流さない問題を修正（v2.1.265）
+- OS が検査できないプラグインの既定コンポーネントフォルダ（シンボリックリンクのループなど）が黙って飛ばされる問題を修正。`/plugin` にエラーコード付きで報告されるようになりました（v2.1.265）
+- Claude apps gateway の OTLP テレメトリ中継が、不正または大きすぎるペイロードを数件拒否した後、コレクタへの転送を 30 秒すべて止めてしまう問題を修正（v2.1.265）
+- `/plugin` の Discover / Browse と `claude plugin list --json --available` が、メタデータを `plugin.json` にしか持たないマーケットプレイスプラグインの説明・表示名を出せない問題を修正（v2.1.265）
+- 管理設定が指定した Claude apps gateway にサインイン済みのセッションで `/login` を再実行すると「ゲートウェイ URL が設定されていない」と表示される問題を修正（v2.1.265）
+- 設定ファイルに書き込めなかったのに `/model` が「デフォルトとして保存した」と主張する問題を修正。保存に失敗したことと理由を伝えるようになりました（v2.1.265）。**この `Couldn't save it as your default` もエラーリファレンスの見出しとして今回現れた持ち越しです**
+- Remote Control からの `/clear` が、SessionStart フックとターミナル側の開いているダイアログを待ってから完了する問題を修正（v2.1.265）
+- `/config` ダイアログがタブを切り替えると高さが変わる問題を修正（v2.1.265）
+- コンテナ再起動後のワークフロー実行の再開を修正。実行ジャーナルが失われた再開は、全エージェントを再実行するのではなく明確なエラーで失敗するようになりました（v2.1.265）
+- `claude-api` スキルのエラーコードリファレンスを修正。モデルアクセスの失敗は 404、利用不可のベータヘッダーは 400 であり、403 ではありません（v2.1.265）
+- 非対話セッション（stream-json 入力の `-p`、Agent SDK、クラウドセッション）が新しいユーザーメッセージのたびにシェルの作業ディレクトリをリセットする問題を修正。`cd` がターンをまたいで持続するようになりました（v2.1.265）
+- `http` として設定された MCP サーバーのうち、レガシーな HTTP+SSE トランスポートしか話さないものが接続できない問題を修正。MCP 仕様どおり SSE にフォールバックするようになりました（v2.1.265）
+- claude.ai 側では接続済みのコネクタが、クラウドセッションでは認証が必要と表示される問題を修正（未対応リクエストに HTTP 401 を返すサーバーが該当）（v2.1.265）
+- コネクタの承認やサインインのリンクが待機している間、リモートセッションがサンドボックスコンテナを起動したままにする問題を修正（v2.1.265）
+- 再開したセッションの「バックグラウンドタスクが完了しなかった」通知に、短いステータス行ではなくモデル向けの長い復旧手順が表示される問題を修正（v2.1.265）
+- **Windows: AppContainer や制限付きトークンのサンドボックス内で、Read・Write・Edit が「権限チェック後にシンボリックリンクの解決が変わった」としてすべてのファイルを拒否する問題を修正**（v2.1.265）
+- \[VS Code] 会話を 10 分以上開いたままにしていると、Reload Window や再起動の後にサイドバーのチャットが空白になる問題を修正（v2.1.265）
+- \[VS Code] 「Remote Control is active」メッセージのタイムラインのドットがテキストより下にずれる問題を修正（v2.1.265）
+- **v2.1.265 が持ち込んだ回帰の修正**（v2.1.266）。未文書化の `CLAUDE_CODE_USE_GATEWAY` が単独で Cloud gateway サインインを強制するようになり、API キー・`apiKeyHelper`・カスタム認証ヘッダーと併用していた構成が全リクエスト失敗していました。単独指定は再び無視されます（詳細はハイライト 2 参照）
 
 **その他**
 
-- **デスクトップアプリのクイックスタートから `Coming from the CLI?`（CLI から来た方へ）の h2 が消えました**。同ページの見出しは `Install` / `Start your first session` / `Now what?` / `What's next` の 4 つになります。**削除だけで、置き換わる見出しはありません**。CLI 利用者向けの案内が他ページへ移されたのか、内容ごと落とされたのかは本文が来るまで判断できません — [Get started with the desktop app - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop-quickstart)
-- **スキルのページから `Live change detection`（ライブ変更検出）の h4 が消えました**。現行本文では「スキルディレクトリのファイル変更を監視し、追加・編集・削除が再起動なしで現在のセッションに効く」ことと、その適用範囲が `SKILL.md` のテキストに限られる（プラグインを兼ねるスキルフォルダの `hooks/` `.mcp.json` などは `/reload-plugins` が要る）ことを述べている節です。**この内容が新設の `Edit a skill during a session` に引き継がれるのか、別の節に吸収されるのかは未確定**です（詳細はハイライト 2 参照）— [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills)
-- 見出しマップ先頭の自動生成スタンプが 2026年09月05日 04時30分57秒 UTC から 2026年09月08日 19時23分06秒 UTC へ進みました。**対象期間中に上流の再生成が 1 回だけ走った**ことを示しており、無差分だった 2 回の取り込みの説明になっています
+- **持ち越しが 40 件積まれました**（追加 39・削除 1）。**本文は 1 件も届いていません**。ページ別の内訳は、エラーリファレンス 16 件、組織の MCP 制御 9 件（ハイライト 5）、アーティファクト 2 件（`Read an artifact shared with you` / `Offer a file download`）、設定リファレンス 2 件（`maxEffortLevel` / `managedMcpServers`）、キーボードショートカット 2 件（`Effort slider actions` / `Agents actions`）、インタラクティブモード 2 件（`Complete a command mid-prompt` / `Issue reference links`）、エージェントビュー 1 件（`Read session state from a script`）、Amazon Bedrock 1 件（`Certificate errors behind a TLS-inspecting proxy`）、Claude apps gateway の設定リファレンス 1 件（`MCP servers in a policy`・ハイライト 5）、権限 1 件（`What a Bash rule doesn't match`）、CLI リファレンス 1 件（`System prompt flags in resumed conversations`）、Agent SDK のシステムプロンプト変更 1 件（`Change the prompt of an existing session`）。**削除は Remote Control ページの 1 件**で、`"Remote Control isn't available for your organization due to its compliance policy"` というエラー文字列の項が見出しマップから消えました（本文にはまだ残っています）
+- **エラーリファレンスの持ち越し 16 件**は、認証・ゲートウェイ系（`Administrator policy requires a Cloud gateway sign-in` / `Could not load AWS or Google Cloud credentials` / `Bedrock setup verification timed out waiting for AWS` / `Cloud gateway session expired`）、モデル系（`Model not found` / `Model switch was blocked by a PreModelSwitch hook` / `Couldn't save it as your default`）、設定・MCP 系（`Directory couldn't be resolved to a real location` / `Cannot add MCP server to the managed scope` / `Can't read .mcp.json` / `OAuth callback port is already in use` / `stream-json input carried over 256M characters with no newline`）、プラグイン系（`Path could not be checked` / `Marketplace entry path does not stay inside the marketplace directory`）、管理設定・サンドボックス系（`Managed settings were not approved` / `Stale sandbox mask files left by a killed session`）に分かれます。**このうち少なくとも 3 件は v2.1.265 の修正項目と対応が付きます** ―― `Model not found`、`Couldn't save it as your default`、`Path could not be checked` です — [English](https://code.claude.com/docs/en/errors)
+- **古いバージョン注記が 16 か所（10 ページ・15 か所の書き換え）削除されました**。対象は **v2.1.154 / .157 / .160 / .161 / .162 / .163 / .166 / .169** で、`/cd` の「v2.1.169 以降が必要」（コマンド一覧・セッション・権限の 3 ページ）、`API_FORCE_IDLE_TIMEOUT` と `CLAUDE_CODE_TMPDIR` と `VERTEX_REGION_CLAUDE_4_8_OPUS`（環境変数）、`workflowKeywordTriggerEnabled` の 2 か所と `requiredMaximumVersion` / `requiredMinimumVersion`（設定リファレンス）、`/terminal-setup` の GPU アクセラレーション（ターミナル設定）、`task:background` の和音（キーボードショートカット）、`/mcp` の「v2.1.166 から」（Remote Control）、MCP のタイムアウトの「v2.1.162 より前」、ワークフローのキーワードの「v2.1.160 より前」です。**ただしこれは網羅的な掃除ではありません** ―― v2.1.169 への言及は依然として 11 か所残っており、v2.1.101 のようなさらに古い注記も手つかずです
+- **設定ページのリネームに伴う相互参照の書き換えが 10 ページで発生しました**。リンク文言 `Settings reference` → `All settings` が 9 ページ（組織向けセットアップ / オートモード設定 / Web 版 / 管理設定のデプロイ / プラグイン推奨 / サーバー管理設定 / 権限 / サンドボックス / 音声入力）、`Claude Code settings` → `Settings files and precedence` が 1 ページ（エンタープライズネットワーク設定）です。あわせて**スキルページのリネームに伴うアンカー書き換えが 3 か所**（機能一覧ページの `#where-skills-live` → `#resolve-skills-that-share-a-name`、Agent SDK のスキルページで同じアンカーとリンク文言の更新が 2 か所）ありました — [日本語](https://code.claude.com/docs/ja/settings-reference) / [English](https://code.claude.com/docs/en/settings-reference)
+- **リネームが行き渡っていない箇所が 2 つ残っています**。VS Code のページは依然として `Claude Code settings` というリンク文言で設定ページを指しており、設定リファレンス側の「索引へ戻る」ボタンは `href="#all-settings"` のままです（先頭 h2 は `Settings index` に改称済み）。実際、設定ページの「コミットしたキーがチームメイトに届かない」節だけが新しいアンカー `#settings-index` を指す一方、`llms-full.txt` 全体では `#all-settings` を指すリンクが 16 か所残っています。**本サマリが設定リファレンスへのリンクにアンカーを付けていないのはこのためです** — [English](https://code.claude.com/docs/en/vs-code)
+- **デスクトップアプリのクイックスタートで、前回消えた `Coming from the CLI?` の h2 の行き先が判明しました**。節ごと削除されたのではなく、**「次のステップ」の箇条書きの 1 項目として、デスクトップアプリ本体ページの `#coming-from-the-cli` へのリンクに畳まれました**。前回「他ページへ移されたのか、内容ごと落とされたのかは本文が来るまで判断できない」と書いた点の答えです（3 段落 → 1 行） — [English](https://code.claude.com/docs/en/desktop-quickstart)
+- **`ConfigChange` フックのリンク先が修正されました**。WSL の `wslInheritsWindowsSettings` の参照先が、設定ページの `#available-settings`（現在は存在しない見出し）から**設定リファレンスの `#wslinheritswindowssettings`** へ差し替えられています — [English](https://code.claude.com/docs/en/hooks#configchange)
+- **`availableModels` アローリストの `<Note>` が 2 段落に分割されました**。マッチングの説明のうち「特定のモデルを許可するには、ピッカーが表示する同じプロバイダー形式 ID をリストする」が **「その完全なプロバイダー形式 ID をリストする」**に簡潔化されています。内容は同じです — [English](https://code.claude.com/docs/en/model-config#customize-pinned-model-display-and-capabilities)
+- 見出しマップ先頭の自動生成スタンプが 2026年09月08日 19時23分06秒 UTC から 2026年09月09日 22時56分21秒 UTC へ進みました。**対象期間中に上流の再生成が 1 回だけ走った**ことを示しています
 
-**参考リンクについて**: 本サマリの参考リンクは前回に続き**すべて英語版のみ**です。今回の変更は**英語版の `llms-full.txt` にすら本文が届いていない**ため、日本語版が追従していないことは論理的に確実ですが、念のため作成時点で公開中の日本語版ページを実際に取得して確認しました。**日本語版のプロンプトキャッシングでは「出力スタイルの変更」が依然として「キャッシュを保持するアクション」の一覧に載っており、本文も「キャッシュは無効になりませんが、変更も適用されません」の旧記述のまま**、**日本語版のスキルのページは「スキルが存在する場所」が h3 のままで、「ライブ変更検出」も残っており、`Choose where skills load` や `Edit a skill during a session` に相当する見出しは存在しません**。加えて**リンク先のアンカーについても注意が要ります** ―― 新設・改称された見出し（`#delete-session-data`・`#choose-where-skills-load`・`#settings-index` など）は `llms-full.txt` に存在しないため、本サマリでは**アンカー無しのページ URL、または現行本文にも実在する親セクションのアンカー**のみを使っています。
+**参考リンクについて**: **今回は 6 回ぶりに日本語版のリンクを付けられるページがあります。** 作成時点で公開中の日本語版を実際に取得して確認したところ、**プロンプトキャッシング・セッション・権限モード・設定ファイルと優先順位の 4 ページは今回の変更を反映済み**でした（日本語版のプロンプトキャッシングでは「出力スタイルの変更」が「キャッシュを無効にするアクション」の一覧に移り、本文も「次のメッセージから新しいスタイルを使う」「v2.1.251 より前は…」に更新されています）。一方、**スキル・出力スタイル・モデル設定の 3 ページは未追従**です（日本語版のスキルのページは「スキルが存在する場所」が h3 のままで「ライブ変更検出」も残っており、出力スタイルは「変更は `/clear` または新しいセッション後に有効になります」の旧記述、モデル設定は「プロバイダー固有の ID は `/model` ピッカーにそのまま表示され」の旧記述のままです）。**確認していないページは安全側で英語版のみ**にしています。アンカーについては、**改称された見出しはドキュメント自身が旧アンカーを指し続けている**ため（スキルの `#where-skills-live`・`#live-change-detection`）、本サマリもそれに合わせています。**本文が未着の持ち越しにはアンカーを付けず、ページ URL のみ**としています。
 
 ## 新着情報
 
-（今回の対象期間には `whats-new/` 配下のページに差分がありませんでした。`llms-full.txt` が完全に無差分であるため、差分のあった 6 ページはいずれもリファレンス・ガイド系の見出し変更のみです。最新の週間ダイジェストは 6 回前のサマリで扱った Week 34（2026年08月17日～21日）のままで、新しい週のダイジェストの追加も既存ページの訂正もありません。`whats-new/` の無差分は 6 回連続です）
+（今回の対象期間には `whats-new/` 配下のページに差分がありませんでした。`llms-full.txt` で本文が変わった 33 ページはいずれもリファレンス・ガイド系と changelog です。最新の週間ダイジェストは 7 回前のサマリで扱った Week 34（2026年08月17日～21日）のままで、新しい週のダイジェストの追加も既存ページの訂正もありません。`whats-new/` の無差分は 7 回連続です）
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-05.md](./archives/latest/2026-09-05.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-05.md](./archives/latest-detail/2026-09-05.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-08.md](./archives/latest/2026-09-08.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-08.md](./archives/latest-detail/2026-09-08.md)
 
 <!--
-base_commit: 79f96cfde0b383e61550570a0d780c890e54cf66
-head_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
-generated_at_full: 2026-09-09T15:07:34+09:00
+base_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
+head_commit: 3609917c5bd9971a8010d16470ca46a5c7c2c8cb
+generated_at_full: 2026-09-10T15:17:35+09:00
 -->
