@@ -188,6 +188,7 @@ pwsh -NoProfile -File .claude/scripts/merge-bot-to-main.ps1
 git tag -a anchor/2026-06-06 980975cf497b0cce6847425a0787fccd839be1ae -m "BASE-A: cc-relative-info v1.2 出典 [1]-[75] の基準"
 git tag -a anchor/2026-06-21 1a7d39cab3539583157847db90f343550a8fe42e -m "BASE-C: cc-relative-info v1.2 出典 [75] の版境界の基準"
 git tag -a anchor/2026-08-19 32e6ee3566896a4f0a120a5c98b667aea98b22c6 -m "BASE-B: cc-relative-info v1.2 出典 [76]-[97] の基準"
+git tag -a anchor/2026-09-13 f42c3bbc7514f65d9b93da10d594de373927552d -m "BASE-D: cc-relative-info v1.2 出典 [98]-[104] の基準"
 ```
 
 いずれも `empty-can/cc-relative-info` の `claude-dir-sharing-governance/reports/01.配布・統制方針調査/結論・構成案_ポータブルな.claude共有_v1.2.md` が引用元。同文書はこれらを BASE-A / BASE-B / BASE-C と呼ぶ。
@@ -199,6 +200,7 @@ git tag -a anchor/2026-08-19 32e6ee3566896a4f0a120a5c98b667aea98b22c6 -m "BASE-B
 | `anchor/2026-06-06` | `980975cf497b0cce6847425a0787fccd839be1ae` | 正式運用リポジトリ初期化（CLI v2.1.165 相当・63,719 行） | `2650e77c624f274f11af6dc4223efe623a05e840` | `[1]`〜`[75]`（BASE-A・行番号で参照） |
 | `anchor/2026-06-21` | `1a7d39cab3539583157847db90f343550a8fe42e` | 定期取り込み（v2.1.178+ 反映・65,371 行） | `c7c620cb201328ba440f97a45624929b5b3684ac` | `[75]` の版境界（BASE-C・行番号で参照） |
 | `anchor/2026-08-19` | `32e6ee3566896a4f0a120a5c98b667aea98b22c6` | 定期取り込み（CLI v2.1.235 相当・84,016 行） | `f6f26436ea1725abdbd042c99ddda9f545107ef4` | `[76]`〜`[97]`（BASE-B・見出し＋行番号で参照） |
+| `anchor/2026-09-13` | `f42c3bbc7514f65d9b93da10d594de373927552d` | 定期取り込み（CLI v2.1.269 相当・96,349 行） | `26ddc6534ed2f96e147cd77a1b8acfddba986ce2` | `[98]`〜`[104]`（BASE-D・行番号＋見出しで参照） |
 
 > blob ハッシュは**内容だけから決まる**（リポジトリ・パス・commit に非依存）ため、`git cat-file -p <blob>` で「照合に使っているファイルが確かにこの断面か」を独立に検証できる。
 
