@@ -1,75 +1,91 @@
 ---
-対象期間: 2026年09月02日 〜 2026年09月08日
-作成日: 2026-09-08
+対象期間: 2026年09月08日 〜 2026年09月13日
+作成日: 2026-09-13
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の差分は、新設された Working Group の charter ページ 1 件の追加に尽きます。索引 `llms.txt` に 1 行、本文を収める `llms-full.txt` に 119 行が加わり、削除行は 0 行です。既存ページの記述には 1 行の変更もありません。
+今回の対象期間の差分は索引 `llms.txt` に加わった 2 行だけで、削除行はなく、ページ本文を収める `llms-full.txt` には 1 行の変更もありません。加わった 2 行はいずれも Skills Extension に関するもので、拡張ページ `extensions/skills/overview` と `SEP-2640: Skills Extension` が同じ断面で索引に載りました。
 
 主要なものを以下に挙げます。
 
-1. Resources を読み取り専用から双方向へ広げることを掲げた Filesystems Working Group の charter が追加された。create / update / delete と、本文を取得せずに存在・サイズ・最終更新を返すメタデータ読み取り `stat` を Extensions Track の SEP 1 本にまとめる方針で、楽観的並行性制御と、書き込みが `notifications/resources/updated`・`ttlMs`・`cacheScope`・`lastModified` とどう噛み合うかまでを射程に含む
+1. Skills Extension の拡張ページと SEP-2640 の 2 件が索引に同時追加された。索引上では MCP Apps・Tasks と同じ extensions ブロックと SEP 一覧に並ぶが、本文は両ページとも `llms-full.txt` に未収録で、拡張の識別子・プロトコル仕様・対応クライアントは今回の入力からは確認できない
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Resources を双方向化する Filesystems Working Group の charter が追加**](#1-resources-を双方向化する-filesystems-working-group-の-charter-が追加):  
-  MCP Resources を読み取り専用から書き込み可能へ広げることを狙う新 Working Group の charter が収録された。エージェントが入力を読んだのと同じサーバーへ結果を書き戻せるようにするのが目的で、成果物は Extensions Track の SEP 1 本。Resources と並ぶ `files/*` プリミティブを別に立てる案（SEP-1708 が提案し 2026年01月23日 にクローズ済み）は明確に対象外とされ、あくまで Resources の拡張として進む。今回の差分はこのページの追加だけで、索引のエントリは 349 件から 350 件になった。
+1. [**Skills Extension の拡張ページと SEP-2640 が索引に追加**](#1-skills-extension-の拡張ページと-sep-2640-が索引に追加):  
+  `extensions/skills/overview`（説明文「Discover and read Agent Skills from MCP servers」）と `seps/2640-skills-extension`（同「Skills Extension」）の 2 行が索引に加わった。今回の差分はこの 2 行の追加のみで、削除行はない。索引のエントリ行数は 350 件から 352 件、ユニーク URL は 345 件から 347 件になっている。本文は両ページとも `llms-full.txt` に未収録で、拡張の中身は入力から確認できない。
 <!-- light:highlight-list:end -->
 
-## 1. Resources を双方向化する Filesystems Working Group の charter が追加
+## 1. Skills Extension の拡張ページと SEP-2640 が索引に追加
 
-今回の対象期間で入力に生じた変更は、`community/working-groups/filesystems` の charter ページ 1 件の追加のみです。索引 `llms.txt` にエントリ 1 行、本文を収める `llms-full.txt` に 119 行が加わり、削除は 0 行でした。`llms-full.txt` の総行数は 42,346 行から 42,465 行、収録ページ数は 147 件から 148 件になっています。charter 自身の変更履歴には「2026年08月24日 Initial charter」の 1 行だけが記載されていますが、これは charter 文書上の日付であり、公式サイトへの掲載時期そのものを示すものではありません。今回の入力から確実に言えるのは、このページが本対象期間の断面で初めて取り込まれたということです。
+今回の対象期間で入力に生じた変更は索引 `llms.txt` に限られ、追加 2 行・削除 0 行という内訳です。索引のファイル行数は 352 行から 354 行、エントリ行数は 350 件から 352 件、ユニーク URL は 345 件から 347 件へ、いずれも 2 件ぶんだけ増えました。一方でページ本文を収める `llms-full.txt` には差分が 1 行もなく、42,465 行・収録ページ 148 件のまま変わっていません。つまり既存ページの記述は 1 文字も変わっておらず、今回の断面で観測できるのは「索引に 2 つのページが現れた」という事実だけです。
 
-このグループが掲げるミッションは、**MCP Resources を双方向にする**こと ―― エージェントが入力を読み取ったのと同じサーバーへ、結果を書き戻せるようにすることです。charter はその根拠として、エージェント基盤がサービスをモデルに対してファイルシステムとして提示する方向へ収束しつつある一方、Resources は既に URI で内容を指す仕組みを持ち、その `file://` スキームを仕様が「ファイルシステムのように振る舞うリソースを識別する」ものと定義している点を挙げます（この記述は `specification/2026-07-28/server/resources` の `file://` 節として既に収録済みです）。つまり素地は揃っているが、現状の Resources はその面を**読み取り方向でしか担っていない**、という整理です。作業の成果物は Extensions Track の SEP 1 本に絞られ、書き込み操作・楽観的並行性制御・変更通知およびキャッシュとの相互作用の 3 点を 1 つの設計としてまとめる計画になっています。
+その 2 行は、いずれも **Skills Extension** ―― MCP サーバーが Agent Skills を提供する仕組み ―― に対応するものです。1 つは索引の extensions ブロックに加わった `- [Skills](https://modelcontextprotocol.io/extensions/skills/overview.md): Discover and read Agent Skills from MCP servers`、もう 1 つは SEP 一覧に加わった `- [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension.md): Skills Extension` です。拡張の解説ページと、その根拠となる SEP のページが同じ断面で揃って索引に載った形で、これは既存の Tasks（`extensions/tasks/overview` と `SEP-2663: Tasks Extension`）と同じ組み合わせ方です。
 
-- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#mission-statement)
+ただし**本文はどちらも未収録**です。`llms-full.txt` には `extensions/skills/overview` と `seps/2640-skills-extension` のいずれについても `Source:` 行がなく、既存ページ側にも追随の形跡がありません。実際、収録済みの `Extensions Overview` 本文が節を立てて挙げている公式拡張は MCP Authorization Extensions・MCP Apps・MCP Tasks の 3 系統のままで Skills の節はなく、`Extension Support Matrix` の拡張一覧も MCP Apps・OAuth Client Credentials・Enterprise-Managed Authorization の 3 件のまま（Tasks もまだ載っていません）です。この「索引が先・本文が後」というパターンは過去にも起きており（Enterprise Interest Group Charter が索引のみで追加された 2026年08月30日 作成分など）、本文が後続の断面で収録されるかどうかは次回以降の差分を待つことになります。したがって現時点では、拡張の識別子（`io.modelcontextprotocol/...` 形式の文字列）・やり取りするメソッドやフィールド・対応クライアントといった実質的な内容は、今回の入力からは一切確認できません。
+
+- [Skills - MCP Docs](https://modelcontextprotocol.io/extensions/skills/overview)
+- [SEP-2640: Skills Extension - MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回索引に増えたページは次の 1 件です。
+今回索引に増えたページは次の 2 件です。いずれも本文は `llms-full.txt` に未収録で、ここで述べられるのは索引エントリそのものと、既存の収録済みページから読み取れる周辺事情に限られます。
 
-- [**Filesystems Charter**](#1-filesystems-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems)):  
-  MCP Filesystems Working Group の charter ページ。Resources への書き込み操作（create / update / delete / `stat`）と楽観的並行性制御、変更通知・キャッシュとの噛み合わせを 1 本の Extensions Track SEP にまとめることを目標に掲げる。索引・本文とも今回の差分で同時に追加された。
+- [**Skills**](#1-skills) ([MCP Docs](https://modelcontextprotocol.io/extensions/skills/overview)):  
+  索引の extensions ブロック末尾、`Tasks` の直後に加わった拡張ページ。説明文は「Discover and read Agent Skills from MCP servers」で、MCP サーバーから Agent Skills を発見し読み取る方向の機能として紹介されている。
+- [**SEP-2640: Skills Extension**](#2-sep-2640-skills-extension) ([MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension)):  
+  SEP 一覧に SEP-2596 と SEP-2663 の間（番号順）で加わったエントリ。Skills Over MCP Working Group の charter が「現在の方向性」として名指ししてきた SEP で、これまで GitHub の PR としてしか参照されていなかったものに公式ドキュメント上のページが与えられた。
 <!-- light:new-pages:end -->
 
-## 1. Filesystems Charter
+## 1. Skills
 
-索引に追加されたのはタイトル `Filesystems Charter`・パス `community/working-groups/filesystems`・説明文「Charter for the MCP Filesystems Working Group.」の 1 行で、挿入位置は `File Uploads Charter` と `Inspector V2 Working Group Charter` の間、既存エントリと同じアルファベット順の並びです。これで索引のエントリ行数は 349 件から 350 件、ユニーク URL は 344 件から 345 件になり、`community/working-groups/` 配下の charter は 10 件から 11 件に増えました。直近では、索引にエントリだけが載り本文が遅れて収録される「索引が先・本文が後」の追加が続いていました（Enterprise Interest Group Charter が索引のみで追加された 2026年08月30日 作成分など）が、今回は索引エントリと本文 119 行が同じ断面で揃って入っています。
+索引に追加されたのはタイトル `Skills`・パス `extensions/skills/overview`・説明文「Discover and read Agent Skills from MCP servers」の 1 行です。挿入位置は extensions ブロックの末尾、`Tasks` と `The MCP Registry` の間でした。このブロックは `Extensions Overview` → `Extension Support Matrix` → MCP Apps 系 → Authorization 系 → `Tasks` という並びで、charter 群のようなアルファベット順ではなく公式サイトのナビゲーション順に従っているため、末尾への挿入はアルファベット順の結果ではありません。これにより `modelcontextprotocol.io/extensions/` 配下を指す索引エントリは 8 件から 9 件になりました。タイトルが `Skills` という短い名詞である点は、直前の `Tasks` と同じ付け方です。
 
-スコープの中身は具体的です。対象内とされたのは、暫定名「Filesystem Operations for Resources」の Extensions Track SEP 1 本で、①create / update / delete に加え、本文を取得せずに 1 つの URI の存在・サイズ・最終更新を答えるメタデータ読み取り `stat` を定義すること、②2 人の書き手が更新を失わないようにする方法と、クライアントが「存在しなければ作成する」という事前条件でリソースを作る方法を定める楽観的並行性制御、③書き込みが `notifications/resources/updated`、生存期間とキャッシュ範囲を表す `ttlMs`・`cacheScope`、および `lastModified` アノテーションとどう相互作用するかの規定 ―― の 3 点です。これらのフィールド名はいずれも既存の仕様側で使われている用語で、新語の導入ではなく既存機構への接続として書かれています。あわせて、サーバー実装者がリソースへの書き込み経路とツールベースの経路のどちらを選ぶべきかの指針を文書化することも挙げられています。対象外として明示されたのは、Resources と並び立つ `files/*` プリミティブを別に立てること、ホスト側のサンドボックスやローカルディスクの意味論（リソースをモデル向けにどうファイルシステムとして実体化するかはホストの領分とする）、および書き込みに関する認可ポリシー（既存の MCP 認可仕様がどこに適用されるかを述べるにとどめる）の 3 点です。
+説明文が「**Discover and read** Agent Skills from MCP servers」と読み取り方向の 2 語で書かれている点は、Skills Over MCP Working Group の charter（収録済み・今回の差分では未変更）が SEP-2640 を「Resources-based, Extensions Track」と説明していることと符合します。つまり Resources という既存のプリミティブの上に skill の発見と読み取りを載せる、という組み立てが索引の 1 行からも読み取れます。ただしこれはあくまで説明文と charter の記述の照合であり、実際の仕様は本文が収録されるまで確認できません。
 
-既存提案の交通整理も明確に役割として書かれています。`resources/create` と `resources/delete` を提案する SEP-2571（Resource Submission for Agent Coordination）、`resources/stream` を提案する SEP-2532（Resource Streaming for Binary Content Delivery）、そして Resources と並ぶ `files/*` メソッド群を提案し 2026年01月23日 にクローズした SEP-1708（MCP Client-Brokered Filesystem Access）が名指しされ、この領域に散らばった提案を 1 つの整合した設計に収斂させるとしています。実際、グループの最初の行動は「SEP-2571 を著者とともに引き取ること」と定められており、既に create と delete を扱っている点がその理由として挙げられています。なお `SEP-2571`・`SEP-2532`・`SEP-1708` および `resources/create`・`resources/stream` という文字列は、今回の入力全体を見てもこの charter ページの中にしか現れません。これらの提案自体はまだ公式ドキュメントの本文に反映されておらず、内容を追うには charter が張るリポジトリ上のリンクをたどる必要があります。
+なお、索引には以前から `Build with Agent Skills`（説明文「Use agent skills to guide AI coding assistants through MCP server design and implementation」）が仕様バージョンごとに並んでおり、そちらは本文も収録済みですが、**別の話題**です。既存ページは「MCP サーバーを作る開発者が、自分の AI コーディングアシスタントに skill を読ませる」話であるのに対し、今回追加された `extensions/skills/overview` は「MCP サーバーが skill を提供し、クライアント側がそれを発見・読み取る」話で、skill が流れる向きが逆です。両者を混同しないよう注意が要ります。
 
-体制面では、リードが Sambhav Kothari 氏（Bloomberg・[@sambhav](https://github.com/sambhav)）、Ola Hungerford 氏（Nordstrom・[@olaservo](https://github.com/olaservo)）、Daniel Temesgen 氏（Bloomberg・[@DanielTemesgen](https://github.com/DanielTemesgen)）の 3 名で、いずれも任期は Initial です。WG メンバーとして Michael Cheah 氏（Bloomberg・[@michaelcheah](https://github.com/michaelcheah)）が 1 名登録されています。会合は隔週 60 分の Working Session、Discord チャンネルは `#filesystems-wg` で、この頻度は最初の会合で決まるまでの暫定値である旨が注記されています。成功基準としては、create / update / delete / `stat` を扱い並行性制御と通知・キャッシュとの相互作用を定めた SEP が受理されること、SEP-2571 と SEP-2532 が取り込み・置き換え・スコープ外のいずれかで決着すること、Tier 1 SDK の少なくとも 2 つで参照実装が出ること、独立した 2 つのサーバー実装が共通のクライアントに対して書き込み経路を通すことの 4 点が挙げられています。関連グループとしては、内容をサーバーへ送る点で重なる File Uploads WG、charter が「ファイルシステム依存（書き込みアクセスの可否を含む）が 2026年03月24日 のオフィスアワーで議題に上がり未解決のまま」と記す Skills Over MCP WG、そして共有された書き込み経路の主たる需要元と位置づけられる Agents WG の 3 つが挙がっています。
+- [Skills - MCP Docs](https://modelcontextprotocol.io/extensions/skills/overview)
+- [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#extension-overview)
 
-- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#scope)
+## 2. SEP-2640: Skills Extension
+
+索引に追加されたもう 1 行は、タイトル `SEP-2640: Skills Extension`・パス `seps/2640-skills-extension`・説明文「Skills Extension」です。挿入位置は `SEP-2596: Specification Feature Lifecycle and Deprecation Policy` と `SEP-2663: Tasks Extension` の間で、SEP 一覧の既存の番号順に従っています。これで `SEP-` で始まる索引エントリは 41 件から 42 件になりました。説明文がタイトルの後半をそのまま繰り返す形式である点も、隣の `SEP-2663: Tasks Extension`（説明文「Tasks Extension」）と同じです。
+
+この SEP 自体は、収録済みの `Skills Over MCP Charter` 本文（今回の差分では未変更）に以前から登場していました。charter はミッションの記述で「WG の現在の方向性は SEP-2640 — Skills Extension（Resources ベース・Extensions Track）に表れている」と述べ、Active Work Items の表では「Skills Extension SEP (Extensions Track)」をステータス `In Review`・champion [@pja-ant](https://github.com/pja-ant) として、その参照実装を同じく `In Review`・champion [@olaservo](https://github.com/olaservo) として挙げています。charter の changelog の最新エントリは 2026年04月25日 の「Linked SEP-2640 in Active Work Items」で、**これらのステータスはその時点の記載**である点に注意が要ります。今回の差分には charter の更新が含まれないため、現在のステータスがどうなったかは入力からは分かりません。
+
+注目すべき違いは参照の形です。charter 内で SEP-2640 は `github.com/modelcontextprotocol/modelcontextprotocol/pull/2640` という **GitHub の PR リンク**として書かれており、今回の追加以前は公式ドキュメント側に対応するページが存在しませんでした。同じ WG の出発点となった SEP-2076（Agent Skills as a First-Class MCP Primitive）に至っては、今回の断面でも索引にエントリがなく、charter 内の PR リンクとしてしか現れません。つまり SEP-2640 は、Skills をめぐる一連の提案のうち初めて公式ドキュメントのページを与えられたものということになります。`Extensions Overview` 本文が説明する公式拡張のライフサイクル（Propose → Implement → Review → Publish → Adopt）に照らせば索引掲載は後段の工程に対応しそうですが、本文が未収録である以上どの段階に達したかを入力から断定することはできません。
+
+- [SEP-2640: Skills Extension - MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension)
+- [Skills Over MCP Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#active-work-items)
+- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#creating-extensions)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。`llms-full.txt` の差分 119 行はすべて新規ページ 1 件の追加によるもので、既存ページの本文には追加・削除とも 1 行もありません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、42,465 行・収録ページ 148 件のまま既存ページの記述内容は変わっていません。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは索引 `llms.txt` と本文 `llms-full.txt` の 2 件ですが、その内容はいずれも新規ページ 1 件の追加（新規追加されたページ 1 参照）に尽きます。既存エントリの書き換え・リンク先の変更・字句修正はなく、これとは別に挙げる軽微な更新はありません。
+今回差分が出たファイルは索引 `llms.txt` の 1 件のみで、その内容は新規エントリ 2 行の追加（新規追加されたページ 1・2 参照）に尽きます。削除行や既存エントリの書き換え、リンク先 URL の変更、字句修正はなく、これとは別に挙げる軽微な更新はありません。
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-02.md](./archives/latest/2026-09-02.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-02.md](./archives/latest-detail/2026-09-02.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-08.md](./archives/latest/2026-09-08.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-08.md](./archives/latest-detail/2026-09-08.md)
 
 <!--
-base_commit: 2667e8110b59c2cec8b85dd866ec8f529a5fa572
-head_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
-generated_at_full: 2026-09-09T15:27:42+09:00
+base_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
+head_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
+generated_at_full: 2026-09-14T15:25:42+09:00
 -->

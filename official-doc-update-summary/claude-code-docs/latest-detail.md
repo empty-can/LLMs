@@ -1,382 +1,165 @@
 ---
-対象期間: 2026年09月11日 〜 2026年09月12日
-作成日: 2026-09-12
+対象期間: 2026年09月12日 〜 2026年09月13日
+作成日: 2026-09-13
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-前回が「持ち越しを 61 件積んだ回」だったのに対し、今回は**その 61 件が 1 件残らず本文として着地した回**です。差分は `llms-full.txt` 1 ファイルだけで 2,252 行（追加 1,594・削除 658）、`llms.txt` と見出しマップには差分がありません。`llms-full.txt` は 95,413 行から 96,349 行へ 936 行増え、展開ページ数は 191 から 192 になりました。増えた 1 ページが `plugin-evals` で、**前回「宣言だけ先に届いた」と報告したページの本文 600 行がまとめて到着**しています。`plugin eval` という文字列は前回時点で本文に 0 回でしたが、今回は 54 回現れます。**見出しマップが動いていないので、新しい持ち越しは 0 件**です。本文が変わったページは 56 / 192。`whats-new/` の無差分は 10 回連続になりました。
+前回が「持ち越し 61 件が 1 件残らず本文として着地した回」だったのに対し、今回は**原文がほとんど動かなかった回**です。差分は 2 ファイル・10 行（追加 8・削除 2）で、入力ディレクトリに触れたコミットの隣接間 81 回ぶんの差分のうち **4 番目に小さい**規模でした。`llms-full.txt` に届いたのは changelog の 4 行だけで、**本文が変わったページは 1 / 192**。その 4 行は **v2.1.270（2026年09月12日）の 1 項目**で、**前日 v2.1.269 の回帰を取り消す修正**です。もう一方の差分は見出しマップで、`goal` ページの「評価の仕組み」配下に **`When a turn fails` が新設され、既存の見出しが 1 段下がり、`Other errors retry or pause the goal` が加わりました**が、**本文には 3 つとも届いていません**。前回「新しい持ち越しは 0 件」で締めたところへ、**2 件が積み直された**形です。`llms.txt` は無変更（203 件）、`whats-new/` の無差分は 11 回連続になりました。
 
 主要なものを以下に挙げます。
 
-1. `claude plugin eval` の本文 600 行が着地し、前回の持ち越し 61 件が全件決着した
-2. macOS・Linux・WSL では `Glob` と `Grep` が既定のツールセットに無いことが、初めて文書に書かれた
-3. クラウドセッションが到達できるリポジトリの説明が反転し、前回まで明示的に否定していた記述が撤回された
-4. `dontAsk` が「事前承認済みだけが走る」から「承認不要の動作は走る」へ、6 ページで書き直された
-5. v2.1.269 は 98 項目で、権限ルールの抜け穴を塞ぐ修正が並んだ
+1. v2.1.270 は 1 項目だけで、読み取り専用の git コマンドが途中から権限を尋ね始める v2.1.269 の回帰を取り消した
+2. `goal` ページに「ターンが失敗したとき」の節が見出しマップだけ先に届き、持ち越しがゼロから 2 件に積み直された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**`claude plugin eval` の本文が着地し、持ち越し 61 件が全件決着した**](#1-claude-plugin-eval-の本文が着地し持ち越し-61-件が全件決着した):  
-  前回、`llms.txt` と見出しマップにだけ届いて**本文が 1 行も無かった** `plugin-evals` に、**600 行の本文がまとめて到着しました**。前回サマリで公開サイトから読み取って書いた内容 ―― **1 ケースは既定 3 回走り、プラグインを読み込まない arm も同じ回数走って `WITH` / `W/OUT` / `Δ` の 3 列が出る（1 ケース = 6 実行）**、**要件は v2.1.269 以降**、**`skill-creator` の `evals/evals.json` とは別形式** ―― は、すべて本文で裏が取れました。あわせて**プラグインリファレンスに `plugin eval` / `plugin eval init` の 2 コマンドとマニフェストの `experimental.evals`**、**エラーリファレンスに `plugin eval is currently in early access`** が届き、**前回挙げた持ち越し 61 件（`plugin-evals` の 50 見出し＋既存 9 ページの 11 見出し）は 1 件残らず本文になりました**。要件の v2.1.269 も、今回の changelog に載っています。
-2. [**`Glob` と `Grep` が既定のツールセットから外れていることが文書化された**](#2-glob-と-grep-が既定のツールセットから外れていることが文書化された):  
-  ツールリファレンスに、**Windows では `Glob` が既定のツールセットに含まれるが、macOS・Linux・WSL では Claude Code が `Glob` と `Grep` を既定から外し、Claude は Bash ツール越しの `find` と `grep` で検索する**、という記述が入りました。**Claude のシェルではその 2 つが `bfs` と `ugrep` の組み込み版を走らせ、検索はフックと権限ルールに `Bash` 呼び出しとして届きます**。**これは挙動の変更ではなく、v2.1.117（2026年04月22日）から在った挙動をリファレンスが追認したもの**で、今回の changelog に対応する項目はありません。ツールを取り戻す 3 つの条件（`--tools` / `--allowedTools` での明示、`Bash` をセッションから外すこと、サブエージェントの `tools` 指定）も書き下ろされ、**設定ファイルの allow ルールではこの効果は得られない**と明記されました。
-3. [**クラウドセッションが到達できるリポジトリの説明が反転した**](#3-クラウドセッションが到達できるリポジトリの説明が反転した):  
-  前回まで `claude-code-on-the-web` には「**どちらの方法でも、クラウドセッションは App がインストールされたリポジトリだけでなく、接続した GitHub アカウントが見えるすべてのリポジトリにアクセスできる。App のインストールは Auto-fix の webhook を有効にするもので、セッションレベルのアクセス制御ではない**」という `<Note>` がありました。**今回、この `<Note>` は削除され、表そのものに「到達できるリポジトリ」列が追加されました** ―― ブラウザで接続した場合は**パブリックリポジトリすべてと、Claude GitHub App をインストールしたプライベートリポジトリ**、`/web-setup` の場合は**`gh` トークンが到達できるリポジトリすべて（App の有無を問わない）**です。`--cloud` のバンドルフォールバックの条件も「GitHub に接続されていないリポジトリ」から「**git リモートが無いか、Claude GitHub App が入っていない github.com リポジトリ**」へ変わり、**`/web-setup` で接続していても当てはまる**と書かれました。**版境界は書かれていません。**
-4. [**`dontAsk` の説明が 6 ページで書き直された**](#4-dontask-の説明が-6-ページで書き直された):  
-  これまでの `dontAsk` は「**事前承認したツールだけが走り、それ以外は拒否**」と読める書き方でした。今回それが「**本来プロンプトを出す呼び出しだけを拒否する。マニュアルモードで承認が要らない動作 ―― 作業ディレクトリ内のファイル読み取り、読み取り専用 Bash コマンド、`Agent` のように確認を経ずに走るツール ―― は従来どおり走る**」へ揃えられました。権限ページ・権限モードページ・ヘッドレス・すべての設定・Agent SDK の権限ページ・エージェントループの**計 6 ページ**が対象です。Agent SDK 側では**評価フローの「allow ルール」ステップに「ツールが自分で承認する呼び出しもここで解決される」という段落が加わり**、`disallowedTools` が「ツールを Claude の手の届かない場所へ置く唯一の手段」として案内されました。
-5. [**v2.1.269 は 98 項目で、権限の抜け穴を塞ぐ修正が並ぶ**](#5-v21269-は-98-項目で権限の抜け穴を塞ぐ修正が並ぶ):  
-  changelog には **101 行が追加され、すべてが v2.1.269（2026年09月11日）の 98 項目**です。前回の v2.1.268（96 項目）とほぼ同規模でした。**先頭の項目が `claude plugin eval` の追加**で、ハイライト 1 と対になります。**権限まわりの修正が 2 件**目を引きます ―― **`!` で始まる deny / ask ルールが、それを書いた設定ソースの外にまで適用されていた**問題（以後はソース内に限られ、裸の `!` 否定は無視されます）と、**Bash の `tee` が書く先に `Edit()` の deny ルールと書き込みパスのチェックが効いていなかった**問題（`Bash(tee:*)` の allow ルールは作業ディレクトリ外の宛先を覆わなくなりました）です。**プラグインアーカイブの展開が他のローカル利用者から読めていた**件も同じ性格の修正です。
+1. [**v2.1.270 は 1 項目だけで、読み取り専用 git の権限プロンプトを取り消した**](#1-v21270-は-1-項目だけで読み取り専用-git-の権限プロンプトを取り消した):  
+  changelog に **4 行が追加され、削除はありません**。全部が **v2.1.270（原文の日付表記は 2026年09月12日）の 1 項目**で、内容は「**Bash の読み取り専用 git コマンドが、セッションをしばらく走らせたあとに予期せず権限を尋ねるようになっていた**（v2.1.269 の回帰）」の修正です。**98 項目を並べた前日の v2.1.269 の直後に、1 項目だけのリリースが出た**ことになります。**原文は回帰元を `2.1.269` とだけ書き、98 項目のどれが引き金かには触れていません**。収録されている 393 件のリリースのうち 1 項目だけのものは 94 件と珍しくありませんが、**そのうち回帰の修正と明記しているのは 6 件**で、**うち 1 件は 4 日前の v2.1.266**（v2.1.265 の回帰）です。権限ページの `Read-only commands` 節は今回**無変更**で、そこには「`git` の読み取り専用形式を含む組み込みセットを**すべてのモードで**プロンプトなしに実行する」と既に書かれています ―― **今回の修正は、この記述どおりの挙動へ戻すもの**です。
+2. [**`goal` ページの見出しが 2 件先行して届き、持ち越しがゼロから積み直された**](#2-goal-ページの見出しが-2-件先行して届き持ち越しがゼロから積み直された):  
+  見出しマップの `goal` ページで、`How evaluation works`（評価の仕組み）配下の構造が変わりました。**h3 `When a turn fails`（ターンが失敗したとき）が新設され、既存の h3 `Errors you have to fix clear the goal` がその配下の h4 へ降り、隣に h4 `Other errors retry or pause the goal`（その他のエラーは再試行するかゴールを一時停止する）が加わった**形です。**本文（`llms-full.txt`）にはこの 3 つとも届いていません** ―― `When a turn fails` も `Other errors retry or pause` も全文中に 0 回で、現行本文は h3 1 つのままです。**日本語版も同じ構造**で、これは翻訳の遅れではなく**英語版と等しく未着**という状態です。新設される h4 の文言は、**前日 v2.1.269 の「`/goal` が API エラー・ネットワーク切断・トークン上限のあと無言で停止していた問題の修正（以後はバックオフして再試行するか、理由を述べて一時停止する）」という項目と対応して読めます**。**新しい持ち越しは見出し単位で 2 件**、これに既存見出し 1 件の階層変更が加わります。
 <!-- light:highlight-list:end -->
 
-## 1. `claude plugin eval` の本文が着地し、持ち越し 61 件が全件決着した
+## 1. v2.1.270 は 1 項目だけで、読み取り専用 git の権限プロンプトを取り消した
 
-**前回のサマリは「新しい持ち越しは 61 件で、前回の 6 件から 10 倍に増えました」と締めていました。今回、その 61 件は 1 件残らず本文になりました。**
+**`llms-full.txt` に届いた 4 行は、すべて changelog ページの冒頭に積まれた 1 つのリリースエントリです。**
 
-**確認方法**: 前回サマリの表に挙げた 11 見出しを `llms-full.txt` に対して直接検索し、`plugin-evals` の 50 見出しは見出しマップの記載と本文の見出しを機械的に突合しました。**結果は 11/11 と 50/50 で、未着はゼロ**です。`plugin eval` という文字列の出現数も **0 回から 54 回**へ変わりました。
+```
+<Update label="2.1.270" description="September 12, 2026">
+  * Fixed read-only git commands in Bash unexpectedly asking for permission after a session had been running for a while (regression in 2.1.269)
+</Update>
+```
 
-**そして、見出しマップ（`en/claude_code_docs_map.md`）と `llms.txt` には今回まったく差分がありません。** したがって**新しい持ち越しは 0 件**です。前々回・前回と 2 回続いた「マップが先に動き本文が遅れる」状態は、いったん解消しています。
+訳すと「**Bash の読み取り専用 git コマンドが、セッションをしばらく走らせたあとに予期せず権限を尋ねるようになっていた**問題を修正した（**v2.1.269 の回帰**）」です。今回 `llms-full.txt` で本文が変わったページは、**この changelog 1 ページだけ**でした。
 
-### 本文で裏が取れた内容
+**目を引くのは条件の書き方です。** 原文が挙げているのは「**セッションがしばらく走ったあと**（after a session had been running for a while）」という**時間経過**だけで、コマンドの形やフラグ、引用符なしの glob、複合コマンドといった**入力側の条件は 1 つも書かれていません**。起動直後には再現せず、同じセッションを使い続けるうちに現れる、という性格の不具合だったことになります。
 
-前回は本文が無かったため、公開サイトを直接取得して書きました。**今回その記述はすべて本文で確認できます。**
+**回帰元は `2.1.269` とだけ記されています。** 前日の v2.1.269 は 98 項目のリリースで、**前回サマリのハイライト 5 では、そのうち権限ルールの抜け穴を塞ぐ 2 件**（`!` で始まる deny / ask ルールが設定ソースの外にまで適用されていた問題と、Bash の `tee` の書き込み先に `Edit()` の deny ルールが効いていなかった問題）**を取り上げました**。今回の回帰がその 2 件のどちらかに由来するのかは自然な連想ですが、**原文にその記述はなく、今回の差分からは判別できません**。
 
-- **1 ケースは既定 3 回走ります**（`prompt.md` の `runs`、上限 50。`--runs` が優先）。**プラグインを読み込まない「without-arm」も同じ回数走るので 1 ケース = 6 実行**で、サマリ表には `WITH` / `W/OUT` / `Δ` の 3 列が出ます
-- **要件は Claude Code v2.1.269 以降**。プラグインディレクトリ（`plugin.json` または `.claude-plugin/plugin.json`、あるいは skills-directory プラグイン）と、通常セッションと同じ認証・モデルプロバイダーが要ります。**eval 実行も judge グレーダーも `claude plugin eval init` も、すべて自分の資格情報による実モデル呼び出し**です
-- **`skill-creator` プラグインの `evals/evals.json` とは別形式**であることが冒頭に明記されています
+### 1 項目だけのリリースはどのくらい起きているか
 
-### 本文で初めて分かったこと
+収録されている changelog を機械的に数えると、**リリースエントリは全部で 393 件、そのうち項目が 1 つだけのものは 94 件**（約 4 分の 1）で、単独では珍しいものではありません。**ただし「回帰の修正」と本文に明記している 1 項目リリースは 6 件だけ**です。
 
-**① 採点の単位。** 1 回の実行のスコアは**合格したグレーダーの割合（重み付き）**、ケースのスコアは**実行間の平均**です。ケースは `--threshold`（既定 `1.0`）以上で合格。**スイート全体のモデル呼び出しは、おおよそ「ケース数 × 実行数」のエージェント実行がプラグイン有りで走り、ベースラインで同数、さらに `llm` / `baseline` グレーダー 1 つにつき 1 実行あたり短い judge 呼び出しが 3 回**です。
-
-**② グレーダーは 6 種類。** `regex` / `tool_used` / `tool_order` / `file_exists` はトランスクリプトとファイルから計算され**費用ゼロ**、`llm` と `baseline` は judge モデルを呼ぶので費用が乗ります。**カスタムコードのグレーダーはありません。** `llm` は**3 票のうち 2 票以上が PASS**で合格します。judge の既定は小さく速いモデルで、`--judge-model sonnet` のように上げられます。
-
-**③ ベースラインと比較できないグレーダーは採点から外れます。** 「スキルが呼ばれたか」は**プラグイン無しでは絶対に合格しない**ため、そのまま数えると without-arm がゼロへ寄り `Δ` が膨らみます。そこで **`tool_used` で `tool` が `Skill` のもの**と**`arm: with-only` を付けたもの**は両 arm の採点から外され、with-arm では合否の表示だけになります（`scored: false`）。**ケース内のグレーダーが全部これに該当する場合は、採点するものが無くなるので通常どおり採点されます。**
-
-**④ 実行の隔離は徹底しています。** 各実行は**使い捨てのホームディレクトリ・作業ディレクトリ・Claude Code 設定**を持ち、対象プラグインだけを読んだ `claude -p` の子プロセスとして走ります。**自分のユーザー設定・フック・`CLAUDE.md`・MCP サーバー・他のプラグイン・メモリ・スキルはどれも読まれず**、シェル環境も**許可リストと `EVAL_*` 変数だけ**が通ります。**Artifact ツールはオフ**、**エージェントは eval ディレクトリを読めない**ので自分のケース定義やグレーダーを見ることはできません。一方で**管理者が配った managed settings の制限は実行の中にも効く**ため、管理下のマシンとそうでないマシンで結果が変わりうる、と明記されています。
-
-**⑤ ツールは既定で読み取り専用のみ。** `Bash`・`Write`・`Edit`・`WebFetch`・`WebSearch` は**セッションから取り除かれ、Claude は呼ぶことすらできません**。`--allow-tools` で明示的に渡します。**`Bash` をどの形であれ許可すると、コマンドは Claude Code の OS レベルサンドボックスの下で走ります** ―― 書き込みは実行のワークスペースに限られ、ホームディレクトリと Claude Code の設定は読めず、ネットワークは `--allow-tools "WebFetch(domain:example.com)"` で許した先だけです。**サンドボックスのバックエンドが無いマシンでは、無防備に走らせる代わりに各実行を拒否**します（**ネイティブ Windows にはバックエンドが無いので WSL2 で走らせよ**、Linux では `bubblewrap` と `socat` を先に入れよ、と書かれています）。
-
-**⑥ MCP はモックが既定。** `evals/mocks/<server>/<tool>.md` に 1 ツール 1 ファイルで置きます。**モックのあるツールは `--allow-tools` の許可なしで使え、モックの無いツールは Claude から見えません。** `expect:` ブロックで入力を検査でき、**違反すると実行はスコア 0 で中断**して理由が記録されるので、「プラグインがサーバーに何を頼んだか」をケースとして主張できます。`type: agent` のモックは judge モデルが応答を作るため実行ごとに揺れますが、**きれいに終わった実行の応答は `mock-recordings/` に保存され、`.replay/<server>/` へ写せば以後はモデル呼び出しなしで同じ答えを返します**。
-
-**⑦ CI の終了コードは 5 通り。** `0`（全ケースが閾値以上）/ `1`（閾値割れ、ケースの読み込み失敗、ケースゼロ、実行を開始できない、未信頼のディレクトリで `--trust-plugin` 無し、オプション不正）/ `2`（`--max-cost-usd` に達した、または最初の実行までに資格情報が拒否された部分実行。`results.json` は `partial: true` 付きで書かれます）/ `130`（中断）/ `143`（終了させられた）。**HTML レポートの書き出しや公開に失敗しても終了コードは変わりません。**
-
-**⑧ 信頼の扱い。** 初回はディレクトリに対して `Trust this plugin directory?` と尋ね、**git リポジトリの中なら「はい」でリポジトリ全体が信頼されます（対話セッションにも効きます）**。**標準入出力が端末でない場合や `--json` 時は尋ねられないので exit 1 で拒否**され、`--trust-plugin` で自分の責任として通します。**`claude plugin eval` にプラグインを向けることは `claude --plugin-dir` と同じ信頼判断**であり、**ここでいう隔離は「テスト対象のエージェント」に対するもので、プラグイン自身のコードに対する境界ではない**（フックと実 MCP サーバーはサンドボックスの外で走る）と釘が刺されています。
-
-- [evals でプラグインをテストする - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/plugin-evals#how-an-eval-run-works)
-- [Test plugins with evals - Claude Code Docs (English)](https://code.claude.com/docs/en/plugin-evals#how-an-eval-run-works)
-
-## 2. `Glob` と `Grep` が既定のツールセットから外れていることが文書化された
-
-**ツールリファレンスに、これまで書かれていなかった前提が入りました。**
-
-冒頭のツール表の `Glob` と `Grep` の行に **「macOS、Linux、WSL では既定で存在しない」** という但し書きが付き、`Glob tool behavior` 節の冒頭が次のように書き換わりました ―― 「**Windows では既定のツールセットの一部である。macOS・Linux・WSL では Claude Code が `Glob` と `Grep` を既定のツールセットから外し、Claude は Bash ツール越しの `find` と `grep` で検索する。Claude のシェルではこの 2 つのコマンドが `bfs` と `ugrep` の組み込み版を走らせ、検索は `Bash` 呼び出しとしてフックと権限ルールに届く**」。
-
-**これは今回始まった挙動ではありません。** changelog を遡ると **v2.1.117（2026年04月22日）に「ネイティブビルドの macOS と Linux では `Glob` と `Grep` ツールが組み込みの `bfs` と `ugrep` に置き換えられ、Bash ツール越しに使える（Windows と npm インストールのビルドは変更なし）」** という項目があり、今回の v2.1.269 にはこれに相当する項目がありません。**つまりリファレンスが約 5 か月遅れて実装に追いついた更新**です。**ただし条件の言い方は変わっています** ―― changelog が「ネイティブビルドかどうか」で切っていたのに対し、**今回の記述は「macOS / Linux / WSL かどうか」というプラットフォームで切っています**（WSL も明示的に含まれます）。
-
-**ツールを取り戻す条件が 3 つ書き下ろされました。**
-
-- **セッション開始時に `--tools` か `--allowedTools`（および Agent SDK の同等オプション）で `Glob` / `Grep` を名指しする。** `--tools` では挙げたものだけが戻り、**`--allowedTools` ではどちらか一方を挙げれば両方が戻ります**。**設定ファイルの allow ルールにはこの効果はありません**
-- **権限の deny ルール・`--disallowedTools`・`--restricted` のいずれかが `Bash` をセッションから取り除く**
-- **サブエージェントが `tools` に `Glob` / `Grep` を挙げ、`Bash` を挙げない。** そのサブエージェントにだけ戻り、**`--agent` や `agent` 設定でメインのセッションエージェントとして走る場合はセッション全体に戻ります**
-
-**波及は 3 ページです。** CLI リファレンスの `--tools` の説明は「`"default"` で全部」から「**`"default"` で既定のセット**」へ改められ、**macOS / Linux / WSL の既定セットには `Glob` と `Grep` が入らない**という参照が加わりました。サブエージェントのページには、**メイン会話が持っていないときでもサブエージェントは Glob / Grep を受け取りうる**という 1 文が、ツール継承の説明に挿入されています。
-
-- [ツールリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference#glob-tool-behavior)
-- [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference#glob-tool-behavior)
-
-## 3. クラウドセッションが到達できるリポジトリの説明が反転した
-
-**前回まで、公式ドキュメントは「Claude GitHub App のインストールはアクセス制御ではない」と明示的に述べていました。今回その記述が撤回されています。**
-
-**削除された `<Note>` の原文はこうです** ―― 「どちらの方法でも、クラウドセッションは Claude GitHub App がインストールされているリポジトリだけでなく、**接続している GitHub アカウントが見えるすべてのリポジトリにアクセスできる**。App のインストールは Auto-fix の PR webhook を有効にするもので、**セッションレベルのアクセス制御ではない**。クラウドセッションからチームが到達できるリポジトリを制限したいなら、GitHub 側でアクセスを制限せよ」。
-
-**今回の記述はこうです。** 認証方法の表に「**到達できるリポジトリ**」列が増えました。
-
-| 方法 | 到達できるリポジトリ（今回の記述） |
-|---|---|
-| **GitHub App**（ブラウザのオンボーディング） | **パブリックリポジトリすべてと、Claude GitHub App をインストールしたプライベートリポジトリ** |
-| **`/web-setup`**（`gh` トークン） | **`gh` トークンが到達できるリポジトリすべて。App の有無を問わない** |
-
-**Web クイックスタート側も同じ方向へ書き換わりました。** サインインの手順には「**この接続では、セッションはパブリックリポジトリをクローンできるが、プライベートリポジトリは Claude GitHub App がインストールされている場合にだけ作業できる**。使いたいプライベートリポジトリを持つ GitHub アカウント／組織ごとに App をインストールせよ。**組織では所有者の承認が要る場合がある**」という段落が入り、**「どちらにせよセッションは同じリポジトリに到達できる」という旧文は消えました**。トラブルシューティングの `No repositories appear after connecting GitHub` も、**ブラウザ接続の場合と `/web-setup` の場合で答えが分かれる**形に書き直されています。
-
-**`/web-setup` が何を保存するかも書かれました。** `/web-setup` は **`gh auth token` が出力するトークンを読み、確認を求めてから Anthropic へ送ります**。**Anthropic は claude.ai アカウントに紐づけて暗号化して保存し、クラウドセッションはそれを GitHub アクセスに使います**。**既にブラウザで GitHub を接続している場合は、続行するとクラウドセッションの接続がそれに置き換わる旨の警告**が出ます。新設の `Remove the /web-setup token` 節には、**[claude.ai/customize/connectors](https://claude.ai/customize/connectors) で GitHub を切断すると、ブラウザ由来か `/web-setup` 由来かを問わず GitHub 資格情報が削除される**こと、**ローカルの `gh` はサインインしたままで、トークン自体は GitHub 上で有効なまま**であること、**無効化したいなら GitHub 側で失効させる**（ブラウザでサインインしたなら **Settings > Applications > Authorized OAuth Apps** の **GitHub CLI** のエントリ。**失効させると各マシンの GitHub CLI もサインアウトします**）ことが書かれています。
-
-**バンドルのフォールバック条件も具体化されました。** 「GitHub に接続されていないリポジトリから `claude --cloud` を実行した場合」から、「**git リモートが無いリポジトリ、または Claude GitHub App がインストールされていない github.com リポジトリから実行した場合**」へ。**`/web-setup` で GitHub を接続していてもこれは当てはまる**と明記されています。`CCR_FORCE_BUNDLE=1` の説明も「GitHub が接続されていても強制する」から「**Claude Code がリモートからクローンするはずの場面でもバンドルをアップロードさせる**」へ変わり、環境変数リファレンスも同じ文言に揃いました。バンドルから作ったセッションのプッシュ可否も「GitHub 認証が設定されていない限り不可」から「**GitHub の接続がそのリポジトリへの push 権を持つときにだけ可**」へ具体化されています。**非 GitHub リポジトリ（GitLab・Bitbucket 等）をクラウドへ送る手段も、`CCR_FORCE_BUNDLE=1` を設定することと明示されました。**
-
-**対応する changelog 項目はなく、版境界の記述もありません。** したがって原文からは、挙動が変わったのか従来の記述が誤りだったのかは判別できません。
-
-- [Claude Code on the web - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-code-on-the-web#github-authentication-options)
-- [Set up Claude Code on the web - Claude Code Docs (English)](https://code.claude.com/docs/en/web-quickstart#connect-from-your-terminal)
-
-## 4. `dontAsk` の説明が 6 ページで書き直された
-
-**`dontAsk` モードは「事前承認したものだけが走る」と読める書き方でした。今回、それが 6 ページで一斉に改められています。**
-
-| ページ | 前回の記述 | 今回の記述 |
+| 版 | 日付 | 内容 |
 |---|---|---|
-| 権限モード（比較表） | 事前承認済みツールのみ | **読み取りと事前承認済みツール。プロンプトになるものは拒否** |
-| 権限モード（本文） | **`permissions.allow` に一致するアクション・読み取り専用 Bash コマンド・`PreToolUse` フックが承認した呼び出しだけ**が走る | **マニュアルモードで承認が要らないアクション（作業ディレクトリ内のファイル読み取り、読み取り専用 Bash コマンド）は依然として走り**、それに加えて allow ルールとフック承認のものが走る |
-| 権限（モード表） | `/permissions` か `permissions.allow` で事前承認していないツールを自動拒否 | **本来プロンプトを出す呼び出しを自動拒否。作業ディレクトリ内のファイル読み取りなど承認不要の動作は走る** |
-| すべての設定（`permissions.defaultMode`） | 事前承認済みツールだけを走らせ、それ以外は自動拒否 | **本来プロンプトを出す呼び出しを自動拒否。読み取り・承認不要の動作・事前承認済みツールは走る** |
-| ヘッドレス | `permissions.allow` か読み取り専用コマンドセットに無いものを拒否 | **本来プロンプトを出す呼び出しを拒否。承認不要の動作と `--allowedTools` / `permissions.allow` が覆うものは走る** |
-| Agent SDK（モード表 2 か所） | `allowed_tools` かルールで事前承認していないものは拒否 | **本来プロンプトを出す呼び出しを拒否。`default` モードで承認不要の呼び出しも走る** |
+| **v2.1.270** | **2026年09月12日** | **読み取り専用 git コマンドの権限プロンプト（v2.1.269 の回帰）** |
+| **v2.1.266** | **2026年09月08日** | **`CLAUDE_CODE_USE_GATEWAY` が単独で Cloud gateway サインインを強制していた（v2.1.265 の回帰）** |
+| v2.1.148 | 2026年05月22日 | 一部利用者で Bash ツールが全コマンドに exit code 127 を返していた |
+| v2.1.96 | 2026年04月08日 | `AWS_BEARER_TOKEN_BEDROCK` 使用時に Bedrock が 403 で失敗していた |
+| v2.1.62 | 2026年02月27日 | プロンプト候補のキャッシュヒット率が下がっていた |
+| v2.0.9 | 2025年10月06日 | bash のバックグラウンド実行が動かなくなっていた |
 
-**変わったのは「言い方」だけではありません。** Agent SDK の権限ページでは、**評価フローの「allow ルール」ステップ自体に段落が加わりました** ―― 「**ツールが自分で承認する呼び出しは、ルール無しでこの段階で解決される。たとえば作業ディレクトリ内のファイル読み取りや読み取り専用 Bash コマンドである**」。これに合わせて `allowed_tools` の説明も「**挙げていないツールも Claude からは使えるままで、承認が要る呼び出しだけが権限モードへ落ちる**」へ直され、`Bash(ls *)` という例が**`Bash(npm test *)`** に差し替えられました（`ls` は読み取り専用コマンドなので、例として不適切だったためと読めます）。
+**上の 2 件は同じ月に並んでいます。** v2.1.266 は **v2.1.265（50 項目）と同じ 2026年09月08日**、v2.1.270 は **v2.1.269（98 項目）の翌日**で、**どちらも大きなリリースの直後に出た 1 項目の打ち消し**という形をしています。今回の差分にある情報はここまでで、**これが偶然なのか運用上の傾向なのかを裏づける記述はありません**。
 
-**ロックダウン構成の書き方も変わりました。** 「`allowedTools` と `permissionMode: "dontAsk"` を組み合わせよ。挙げたツールは承認され、それ以外は拒否される」という説明の後半が、コードブロックの**後ろ**へ移されたうえで、「**`default` モードで承認が要らない呼び出しは、挙げていなくても走る（読み取り専用 Bash コマンド、`Agent` のように確認を経ずに走るツール、作業ディレクトリ内のファイル読み取り）。ツールを Claude の手の届かない場所へ置きたいなら、素の名前を `disallowedTools` に加えよ**」と結ばれています。
+### ドキュメント側の記述は無変更
 
-- [Permission modes - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/permission-modes#allow-only-pre-approved-tools-with-dontask-mode)
-- [Permission modes - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#allow-only-pre-approved-tools-with-dontask-mode)
+**権限ページの `Read-only commands`（読み取り専用コマンド）節は、今回の差分に含まれていません。** 同節は以前から次のように述べています ―― 「Claude Code は Bash コマンドの組み込みセットを読み取り専用として認識し、`permissions.blockReadsOutsideWorkingDirectories` がフェンスするパスを除き、**すべてのモードで権限プロンプトなしに実行する**。セットには `ls`・`cat`・`echo`・`pwd`・`head`・`tail`・`grep`・`find`・`wc`・`which`・`diff`・`stat`・`du`・`cd`、および **`git` の読み取り専用形式**が含まれる。セットは設定不可能で、これらにプロンプトを要求したければ `ask` か `deny` ルールを足す」。**つまり今回の修正は、ドキュメントが書いているとおりの挙動へ戻すもの**であり、文書側に書き足すことがなかったぶん差分が 1 行で済んだ、と読めます。
 
-## 5. v2.1.269 は 98 項目で、権限の抜け穴を塞ぐ修正が並ぶ
+同節は Manual モードで例外的にプロンプトが出る場合も列挙していて、その 1 つが「**書き込み・実行につながるフラグを持つコマンド（`find`・`sort`・`sed`・`git`）に引用符なしの glob があるとき**」です。**v2.1.270 の項目は glob にも複合コマンドにも触れず時間経過だけを条件に挙げているため、この既知の例外とは別の経路と読めます**が、**そう断定できる記述は原文にありません**。
 
-changelog ページには **101 行が追加され、削除はありません**。すべてが **v2.1.269（原文の日付表記は 2026年09月11日）の 98 項目**です。前回の v2.1.268 が 96 項目でしたから、ほぼ同じ規模が 2 日続いたことになります。
+- [権限を設定する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/permissions#read-only-commands)
+- [Configure permissions - Claude Code Docs (English)](https://code.claude.com/docs/en/permissions#read-only-commands)
 
-**接頭辞で数えると、角括弧つきが 40 件、それ以外が 58 件**です。
+## 2. `goal` ページの見出しが 2 件先行して届き、持ち越しがゼロから積み直された
 
-| 区分 | 件数 | 内訳 |
+**もう一方の差分は見出しマップ（`en/claude_code_docs_map.md`）です。** 先頭の自動生成スタンプ 1 行を除くと、変更は `goal` ページ 1 か所に集中しています。
+
+| | 従来 | 今回 |
 |---|---|---|
-| 接頭辞なし | 57 | Fixed 41・Added 7・Improved 6・Changed 3 |
-| `Windows:` | 1 | Fixed 1 |
-| `[VSCode]` | 23 | Fixed 14・Added 5・Improved 2・Changed 1・**Removed 1** |
-| `[Claude Tag]` | 10 | Fixed 6・Improved 3・Added 1 |
-| `[Claude Code on the web]` | 7 | Fixed 4・Changed 2・Added 1 |
+| h2 | `How evaluation works` | `How evaluation works` |
+| h3 | `Errors you have to fix clear the goal` | **`When a turn fails`（新設）** |
+| h4 | （なし） | **`Errors you have to fix clear the goal`（h3 から降格）** |
+| h4 | （なし） | **`Other errors retry or pause the goal`（新設）** |
+| h3 | `Background work defers evaluation` | `Background work defers evaluation` |
+| h3 | `Evaluation model and cost` | `Evaluation model and cost` |
 
-**接頭辞のパターンが 2 つ増えています** ―― プラットフォームを頭に置く `Windows:` と、`[VSCode]` の `Removed` です。前者は「**バックグラウンドへ送った PowerShell のツールコマンドが、Claude Code の終了で止まっていた**」修正、後者は「**セッションタブの右クリックメニューとエディタタイトルバーの `...` メニューから Claude Code の項目を削除した**」というもので、**メニューを開いたタブに対して作用できなかった**ことが理由と書かれています。
+行としては**追加 3・削除 1** です。見出しマップのインデントは 0 段が h2・2 段が h3・4 段が h4 に対応します。
 
-**最も注意を要するのは、権限ルールの抜け穴を塞ぐ 2 件**です。
+**本文には 3 つとも届いていません。** `llms-full.txt` 全文で `When a turn fails` は **0 回**、`Other errors retry or pause` も **0 回**、`Errors you have to fix clear the goal` は **1 回**（h3 のまま）です。現行の `goal` ページ本文は `## How evaluation works` の直下に h3 が 3 つ並ぶ従来構成のままで、**今回の差分は「これから本文がこう変わる」という予告だけが届いた状態**です。
 
-1. **`!` で始まる deny / ask の権限ルールが、それを書いた設定ソースの外にまで適用されていた**問題。**以後、そうしたルールは自分のソース内でだけ効き、裸の `!` による否定は無視されます**
-2. **Bash の `tee` コマンドが書き込む先に、`Edit()` の deny ルールと書き込みパスのチェックが効いていなかった**問題。**`Bash(tee:*)` の allow ルールは、作業ディレクトリの外にある宛先を覆わなくなりました**
+**日本語版も同じ構造でした。** 作成時点で公開中の日本語版 `goal` ページを取得して確認したところ、**全節が翻訳済みである一方、`<h3 id="errors-you-have-to-fix-clear-the-goal">修正する必要があるエラーはゴールをクリアします</h3>` が h3 のまま**で、`When a turn fails` に相当する見出しはありません。**これは日本語版が英語版に遅れているのではなく、英語版の本文にも届いていないという意味で両者が等しく未着**だということです（本サマリで日本語リンクを省く判断は「日本語版が変更を反映していないとき」に行うものなので、**この項目は日本語版を省きません**）。
 
-**近い性格の修正として、プラグインアーカイブの展開が 3 点直っています** ―― **セッション用に展開したアーカイブが他のローカル利用者から読めていた**こと、**展開したファイルがアーカイブ由来の world-writable ビットを保っていた**こと、**再展開しても古いファイルが生き残っていた**ことです。
+### 新設される h4 は何を書くことになるか
 
-**プロンプトキャッシュの修正が 3 件**続いています ―― **出力トークンの上限で応答が切られ自動的に再開された、その次のターンでキャッシュが部分的に無効化される**問題、**Claude の思考の途中で割り込んだセッションを再開すると、それ以前のコンテキストの送り直し方が変わってキャッシュの再利用を損なう**場合、そして**クラウドセッションで最初のリクエストの前にサーバー設定を短く待つようにしてキャッシュミスを減らした**ことです。
+**現行本文で「その他の失敗」に触れているのは、`Errors you have to fix clear the goal` 節の最後の 1 文だけ**です ―― 「**レート制限やサーバーの過負荷などの一時的なエラーを含むその他の失敗の後、Claude Code はゴールをアクティブなままにします**」。新設の h4 `Other errors retry or pause the goal` は、**位置からいってこの 1 文を独立した節へ格上げするもの**と読めます。
 
-**端末まわりの回帰も目立ちます。** **kitty プロトコルの端末で F1 / F2 / F4 が効かない、st で Delete が効かない、rxvt-unicode で Alt+矢印が Escape として扱われる、WezTerm で Shift+記号が非シフトのキーを打つ** ―― これらは **v2.1.247 の回帰**と明記されました。あわせて、**端末が能力照会に返す応答（`^[[?1;2c`）が起動時に迷子のテキストとして現れる**問題、**ssh やブラウザ端末のような遅い接続で `22c` などの文字がプロンプトへ打ち込まれる**問題、**フルスクリーンで端末をリサイズするとトランスクリプトの上端・下端の行が空白になる**問題も直っています。
+**そして「retry（再試行）」「pause（一時停止）」という語の選び方は、前日 v2.1.269 の changelog 項目と対応します。**
 
-**セッションが止まる系の修正も 3 件**あります ―― **自動コンパクトが要約できる完了済みのやり取りを持たないとき、セッションが `Prompt is too long` で恒久的に詰まる**（主に巨大なプロンプトの Agent SDK セッション）、**`/goal` が API エラー・ネットワーク切断・トークン上限のあと無言で停止していた**（以後はバックオフして再試行するか、理由を述べて停止し、使用量上限ならリセットまで待ちます）、**`CLAUDE_CODE_RESUME_INTERRUPTED_TURN` が 6 時間以上前に API エラーで失敗したターンを再実行していた**（`CLAUDE_CODE_RESUME_INTERRUPTED_TURN_MAX_AGE_MS` で調整可）です。
+> `/goal` runs silently stalling after API errors, network drops, or token limits: the goal now retries with backoff, or pauses and says why, including until a usage limit resets
+>
+> （API エラー・ネットワーク切断・トークン上限のあとに `/goal` の実行が無言で停止していた問題の修正。以後ゴールは**バックオフして再試行**するか、**理由を述べて一時停止**する。使用量上限のリセットまで待つ場合を含む）
 
-**Improved の 6 件は表示と応答性に寄っています。** **`/diff` パネルが読み込み状態を挟まず一度に描画される**、**長いセッションでトランスクリプトの更新が会話全体を再処理しなくなった**、**kitty キーボード照会に答える端末（`foot` や Alacritty 0.16 以降）で Shift+Enter と Ctrl+Shift のショートカットが使えるようになった**、**Skill ツールの `Unknown skill` エラーが、素の名前が 1 つのプラグインスキルに一致するときはその完全名を示すようになった**、などです。
+**現行本文は「アクティブなままにする」としか書いておらず、バックオフ再試行にも一時停止にも触れていません。** v2.1.269 で挙動が変わったぶんを本文が書き下ろす際に、1 文では収まらなくなって節へ分けた ―― という筋は通ります。**ただし根拠は見出しの語と changelog 項目の対応だけ**で、**今回の差分に本文は 1 行も含まれていません**。新しい h3 `When a turn fails` が「ゴールをクリアする失敗」と「クリアしない失敗」を束ねる見出しになることも、名前からの推測に留まります。
 
-**このハイライトには参考リンクを付けていません。** 上記の大半は changelog にしか記述がなく、対応する通常ドキュメントページに書き下ろされていないためです（本サマリは changelog ページの URL を参考リンクに使わない方針です）。通常ページに対応節がある項目は「軽微な更新」でリンクを付けています。
+### 持ち越しの勘定
+
+**前回サマリは「見出しマップと `llms.txt` に差分がなく、新しい持ち越しは 0 件」で締めました。** 今回積まれたのは次のとおりです。
+
+- **新設 `When a turn fails`**（h3）
+- **新設 `Other errors retry or pause the goal`**（h4）
+- （上記に加えて）**既存 `Errors you have to fix clear the goal` の h3 → h4 の階層変更**
+
+**見出し単位で数えると新規は 2 件**で、これに階層変更 1 件が伴います。**`llms.txt` は無変更なので、ページタイトルの持ち越しはありません。** 前回の 61 件に比べれば小さい積み直しですが、**ゼロだった状態が 1 日で崩れた**ことにはなります。
+
+- [Claude をゴールに向かって動作させ続ける - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/goal#how-evaluation-works)
+- [Keep Claude working toward a goal - Claude Code Docs (English)](https://code.claude.com/docs/en/goal#how-evaluation-works)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**evals でプラグインをテストする**](#1-evals-でプラグインをテストする) ([日本語](https://code.claude.com/docs/ja/plugin-evals#requirements) / [English](https://code.claude.com/docs/en/plugin-evals#requirements)):  
-  `claude plugin eval` によるプラグインの eval ハーネス。**前回は `llms.txt` と見出しマップだけが届いていたが、今回 600 行の本文が到着**して展開ページ数が 191 から 192 になった。内容はハイライト 1 で詳述。
+（今回の対象期間に新規追加・削除されたドキュメントページはありません。`llms.txt` は**全体 356 行・収録 URL 203 件のまま完全に無差分**で、`llms-full.txt` の展開ページ数も **192 のまま**動いていません。前回新設された `plugin-evals` に続く新規ページはありませんでした）
 <!-- light:new-pages:end -->
-
-## 1. evals でプラグインをテストする
-
-**このページは前回のサマリでも「新規追加されたページ」として扱いました。二重計上ではありません。** 前回は `llms.txt` への 1 行追加と見出しマップへの 50 見出し追加だけが差分で、**`llms-full.txt` の展開ページ数は 191 のまま、本文は 1 行もありませんでした**。今回の差分では **`llms-full.txt` に 600 行がすべて追加（削除 0）として現れ、展開ページ数が 192 になりました**。**つまり前回は「宣言」を、今回は「本文」を報告しています。**
-
-**今回、新規に現れたページはこの 1 件だけ**で、削除されたページはありません。**`llms.txt` の収録 URL は 203 件のまま、見出しマップも無変更**です。**本文の見出しは見出しマップの 50 件と過不足なく一致**していました（`Requirements` から `See also` まで、h2 が 11・h3 が 35・h4 が 4）。
-
-**本文が 600 行で、今回の差分 2,252 行のうち 4 分の 1 強を占めます。** 章立ては「要件 → eval 実行の仕組み → 最初のスイートを作る → ケースを書いて磨く → フィクスチャとモック → 実行する → 結果を読む → 実行が触れられる範囲 → スイートのリファレンス → トラブルシューティング」で、**リファレンス 4 表（`prompt.md` フロントマター・`case.yaml` 固有フィールド・グレーダーのキーと種類・モックファイルのキー）とトラブルシューティング 13 項目**が末尾に置かれています。詳細はハイライト 1 にまとめました。
-
-- [evals でプラグインをテストする - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/plugin-evals#requirements)
-- [Test plugins with evals - Claude Code Docs (English)](https://code.claude.com/docs/en/plugin-evals#requirements)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**プラグインリファレンス**](#1-プラグインリファレンス) ([日本語](https://code.claude.com/docs/ja/plugins-reference#plugin-eval) / [English](https://code.claude.com/docs/en/plugins-reference#plugin-eval)):  
-  `plugin eval` / `plugin eval init` の 2 サブコマンドとマニフェストの `experimental.evals` が加わり、**実質 103 行（生 133 行）で今回最大のページ更新**。あわせて `**Arguments:**` などの太字ラベルが 11 か所で文章に置き換わった。
-- [**エラーリファレンス**](#2-エラーリファレンス) ([English](https://code.claude.com/docs/en/errors#plugin-eval-is-currently-in-early-access)):  
-  持ち越しの 2 節（`You've hit your monthly spend limit` と `plugin eval is currently in early access`）が本文として到着。**生の差分 550 行に対して実質 60 行**で、差は冒頭の巨大な索引表の桁揃え。
+（本カテゴリの該当はありません。分類の基準は前回同様「実質の差分 50 行以上 かつ 内容の変更を伴うこと」ですが、**今回 `llms-full.txt` で本文が変わったページは changelog の 1 ページだけ**で、その差分も **4 行**です。閾値に届くページはありません）
 <!-- light:updated-pages:end -->
-
-## 1. プラグインリファレンス
-
-**生の差分は 133 行（追加 92・削除 41）、表の桁揃えを揃えて比べた実質は 103 行（追加 77・削除 26）で、今回最大のページ更新です。**
-
-**① `plugin eval` サブコマンドの節が新設されました。** プラグインの eval ケースを実行して採点結果を報告するコマンドで、**Claude Code v2.1.269 以降が必要**です。ターゲットは**プラグインのディレクトリ、単一の `prompt.md` / `case.yaml` ファイル、インストール済みプラグインの `name` または `name@marketplace`、`name@skills-dir`** のいずれかで、**省略時はカレントディレクトリ**。**`--tag`・`--allow-tools`・`--json` より前に置け**と明記されています（前 2 つがリストを取り、`--json` が任意のパスを取るため、後ろに置くと**ターゲットがそのオプションの値として読まれてしまう**ためです）。掲載されたオプションは `--runs`・`-j/--concurrency`（1〜8）・`--model`・`--judge-model`・`--ablation`・`--threshold`（既定 `1.0`）・`--max-cost-usd`・`--allow-tools`・`--scaffold`・`--trust-plugin`・`--mocks`・`--eval-dir`・`--json`・`--no-publish` で、**完全な一覧は `claude plugin eval --help` を見よ**とされています。
-
-**② `plugin eval init` の節も新設されました。** カレントディレクトリのプラグイン用に eval スイートを作ります。**ターミナルでは、プラグインを読んでケースとグレーダーを提案し、試走してからファイルを書く「オーサリングインタビュー」が始まります**。**`--bare` を付けるか端末が無い場合は、代わりに 1 ケース分の空テンプレートを書きます**。**対話中の Claude Code セッションの中から実行すると、そのセッションが従うべきインタビューの指示を印字する**（テンプレートは書かない）という三つ目の振る舞いも書かれました。オプションは `--bare`・`-i/--interactive`・`--eval-dir` の 3 つです。
-
-**③ マニフェストに `experimental.evals` が加わりました。** **プラグインルート配下で eval ケースを置くディレクトリ**を、既定の `evals/` 以外にしたいときに書きます。**`claude plugin eval --eval-dir` が優先**します。マニフェストの例にも `"evals": "quality/evals"` の行が入りました。
-
-**④ 太字ラベルが文章に置き換わりました。** `**Arguments:**` → 「**このコマンドは次の引数を取ります**」、`**Options:**` → 「**このコマンドは次のオプションを受け付けます**」、`**Examples:**` → 「**次の例は一般的な呼び出しを示します**」、`**Aliases:** new` → 「**`claude plugin new` はこのコマンドのエイリアスです**」といった具合で、**`plugin init`・`install`・`uninstall`・`prune`・`enable`・`disable`・`update`・`list`・`details`・`validate`・`tag` の 11 節にまたがる延べ 25 か所**が対象です。**内容は変わっていません**が、実質差分 103 行のうち相当部分をこの書式変更が占めます。
-
-- [プラグインリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/plugins-reference#plugin-eval)
-- [Plugins reference - Claude Code Docs (English)](https://code.claude.com/docs/en/plugins-reference#plugin-eval)
-
-## 2. エラーリファレンス
-
-**生の差分は 550 行（追加 301・削除 249）ですが、桁揃えを揃えると実質 60 行（追加 56・削除 4）です。** 差の 490 行は、**ページ冒頭にある「メッセージ → 節」の巨大な索引表が、行を 2 つ足したことで全体を再描画したもの**です。今回の差分でこの乖離が最も大きいページになりました。
-
-**① `You've hit your monthly spend limit` が到着しました。** プランに含まれる使用量ではこのリクエストを賄えず、**代わりに支払うはずの使用クレジットが支出上限に達した**ときのエラーです。**プランの使用ウィンドウを使い切った場合と、使用クレジットでしか支払えないリクエスト（クレジット課金のモデルへの要求など）の 2 つ**が原因として挙げられています。**メッセージは誰の上限が止めたのかを名指しし、`·` の後ろに引き上げ方が続きます** ―― `monthly spend limit`（claude.ai/settings/usage で自分で上げる）/ `individual spend limit`（管理者に頼む）/ `org's monthly spend limit` / `team's shared budget` / `channel's monthly spend limit`（組織のオーナーかチャンネル管理者が Slack チャンネルの設定で上げる）の 5 通りです。**`team's shared budget` は管理者が所属グループに割り当てたプール予算で、メッセージはグループ名を出しません。** **プランのウィンドウを使い切った場合はリセット時刻も添えられ、誰かが上限を上げなくてもその時刻で復帰**します。**使用量ベースの課金の組織では `spend limit` の代わりに `usage limit` と表示**されます。版境界も 2 つ ―― **v2.1.239 より前はリセット時刻を出さなかった**、**v2.1.268 より前はグループのプール予算でも `individual spend limit` と表示していた**。**小文字の `spend limit reached` はゲートウェイ運用者側の上限**で別節、という案内も添えられました。
-
-**② `plugin eval is currently in early access` が到着しました。** `claude plugin eval` / `plugin eval init` が**何もせず exit 1 する** 2 つのメッセージを扱います。**前者は自分のビルドが v2.1.269（一般提供の最初の版）より古いこと**、**後者は Anthropic がサーバー側でコマンドを止めたこと**を意味し、**後者は手元では何をしても戻らない**と書かれています。対処は `claude --version` → `claude update` → 新しいセッションでやり直し、です。
-
-**③ 使用量ウィンドウの警告が明文化されました。** レート制限の節に、**ウィンドウを使い切る前に「`You've used 85% of your session limit · resets 3:45pm`」のような警告を出しうる**という 1 文が加わりました。
-
-**④ macOS のフォルダ権限が書かれました。** 作業ディレクトリが読めない節に、**`~/Desktop`・`~/Documents`・`~/Downloads`・iCloud Drive のディレクトリで `EPERM` が出るのは、たいてい macOS が端末アプリをそのフォルダから締め出しているため**という段落が入りました。**`sudo` を付けても `ls` が `Operation not permitted` になる**ことが見分け方で、対処は **Cmd+Q で端末を終了して開き直す**、駄目なら **システム設定 > プライバシーとセキュリティ > ファイルとフォルダ** で端末アプリに許可する、です。
-
-**⑤ そのほか 2 点。** `claude import` が使えない理由に**Claude apps gateway 経由**が加わり（後述の「機能改善」参照）、マーケットプレイスのパス検証のエラーメッセージに **`backslash-containing`（バックスラッシュを含むエントリ）** と **`resolves or opens outside its tree`** が足されました。
-
-- [Error reference - Claude Code Docs (English)](https://code.claude.com/docs/en/errors#plugin-eval-is-currently-in-early-access)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の差分は **`llms-full.txt` 1 ファイル・2,252 行**（追加 1,594・削除 658）です。**`llms.txt` と見出しマップ（`en/claude_code_docs_map.md`）には差分がありません**（前回は 3 ファイル・1,070 行でした）。`llms-full.txt` の総行数は **95,413 行から 96,349 行へ 936 行増え**、展開ページ数は **191 から 192** になりました。
+今回の差分は **2 ファイル・10 行**（追加 8・削除 2）です。内訳は `llms-full.txt` が 4 行（追加 4・削除 0）、ページ見出しマップ（`en/claude_code_docs_map.md`）が 6 行（追加 4・削除 2）で、**`llms.txt` は完全に無差分**（356 行・収録 URL 203 件）です。`llms-full.txt` の総行数は **96,349 行から 96,353 行へ 4 行増え**、展開ページ数は **192 のまま**です。**前回が 2,252 行だったので、規模は 200 分の 1 以下**になりました。
 
-本文が変わったページは **56 / 192** で、前回の 53 ページから微増です。**今回は生の差分と実質の乖離が特に大きく**、エラーリファレンスは生 550 行に対して実質 60 行、使用状況の監視は生 185 行に対して実質 37 行、TypeScript SDK リファレンスは生 67 行に対して実質 19 行、設定リファレンスは生 51 行に対して実質 33 行です。いずれも**新しい行を 1〜数行足したことで表全体が再描画された**ためです。
+**入力ディレクトリ（`official-llms-txts/code.claude.com/docs/`）に触れたコミットは本リポジトリに 82 件あり、その隣接コミット間 81 回ぶんの差分のうち、今回の 10 行は 4 番目に小さい規模**です。これより小さいのは 4 行が 3 回（2026年06月21日・2026年08月03日・2026年08月09日）で、**そのうち 2026年06月21日は今回と同じ「changelog に 1 エントリだけが届いた」形**でした。**なおこの段落の日付は取り込みコミットそのものの日付**であり、サマリの `対象期間` や `作成日`（およびアーカイブのファイル名）はそこから 1 日前の PT 基準表記になります ―― 同じ回をアーカイブで探す際は 1 日ずれる点に注意してください。**本文が変わったページは 1 / 192**（前回は 56 / 192）で、**その 1 ページが changelog** です。
 
-実質で 15 行を超えたページは 13 ページありました ―― `plugin-evals`（600・新規）、プラグインリファレンス（103）、changelog（101）、エラーリファレンス（60）、使用状況の監視（37）、すべての設定（33）、インストールのトラブルシュート（30・うち削除 29）、Claude Code on the web（28）、VS Code 拡張（24）、Web クイックスタート（24）、TypeScript SDK リファレンス（19）、Agent SDK の権限（18）、ツールリファレンス（17）です。
+見出しマップの 6 行のうち 2 行は先頭の自動生成スタンプなので、**見出しそのものの変更は 4 行（追加 3・削除 1）**、すべて `goal` ページのものです。
 
-**前回の持ち越し 61 件は 1 件残らず本文として着地しました**（ハイライト 1）。**見出しマップに差分が無いため、新しい持ち越しは 0 件**です。
-
-**changelog に載ったのは v2.1.269 の 1 リリース**（原文の日付表記は 2026年09月11日）だけです。下記の分類では **changelog 由来の項目に版を併記せず**、単一リリースなのでこの導入文で 1 度述べるに留めます。**changelog にしか記述がない項目には参考リンクを付けていません**（本サマリは changelog ページの URL を参考リンクに使わない方針です）。
-
-**新機能**
-
-- **`plugin-evals` の本文 600 行が到着しました**（詳細はハイライト 1 参照） — [日本語](https://code.claude.com/docs/ja/plugin-evals#requirements) / [English](https://code.claude.com/docs/en/plugin-evals#requirements)
-- **プラグインリファレンスに `plugin eval` と `plugin eval init` が加わりました**（詳細は大幅更新 1 参照） — [日本語](https://code.claude.com/docs/ja/plugins-reference#plugin-eval) / [English](https://code.claude.com/docs/en/plugins-reference#plugin-eval)
-- **プラグインマニフェストに `experimental.evals` が加わりました**。eval ケースを既定の `evals/` 以外に置くときのディレクトリで、**`--eval-dir` が優先**します — [日本語](https://code.claude.com/docs/ja/plugins-reference#component-path-fields) / [English](https://code.claude.com/docs/en/plugins-reference#component-path-fields)
-- **`OTEL_METRICS_INCLUDE_REPOSITORY` が追加されました**（v2.1.269）。**メトリクスとイベントにセッションのリポジトリ identity を `vcs.*` 属性として付けます**（既定オフ）。値は**セッションごとに 1 回 `origin` リモートから導出**され、**同じリポジトリの HTTPS リモートと SSH リモートは同じ値**になります。`vcs.repository.url.full`（`.git` を外したブラウザ URL）・`vcs.owner.name`（**リモートパスが 1 セグメントなら省略**）・`vcs.repository.name`・`vcs.provider.name`（`github` / `gitlab` / `bitbucket` / `gitea` を認識できたときだけ）の 4 つで、**値は小文字化され、資格情報・クエリ・フラグメントは入りません**。**`origin` が無い・URL 形でない・囲んでいるリポジトリがホームディレクトリだけ、という場合は省略**されます。**`OTEL_RESOURCE_ATTRIBUTES` で `vcs.*` キーを自分で宣言すると導出値を置き換え**、`vcs.repository.url.full` を宣言した場合は**リモートを一切読みません**。**これらの属性は自分のエクスポーターにだけ流れ、Anthropic のテレメトリはすべての `vcs.*` を落とします** — [English](https://code.claude.com/docs/en/monitoring-usage#repository-attributes)
-- **`copyOnSelect` 設定が加わりました**（持ち越しの着地）。**フルスクリーン描画とエージェントビューで、マウス選択を終えた時点でクリップボードへ自動コピーします**（既定 `true`）。**グローバル設定（`~/.claude.json`）専用で、`settings.json` では無視**されます。フルスクリーン描画が有効な間、`/config` に **Copy on select** として現れます — [日本語](https://code.claude.com/docs/ja/settings-reference#copyonselect) / [English](https://code.claude.com/docs/en/settings-reference#copyonselect)
-- **VS Code 拡張に `install-plugin` ディープリンクが加わりました**（持ち越しの着地）。`vscode://anthropic.claude-code/install-plugin?plugin=<name>&marketplace=<owner/repo>` を開くと **VS Code を起動／前面化し、Claude Code パネルを開き、そのプラグインのスコープ選択で Manage plugins ダイアログを開きます**。**スコープを選ぶまで何もインストールされません**。マーケットプレイスが未設定なら**先に追加を促します**。`marketplace` は省略時 `anthropics/claude-plugins-official`。**プラグインが見つからない場合とインストール済みの場合は、スコープ選択ではなくメッセージで終わります**。**GitHub の README や issue は `http`/`https` 以外のスキームのリンクを外すので、そうした場所ではコードブロックに入れよ**という注意付きです — [English](https://code.claude.com/docs/en/vs-code#share-a-plugin-install-link)
-- **Web クイックスタートに `Remove the /web-setup token` が加わりました**（持ち越しの着地。詳細はハイライト 3 参照） — [English](https://code.claude.com/docs/en/web-quickstart#remove-the-web-setup-token)
-- **トラブルシューティングに `Copied text doesn't reach your local clipboard over SSH` が加わりました**（持ち越しの着地）。**SSH 越しでは Claude Code はローカルのクリップボードツールを動かせない**ため、**tmux の外ではフルスクリーンでの選択や `/copy` を OSC 52 エスケープシーケンスとして端末へ送ります**。**クリップボードへ載せるかは端末の判断**で、**`/copy` は届いたかどうかに関係なく `Copied to clipboard` と報告**し、tmux の外では選択の通知が `sent N chars via OSC 52` になります。**iTerm2 は設定を入れるまで無視し、macOS の Terminal.app は非対応**。回避策は**端末のネイティブ選択キー（Terminal.app は `Fn`、iTerm2 は `Option`）を押しながらドラッグして端末のショートカットでコピー**するか、**リモート側で `CLAUDE_CODE_DISABLE_MOUSE=1` を設定**する、です — [English](https://code.claude.com/docs/en/troubleshooting#copied-text-doesnt-reach-your-local-clipboard-over-ssh)
-- **チェックポイントに `Messages sent mid-turn not checkpointed` が加わりました**（持ち越しの着地）。**Claude の作業中にキューへ入れたメッセージが実行中のターンに届くと、新しいターンを始めずにそのターンへ合流**します。**会話には現れますが、チェックポイントは作られず巻き戻しメニューにも並びません**（**Claude Code が独自のターンとして送ったキュー済みメッセージは通常どおりチェックポイントを得ます**）。消したい場合は**ターンを開始したプロンプトまで巻き戻す**ので、**メッセージが届く前に Claude がした作業ごと巻き戻る**と明記されました — [日本語](https://code.claude.com/docs/ja/checkpointing#messages-sent-mid-turn-not-checkpointed) / [English](https://code.claude.com/docs/en/checkpointing#messages-sent-mid-turn-not-checkpointed)
-- **TypeScript SDK に `What readFile() can read` が加わりました**（持ち越しの着地）。**`readFile()` は Read ツールより狭い範囲しか返しません** ―― **セッションの作業ディレクトリ（`cwd` と `additionalDirectories`）内の通常ファイル**と、**ツール結果など Claude Code 自身のセッション用ファイル**だけです。**`Read` の deny / ask ルールは一致すれば依然としてブロックし、広い `Read` の allow ルールがあってもファイルシステム全体が開くことはありません**。それ以外は `null` に解決されます — [English](https://code.claude.com/docs/en/agent-sdk/typescript#what-readfile-can-read)
-- **エラーリファレンスに 2 節が到着しました**（詳細は大幅更新 2 参照） — [English](https://code.claude.com/docs/en/errors#plugin-eval-is-currently-in-early-access)
-- **トレースとイベントに属性が 7 つ増えました**（v2.1.268）。interaction span の **`parent.source`**（`env` なら受信した `TRACEPARENT` の下にぶら下がった、`none` なら自分でトレースを開始した）、API リクエスト span の **`query_source_safe`**（`query_source` の値域を限った形。**詳細ベータトレーシングの有無に関わらず出る**。`:` は `.` になり、利用者が名付けたエージェントは `agent.custom` になる）と **`first_content_ms`**（**成功した試行の最初のコンテンツブロックまでの時間**。非ストリーミングへ落ちた要求では出ない）と **`error_class`**（`api_timeout`・`server_overload` などの短いトークン）、ツール span の **`tool_name_safe`**（**利用者が名付けた名前を含まない形**。MCP ツールは `mcp_other`、ただし `playwright` の `browser_*` のような決まった形は素通り）・**`bash_command_class`**（`vcs`・`package_manager` など固定リストの分類。**リスト外は `other`、解析できなければ `unparsed`**）・**`bash_argv0`**（固定リスト上のプログラム名。リスト外は `other`）、そしてツール結果 span の **`error_class`**（`error` のカテゴリを識別子形にしたもの。**`error` が完全なメッセージを持つときもカテゴリを運びます**）です。**`query_source` 自体は `ENABLE_BETA_TRACING_DETAILED` ゲートの対象と明記**されました — [English](https://code.claude.com/docs/en/monitoring-usage#span-attributes)
-- **ツール結果イベントにコミット identity が加わりました**（v2.1.269）。`OTEL_LOG_TOOL_DETAILS=1` のとき、**Bash / PowerShell ツールが成功させた `git commit` の `vcs.ref.head.revision`（コミット SHA）・`vcs.ref.head.name`（ブランチ）・`vcs.ref.head.type`（`branch`）**が載ります（**detached HEAD では name と type を省略**）。`tool_parameters` 側も、**`git_commit_id` に加えて `git_branch` が出る**ようになり、**`git_commit_id` はコミットがセッションの作業ディレクトリの HEAD なら完全な SHA、そうでなければ git の短縮 SHA** と具体化されました。**Desktop のワークスペース Bash ツールは `bash_command` / `full_command` / `timeout` だけ**という但し書きが独立した箇条書きに分けられています — [日本語](https://code.claude.com/docs/ja/monitoring-usage#tool-result-event) / [English](https://code.claude.com/docs/en/monitoring-usage#tool-result-event)
-- **サンドボックス設定を 1 セッションだけ変える例が加わりました**。`claude --settings '{"sandbox": {"enabled": true, "allowUnsandboxedCommands": false}}'` で、**ブロックされたコマンドをサンドボックス外で再試行できないセッション**を開始できます — [English](https://code.claude.com/docs/en/sandboxing#sandbox-modes)
-- **kitty キーボードプロトコルに答える端末が「設定不要」の行に入りました**（v2.1.269）。`foot` と **Alacritty 0.16 以降**が例として挙げられ、**`/terminal-setup` が要る側の行は「Alacritty before 0.16」へ限定**されました — [日本語](https://code.claude.com/docs/ja/terminal-config#enter-multiline-prompts) / [English](https://code.claude.com/docs/en/terminal-config#enter-multiline-prompts)
-- **`claude doctor` で自動更新の無効化を確認する手順が加わりました**。ネイティブ／npm インストールでは **`Auto-updates` 行が `disabled (set by env: DISABLE_AUTOUPDATER)` になっているか**を見ます — [日本語](https://code.claude.com/docs/ja/setup#disable-auto-updates) / [English](https://code.claude.com/docs/en/setup#disable-auto-updates)
-- **MCP のクライアントシークレットは後から変更できないと明記されました**。**設定できるのはサーバーを追加するときだけ**で、`claude mcp login` や `/mcp` での認証時は**保存済みのシークレットを使い、入力を求めず `MCP_CLIENT_SECRET` も読みません**。変更したい場合は **`claude mcp remove` してから同じ `--scope` で `--client-secret` 付きで追加し直せ**、とされました — [日本語](https://code.claude.com/docs/ja/mcp#use-pre-configured-oauth-credentials) / [English](https://code.claude.com/docs/en/mcp#use-pre-configured-oauth-credentials)
-- \[VSCode] **エージェントマップとダイアログが 3 つ追加されました** ―― フッターの「N agents」ピルから開く**サブエージェントのマップ**（エージェントごとのカード・Stop agent・読み取り専用トランスクリプト）、**フック用のダイアログ**（user / project / local 設定で閲覧・追加・編集・削除。**managed・plugin・session のフックは読み取り専用**）、**権限ルール用のダイアログ**（同様に**起動オプション・セッション限定・managed のルールは読み取り専用**）です。**Focus view にサブエージェントの進捗行**と、**Switch account 画面の Cancel ボタン**も加わりました
-- \[Claude Code on the web] **クラウドセッションでキュー済みメッセージを取り消せるようになりました**。**Claude が読む前ならキューから外すか、Esc か Up を押すとテキストがメッセージボックスへ戻ります**
-- \[Claude Tag] **GitHub インストールの Connect all / Disconnect の前に確認ダイアログが出るようになりました**。組織全体に及ぶ誤操作を防ぐためです
-- **`/output-style [name]` が追加されました**。出力スタイルの一覧と切り替えができ、**Remote Control 越しやクラウド・その他のヘッドレスセッションでも使えます**
-- **Bash ツールがファイル編集を担うとき、変更したファイルの diff がツール結果に付くようになりました**（設定 `bashEditDiffEnabled`）
-- **`CLAUDE_CODE_GATEWAY_MODEL_DISCOVERY_TIMEOUT_MS` が追加されました**。LLM ゲートウェイの `/v1/models` 探索のタイムアウト（既定 3 秒）を延ばします
-- **`CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS`（1〜256）が追加されました**。Workflow ツールの 1 実行あたりの同時エージェント数の上限を上げます
-- **スピナーに `/focus` を勧めるヒントが追加されました**。プロンプト・1 行の作業要約・応答だけのビューです
-
-**機能改善**
-
-- **`Glob` と `Grep` が既定のツールセットから外れていることが文書化されました**（詳細はハイライト 2 参照） — [日本語](https://code.claude.com/docs/ja/tools-reference#glob-tool-behavior) / [English](https://code.claude.com/docs/en/tools-reference#glob-tool-behavior)
-- **クラウドセッションが到達できるリポジトリの説明が反転しました**（詳細はハイライト 3 参照） — [English](https://code.claude.com/docs/en/claude-code-on-the-web#github-authentication-options)
-- **`dontAsk` の説明が 6 ページで書き直されました**（詳細はハイライト 4 参照） — [日本語](https://code.claude.com/docs/ja/permission-modes#allow-only-pre-approved-tools-with-dontask-mode) / [English](https://code.claude.com/docs/en/permission-modes#allow-only-pre-approved-tools-with-dontask-mode)
-- **Desktop アプリの worktree が「自動」からオプトインへ変わりました**。「**Git リポジトリでは各セッションが自動的に自分の worktree を得る**」という記述が、「**ブランチ名の隣の worktree オプションを選ぶと、そのセッションが自分のコピーを得る**」へ 4 ページで揃えられました（Desktop・Desktop クイックスタート・worktrees・ベストプラクティス）。**これに伴い「Windows では Code タブの動作に Git が必須」という記述が 3 か所から削除**され、代わりに「**自分の worktree で走るセッションに Git が要る**」「**Claude Desktop 1.49585.0 より前の Windows 版は、どのローカルセッションを始めるときも Git を求めていた。worktree を使っていないのにその案内が出るならアプリを更新せよ**」という版境界の記述になりました。セッションの説明からも「コード変更」「互いに干渉しない」といった worktree 前提の語が落ちています — [English](https://code.claude.com/docs/en/desktop#work-in-parallel-with-sessions)
-- **素の `WebFetch` の deny / ask ルールがアーティファクトの読み取りに効かなくなりました**（v2.1.268）。**`WebFetch(domain:claude.ai)` や `*.claudeusercontent.com` を覆う `domain:` ルール、あるいは `Artifact` ルール**なら拒否・確認が効きます。**ルールが読み取りを止めたときは、拒否がそのルールを名指しします**。**v2.1.268 より前は、素の deny ルールがすべてのアーティファクト読み取りをブロックし、素の ask ルールが毎回確認していました**。アーティファクトのページ側にも対になる 1 段落が入りました — [English](https://code.claude.com/docs/en/permissions#allow-or-deny-every-fetch)
-- **シンボリックリンクされたディレクトリ越しに書いた deny / ask ルールが、実体の場所にも効くと明記されました**（v2.1.268）。**macOS と Linux で、`//`・`~/`・`/` パターンのルールが対象**です。例として、**`/etc` が `/private/etc` に解決される macOS では `Read(//etc/**)` が `/private/etc/hosts` もブロック**します。**v2.1.268 より前は、実体の場所で与えられたパスには適用されませんでした**（前回ハイライト 5 で挙げた changelog 項目の、ドキュメント側の受け皿です） — [English](https://code.claude.com/docs/en/permissions#read-and-edit)
-- **チェックポイントの作成単位が「送信した各プロンプト」から「ターンを開始するプロンプト」へ改められました**。チェックポイントのページ・用語集・ベストプラクティスの 3 ページで揃い、**巻き戻しメニューの一覧からもターン中に合流したメッセージが除かれる**と明記されました — [日本語](https://code.claude.com/docs/ja/checkpointing#how-checkpoints-work) / [English](https://code.claude.com/docs/en/checkpointing#how-checkpoints-work)
-- **ゲートウェイのサインインキーの扱いが 4 ページで整理されました**。**`forceLoginGatewayUrl` と `forceLoginMethod` の `"gateway"` 値は、サーバー管理設定からは決して読まれません**。したがって**サーバー管理設定が選ばれていても、MDM ポリシーや managed settings に設定した値を隠すことはなく**、**マシン上の管理ソースのうちポリシーキーを持つ最上位のものが供給**します（**それより下位のソースや HKCU レジストリの値は無視**）。サーバー管理設定のページでは「**マージしない規則の例外は 2 種類**」が「**3 種類**」になり、この項目が加わりました。認証のページからは 2 段落分の説明が削られ、**`forceLoginOrgUUID` と `forceLoginMethod` の `"claudeai"` / `"console"` 値は例外ではないので両方に置け**という 1 文へ圧縮されています — [日本語](https://code.claude.com/docs/ja/settings-reference#managedsourcesbehavior) / [English](https://code.claude.com/docs/en/settings-reference#managedsourcesbehavior)
-- **`/design-sync` と `/import` が Claude apps gateway 経由でも使えないと明記されました**。**理由も「プロバイダー別の制約」から「claude.ai を必要とするが、CLI がゲートウェイセッションでは claude.ai に接続しない」「フィーチャーフラグの取得をゲートウェイセッションでは行わない」へ整理**されました。ゲートウェイの可用性表にも**この 2 行が新設**され、コマンド一覧・機能可用性・エラーリファレンスの 3 ページが同じ表現に揃っています — [English](https://code.claude.com/docs/en/claude-apps-gateway#availability-and-limitations)
-- **`context: fork` は会話の fork ではない、という `<Note>` が加わりました**。「**名前に反して、`context: fork` のスキルは現在の会話の fork では走らない。fork ならこれまで話した内容をすべてサブエージェントに渡すことになる。履歴に依存するタスクなら `context: fork` ではなく会話を fork せよ**」。スキル側の説明も「**`agent` フィールドで指定した型のサブエージェントを新しく起こし、スキル本文をプロンプトとして渡す。会話履歴は見えないので、指示は単独で成立していなければならない**」へ具体化され、サブエージェント側の対になる `<Note>` も「**どちらの場合もサブエージェントは会話履歴を持たずに始まる**」へ改められました — [English](https://code.claude.com/docs/en/skills#run-skills-in-a-subagent)
-- **サブエージェントの `disallowedTools` に指定子を書いてもツールごと消えると明記されました**。**`Bash(git push *)` のようなエントリでも、一致するコマンドだけでなく Bash ツール自体がサブエージェントから外れます**。**Bash は残して特定コマンドだけ止めたいなら、設定の `permissions.deny` に Bash の deny ルールを置け**（**メイン会話とサブエージェントの双方に効く**）という案内が加わりました — [English](https://code.claude.com/docs/en/sub-agents#available-tools)
-- **`advisor` の受理条件が緩みました**。メインモデルが **Fable 5.1 または Fable 5** のとき、受理される advisor は「Fable 5.1、または同じ Fable の版」から「**Fable 5.1 または Fable 5**」へ。**Fable 5.1 のメインモデルに対して Fable 5 の advisor が拒否される、という但し書きは削除**されました — [日本語](https://code.claude.com/docs/ja/advisor#choose-an-advisor-model) / [English](https://code.claude.com/docs/en/advisor#choose-an-advisor-model)
-- **フックの JSON が無視される原因が 2 つに整理されました**。従来の「**シェルプロファイルの無条件 `echo` などが先に標準出力へ書くため、出力が `{` で始まらない**」に加えて、「**フィールドの階層が違う**」（`permissionDecision` は `hookSpecificOutput` の中であってトップレベルではない）が明示されました。**トップレベルに置いた `permissionDecision` や `additionalContext` は、JSON としては解析されるがエラーも出さずに無視される**ため、**`claude --debug` のデバッグログで `Hook JSON output had unrecognized keys` を探せ**、という手順が加わっています — [日本語](https://code.claude.com/docs/ja/hooks-guide#hook-json-has-no-effect) / [English](https://code.claude.com/docs/en/hooks-guide#hook-json-has-no-effect)
-- **インストールのトラブルシュートで、curl 失敗時の解決手順が参照 1 行に集約されました**。ネットワーク到達性の確認コマンドと `403` / `5xx` / 名前解決失敗の読み分け、Homebrew / winget での代替インストール手順が削除され、**「`Check network connectivity` のチェックで `downloads.claude.ai` に到達できるか試せ。到達できたなら一時的な失敗なので再試行せよ。代替のインストール方法も試せる」**という 2 文になりました（**実質 30 行のうち 29 行が削除**で、今回唯一の「削除が主」のページです） — [日本語](https://code.claude.com/docs/ja/troubleshoot-install#curl-56-failure-writing-output-to-destination) / [English](https://code.claude.com/docs/en/troubleshoot-install#curl-56-failure-writing-output-to-destination)
-- **カスタム属性と `vcs.*` の優先関係が加わりました**。「**カスタムキーが `user.id` や `session.id` などの標準属性を上書きすることはない**」という説明に、**`vcs.*` のリポジトリ属性だけは例外**という但し書きが付きました — [日本語](https://code.claude.com/docs/ja/monitoring-usage#multi-team-organization-support) / [English](https://code.claude.com/docs/en/monitoring-usage#multi-team-organization-support)
-- **`SDKLocalCommandOutputMessage` は発行されないと明記されました**。「`/voice` や `/usage` のようなローカルコマンドの出力」という説明が、「**Claude Code はこのメッセージ型を発行しない。`/context` や `/usage` をプロンプトとして送ると、その出力は `SDKAssistantMessage` として届く**」へ変わりました — [日本語](https://code.claude.com/docs/ja/agent-sdk/typescript#sdklocalcommandoutputmessage) / [English](https://code.claude.com/docs/en/agent-sdk/typescript#sdklocalcommandoutputmessage)
-- **`WebFetchOutput` の `artifactRead` の説明が書き直されました**。**Claude Code 自身が持つアーティファクト読み取りの記録**であり、**セッション再開時に読み戻して、後の公開が正しい版の上に載るようにするためのもので、利用者のコードが反応する必要はない**と明記されました。`slug` はアーティファクト名、**`ver` は記録した版で、記録しなかった場合は無い**、`seeded: false` は**完全なソースが Claude に届かなかった読み取り**を示します — [English](https://code.claude.com/docs/en/agent-sdk/typescript#webfetch)
-- **`SDKControlInitializeResponse` の `true` の説明が読みやすく分割されました**。「セッション最初の initialize がこれを返す。CLI の stdin 越しに送った繰り返しの initialize も同様」という文が 2 文に分かれただけで、**意味は変わっていません** — [日本語](https://code.claude.com/docs/ja/agent-sdk/typescript#sdkcontrolinitializeresponse) / [English](https://code.claude.com/docs/en/agent-sdk/typescript#sdkcontrolinitializeresponse)
-- **プロンプトキャッシングに `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` の但し書きが加わりました**。会話の途中で足すシステムコンテキスト（ファイル変更の通知など）は、**この変数を設定するとキャッシュ対象として印を付けず、そのまま送られます** — [English](https://code.claude.com/docs/en/prompt-caching#where-the-cache-lives)
-- **`skipDangerousModePermissionPrompt` の有効範囲が限定されました**。プロジェクトスコープの MCP サーバーの確認を飛ばすのは、**この設定が「ユーザー設定または管理設定に」置かれている場合**に限る、と明記されました — [English](https://code.claude.com/docs/en/mcp#mcp-installation-scopes)
-- **`/model` の「このセッションだけ」の切り替えが説明されました**。ピッカーの `s` キーは「**このセッションだけ切り替え、既定は変えない**」と具体化され、**`modelPicker:thisSessionOnly` でキーを付け替えられる**ことが加わりました。**`/model <name>` を直接打つのは `Enter` と同じなので、セッション限定にしたければ `/model` でピッカーを開いて `s` を押せ**、という案内も入っています — [English](https://code.claude.com/docs/en/model-config#setting-your-model)
-- **管理設定のマージ表に条件付きキーが 1 つ増えました**。「**このうち 3 つのキーが独自の条件を加える**」が「**表に出ていない条件を加えるキーがいくつかある**」へ変わり、ゲートウェイのサインインキーの説明が差し替えられました。あわせて**「最上位のソースのみから読む」行の `forceLoginMethod` が、`"claudeai"` と `"console"` の値に限定**されています — [日本語](https://code.claude.com/docs/ja/settings-reference#managedsourcesbehavior) / [English](https://code.claude.com/docs/en/settings-reference#managedsourcesbehavior)
-- **`ANTHROPIC_CUSTOM_HEADERS` の承認条件の書き方が整理されました**。「そうなるのは、名前が有効な HTTP ヘッダートークンでない行や、値が運べない文字を含む行も同じ」という追記形が、**独立した 1 文**へ書き直されました（意味は同じです） — [English](https://code.claude.com/docs/en/server-managed-settings#security-approval-dialogs)
-- **サーバー管理設定のヘルパー失敗時のメッセージが具体化されました**。**非ゼロ終了では helper の stderr（空なら stdout）を理由に含め**、**タイムアウトでは `timeoutMs` の上限を名指しし、helper の出力は一切含めない**と分かれました — [日本語](https://code.claude.com/docs/ja/settings-reference#policyhelper) / [English](https://code.claude.com/docs/en/settings-reference#policyhelper)
-- **セルフホストランナーのアイドル解放に猶予が入りました**。「利用者を待っている場合、またはターンが終わってバックグラウンドタスクだけを抱えている場合は即座に解放する」が、「**利用者を待っている場合は即座に解放する。ターンが終わってバックグラウンドタスクだけを抱えている場合は、最大 60 秒それらの完了を待ってから解放する**」へ分かれました — [English](https://code.claude.com/docs/en/self-hosted-environments-deploy#some-sessions-dont-count-as-idle)
-- **`--effort ultracode` の説明が「オーバーライド」から「フラグ」へ言い換えられました**。「`/effort ultracode` は設定キー無しで 1 セッションだけ有効にする。`--effort ultracode` も同じで v2.1.203 以降が必要」という 1 文が 2 文に分かれています — [English](https://code.claude.com/docs/en/settings-reference#ultracode)
-- **ターミナル設定のカラートークンの説明が 4 か所直りました**。`warning` は「オートモードの**枠線**」から「オートモードの**インジケーター**」へ、`promptBorder` は「**Manual モードでの**入力ボックスの枠線」から「入力ボックスの枠線」へ、`planMode` は「プランモードのアクセントと枠線」から「**プランモードのアクセント・プランのメッセージ・プランモードのダイアログ**」へ、`autoAccept` は「アクセントと枠線」から「アクセント」へ — [English](https://code.claude.com/docs/en/terminal-config#create-a-custom-theme)
-- **フルスクリーンの再起動で引き継ぐフラグに `--system-prompt-snapshot` が加わりました** — [English](https://code.claude.com/docs/en/fullscreen#enable-fullscreen-rendering)
-- **Google Cloud のセットアップウィザードの説明が「検出する」から「尋ねる」へ変わりました**。プロジェクトとリージョンは自動検出ではなく**ウィザードが尋ねます** — [English](https://code.claude.com/docs/en/google-vertex-ai#sign-in-with-agent-platform)
-- **コーポレートランチャーのプロセス名の説明が言い換えられました**。「**バージョン付きのバイナリ名が表示される**」から「**`claude bg-pty-host` や `claude bg-spare` のラベルが表示されなくなる**」へ。**ラベルを失うのは副作用であって隠蔽ではない**という結論は同じです — [English](https://code.claude.com/docs/en/corporate-launcher#what-the-launcher-covers)
-- **ファストモードのメッセージが短くなりました**。`/fast` の表示が「Fast mode requires usage credits · /usage-credits to turn them on」から「**Fast mode requires usage credits**」へ — [日本語](https://code.claude.com/docs/ja/fast-mode#requirements) / [English](https://code.claude.com/docs/en/fast-mode#requirements)
-- **管理者向けのコスト解説に支出上限の 3 変種が加わりました**。`individual spend limit`・`org's monthly spend limit`・`team's shared budget` は**そのリクエストが使用クレジットに課金されるはずで、そのクレジットが管理者の設定した支出上限に達した**ことを意味し、**Admin settings > Usage** で該当する上限を上げます。**プランのリセット時刻が併記されているなら、開発者は待つこともできます** — [English](https://code.claude.com/docs/en/costs#when-a-developer-asks-about-a-limit)
-- **プラグイン関連 3 ページから eval への導線が加わりました**。プラグイン作成ページには「**`--plugin-dir` で試すのは動くと分かるだけ。実際にどれくらい Claude が手を伸ばし正しい結果を出すかは `claude plugin eval` で測れ**」、マーケットプレイスのページには「**検証はファイル構成を見るもの。現実的なプロンプトで Claude の振る舞いが変わるかは、公開前に eval スイートで試せ**」、スキルのページには**`claude plugin eval` と `skill-creator` の使い分け**（前者はプラグイン同梱のスキル向けで CI をゲートでき、後者は会話の中で 1 つのスキルを回す用。**2 つの形式は互換ではない**）が入りました — [English](https://code.claude.com/docs/en/plugins#test-your-plugins-locally)
-- **`CLAUDE_CODE_PROVIDER_MANAGED_BY_HOST` が上書きするキーに `modelPicker` が加わりました** — [English](https://code.claude.com/docs/en/settings#settings-precedence)
-- **ゲートウェイ設定のスキーマの「開いたキー」の言い方が変わりました**。「これらの開いたキーは `env`・`pluginConfigs`・`permissions` 配下**である**」から「**を含む**」へ（列挙が網羅でないことを示す変更です） — [English](https://code.claude.com/docs/en/claude-apps-gateway-config#what-goes-in-cli)
-- **サンドボックス環境のページで表現が 3 か所直りました**。サンドボックス版 Bash ツールの説明から「**のみ**」が外れ、「MCP サーバーとフック」が「MCP サーバーと**コマンドフック**」へ具体化され、`--cloud` のバンドルの説明から「GitHub が接続されていなければ」という条件が外れました（ハイライト 3 と対になる変更です） — [English](https://code.claude.com/docs/en/sandbox-environments#sandboxed-bash-tool)
-- **WSL の管理設定の確認手順が集約されました**。`/status` の `Setting sources` 行の読み分けを 3 行で説明していた箇所が、**管理設定ページの `Read the source in /status` への参照 1 行**に置き換わりました — [English](https://code.claude.com/docs/en/admin-setup#wsl-sessions-in-claude-code-desktop)
-- \[Claude Tag] **ブロックされたモデル切り替えの扱いが直りました**。**組織が有効にしていないモデルへの切り替えを受け入れて黙ってフォールバックモデルで答える**代わりに、**断ったうえで管理者が有効にできると告げる**ようになりました。**スケジュール済みのルーチンが、常に新しいトップレベル投稿を作る代わりに既存スレッドへ返信できる**ようになり、**進捗チェックリストのタイムスタンプが各読者のローカル時刻と更新からの経過時間を示す**ようになりました
-- \[Claude Code on the web] **クラウド環境の管理ページが全件を一覧するようになりました**。**5 行で打ち切って「Show more」に隠す**（その Show more に手が届かないことがあった）のをやめています。**Free プランの利用者が claude.ai/code を開くと、行き先の無い「Disabled by org admin」ページではなくプランのページが開く**ようにもなりました
+**新機能に相当する項目はありません。** 今回届いた changelog は 1 項目で、それは修正です。
 
 **バグ修正**
 
-以下はすべて v2.1.269 の項目です。**`!` 始まりの権限ルールと `tee` の書き込み先、プラグインアーカイブの権限はハイライト 5 でまとめて扱っています。**
+- **Bash の読み取り専用 git コマンドが、セッションをしばらく走らせたあとに予期せず権限を尋ねるようになっていた問題が修正されました**（v2.1.270・**v2.1.269 の回帰**と原文に明記）。対応する権限ページの記述は無変更で、**ドキュメントどおりの挙動へ戻す修正**です（詳細はハイライト 1 参照）— [権限を設定する](https://code.claude.com/docs/ja/permissions#read-only-commands) / [Configure permissions](https://code.claude.com/docs/en/permissions#read-only-commands)
 
-- **出力トークンの上限で応答が切られ自動再開された、その次のターンでプロンプトキャッシュが部分的に無効化される**問題を修正
-- **Claude の思考の途中で割り込んだセッションを再開すると、それ以前のコンテキストの送り直し方が変わってキャッシュの再利用を損なう**場合を修正
-- **クラウドセッションで、最初のリクエストの前にサーバー設定を短く待つ**ようにしてキャッシュミスを削減
-- **kitty プロトコルの端末で F1 / F2 / F4 が効かない、st で Delete が効かない、rxvt-unicode で Alt+矢印が Escape として扱われる、WezTerm で Shift+記号が非シフトのキーを打つ**問題を修正（**v2.1.247 の回帰**）
-- **端末が能力照会に返す応答（`^[[?1;2c`）が起動時に迷子のテキストとして現れる**問題を修正
-- **ssh やブラウザ端末のような遅い接続で、`22c` や端末の色・版の応答がプロンプトへ打ち込まれる**問題を修正
-- **フルスクリーンで端末をリサイズすると、トランスクリプトの上端・下端の行が空白になる**問題を修正
-- **rxvt-unicode でフルスクリーンを出入りしたあと端末のブロックカーソルが UI の下に残る**問題と、**フルスクリーンで外部エディタから戻ったあとカーソルブロックが残る**問題を修正
-- **外部エディタ（Ctrl+G）から戻ると UI が二重に描画される**問題（フルスクリーン外／Konsole）を修正
-- **権限ルール・オートモードのルール・ディレクトリ追加・セッション改名・フィードバックレビューの入力欄で、端末のネイティブカーソルが有効だとカーソルが消える**問題を修正
-- **コンパクション後に Claude へ伝える git status が、セッション開始時のものだった**問題を修正
-- **`/compact` と自動コンパクトが要約できる完了済みのやり取りを持たないとき、セッションが `Prompt is too long` で恒久的に詰まる**問題を修正（主に巨大なプロンプトの Agent SDK セッション）
-- **`/goal` が API エラー・ネットワーク切断・トークン上限のあと無言で停止する**問題を修正（**バックオフして再試行するか、理由を述べて停止**し、使用量上限ならリセットまで待ちます）
-- **`/btw` の回答に架空のツール呼び出しと出力が含まれる**問題を修正（**サイド質問にそれを書かないよう指示し、現れたものは「実行されていない」と印を付けます**）
-- **`CLAUDE_CODE_RESUME_INTERRUPTED_TURN` が、6 時間以上前（または `CLAUDE_CODE_RESUME_INTERRUPTED_TURN_MAX_AGE_MS` 設定時はそれより古い）に API エラーで失敗したターンを再実行する**問題を修正
-- **`--output-format stream-json` の結果の `permission_denials` から、パススコープの deny ルールでブロックされた Read / Edit / Write の呼び出しが漏れる**問題を修正
-- **管理設定で有効にした組織のプラグインが、ヘッドレスセッションと Claude Desktop で読み込まれない**問題を修正（**次のセッションから読み込まれます**）
-- **同期したプラグインの MCP サーバーが、リモートセッションの再開時に接続しない**問題を修正
-- **MCP サーバーが、設定でサーバー URL のクエリパラメータの順序だけが変わったときに再接続する**問題を修正
-- **プラグインの `headersHelper` の同意プロンプトが、別のホストと読み違えうる URL パスを表示する**問題を修正
-- **プラグインのエラーが、`@` で始まるフォルダ名を含む Windows の相対パスを `[redacted URL]` と表示する**問題を修正
-- **プラグインの LSP サーバーが `shutdown` のパラメータを拒む（rust-analyzer など）と、セッション終了後も走り続ける**問題を修正（**`shutdown` が失敗しても `exit` を送ります**）
-- **再開したヘッドレスセッションが、ターンの途中でモデルを切り替えたりリクエストを再試行したりすると、そのターンの返信を失う**問題を修正
-- **バックグラウンドタスクのディスク上の記録から、端末のエスケープコード・改行・過大なテキストがタスク一覧と通知へ届く**問題を修正
-- **CMYK の JPEG が「cannot decode」で添付できない**問題を修正（**他の JPEG と同様に変換・リサイズされます**）
-- **スキームなしで設定した gRPC のテレメトリエンドポイントについて、管理設定の承認ダイアログがコレクターを名指ししない**問題を修正
-- **`/fork` のレシートを 1 秒未満の間隔で連打すると、現在のツールの完了を待つ間セッションがすぐにバックグラウンドへ行かない**問題を修正
-- **attribution のリマインダーが、コミットとプルリクエストの attribution を禁じる CLAUDE.md やメモリのルールを上書きする**問題を修正（**管理設定が定めた行は引き続き適用されます**）
-- **日本語・中国語・タイ語など、単語間にスペースを置かない言語のテキストでプロンプト候補が落ちる**問題を修正
-- **GNOME Terminal と Konsole の、同期出力に対応していない版で、端末名から対応を推測していた**問題を修正
-- **SDK や Desktop アプリ経由のセッションが、他のセッションのエージェント一覧で不明な状態として表示される**問題を修正
-- **`/insights` が、既定の Opus モデルへ到達できないアカウントの Bedrock・Vertex・Foundry・ゲートウェイ構成で失敗する**問題を修正（**そこではセッションのモデルを使います**）
-- **別の Claude Code プロセスが同時にログインを更新すると、組織のポリシー制限がセッションに読み込まれない**問題を修正
-- **Bedrock・Vertex・ゲートウェイを使う Claude Desktop のセッションが、ターン終了時の「Claude が何を必要としているか」の通知文を得ない**問題を修正
-- **バックグラウンドエージェントを表示しているとき、名前や説明に改行があるか端末より広いと、プロンプトボックスの上枠が余分な行に割れる**問題を修正
-- **リモート／ヘッドレスのセッションが、バックグラウンドエージェントの実行中に「waiting for your input」と報告する**問題を修正（**`CLAUDE_CODE_BG_TASKS_REPORT_RUNNING=0` で従来の挙動に戻せます**）
-- **Windows: バックグラウンドへ送った PowerShell のツールコマンドが、Claude Code の終了で止まる**問題を修正
-- \[VSCode] **セッション一覧が `CLAUDE_CONFIG_DIR` の設定後も既定フォルダのセッションを残す**、**プランのプレビューが遅れて読み込まれるとコメント欄を隠すか古いプランを表示する**、**Claude タブを閉じたあとプランのプレビューが行き先の無いコメントを受け付ける**、**最後の返信の後にコンパクトして閉じたセッションのキャッシュ時計と再開通知**、**Remote Control 有効時に拡張で改名したセッションが claude.ai/code で旧名のまま**、**復元した Claude タブがクリックするまで一覧で「開いている」と数えられずその行が 2 つ目のタブを開く**、**Switch account で同じアカウントに入り直すとタブが解除済みの使用量警告を忘れる**、**サイドバーの使用量メーターに失効した週次上限の行が残る**、などを修正
-- \[Claude Tag] **Slack が一時的にレート制限したときに失敗の通知が落ち、スレッドが無言になる**問題を修正（**通知は再試行されます**）。**Claude がファイルを同じメッセージに添付すると表が生のパイプ文字として投稿される**問題、**Claude が非アクティブなチャンネルのトップレベルでの `@Claude !restart` が無関係な会話を始める**問題、**Slack のアクセス設定でプラグイン行がラベル無しの生 ID で表示され、オフにする手段が無い**問題、**Slack から始めたセッションの共有バナーが「組織全体がリンクを開ける」と称する**問題も修正
-- \[Claude Code on the web] **クラウドセッションでの `/model default` が、Claude Code の使用モデルを制限している組織で以後のメッセージをすべて失敗させる**問題、**一度きりのスケジュール済みルーチンが一時的なサーバーエラーのあと 2 回走る**問題、**サブエージェントを使うルーチンの実行が早く終わったと扱われ、本当の失敗後の再試行を飛ばすか重複実行を始める**問題、**Claude がリポジトリのサブフォルダで作業したときクラウドセッションのトランスクリプトのファイルリンクが GitHub の 404 を開く**問題を修正
+**機能改善**
+
+- **`goal` ページの「評価の仕組み」配下に、ターンの失敗を扱う節の組み替えが予告されました**。`When a turn fails` が h3 として入り、既存の `Errors you have to fix clear the goal` がその下の h4 へ降り、`Other errors retry or pause the goal` が加わります。**本文は未着**で、現行の記述は「その他の失敗の後はゴールをアクティブなままにする」という 1 文のままです（詳細はハイライト 2 参照）— [Claude をゴールに向かって動作させ続ける](https://code.claude.com/docs/ja/goal#how-evaluation-works) / [Keep Claude working toward a goal](https://code.claude.com/docs/en/goal#how-evaluation-works)
 
 **その他**
 
-- **`/ultrareview --post` が、指摘が届いた時点で PR コメントを直接投稿してそのリンクを印字する**ようになりました（**2 つ目のクラウドセッションを起こして投稿する方式をやめています**）
-- **セッションのスクラッチパッドへ保存するアーティファクトのデータベース読み取りが、作業フォルダの承認で止まらなくなりました**
-- **クラウドセッションで claude.ai から同期したスキルの名前が `anthropic-skills:<name>` になりました**（Claude Desktop と同じ。**他に使っているものが無ければ素の名前も通ります**）
-- \[VSCode] **セッションタブの右クリックメニューとエディタタイトルバーの `...` メニューから Claude Code の項目が削除されました**（**メニューを開いたタブに対して作用できなかった**ため）。**メッセージボックスの現在ファイルのチップは、Hide トグルに代えて `X` で外す**形になりました
-- **アップグレードのお知らせページ（`whats-new/`）には今回も差分がありません**（後述）
+- 見出しマップ先頭の自動生成スタンプが **2026年09月12日 02時23分32秒 UTC から 2026年09月13日 20時22分28秒 UTC へ**進みました。対象期間中に上流の再生成が走ったことを示します
 
-**参考リンクについて**: **今回、日本語版のリンクを付けられるのは 6 ページです** ―― `plugin-evals`・プラグインリファレンス・ツールリファレンス・権限モード・チェックポイント・すべての設定です。作成時点で公開中の日本語版を実際に取得して確認したところ、**この 6 ページは今回の変更を反映済み**でした（`plugin-evals` は全節が翻訳済みで要件も「v2.1.269 以降」、プラグインリファレンスは `plugin eval` / `plugin eval init` の 2 節と `experimental.evals` の行、ツールリファレンスは `Glob` / `Grep` が既定から外れる記述と `bfs` / `ugrep` への言及、権限モードは `dontAsk` 節の新しい本文、チェックポイントは新設節と「ターンを開始するプロンプト」の書き換え、すべての設定は `copyOnSelect` の行）。**一方、Claude Code on the web・使用状況の監視・スキルは未追従**です（Claude Code on the web は撤回されたはずの `<Note>` が残り、使用状況の監視は `OTEL_METRICS_INCLUDE_REPOSITORY` と `vcs.*` への言及が無く、スキルは `context: fork` の `<Note>` も `claude plugin eval` への言及もありません）。**エラーリファレンスは部分的な追従**で、`plugin eval is currently in early access` の節は日本語版にもありますが、**`You've hit your monthly spend limit` はまだ届いていません**。本サマリで同ページを扱う箇所は両方の節にまたがるため、**安全側で英語版のみ**にしました。**その他のページは日本語版の確認を行っていないため英語版のみ**としています。
+**参考リンクについて**: **今回、日本語版のリンクを付けられるのは権限ページと `goal` ページの 2 件で、いずれも付けています。** 作成時点で公開中の日本語版を実際に取得して確認したところ、**権限ページの「読み取り専用コマンド」節（`#read-only-commands`）は全訳済みで、`git` の読み取り専用形式を含むコマンド一覧も `blockReadsOutsideWorkingDirectories` への言及も英語版と一致**していました。**`goal` ページも全訳済み**で、こちらは**英語版の本文と同じく新しい見出しが未着**という状態です ―― 日本語版だけが遅れているわけではないため、**古い内容へ誘導する懸念はありません**（本文が届いた時点で日本語版と英語版は同時に古くなります）。**changelog ページへのリンクは本サマリの方針どおり付けていません。**
 <!-- light:minor-updates:end -->
 
 ## 新着情報
 
 <!-- light:whats-new:start -->
-（今回の対象期間には `whats-new/` 配下のページに差分がありませんでした。本文が変わった 56 ページはいずれもリファレンス・ガイド系と changelog です。最新の週間ダイジェストは 10 回前のサマリで扱った Week 34（2026年08月17日～21日）のままで、新しい週のダイジェストの追加も既存ページの訂正もありません。**`whats-new/` の無差分は 10 回連続**です。新設ページの本文 600 行が着地し、98 項目の changelog が載り、クラウドの GitHub アクセスモデルの記述が撤回された今回の規模を考えると、リリースノート系の更新経路だけが 3 週間以上止まっている状態が続いています）
+（今回の対象期間には `whats-new/` 配下のページに差分がありませんでした。本文が変わったのは changelog の 1 ページだけです。最新の週間ダイジェストは 11 回前のサマリで扱った Week 34（2026年08月17日～21日）のままで、新しい週のダイジェストの追加も既存ページの訂正もありません。**`whats-new/` の無差分は 11 回連続**で、取り込み単位で数えると **2026年08月23日 の取り込みを最後に 19 回連続**です。リリースノート系の更新経路だけが 3 週間止まったままになっています）
 <!-- light:whats-new:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-11.md](./archives/latest/2026-09-11.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-11.md](./archives/latest-detail/2026-09-11.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-12.md](./archives/latest/2026-09-12.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-12.md](./archives/latest-detail/2026-09-12.md)
 
 <!--
-base_commit: 49baf315f926d9366d24e87daff4bb29ba022a17
-head_commit: f42c3bbc7514f65d9b93da10d594de373927552d
-generated_at_full: 2026-09-13T15:06:39+09:00
+base_commit: f42c3bbc7514f65d9b93da10d594de373927552d
+head_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
+generated_at_full: 2026-09-14T15:01:59+09:00
 -->

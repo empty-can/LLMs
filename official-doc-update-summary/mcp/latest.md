@@ -1,45 +1,47 @@
 ---
-対象期間: 2026年09月02日 〜 2026年09月08日
-作成日: 2026-09-08
+対象期間: 2026年09月08日 〜 2026年09月13日
+作成日: 2026-09-13
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の差分は、新設された Working Group の charter ページ 1 件の追加に尽きます。索引 `llms.txt` に 1 行、本文を収める `llms-full.txt` に 119 行が加わり、削除行は 0 行です。既存ページの記述には 1 行の変更もありません。
+今回の対象期間の差分は索引 `llms.txt` に加わった 2 行だけで、削除行はなく、ページ本文を収める `llms-full.txt` には 1 行の変更もありません。加わった 2 行はいずれも Skills Extension に関するもので、拡張ページ `extensions/skills/overview` と `SEP-2640: Skills Extension` が同じ断面で索引に載りました。
 
 主要なものを以下に挙げます。
 
-1. Resources を読み取り専用から双方向へ広げることを掲げた Filesystems Working Group の charter が追加された。create / update / delete と、本文を取得せずに存在・サイズ・最終更新を返すメタデータ読み取り `stat` を Extensions Track の SEP 1 本にまとめる方針で、楽観的並行性制御と、書き込みが `notifications/resources/updated`・`ttlMs`・`cacheScope`・`lastModified` とどう噛み合うかまでを射程に含む
+1. Skills Extension の拡張ページと SEP-2640 の 2 件が索引に同時追加された。索引上では MCP Apps・Tasks と同じ extensions ブロックと SEP 一覧に並ぶが、本文は両ページとも `llms-full.txt` に未収録で、拡張の識別子・プロトコル仕様・対応クライアントは今回の入力からは確認できない
 ```
 
 ## ハイライト
 
-1. [**Resources を双方向化する Filesystems Working Group の charter が追加**](./latest-detail.md#1-resources-を双方向化する-filesystems-working-group-の-charter-が追加):  
-  MCP Resources を読み取り専用から書き込み可能へ広げることを狙う新 Working Group の charter が収録された。エージェントが入力を読んだのと同じサーバーへ結果を書き戻せるようにするのが目的で、成果物は Extensions Track の SEP 1 本。Resources と並ぶ `files/*` プリミティブを別に立てる案（SEP-1708 が提案し 2026年01月23日 にクローズ済み）は明確に対象外とされ、あくまで Resources の拡張として進む。今回の差分はこのページの追加だけで、索引のエントリは 349 件から 350 件になった。
+1. [**Skills Extension の拡張ページと SEP-2640 が索引に追加**](./latest-detail.md#1-skills-extension-の拡張ページと-sep-2640-が索引に追加):  
+  `extensions/skills/overview`（説明文「Discover and read Agent Skills from MCP servers」）と `seps/2640-skills-extension`（同「Skills Extension」）の 2 行が索引に加わった。今回の差分はこの 2 行の追加のみで、削除行はない。索引のエントリ行数は 350 件から 352 件、ユニーク URL は 345 件から 347 件になっている。本文は両ページとも `llms-full.txt` に未収録で、拡張の中身は入力から確認できない。
 
 ## 新規追加されたページ
 
-今回索引に増えたページは次の 1 件です。
+今回索引に増えたページは次の 2 件です。いずれも本文は `llms-full.txt` に未収録で、ここで述べられるのは索引エントリそのものと、既存の収録済みページから読み取れる周辺事情に限られます。
 
-- [**Filesystems Charter**](./latest-detail.md#1-filesystems-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems)):  
-  MCP Filesystems Working Group の charter ページ。Resources への書き込み操作（create / update / delete / `stat`）と楽観的並行性制御、変更通知・キャッシュとの噛み合わせを 1 本の Extensions Track SEP にまとめることを目標に掲げる。索引・本文とも今回の差分で同時に追加された。
+- [**Skills**](./latest-detail.md#1-skills) ([MCP Docs](https://modelcontextprotocol.io/extensions/skills/overview)):  
+  索引の extensions ブロック末尾、`Tasks` の直後に加わった拡張ページ。説明文は「Discover and read Agent Skills from MCP servers」で、MCP サーバーから Agent Skills を発見し読み取る方向の機能として紹介されている。
+- [**SEP-2640: Skills Extension**](./latest-detail.md#2-sep-2640-skills-extension) ([MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension)):  
+  SEP 一覧に SEP-2596 と SEP-2663 の間（番号順）で加わったエントリ。Skills Over MCP Working Group の charter が「現在の方向性」として名指ししてきた SEP で、これまで GitHub の PR としてしか参照されていなかったものに公式ドキュメント上のページが与えられた。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。`llms-full.txt` の差分 119 行はすべて新規ページ 1 件の追加によるもので、既存ページの本文には追加・削除とも 1 行もありません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、42,465 行・収録ページ 148 件のまま既存ページの記述内容は変わっていません。
 
 ## 軽微な更新
 
-今回差分が出たファイルは索引 `llms.txt` と本文 `llms-full.txt` の 2 件ですが、その内容はいずれも新規ページ 1 件の追加（新規追加されたページ 1 参照）に尽きます。既存エントリの書き換え・リンク先の変更・字句修正はなく、これとは別に挙げる軽微な更新はありません。
+今回差分が出たファイルは索引 `llms.txt` の 1 件のみで、その内容は新規エントリ 2 行の追加（新規追加されたページ 1・2 参照）に尽きます。削除行や既存エントリの書き換え、リンク先 URL の変更、字句修正はなく、これとは別に挙げる軽微な更新はありません。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-02.md](./archives/latest/2026-09-02.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-02.md](./archives/latest-detail/2026-09-02.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-08.md](./archives/latest/2026-09-08.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-08.md](./archives/latest-detail/2026-09-08.md)
 
 <!--
-base_commit: 2667e8110b59c2cec8b85dd866ec8f529a5fa572
-head_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
-generated_at_full: 2026-09-09T15:27:42+09:00
+base_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
+head_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
+generated_at_full: 2026-09-14T15:25:42+09:00
 -->
