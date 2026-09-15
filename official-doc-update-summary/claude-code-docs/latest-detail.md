@@ -1,165 +1,372 @@
 ---
-対象期間: 2026年09月12日 〜 2026年09月13日
-作成日: 2026-09-13
+対象期間: 2026年09月13日 〜 2026年09月14日
+作成日: 2026-09-14
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-前回が「持ち越し 61 件が 1 件残らず本文として着地した回」だったのに対し、今回は**原文がほとんど動かなかった回**です。差分は 2 ファイル・10 行（追加 8・削除 2）で、入力ディレクトリに触れたコミットの隣接間 81 回ぶんの差分のうち **4 番目に小さい**規模でした。`llms-full.txt` に届いたのは changelog の 4 行だけで、**本文が変わったページは 1 / 192**。その 4 行は **v2.1.270（2026年09月12日）の 1 項目**で、**前日 v2.1.269 の回帰を取り消す修正**です。もう一方の差分は見出しマップで、`goal` ページの「評価の仕組み」配下に **`When a turn fails` が新設され、既存の見出しが 1 段下がり、`Other errors retry or pause the goal` が加わりました**が、**本文には 3 つとも届いていません**。前回「新しい持ち越しは 0 件」で締めたところへ、**2 件が積み直された**形です。`llms.txt` は無変更（203 件）、`whats-new/` の無差分は 11 回連続になりました。
+前回が「差分 10 行・本文の変わったページ 1 / 192」という極小の回だったのに対し、今回は**changelog が 1 行も動かないまま本文だけが 24 ページ分書き換わった回**です。差分は 3 ファイル・300 行（追加 163・削除 137）で、`llms-full.txt` は 96,353 行から 96,360 行へ 7 行増えました。**新規ページも削除ページもなく（192 のまま）、50 行を超えるページも無い**代わりに、**変更は 24 ページに薄く広がり、うち 12 ページが Agent SDK** です。changelog が無変更なのは 82 回の取り込みで 22 回目ですが、**本文側に v2.1.269 を要件として挙げる記述が 6 行新設された**ことから、今回はリリースではなく**前日までに出たリリースを文書が追いかけた回**と読めます。とりわけ **advisor のモデルペアリング表は、拒否されるだけだった組み合わせに「API エラーで失敗する」という第 2 の層が加わり、受理範囲が実質的に狭まりました**。前回「見出しマップだけ先に届いた」と書いた `goal` の 2 見出しは**1 日で本文として着地**し、代わりに**別の 4 見出しと新着情報 3 ページが新たな持ち越し**になっています。
 
 主要なものを以下に挙げます。
 
-1. v2.1.270 は 1 項目だけで、読み取り専用の git コマンドが途中から権限を尋ね始める v2.1.269 の回帰を取り消した
-2. `goal` ページに「ターンが失敗したとき」の節が見出しマップだけ先に届き、持ち越しがゼロから 2 件に積み直された
+1. goal ページの失敗ハンドリングが本文として着地し、前回の持ち越し 2 件が 1 日で解消した
+2. advisor のペアリング表に Opus 5 と Fable 5.1 が入り、拒否と API エラーの 2 層になった
+3. claude.ai 同期スキルが完全名を得て、名前が衝突してもスキップされなくなった
+4. VS Code 拡張の Customize に Hooks と Permissions が入り、エージェントマップが加わった
+5. 新着情報が 3 週分まとめて登録されたが、本文は 1 行も届いていない
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**v2.1.270 は 1 項目だけで、読み取り専用 git の権限プロンプトを取り消した**](#1-v21270-は-1-項目だけで読み取り専用-git-の権限プロンプトを取り消した):  
-  changelog に **4 行が追加され、削除はありません**。全部が **v2.1.270（原文の日付表記は 2026年09月12日）の 1 項目**で、内容は「**Bash の読み取り専用 git コマンドが、セッションをしばらく走らせたあとに予期せず権限を尋ねるようになっていた**（v2.1.269 の回帰）」の修正です。**98 項目を並べた前日の v2.1.269 の直後に、1 項目だけのリリースが出た**ことになります。**原文は回帰元を `2.1.269` とだけ書き、98 項目のどれが引き金かには触れていません**。収録されている 393 件のリリースのうち 1 項目だけのものは 94 件と珍しくありませんが、**そのうち回帰の修正と明記しているのは 6 件**で、**うち 1 件は 4 日前の v2.1.266**（v2.1.265 の回帰）です。権限ページの `Read-only commands` 節は今回**無変更**で、そこには「`git` の読み取り専用形式を含む組み込みセットを**すべてのモードで**プロンプトなしに実行する」と既に書かれています ―― **今回の修正は、この記述どおりの挙動へ戻すもの**です。
-2. [**`goal` ページの見出しが 2 件先行して届き、持ち越しがゼロから積み直された**](#2-goal-ページの見出しが-2-件先行して届き持ち越しがゼロから積み直された):  
-  見出しマップの `goal` ページで、`How evaluation works`（評価の仕組み）配下の構造が変わりました。**h3 `When a turn fails`（ターンが失敗したとき）が新設され、既存の h3 `Errors you have to fix clear the goal` がその配下の h4 へ降り、隣に h4 `Other errors retry or pause the goal`（その他のエラーは再試行するかゴールを一時停止する）が加わった**形です。**本文（`llms-full.txt`）にはこの 3 つとも届いていません** ―― `When a turn fails` も `Other errors retry or pause` も全文中に 0 回で、現行本文は h3 1 つのままです。**日本語版も同じ構造**で、これは翻訳の遅れではなく**英語版と等しく未着**という状態です。新設される h4 の文言は、**前日 v2.1.269 の「`/goal` が API エラー・ネットワーク切断・トークン上限のあと無言で停止していた問題の修正（以後はバックオフして再試行するか、理由を述べて一時停止する）」という項目と対応して読めます**。**新しい持ち越しは見出し単位で 2 件**、これに既存見出し 1 件の階層変更が加わります。
+1. [**goal ページの失敗ハンドリングが本文として着地し、前回の持ち越し 2 件が 1 日で解消した**](#1-goal-ページの失敗ハンドリングが本文として着地し前回の持ち越し-2-件が-1-日で解消した):  
+  前回サマリのハイライト 2 で「見出しマップにだけ届き、本文には 3 つとも来ていない」と書いた `When a turn fails`（ターンが失敗したとき）と `Other errors retry or pause the goal`（その他のエラーはゴールを再試行または一時停止する）が、**翌日の取り込みで本文として着地しました**。内容は前回の推測どおり、旧来 1 文で済ませていた「その他の失敗の後はゴールをアクティブなままにする」を独立した節へ格上げしたもので、**`Goal still active` と `Goal paused` という 2 種類の通知、自動再試行は 3 回まででその後は一時停止、`CLAUDE_CODE_GOAL_CHECKIN_MINUTES` を `0` にすると再試行もチェックインも止まる**、という具体が書き下ろされています。**v2.1.269 以降の対話型セッション限定**と明記され、前回「v2.1.269 の changelog 項目と対応して読める」とした対応づけも裏づけられました。**日本語版は取り込み当日の時点で既に全訳済み**で、英語版に遅れていません。
+2. [**advisor のペアリング表に Opus 5 と Fable 5.1 が入り、拒否と API エラーの 2 層になった**](#2-advisor-のペアリング表に-opus-5-と-fable-51-が入り拒否と-api-エラーの-2-層になった):  
+  メインモデルとアドバイザーの対応表が **6 行から 8 行**になり、`Opus 4.7 or later` が `Opus 4.7 または Opus 4.8` と `Opus 5` に、`Fable 5.1 or Fable 5` が `Fable 5` と `Fable 5.1` に分かれました。**これは行の整理ではなく受理範囲の変更**です ―― 旧表では `Opus 4.7 以降` のメインが `Opus 4.7 以降` のアドバイザーを受け入れたので Opus 5 メインは Opus 4.7/4.8 を使えましたが、**新表の Opus 5 は `Fable, Opus 5` だけで、Opus 4.7/4.8 を指定したリクエストは API エラーで失敗**します。同様に **Fable 5.1 メインは Fable 5 アドバイザーで、Sonnet 5 メインは Opus 4.6 アドバイザーで API エラー**になります。検証の記述も「Claude Code がリクエスト送信前に検証する」から「**Claude Code が検証し、API が再度検証する**」へ変わり、**添付されずに済む「拒否」と、添付された上で API に蹴られる「エラー」**が区別されました。エラー文字列 `'<advisor model>' cannot be used as an advisor when the request model is '<main model>'` も原文に追加されています。
+3. [**claude.ai 同期スキルが完全名を得て、名前が衝突してもスキップされなくなった**](#3-claudeai-同期スキルが完全名を得て名前が衝突してもスキップされなくなった):  
+  claude.ai アカウントから同期したスキルは、**v2.1.269 より前は短い名前しか持たず、他のコマンドと名前が衝突すると読み込まれませんでした**。今回の更新で **`/anthropic-skills:<name>` という完全名が付き、短名が取られている場合でも完全名でなら実行できる**ようになりました。原文は「ローカルの `deploy` スキルと同期された `deploy` があるとき、`/deploy` はローカル側を、`/anthropic-skills:deploy` は同期側を実行する」と例示し、**`Before v2.1.269, a synced skill had only its short name.`** と旧挙動を明記しています。これに伴い「スキップする」という表現が**スキル名の比較規則の説明・非対話セッションの `help` / `feedback` の扱い・優先順位表**から一斉に書き換えられ、**コマンド名の由来を示す表にも同期スキルの行が 1 行追加**されました。
+4. [**VS Code 拡張の Customize に Hooks と Permissions が入り、エージェントマップが加わった**](#4-vs-code-拡張の-customize-に-hooks-と-permissions-が入りエージェントマップが加わった):  
+  `vs-code` ページは今回**最も行数が動いたページ（45 行）**で、**v2.1.269 を要件とする UI が 4 つ**書き足されました ―― Customize セクションの **Hooks**（セッションに読み込まれた hooks をイベント別に一覧し、ユーザー／プロジェクト／ローカル設定のものは編集可、管理設定とプラグイン由来は読み取り専用）、同 **Permissions**（権限ルールを Allow / Ask / Deny に分けて一覧、同様に編集可否が分かれる）、**Focus view でのサブエージェント進行行**、そして**エージェントマップ**（プロンプトボックス下部の `2 agents` のような表示をクリックするとサブエージェントがツリーで開き、各々のステータス・経過時間・トークン数が見え、読み取り専用トランスクリプトを開いたり停止したりできる）です。あわせて**選択範囲インジケータの操作が「目隠しトグル」から「X で除去」へ変わり**、**「タブの右クリックメニューにも出る」という記述が 4 か所から消えました**。
+5. [**新着情報が 3 週分まとめて登録されたが、本文は 1 行も届いていない**](#5-新着情報が-3-週分まとめて登録されたが本文は-1-行も届いていない):  
+  `llms.txt` に **Week 35・Week 36・Week 37 の 3 ページが一度に追加**され、収録 URL は **203 件から 206 件**になりました。見出しマップにも 3 ページ分のエントリが入っています。**しかし `llms-full.txt` にはこの 3 ページの本文が 1 行も含まれていません** ―― 全文中の週間ダイジェストは **Week 34 が最後のまま**で、索引ページ（`whats-new/index`）も Week 34 止まりです。**週間ダイジェストの本文が最後に追加されたのは 2026年08月23日 の取り込みで、以後 20 回連続で追加がありません**。つまり今回動いたのは**索引側だけ**で、本文レベルでは無差分の連続が途切れていません。
 <!-- light:highlight-list:end -->
 
-## 1. v2.1.270 は 1 項目だけで、読み取り専用 git の権限プロンプトを取り消した
+## 1. goal ページの失敗ハンドリングが本文として着地し、前回の持ち越し 2 件が 1 日で解消した
 
-**`llms-full.txt` に届いた 4 行は、すべて changelog ページの冒頭に積まれた 1 つのリリースエントリです。**
+**前回サマリは「これから本文がこう変わるという予告だけが届いた状態」と書いて締めました。** その予告は翌日の取り込みで現実になりました。`goal` ページの差分は **29 行（追加 21・削除 8）**で、`## How evaluation works`（評価の仕組み）配下の構造が見出しマップと同じ形に組み替えられています。
 
-```
-<Update label="2.1.270" description="September 12, 2026">
-  * Fixed read-only git commands in Bash unexpectedly asking for permission after a session had been running for a while (regression in 2.1.269)
-</Update>
-```
-
-訳すと「**Bash の読み取り専用 git コマンドが、セッションをしばらく走らせたあとに予期せず権限を尋ねるようになっていた**問題を修正した（**v2.1.269 の回帰**）」です。今回 `llms-full.txt` で本文が変わったページは、**この changelog 1 ページだけ**でした。
-
-**目を引くのは条件の書き方です。** 原文が挙げているのは「**セッションがしばらく走ったあと**（after a session had been running for a while）」という**時間経過**だけで、コマンドの形やフラグ、引用符なしの glob、複合コマンドといった**入力側の条件は 1 つも書かれていません**。起動直後には再現せず、同じセッションを使い続けるうちに現れる、という性格の不具合だったことになります。
-
-**回帰元は `2.1.269` とだけ記されています。** 前日の v2.1.269 は 98 項目のリリースで、**前回サマリのハイライト 5 では、そのうち権限ルールの抜け穴を塞ぐ 2 件**（`!` で始まる deny / ask ルールが設定ソースの外にまで適用されていた問題と、Bash の `tee` の書き込み先に `Edit()` の deny ルールが効いていなかった問題）**を取り上げました**。今回の回帰がその 2 件のどちらかに由来するのかは自然な連想ですが、**原文にその記述はなく、今回の差分からは判別できません**。
-
-### 1 項目だけのリリースはどのくらい起きているか
-
-収録されている changelog を機械的に数えると、**リリースエントリは全部で 393 件、そのうち項目が 1 つだけのものは 94 件**（約 4 分の 1）で、単独では珍しいものではありません。**ただし「回帰の修正」と本文に明記している 1 項目リリースは 6 件だけ**です。
-
-| 版 | 日付 | 内容 |
+| | 前回（見出しマップのみ） | 今回（本文） |
 |---|---|---|
-| **v2.1.270** | **2026年09月12日** | **読み取り専用 git コマンドの権限プロンプト（v2.1.269 の回帰）** |
-| **v2.1.266** | **2026年09月08日** | **`CLAUDE_CODE_USE_GATEWAY` が単独で Cloud gateway サインインを強制していた（v2.1.265 の回帰）** |
-| v2.1.148 | 2026年05月22日 | 一部利用者で Bash ツールが全コマンドに exit code 127 を返していた |
-| v2.1.96 | 2026年04月08日 | `AWS_BEARER_TOKEN_BEDROCK` 使用時に Bedrock が 403 で失敗していた |
-| v2.1.62 | 2026年02月27日 | プロンプト候補のキャッシュヒット率が下がっていた |
-| v2.0.9 | 2025年10月06日 | bash のバックグラウンド実行が動かなくなっていた |
+| h3 `When a turn fails` | 予告のみ・本文 0 回 | **着地**（全文中 2 回） |
+| h4 `Errors you have to fix clear the goal` | 予告のみ（h3 のまま） | **h4 へ降格して着地** |
+| h4 `Other errors retry or pause the goal` | 予告のみ・本文 0 回 | **着地**（全文中 1 回） |
 
-**上の 2 件は同じ月に並んでいます。** v2.1.266 は **v2.1.265（50 項目）と同じ 2026年09月08日**、v2.1.270 は **v2.1.269（98 項目）の翌日**で、**どちらも大きなリリースの直後に出た 1 項目の打ち消し**という形をしています。今回の差分にある情報はここまでで、**これが偶然なのか運用上の傾向なのかを裏づける記述はありません**。
+新設された h3 の本文は 1 文だけで、**2 つの h4 を束ねる役割を宣言**しています ―― 「ターンが失敗したとき、そのエラーが修正を要するものなら Claude Code はゴールをクリアする。それ以外のエラーの後はゴールが設定されたまま残る」。前回「名前からの推測に留まる」とした読みは、このとおりでした。
 
-### ドキュメント側の記述は無変更
+### 書き下ろされた内容は 1 文の格上げだった
 
-**権限ページの `Read-only commands`（読み取り専用コマンド）節は、今回の差分に含まれていません。** 同節は以前から次のように述べています ―― 「Claude Code は Bash コマンドの組み込みセットを読み取り専用として認識し、`permissions.blockReadsOutsideWorkingDirectories` がフェンスするパスを除き、**すべてのモードで権限プロンプトなしに実行する**。セットには `ls`・`cat`・`echo`・`pwd`・`head`・`tail`・`grep`・`find`・`wc`・`which`・`diff`・`stat`・`du`・`cd`、および **`git` の読み取り専用形式**が含まれる。セットは設定不可能で、これらにプロンプトを要求したければ `ask` か `deny` ルールを足す」。**つまり今回の修正は、ドキュメントが書いているとおりの挙動へ戻すもの**であり、文書側に書き足すことがなかったぶん差分が 1 行で済んだ、と読めます。
+**旧本文で「その他の失敗」に触れていたのは、`Errors you have to fix clear the goal` 節の最後の 1 文だけ**でした。
 
-同節は Manual モードで例外的にプロンプトが出る場合も列挙していて、その 1 つが「**書き込み・実行につながるフラグを持つコマンド（`find`・`sort`・`sed`・`git`）に引用符なしの glob があるとき**」です。**v2.1.270 の項目は glob にも複合コマンドにも触れず時間経過だけを条件に挙げているため、この既知の例外とは別の経路と読めます**が、**そう断定できる記述は原文にありません**。
+```
+After any other failure, including transient errors such as rate limits and overloaded servers, Claude Code leaves the goal active.
+```
 
-- [権限を設定する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/permissions#read-only-commands)
-- [Configure permissions - Claude Code Docs (English)](https://code.claude.com/docs/en/permissions#read-only-commands)
+この 1 文は今回**削除**され、代わりに h4 `Other errors retry or pause the goal` が置かれています。前回サマリが「位置からいってこの 1 文を独立した節へ格上げするもの」と読んだとおりの変更です。新しい節は次の構成になりました。
 
-## 2. `goal` ページの見出しが 2 件先行して届き、持ち越しがゼロから積み直された
+- **再試行**: サーバー過負荷や接続切断など、放っておけば解消しやすい失敗の後は、**`Goal still active` で始まる通知**が次の試行までの待ち時間を表示する。**自動再試行が 3 回続いた後は、再試行ではなく一時停止に切り替わる**
+- **一時停止**: API レート制限・claude.ai の使用量上限・ターンを終わらせた hook など、**再試行しても同じことが起きる**失敗の後は、**`Goal paused` で始まる通知**が原因を名指しする。セッションが使用量上限のリセットを待って自動継続する設定になっていれば、Claude はそのタイミングでゴールに向かう作業を再開する
+- いつでもメッセージを送れば次のターンがすぐ始まる。**自動再試行を切るには `CLAUDE_CODE_GOAL_CHECKIN_MINUTES` を `0` にする**（これはチェックインも同時に切る）
 
-**もう一方の差分は見出しマップ（`en/claude_code_docs_map.md`）です。** 先頭の自動生成スタンプ 1 行を除くと、変更は `goal` ページ 1 か所に集中しています。
+**適用条件は「Claude Code v2.1.269 以降の対話型セッション」と明記されています。** 前回サマリは「新設される h4 の文言は、前日 v2.1.269 の changelog 項目と対応して読める」と書きましたが、**本文がそのバージョンを直接挙げたことで、対応づけは推測ではなくなりました**。
+
+### 周辺の 2 か所も同時に直っている
+
+**セッションを実行し続ける方法の比較表**でも、`/goal` の「次のターンが始まる条件」が書き換わりました。
 
 | | 従来 | 今回 |
 |---|---|---|
-| h2 | `How evaluation works` | `How evaluation works` |
-| h3 | `Errors you have to fix clear the goal` | **`When a turn fails`（新設）** |
-| h4 | （なし） | **`Errors you have to fix clear the goal`（h3 から降格）** |
-| h4 | （なし） | **`Other errors retry or pause the goal`（新設）** |
-| h3 | `Background work defers evaluation` | `Background work defers evaluation` |
-| h3 | `Evaluation model and cost` | `Evaluation model and cost` |
+| `/goal` 行 | 前のターンが終わるか、バックグラウンド作業でゴールが待たされている間にアイドルチェックインが来たとき（**プロンプト間でゴールあたり最大 3 回**） | 前のターンが終わるか、**対話型セッションで**アイドルチェックインまたは**自動再試行**が来たとき |
 
-行としては**追加 3・削除 1** です。見出しマップのインデントは 0 段が h2・2 段が h3・4 段が h4 に対応します。
+**「最大 3 回」という上限がこのセルから外れ、代わりに「対話型セッションで」という限定と「自動再試行」への参照が入りました。** アイドルチェックインが 3 回で頭打ちになること自体は `Background work defers evaluation` 節に残っているので、記述が重複していたぶんを整理したものと読めます。
 
-**本文には 3 つとも届いていません。** `llms-full.txt` 全文で `When a turn fails` は **0 回**、`Other errors retry or pause` も **0 回**、`Errors you have to fix clear the goal` は **1 回**（h3 のまま）です。現行の `goal` ページ本文は `## How evaluation works` の直下に h3 が 3 つ並ぶ従来構成のままで、**今回の差分は「これから本文がこう変わる」という予告だけが届いた状態**です。
+もう 1 か所は `CLAUDE_CODE_GOAL_CHECKIN_MINUTES` の説明で、「`0` に設定するとチェックインが切れる」に**「自動再試行も切れる」が追記**されました。同時に「チェックインには Claude Code v2.1.234 以降が必要」が独立した段落に分けられています。
 
-**日本語版も同じ構造でした。** 作成時点で公開中の日本語版 `goal` ページを取得して確認したところ、**全節が翻訳済みである一方、`<h3 id="errors-you-have-to-fix-clear-the-goal">修正する必要があるエラーはゴールをクリアします</h3>` が h3 のまま**で、`When a turn fails` に相当する見出しはありません。**これは日本語版が英語版に遅れているのではなく、英語版の本文にも届いていないという意味で両者が等しく未着**だということです（本サマリで日本語リンクを省く判断は「日本語版が変更を反映していないとき」に行うものなので、**この項目は日本語版を省きません**）。
+### 日本語版は遅れていない
 
-### 新設される h4 は何を書くことになるか
+**作成時点で公開中の日本語版 `goal` ページを取得して確認したところ、今回着地した内容は全訳済み**でした。`<h3 id="when-a-turn-fails">ターンが失敗した場合</h3>` と `<h4 id="other-errors-retry-or-pause-the-goal">その他のエラーはゴールを再試行または一時停止します</h4>` が英語版と同じ id で存在し、`Goal still active` / `Goal paused` という通知文字列も、3 回の自動再試行も、`CLAUDE_CODE_GOAL_CHECKIN_MINUTES` の追記も反映されています。**前回サマリは「本文が届いた時点で日本語版と英語版は同時に古くなります」と書きましたが、実際には同時に新しくなりました** ―― 本文の着地と翻訳の追従が同じ取り込みに収まっています。
 
-**現行本文で「その他の失敗」に触れているのは、`Errors you have to fix clear the goal` 節の最後の 1 文だけ**です ―― 「**レート制限やサーバーの過負荷などの一時的なエラーを含むその他の失敗の後、Claude Code はゴールをアクティブなままにします**」。新設の h4 `Other errors retry or pause the goal` は、**位置からいってこの 1 文を独立した節へ格上げするもの**と読めます。
+### 持ち越しの決着
 
-**そして「retry（再試行）」「pause（一時停止）」という語の選び方は、前日 v2.1.269 の changelog 項目と対応します。**
+**前回積まれた持ち越しは、見出し 2 件と既存見出し 1 件の階層変更**でした。**今回でその 3 つとも決着**しています。
 
-> `/goal` runs silently stalling after API errors, network drops, or token limits: the goal now retries with backoff, or pauses and says why, including until a usage limit resets
->
-> （API エラー・ネットワーク切断・トークン上限のあとに `/goal` の実行が無言で停止していた問題の修正。以後ゴールは**バックオフして再試行**するか、**理由を述べて一時停止**する。使用量上限のリセットまで待つ場合を含む）
+- `When a turn fails`（新設 h3） → **着地**
+- `Other errors retry or pause the goal`（新設 h4） → **着地**
+- `Errors you have to fix clear the goal` の h3 → h4 降格 → **着地**
 
-**現行本文は「アクティブなままにする」としか書いておらず、バックオフ再試行にも一時停止にも触れていません。** v2.1.269 で挙動が変わったぶんを本文が書き下ろす際に、1 文では収まらなくなって節へ分けた ―― という筋は通ります。**ただし根拠は見出しの語と changelog 項目の対応だけ**で、**今回の差分に本文は 1 行も含まれていません**。新しい h3 `When a turn fails` が「ゴールをクリアする失敗」と「クリアしない失敗」を束ねる見出しになることも、名前からの推測に留まります。
+**予告から着地までの間隔は 1 日**で、本リポジトリが観測してきた持ち越しの中では最短の部類です。
 
-### 持ち越しの勘定
+- [Claude をゴールに向かって動作させ続ける - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/goal#other-errors-retry-or-pause-the-goal)
+- [Keep Claude working toward a goal - Claude Code Docs (English)](https://code.claude.com/docs/en/goal#other-errors-retry-or-pause-the-goal)
 
-**前回サマリは「見出しマップと `llms.txt` に差分がなく、新しい持ち越しは 0 件」で締めました。** 今回積まれたのは次のとおりです。
+## 2. advisor のペアリング表に Opus 5 と Fable 5.1 が入り、拒否と API エラーの 2 層になった
 
-- **新設 `When a turn fails`**（h3）
-- **新設 `Other errors retry or pause the goal`**（h4）
-- （上記に加えて）**既存 `Errors you have to fix clear the goal` の h3 → h4 の階層変更**
+**`advisor` ページの差分は 23 行（追加 13・削除 10）**で、その中心は `Choose an advisor model`（アドバイザーモデルを選択する）節のペアリング表です。**行数が 6 から 8 へ増えました。**
 
-**見出し単位で数えると新規は 2 件**で、これに階層変更 1 件が伴います。**`llms.txt` は無変更なので、ページタイトルの持ち越しはありません。** 前回の 61 件に比べれば小さい積み直しですが、**ゼロだった状態が 1 日で崩れた**ことにはなります。
+| メインモデル | 従来の受理アドバイザー | 今回の受理アドバイザー | 変化 |
+|---|---|---|---|
+| Haiku 4.5 | Fable, Opus, Sonnet | Fable, Opus, Sonnet | 変更なし |
+| Sonnet 4.6 | Fable, Opus, Sonnet | Fable, Opus, Sonnet | 変更なし |
+| **Sonnet 5** | Fable, Opus, Sonnet 5 | **Fable, Opus 4.7 以降, Sonnet 5** | **Opus 4.6 が受理から外れ、API エラー扱いに** |
+| Opus 4.6 | Fable, Opus, Sonnet 5 | Fable, Opus, Sonnet 5 | 受理は同じ（注記が差し替え） |
+| **Opus 4.7 以降** → **Opus 4.7 または Opus 4.8** | Fable, および Opus 4.7 以降 | Fable, および Opus 4.7 以降 | **行が分割された** |
+| **Opus 5**（新設行） | （上の行に含まれていた） | **Fable, Opus 5** | **Opus 4.7 / 4.8 が API エラーに** |
+| **Fable 5.1 または Fable 5** → **Fable 5** | Fable 5.1 または Fable 5 | Fable 5.1 または Fable 5 | **行が分割された** |
+| **Fable 5.1**（新設行） | （上の行に含まれていた） | **Fable 5.1 のみ** | **Fable 5 が API エラーに** |
 
-- [Claude をゴールに向かって動作させ続ける - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/goal#how-evaluation-works)
-- [Keep Claude working toward a goal - Claude Code Docs (English)](https://code.claude.com/docs/en/goal#how-evaluation-works)
+**注意すべきは、これが単なる行の分割ではないことです。** 旧表の `Opus 4.7 or later` 行は「Opus 4.7 以降のモデルは同等の能力とみなされるので、どれが互いのアドバイザーになってもよい」と述べていました。**その規則をそのまま読むと、Opus 5 をメインにしたセッションは Opus 4.7 や Opus 4.8 をアドバイザーにできたことになります。** 新表の `Opus 5` 行は受理を `Fable, Opus 5` に絞り、注記で「**Opus 4.7 または Opus 4.8 アドバイザーを使用したリクエストは API エラーで失敗します**」と明言しました。同じ構図が Fable にもあり、**Fable 5.1 メインは Fable 5 アドバイザーで API エラー**になります。Sonnet 5 メインも同様で、旧表の `Opus`（世代を問わない）から `Opus 4.7 以降` へ絞られ、**Opus 4.6 アドバイザーは API エラー**になりました。
+
+### 検証が 2 段構えであることが明示された
+
+表の下の検証手順も書き換わりました。
+
+| | 従来 | 今回 |
+|---|---|---|
+| 前置き | Claude Code はリクエストを送る前にペアリングを検証する | Claude Code は送信前に検証し、**API が再度検証する** |
+| 1 つ目 | アドバイザーがメインより能力が低ければ、メインモデルのリクエストに添付されない | **表で「拒否」とされている**アドバイザーは添付されない |
+| 2 つ目 | （なし） | **表で「API エラーで失敗する」とされている**アドバイザーは**添付され、API 側で拒否される** |
+
+2 つ目は今回新設された記述で、失敗の見え方がまったく異なります ―― **添付されない場合は `/advisor` の出力と通知で気づけるのに対し、API エラーの場合は「`/advisor` でアドバイザーを変更するかオフにするまで、すべてのリクエストが失敗する」**と書かれています。エラー文字列も原文に載りました。
+
+```
+'<advisor model>' cannot be used as an advisor when the request model is '<main model>'
+```
+
+**つまり「能力の順序」という 1 本の基準だった説明が、「Claude Code が事前に弾く組み合わせ」と「API が実行時に弾く組み合わせ」の 2 層に分かれた**ことになります。**どこで境界が引かれているのか（なぜ一部だけが API 側の検証に回るのか）について、原文に説明はありません。**
+
+### 設定リファレンス側も追随した
+
+`settings-reference` ページの `advisorModel` 項目も 1 行変わり、「アドバイザーがメインより能力が低いとき、Claude Code はアドバイザーなしでリクエストを送る」という**結果の説明が削られ、代わりに advisor ページの表を参照させる形**になりました。上記のとおり結果が 1 通りではなくなったので、設定リファレンス側で言い切らない書き方へ寄せたものと読めます。
+
+**日本語版は今回の表の変更を反映済み**で、8 行すべてと API エラーの記述が訳出されていることを確認しています。
+
+- [advisor ツールで難しい判断をエスカレートする - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/advisor#choose-an-advisor-model)
+- [Escalate hard decisions with the advisor tool - Claude Code Docs (English)](https://code.claude.com/docs/en/advisor#choose-an-advisor-model)
+
+## 3. claude.ai 同期スキルが完全名を得て、名前が衝突してもスキップされなくなった
+
+**`skills` ページの差分は 32 行（追加 21・削除 11）**で、`When a synced skill name matches another command`（同期されたスキル名が他のコマンドと一致する場合）節がほぼ全面的に書き換わりました。
+
+**旧記述は 1 文で完結していました。**
+
+```
+Claude Code skips a synced skill whose name matches any other command, and that other command runs.
+```
+
+つまり**名前が衝突した同期スキルは読み込まれず、使う手段が無かった**ということです。今回の記述はこう変わりました。
+
+```
+You can invoke a synced skill by its full name, /anthropic-skills:<name>, or by its short name, /<name>.
+When another command uses that short name, /<name> runs the other command, and the synced skill runs
+only as /anthropic-skills:<name>. ... Before v2.1.269, a synced skill had only its short name.
+```
+
+**`/anthropic-skills:` という名前空間が付いたことで、衝突は「使えない」から「短名を譲る」へ変わりました。** 原文の例は、ローカルの `deploy` スキルと同期された `deploy` が同居する場合に **`/deploy` はローカル側、`/anthropic-skills:deploy` は同期側**を実行する、というものです。
+
+### 「スキップする」が消えた 4 か所
+
+同じ変更が、ページ内の複数の箇所を連動して書き換えています。
+
+| 箇所 | 従来 | 今回 |
+|---|---|---|
+| 優先順位表の該当行 | 「他方のスキルまたはコマンドが動く」 | 同左に加えて「**同期スキルは `/anthropic-skills:<name>` として動く**」 |
+| 名前比較規則の例 | 「同期された `Commit` はローカルの `commit` と並んでは読み込めない」 | 「**ローカルの `commit` が `/commit` を保ち、同期された `Commit` は `/anthropic-skills:Commit` としてのみ動く**」 |
+| 非対話セッションの `help` / `feedback` | 「`help` / `feedback` という名前の同期スキルはそこでもスキップされる」 | **文ごと削除** |
+| コマンド名の由来を示す表 | （同期スキルの行なし） | **1 行追加**: 「claude.ai から同期したスキル ／ claude.ai アカウント上のスキル名に `anthropic-skills:` を前置 ／ アカウントのスキル `deploy` → `/anthropic-skills:deploy`、他のコマンドがその名前を使っていなければ `/deploy` でも可」 |
+
+**「他のコマンド」として何が数えられるか**の列挙も、1 段落の羅列から 4 つの箇条書きへ組み替えられました。内訳（組み込みコマンドやバンドルスキル、ローカル各階層のスキルや `.claude/commands/` のファイル、プラグインスキル、MCP プロンプト）は従来と同じで、**セッションで無効化されている組み込みコマンドやバンドルスキルの名前も予約されたまま**である点も変わっていません。
+
+### 日本語版はこの変更に追従していない
+
+**作成時点の日本語版 `skills` ページを取得して確認したところ、claude.ai 同期スキルを扱う節そのものが存在しませんでした。** 「スキルが存在する場所」の表にも「スキルがコマンド名を取得する方法」の表にも同期スキルの行は無く、**今回の変更以前の版が公開されたまま**です。したがって**本項目には日本語リンクを付けません**（古い内容へ誘導しないため）。
+
+- [Extend Claude with skills - Claude Code Docs (English)](https://code.claude.com/docs/en/skills#when-a-synced-skill-name-matches-another-command)
+
+## 4. VS Code 拡張の Customize に Hooks と Permissions が入り、エージェントマップが加わった
+
+**`vs-code` ページは今回最も行数が動いたページで、45 行（追加 26・削除 19）**です。ただし**このうち 32 行は `VS Code commands and shortcuts` 節の表の差し替え**（16 行が丸ごと置き換わったぶん）で、**そのうち 13 行は桁揃えの調整のみ、内容が変わったのは 3 行**です。内容の変更の大半は `Use the prompt box`（プロンプトボックスを使用する）節に集中しています。
+
+### v2.1.269 を要件とする 4 つの追加
+
+| 追加された記述 | 内容 |
+|---|---|
+| Customize の **Hooks** | セッションに読み込まれた hooks を**イベント別にグループ化して表示**する。ユーザー・プロジェクト・ローカル設定ファイルに保存された hooks は**追加・編集・削除ができ**、管理設定やプラグインなど他のソース由来のものは**読み取り専用** |
+| Customize の **Permissions** | セッションの権限ルールを **Allow / Ask / Deny に分けて表示**する。ユーザー・プロジェクト・ローカル設定へルールを追加でき、そこに保存されたものは削除できる。管理設定や**このセッション限りの承認**など他のソース由来のものは読み取り専用 |
+| Focus view 内の**サブエージェント進行行** | Claude がサブエージェントを実行している間、**それを起動したツール呼び出しグループの下に、最新の活動を示すライブ進行行**が現れる |
+| **エージェントマップ**（新設の項目） | 会話にサブエージェントが含まれるとき、プロンプトボックス下部に **`2 agents` のようなエージェント数**が出る。**ドットは、いずれかのサブエージェントが作業中か権限待ちかを示す**。クリックするとエージェントマップが開き、**メインエージェントの下にサブエージェントがツリーで描かれ、各々のステータス・経過時間・トークン数**が並ぶ。サブエージェントをクリックすると**プロンプトとツール呼び出しを見る／読み取り専用トランスクリプトを開く／実行中に停止する**ことができる |
+
+**Hooks と Permissions は、いずれも「どのソース由来かで編集可否が分かれる」という同じ設計**になっています。管理設定由来のものが読み取り専用である点は権限ドキュメントの既存の方針と整合しますが、**Permissions 側では「このセッションのみに対して行われた承認」も読み取り専用に含まれる**と書かれており、一時的な承認を後から設定ファイルへ昇格させる導線は無い、と読めます。
+
+### 「タブの右クリックメニュー」が 4 か所から消えた
+
+内容の変更としてもう 1 つ目を引くのが、**編集タブの右クリックメニューへの言及がページ内から一斉に消えたこと**です。消えたのは 4 か所ですが、同じ文言の削除ではありません ―― ショートカット表の 3 行は `The command also appears in the tab's right-click menu.` という共通の 1 文、セッショングループ化の項目は `or right-click the session's editor tab` という別の言い回しでした。
+
+| 箇所 | 削除された記述 |
+|---|---|
+| セッショングループ化の項目 | 「**またはセッションの編集タブを右クリックして**、グループを選ぶか作成する」 |
+| ショートカット表 `Rename Session Tab` | 「このコマンドはタブの右クリックメニューにも現れる」 |
+| ショートカット表 `Add Session Tab to Group` | 同上 |
+| ショートカット表 `Mark Session as Unread` | 同上 |
+
+**いずれもコマンドパレットからの実行という記述だけが残りました。** **これが機能の削除を意味するのか、記述の整理なのかは、今回の差分からは判別できません**（changelog は今回無変更で、対応する項目がありません）。
+
+### 選択範囲インジケータの操作が変わった
+
+エディタで選択したテキストを Claude に見せるかどうかの操作も書き換わりました。
+
+| | 従来 | 今回 |
+|---|---|---|
+| 操作 | 選択インジケータを**クリックしてトグル**する。**目隠しアイコン**が出ていれば Claude から隠されている | インジケータの **X をクリックして取り除く**と、Claude は選択範囲を受け取らない |
+| 復帰 | （記述なし） | **別のテキストを選び直すか、別のファイルへ切り替えるとインジケータが戻る** |
+
+**「見せる／隠す」の 2 状態を行き来するトグルから、「取り除く」一方向の操作へ変わった**ことになります。
+
+**日本語版はこれら 4 つの追加と 2 つの書き換えをすべて反映済み**であることを確認しています。
+
+- [VS Code で Claude Code を使用する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/vs-code#use-the-prompt-box)
+- [Use Claude Code in VS Code - Claude Code Docs (English)](https://code.claude.com/docs/en/vs-code#use-the-prompt-box)
+
+## 5. 新着情報が 3 週分まとめて登録されたが、本文は 1 行も届いていない
+
+**`llms.txt` の差分は 7 行（追加 5・削除 2）**で、そのうち 3 行が新着情報の新規エントリです。
+
+```
+ ### What's New
+
+ - [What's new](.../whats-new/index.md): A weekly digest of notable Claude Code features, ...
++- [Week 37 · September 7–11, 2026](.../whats-new/2026-w37.md): Test your plugins with claude plugin eval ...
++- [Week 36 · August 31 – September 4, 2026](.../whats-new/2026-w36.md): Switch to Claude Fable 5.1, ...
++- [Week 35 · August 24–28, 2026](.../whats-new/2026-w35.md): Resume terminal sessions in the Claude Code Desktop app, ...
+ - [Week 34 · August 17–21, 2026](.../whats-new/2026-w34.md): Draft editable UI artboards with the /design skill, ...
+```
+
+（ホスト部と説明の後半は紙面の都合で省略しています。実 URL は `https://code.claude.com/docs/en/whats-new/2026-w37` の形で、`llms.txt` では `.md` 付きで収録されています）
+
+**収録 URL は 203 件から 206 件へ増えました。** 見出しマップ側にも 3 ページ分のエントリが `(No headings found)` 付きで追加されています（週間ダイジェストは他の週も同じ表記なので、この表記自体は本文の有無を示しません）。
+
+### 本文は届いていない
+
+**`llms-full.txt` にこの 3 ページの本文は 1 行も含まれていません。** 全文に収録されている週間ダイジェストを機械的に数えると **Week 13 から Week 34 まで（Week 31 は欠番）**で、**Week 34 が最後**です。索引ページ `whats-new/index` も今回の差分に含まれておらず、**掲載されている最新のエントリは `<Update label="Week 34" description="August 17–21, 2026">`** のままでした。
+
+**取り込み履歴から見ると、週間ダイジェストの本文が最後に `llms-full.txt` へ追加されたのは 2026年08月23日 の取り込み（Week 33 と Week 34 の 2 週分）で、以後 20 回連続で追加がありません。** 既存ページの訂正まで含めても、最後に本文が動いたのは 2026年09月01日 の取り込み（Week 34 の修正）で、**以後 12 回連続で無変更**です。
+
+**したがって今回の変化は「索引に載った」までで、「本文が来た」ではありません。** 前回サマリが「`whats-new/` の無差分は 11 回連続」と書いた連続は、**本文レベルでは今回も途切れていません**。途切れたのは `llms.txt` の側です。
+
+### 日本語版はまだ公開されていない
+
+**3 ページの日本語版（`https://code.claude.com/docs/ja/whats-new/2026-w35` など）を実際に取得したところ、いずれも HTTP 404 でした。** 英語版のみが `llms.txt` に登録された段階で、**本文も翻訳も未着**という状態です。以下の各セクションでは**日本語リンクを付けません**。
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-（今回の対象期間に新規追加・削除されたドキュメントページはありません。`llms.txt` は**全体 356 行・収録 URL 203 件のまま完全に無差分**で、`llms-full.txt` の展開ページ数も **192 のまま**動いていません。前回新設された `plugin-evals` に続く新規ページはありませんでした）
+（今回の対象期間に新規追加・削除されたリファレンス系ドキュメントページはありません。`llms-full.txt` の展開ページ数は **192 のまま**で、増減がありません。`llms.txt` の収録 URL は 203 件から 206 件へ増えていますが、**増えた 3 件はすべて新着情報（`whats-new/`）で、本文はまだ届いていない**ため、新着情報カテゴリで扱います）
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-（本カテゴリの該当はありません。分類の基準は前回同様「実質の差分 50 行以上 かつ 内容の変更を伴うこと」ですが、**今回 `llms-full.txt` で本文が変わったページは changelog の 1 ページだけ**で、その差分も **4 行**です。閾値に届くページはありません）
+（本カテゴリの該当はありません。分類の基準は従来どおり「実質の差分 50 行以上 かつ 内容の変更を伴うこと」ですが、**今回の最大は `vs-code` ページの 45 行**で閾値に届きません。しかもその 45 行のうち 32 行はショートカット表の桁揃えであり、内容の変更はさらに小さい規模です。**今回の特徴は 1 ページの大改訂ではなく、24 ページへの薄い広がり**にあります）
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の差分は **2 ファイル・10 行**（追加 8・削除 2）です。内訳は `llms-full.txt` が 4 行（追加 4・削除 0）、ページ見出しマップ（`en/claude_code_docs_map.md`）が 6 行（追加 4・削除 2）で、**`llms.txt` は完全に無差分**（356 行・収録 URL 203 件）です。`llms-full.txt` の総行数は **96,349 行から 96,353 行へ 4 行増え**、展開ページ数は **192 のまま**です。**前回が 2,252 行だったので、規模は 200 分の 1 以下**になりました。
+今回の差分は **3 ファイル・300 行**（追加 163・削除 137）です。内訳は `llms-full.txt` が 275 行（追加 141・削除 134）、`llms.txt` が 7 行（追加 5・削除 2）、ページ見出しマップ（`en/claude_code_docs_map.md`）が 18 行（追加 17・削除 1）です。`llms-full.txt` の総行数は **96,353 行から 96,360 行へ 7 行増え**、展開ページ数は **192 のまま**、**本文が変わったページは 24 / 192**（前回は 1 / 192）でした。
 
-**入力ディレクトリ（`official-llms-txts/code.claude.com/docs/`）に触れたコミットは本リポジトリに 82 件あり、その隣接コミット間 81 回ぶんの差分のうち、今回の 10 行は 4 番目に小さい規模**です。これより小さいのは 4 行が 3 回（2026年06月21日・2026年08月03日・2026年08月09日）で、**そのうち 2026年06月21日は今回と同じ「changelog に 1 エントリだけが届いた」形**でした。**なおこの段落の日付は取り込みコミットそのものの日付**であり、サマリの `対象期間` や `作成日`（およびアーカイブのファイル名）はそこから 1 日前の PT 基準表記になります ―― 同じ回をアーカイブで探す際は 1 日ずれる点に注意してください。**本文が変わったページは 1 / 192**（前回は 56 / 192）で、**その 1 ページが changelog** です。
+**今回の際立った点は、changelog ページが 1 行も変わっていないことです。** 入力ディレクトリに触れた隣接コミット間 82 回のうち **changelog が無変更だったのは 22 回**で、直近は **2026年09月09日 の取り込み**なので珍しくはありません。ただし**本文側には v2.1.269 を要件として挙げる記述が 6 行新設**されており（`vs-code` に 4 行、`goal` と `skills` に 1 行ずつ）、**今回はリリースが出た回ではなく、前日までに出たリリースを文書が追いかけた回**だと読めます。追加行に現れるバージョンは v2.1.219・v2.1.221・v2.1.225・v2.1.228・v2.1.234・v2.1.257・v2.1.269 の 7 つですが、**削除行に対応が無い（＝今回新しく持ち込まれた）のは v2.1.269 の 6 行と v2.1.219 の 1 行だけ**で、残りは既存記述の移動に伴って追加行にも削除行にも同数現れているだけです。
 
-見出しマップの 6 行のうち 2 行は先頭の自動生成スタンプなので、**見出しそのものの変更は 4 行（追加 3・削除 1）**、すべて `goal` ページのものです。
+**変更ページ 24 のうち 12 が Agent SDK 配下**でした。行数の多い順に `vs-code`(45)・`agent-sdk/python`(39)・`skills`(32)・`goal`(29)・`agent-sdk/streaming-output`(29)・`advisor`(23)・`claude-code-on-the-web`(18)・`agent-sdk/hooks`(9)・`chrome`(7) と続き、残る 15 ページは 6 行以下、うち 11 ページは 2 行（1 行差し替え）です。
 
-**新機能に相当する項目はありません。** 今回届いた changelog は 1 項目で、それは修正です。
+**新機能**
 
-**バグ修正**
-
-- **Bash の読み取り専用 git コマンドが、セッションをしばらく走らせたあとに予期せず権限を尋ねるようになっていた問題が修正されました**（v2.1.270・**v2.1.269 の回帰**と原文に明記）。対応する権限ページの記述は無変更で、**ドキュメントどおりの挙動へ戻す修正**です（詳細はハイライト 1 参照）— [権限を設定する](https://code.claude.com/docs/ja/permissions#read-only-commands) / [Configure permissions](https://code.claude.com/docs/en/permissions#read-only-commands)
+- **claude.ai から同期したスキルに `/anthropic-skills:<name>` の完全名が付きました**（v2.1.269）。短名が他のコマンドと衝突しても、完全名でなら実行できます（詳細はハイライト 3 参照）— [Extend Claude with skills](https://code.claude.com/docs/en/skills#when-a-synced-skill-name-matches-another-command)
+- **VS Code 拡張の Customize セクションに Hooks と Permissions が加わり、エージェントマップが新設されました**（v2.1.269）。Focus view にはサブエージェントのライブ進行行も表示されます（詳細はハイライト 4 参照）— [VS Code で Claude Code を使用する](https://code.claude.com/docs/ja/vs-code#use-the-prompt-box) / [Use Claude Code in VS Code](https://code.claude.com/docs/en/vs-code#use-the-prompt-box)
+- **`/goal` が、修正を要しない失敗の後に自動再試行または一時停止するようになりました**（v2.1.269 以降の対話型セッション）。`Goal still active` / `Goal paused` の通知と、3 回で一時停止へ切り替わる挙動が本文に書き下ろされています（詳細はハイライト 1 参照）— [Claude をゴールに向かって動作させ続ける](https://code.claude.com/docs/ja/goal#other-errors-retry-or-pause-the-goal) / [Keep Claude working toward a goal](https://code.claude.com/docs/en/goal#other-errors-retry-or-pause-the-goal)
 
 **機能改善**
 
-- **`goal` ページの「評価の仕組み」配下に、ターンの失敗を扱う節の組み替えが予告されました**。`When a turn fails` が h3 として入り、既存の `Errors you have to fix clear the goal` がその下の h4 へ降り、`Other errors retry or pause the goal` が加わります。**本文は未着**で、現行の記述は「その他の失敗の後はゴールをアクティブなままにする」という 1 文のままです（詳細はハイライト 2 参照）— [Claude をゴールに向かって動作させ続ける](https://code.claude.com/docs/ja/goal#how-evaluation-works) / [Keep Claude working toward a goal](https://code.claude.com/docs/en/goal#how-evaluation-works)
+- **advisor のペアリング表が 8 行に増え、「拒否」と「API エラーで失敗」の 2 層に整理されました**。Opus 5 メインが Opus 4.7 / 4.8 アドバイザーを、Fable 5.1 メインが Fable 5 アドバイザーを、Sonnet 5 メインが Opus 4.6 アドバイザーを使えないことが明記されています（詳細はハイライト 2 参照）— [advisor ツールで難しい判断をエスカレートする](https://code.claude.com/docs/ja/advisor#choose-an-advisor-model) / [Escalate hard decisions with the advisor tool](https://code.claude.com/docs/en/advisor#choose-an-advisor-model)
+- **`settings-reference` の `advisorModel` から「能力が足りないときはアドバイザーなしで送る」という結果の説明が外れ**、advisor ページの表と「受理されない組み合わせを選んだときに何が起きるか」を参照する形になりました。上記の 2 層化に合わせた変更です — [All settings](https://code.claude.com/docs/en/settings-reference#advisormodel)
+- **プランモードでのブラウザツールの権限説明が全面的に差し替えられました**。従来の「読み取り専用呼び出しはプロンプトなし／状態変更呼び出しは承認を求める」という二分法と、各々の具体例の列挙が削除され、**GIF の記録・新しいタブを開く・ショートカットの実行の 3 つでプロンプトが出る**という記述に変わりました。さらに**バイパス権限モードが利用可能でフィーチャーフラグ取得がオフのセッションではプロンプトなしで実行される**という条件が新設されています。`tabs_context_mcp` の `createIfEmpty` と、これらのアクションを含む `browser_batch` もプロンプト対象である点だけが残りました — [Use Claude Code with Chrome](https://code.claude.com/docs/en/chrome#browser-tools-in-plan-mode)
+- **クラウドセッションの進捗確認手段としての `/tasks` への言及が 3 か所から削除されました**（`claude-code-on-the-web` で 2 か所、`github-enterprise-server` で 1 か所）。いずれも claude.ai・Claude モバイルアプリで確認するという記述だけが残っています。**`/tasks` からテレポートする手順は別の節に残っている**ので、コマンド自体が無くなったわけではありません — [ウェブ上の Claude Code を使用する](https://code.claude.com/docs/ja/claude-code-on-the-web#from-terminal-to-web) / [Use Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web#from-terminal-to-web)
+- **コンピュータ使用の macOS 通知が出るタイミングの記述が変わりました**。「Claude がロックを取得したとき」から「**各ターンで Claude が最初にコンピュータを使うとき**」になり、あわせてロックの説明から「マシン全体の（machine-wide）」という限定が外れました — [Claude に CLI からコンピュータを使用させる](https://code.claude.com/docs/ja/computer-use#stop-at-any-time) / [Let Claude use your computer from the CLI](https://code.claude.com/docs/en/computer-use#stop-at-any-time)
+- **Agent SDK のインプロセス MCP サーバーの扱いが反転しました**。接続タイミング表の該当行が「**いいえ。最初のターンを遅延させない**」から「**はい。接続してツールをリストするまで**」に変わり、タイムアウト欄も「なし」から「接続とツールリスティングのリクエストがそれぞれ独自のタイムアウトを持つ」になりました — [MCP を使用して外部ツールに接続する](https://code.claude.com/docs/ja/agent-sdk/mcp#connection-timing) / [Connect to external tools with MCP](https://code.claude.com/docs/en/agent-sdk/mcp#connection-timing)
+- **Python SDK で出力スタイルをプログラムから選べることが明記されました**。従来は「Python SDK にはプログラムで出力スタイルを選ぶオプションがない」と書かれていましたが、**`settings` オプションに `'{"outputStyle": "Explanatory"}'` のような JSON 文字列か設定ファイルのパスを渡す**方法に置き換わっています — [システムプロンプトの変更](https://code.claude.com/docs/ja/agent-sdk/modifying-system-prompts#activate-an-output-style) / [Modifying system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts#activate-an-output-style)
+- **Python SDK リファレンスで型と既定の記述が 5 か所直りました**。`ContentBlock` の union に **`ServerToolUseBlock` と `ServerToolResultBlock` が追加**され、`set_permission_mode` の引数型が `str` から `PermissionMode` になり、`SandboxNetworkConfig` の `allowUnixSockets` に「**macOS のみ。Linux では無視される**」が付き、`SDKSessionInfo` の `custom_title` が「ユーザー設定のタイトル、無ければ自動生成のタイトル」に、`get_server_info()` が「利用可能なコマンドと出力スタイルを含む初期化情報」に変わりました — [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python#contentblock)
+- **`effort` を指定しなかったときの解決先が変わりました**。`agent-sdk/agent-loop` では「両 SDK ともパラメータを未設定のままモデル既定に委ねる」から「**Claude Code が自分で努力レベルを解決する**（`Adjust effort level` の順序に従う）」へ、`agent-sdk/typescript` の `Options` 表では既定値の表記が `Model default` から `undefined` へ変わっています — [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop#effort-level) / [Agent SDK reference - TypeScript](https://code.claude.com/docs/en/agent-sdk/typescript#options)
+- **SDK の `skills` 配列に載る条件が明示されました**。「定義したユーザー呼び出し可能スキル」から「**`description` または `when_to_use` フロントマターフィールドを持つ**ユーザー呼び出し可能スキル」へ絞られています。同ページでは `slash_commands` の説明も整理され、「ユーザー呼び出し可能スキルはこのリストと `skills` 配列の両方に現れる」「`slash_commands` はセッションで使える残りのコマンドを足す」という 2 文が削られて、`user-invocable: false` のスキルがどちらにも出ないという記述に一本化されました — [Extend agents with skills](https://code.claude.com/docs/en/agent-sdk/skills#confirm-skills-loaded)
+- **`agent-sdk/streaming-output` から型定義のインライン掲載が外れました**。`StreamEvent` と `SDKPartialAssistantMessage` のコードブロック（約 26 行）が削除され、それぞれ Python / TypeScript リファレンスの該当アンカーへのリンクに置き換わっています。二重管理を解消する整理です — [Stream responses in real-time](https://code.claude.com/docs/en/agent-sdk/streaming-output#streamevent-reference)
+- **`agent-sdk/plugins` で相対パスの基準が変わりました**。「現在の作業ディレクトリからの相対」から「**`cwd` オプションからの相対**」になっています — [Plugins in the SDK](https://code.claude.com/docs/en/agent-sdk/plugins#path-specifications)
+- **ローカルバンドルのサイズ超過時の記述が 1 語変わりました**。100 MB 超のリポジトリのフォールバック説明で「スナップショットがまだ大きすぎる**場合のみ**失敗する」から「**場合は**失敗する」へ、`only` が削除されています。あわせてテレポート要件の表に「**v2.1.219 より前では、エラーはチェックアウト側のリポジトリ名を示さなかった**」という注記が加わりました — [Use Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web#send-local-repositories-without-github)
+
+**バグ修正**
+
+- **該当する項目はありません。** 今回の対象期間に changelog ページは 1 行も変わっておらず、修正を伝えるリリースエントリが届いていません。
 
 **その他**
 
-- 見出しマップ先頭の自動生成スタンプが **2026年09月12日 02時23分32秒 UTC から 2026年09月13日 20時22分28秒 UTC へ**進みました。対象期間中に上流の再生成が走ったことを示します
+- **`agent-sdk/hooks` から、サブエージェントの無限ループ対策の項目が 1 つ削除されました**（「スポーンする前にフック入力にサブエージェント指標がないか確認する」）。残る 2 つ（共有変数やセッション状態で追跡する／最上位セッションにのみ hooks をスコープする）はそのままです。あわせて、Webhook の例から「未処理例外はエージェントを中断しうる」「失敗した Webhook がエージェントを止めるべきではない」といった理由説明が削られ、コメントが簡潔になりました — [Intercept and control agent behavior with hooks](https://code.claude.com/docs/en/agent-sdk/hooks#make-http-requests-from-hooks)
+- **`agent-sdk/user-input` から Python の `can_use_tool` に関する注記（約 4 行）が削除されました**。有限メッセージストリームを渡すと権限コールバック実行前に入力ストリームが閉じる、という説明です。あわせてコールバックの説明から「クエリ自体がキャンセルされたときのみ SDK が待機を打ち切る」という一文が外れました — [Handle approvals and user input](https://code.claude.com/docs/en/agent-sdk/user-input#respond-to-tool-requests)
+- **`agent-sdk/claude-code-features` から、`settingSources: ["project"]` を設定すればプロジェクトの `.claude/settings.json` の hooks が SDK で自動的に動く、という段落が削除されました** — [Use Claude Code features in the SDK](https://code.claude.com/docs/en/agent-sdk/claude-code-features#hooks)
+- **`agent-sdk/agent-loop` で 2 か所の説明が簡潔化されました**。`worker_shutting_down` から「現在のターンの後にループが終わる」が外れてホスト終了・Remote Control 切断という条件だけになり、`error_during_execution` の例から `API failure` が外れて「キャンセルされたリクエスト」だけになっています — [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop#handle-the-result)
+- **`mobile`・`desktop`・`web-quickstart`・`agent-sdk/overview` で 1 行ずつの字句修正がありました**。「セッション QR コード」→「QR コード」、「リポジトリピルの隣の **+**」→「選択したリポジトリの隣の **+**」、「ブラウザを開かずに」→「ターミナルから」、Agent SDK の説明文の語順整理です
+- **見出しマップに 4 つの見出しが先行して届きました**。`workflows` の `When a run hits your usage limit`（h3）、`mcp` の `Credential variables that read as empty`（h4）、`gateways` の `Mark prices up`（h4）、`fast-mode` の `Use fast mode in cloud sessions`（h3）で、**4 つとも `llms-full.txt` の本文には 1 回も現れません**。前回の `goal` の 2 件が今回着地したのと入れ替わりに、**新しい持ち越しが 4 件**積まれた形です
+- **`llms.txt` で日本語版と韓国語版の収録ページ数が 191 から 192 へ増えました**。`_llms/` の言語索引には **11 言語**が並んでおり、フランス語・ドイツ語・イタリア語・スペイン語・中国語（簡体／繁体）・ロシア語・ブラジルポルトガル語は従来から 192 です。**今回の 2 言語が追いついた結果、192 で揃ったのは 11 言語中 10 言語**になりました ―― **インドネシア語だけは 191 のまま**で、今回の差分にも含まれていません
+- **見出しマップ先頭の自動生成スタンプが 2026年09月13日 20時22分28秒 UTC から 2026年09月15日 01時26分23秒 UTC へ**進みました。約 1 日 5 時間ぶんで、対象期間中に上流の再生成が走ったことを示します
 
-**参考リンクについて**: **今回、日本語版のリンクを付けられるのは権限ページと `goal` ページの 2 件で、いずれも付けています。** 作成時点で公開中の日本語版を実際に取得して確認したところ、**権限ページの「読み取り専用コマンド」節（`#read-only-commands`）は全訳済みで、`git` の読み取り専用形式を含むコマンド一覧も `blockReadsOutsideWorkingDirectories` への言及も英語版と一致**していました。**`goal` ページも全訳済み**で、こちらは**英語版の本文と同じく新しい見出しが未着**という状態です ―― 日本語版だけが遅れているわけではないため、**古い内容へ誘導する懸念はありません**（本文が届いた時点で日本語版と英語版は同時に古くなります）。**changelog ページへのリンクは本サマリの方針どおり付けていません。**
+**参考リンクについて**: **今回は日本語リンクを付けたものと付けなかったものが混在しています。** 作成時点で公開中の日本語版を実際に取得して確認した結果は次のとおりです。**反映済み（日本語リンクあり）**: `goal`（新設の 2 見出しとも全訳済み）・`advisor`（8 行の表と API エラーの記述を反映）・`vs-code`（Hooks / Permissions / エージェントマップ / 選択インジケータの変更をすべて反映）・`computer-use`（通知タイミングの変更を反映）・`agent-sdk/mcp`（接続タイミング表の反転を反映）・`agent-sdk/modifying-system-prompts`（Python の `settings` 経由の記述に差し替え済み）・`claude-code-on-the-web` の `/tasks` 削除箇所。**未反映または未確認（英語のみ）**: `skills`（claude.ai 同期スキルの節そのものが日本語版に存在しない）・`chrome`（プランモードの節が旧来の二分法のまま）・`claude-code-on-the-web` のバンドル制限とテレポート要件（`only` の削除も v2.1.219 の注記も未反映）・`agent-sdk/python`（`custom_title` の説明が旧版のまま）・Agent SDK のその他のページと `settings-reference`（未確認のため安全側で英語のみ）。**新着情報 3 ページの日本語版は HTTP 404 で存在しません。** **changelog ページへのリンクは本サマリの方針どおり付けていません**（今回は無変更のため、そもそも参照すべき変更がありません）。
 <!-- light:minor-updates:end -->
 
 ## 新着情報
 
 <!-- light:whats-new:start -->
-（今回の対象期間には `whats-new/` 配下のページに差分がありませんでした。本文が変わったのは changelog の 1 ページだけです。最新の週間ダイジェストは 11 回前のサマリで扱った Week 34（2026年08月17日～21日）のままで、新しい週のダイジェストの追加も既存ページの訂正もありません。**`whats-new/` の無差分は 11 回連続**で、取り込み単位で数えると **2026年08月23日 の取り込みを最後に 19 回連続**です。リリースノート系の更新経路だけが 3 週間止まったままになっています）
+- [**2026年09月07日～11日(Week 37)**](#2026年09月07日11日week-37) ([English](https://code.claude.com/docs/en/whats-new/2026-w37)):  
+  `llms.txt` に登録されたのみで、`llms-full.txt` に本文は届いていません。1 行説明は「`claude plugin eval` でプラグインをテストし、Claude Code デスクトップのペインを独立したウィンドウへ切り出す」で、**前者は 2 回前のサマリで扱った `plugin-evals` ページに対応**します
+- [**2026年08月31日～09月04日(Week 36)**](#2026年08月31日09月04日week-36) ([English](https://code.claude.com/docs/en/whats-new/2026-w36)):  
+  同じく登録のみ。1 行説明は「Claude Fable 5.1 へ切り替え、デスクトップでコンピュータ使用をバックグラウンド実行させ、Claude の編集をライブ `/diff` パネルで見る」で、**先頭の Fable 5.1 は今回の advisor ページの変更（ハイライト 2）と重なります**
+- [**2026年08月24日～28日(Week 35)**](#2026年08月24日28日week-35) ([English](https://code.claude.com/docs/en/whats-new/2026-w35)):  
+  同じく登録のみ。1 行説明は「Claude Code デスクトップアプリでターミナルセッションを再開し、Claude が下書きするフィードバックレポートを確認し、制限モードでセッションを開始する」で、**対象期間の 3 週間前**にあたる回です
 <!-- light:whats-new:end -->
+
+## 2026年09月07日～11日(Week 37)
+
+**`llms.txt` の 1 行説明はこうです。**
+
+```
+Test your plugins with claude plugin eval and pop Claude Code Desktop panes out into their own windows.
+```
+
+訳すと「**`claude plugin eval` でプラグインをテストし、Claude Code デスクトップのペインを独立したウィンドウへ切り出す**」です。**前者は 2 回前のサマリで新規追加として扱った `plugin-evals` ページに対応します** ―― 本リポジトリの観測では、**リファレンスページのほうが週間ダイジェストより先に届いた**ことになります。後者のデスクトップのペイン切り出しについては、今回の差分に対応する記述が見当たりません（`desktop` ページの差分は複数リポジトリ追加の UI 説明 1 行のみ）。
+
+**本文が `llms-full.txt` に届いていないため、これ以上の内容は原文差分から確認できません。**
+
+- [Week 37 · September 7–11, 2026 - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/2026-w37)
+
+## 2026年08月31日～09月04日(Week 36)
+
+**`llms.txt` の 1 行説明はこうです。**
+
+```
+Switch to Claude Fable 5.1, let computer use run in the background on Desktop, and watch Claude's edits in a live /diff panel.
+```
+
+訳すと「**Claude Fable 5.1 へ切り替え、デスクトップでコンピュータ使用をバックグラウンド実行させ、Claude の編集をライブ `/diff` パネルで見る**」です。**先頭の Fable 5.1 は、今回の advisor ページの変更（ハイライト 2）と重なります** ―― ペアリング表に `Fable 5.1` が独立した行として入り、**Fable 5 アドバイザーとの組み合わせが API エラーになる**と明記されたのが同じ取り込みでした。
+
+**本文が未着のため、残る 2 項目に対応する記述は今回の差分にはありません。**
+
+- [Week 36 · August 31 – September 4, 2026 - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/2026-w36)
+
+## 2026年08月24日～28日(Week 35)
+
+**`llms.txt` の 1 行説明はこうです。**
+
+```
+Resume terminal sessions in the Claude Code Desktop app, review feedback reports that Claude drafts for you, and start a session in restricted mode.
+```
+
+訳すと「**Claude Code デスクトップアプリでターミナルセッションを再開し、Claude が下書きするフィードバックレポートを確認し、制限モードでセッションを開始する**」です。**この 3 つはいずれも今回の差分に対応する記述を持ちません。** Week 35 は**対象期間の 3 週間前**にあたる回で、3 週分がまとめて登録された中では最も古いものです。
+
+- [Week 35 · August 24–28, 2026 - Claude Code Docs (English)](https://code.claude.com/docs/en/whats-new/2026-w35)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-12.md](./archives/latest/2026-09-12.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-12.md](./archives/latest-detail/2026-09-12.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-13.md](./archives/latest/2026-09-13.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-13.md](./archives/latest-detail/2026-09-13.md)
 
 <!--
-base_commit: f42c3bbc7514f65d9b93da10d594de373927552d
-head_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
-generated_at_full: 2026-09-14T15:01:59+09:00
+base_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
+head_commit: a19a359d88d83c75d535255e4c3dd79daa4f181f
+generated_at_full: 2026-09-15T15:09:06+09:00
 -->

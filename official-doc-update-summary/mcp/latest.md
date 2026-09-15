@@ -1,47 +1,62 @@
 ---
-対象期間: 2026年09月08日 〜 2026年09月13日
-作成日: 2026-09-13
+対象期間: 2026年09月13日 〜 2026年09月14日
+作成日: 2026-09-14
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の差分は索引 `llms.txt` に加わった 2 行だけで、削除行はなく、ページ本文を収める `llms-full.txt` には 1 行の変更もありません。加わった 2 行はいずれも Skills Extension に関するもので、拡張ページ `extensions/skills/overview` と `SEP-2640: Skills Extension` が同じ断面で索引に載りました。
+今回の対象期間の差分は本文 `llms-full.txt` に限られ、索引 `llms.txt` には 1 行の変更もありません。前回索引にだけ現れて本文が未収録だった Skills 拡張の 2 ページ（拡張ページと SEP-2640）が本文として収録され、これに合わせて既存 3 ページも追従しました。
 
 主要なものを以下に挙げます。
 
-1. Skills Extension の拡張ページと SEP-2640 の 2 件が索引に同時追加された。索引上では MCP Apps・Tasks と同じ extensions ブロックと SEP 一覧に並ぶが、本文は両ページとも `llms-full.txt` に未収録で、拡張の識別子・プロトコル仕様・対応クライアントは今回の入力からは確認できない
+1. Skills 拡張（識別子 `io.modelcontextprotocol/skills`）の仕様本文が収録され、`skills/list`・`skills/get` が必須メソッド、`resources/directory/read` が `directoryRead` 宣言時のみ呼べる任意メソッドと定まった。スキルは既存の Resources プリミティブの上に載り、1 スキルあたり 512 ファイル・16 MiB が上限
+2. SEP-2640 の本文がステータス `Final` として収録され、Python・C#・Go 各 SDK の PR や conformance テスト、プロトタイプ実装の所在が明記された。一方で Skills Over MCP WG の charter ページは今回未更新で、Active Work Items のステータスは `In Review` のまま
+3. `Extension Support Matrix` に Skills の行と列が加わり、ChatGPT・fast-agent・MCP Inspector の 3 クライアントが `Partial` として掲載された。うち fast-agent と MCP Inspector は表に行そのものが新設されている
 ```
 
 ## ハイライト
 
-1. [**Skills Extension の拡張ページと SEP-2640 が索引に追加**](./latest-detail.md#1-skills-extension-の拡張ページと-sep-2640-が索引に追加):  
-  `extensions/skills/overview`（説明文「Discover and read Agent Skills from MCP servers」）と `seps/2640-skills-extension`（同「Skills Extension」）の 2 行が索引に加わった。今回の差分はこの 2 行の追加のみで、削除行はない。索引のエントリ行数は 350 件から 352 件、ユニーク URL は 345 件から 347 件になっている。本文は両ページとも `llms-full.txt` に未収録で、拡張の中身は入力から確認できない。
+1. [**Skills 拡張の仕様本文が収録され 3 つのメソッドが確定**](./latest-detail.md#1-skills-拡張の仕様本文が収録され-3-つのメソッドが確定):  
+  拡張ページ `extensions/skills/overview` の本文が収録され、前回の断面では確認できなかった識別子・メソッド・宣言方法が明らかになった。サーバーは `server/discover` で `resources` capability と `io.modelcontextprotocol/skills` 拡張の双方を宣言し、`skills/list` と `skills/get` を実装する。ファイル本体の取得は既存の `resources/read` を使い、ディレクトリ列挙の `resources/directory/read` だけが `directoryRead: true`（既定 `false`）を宣言したサーバーに限られる任意機能である。
+2. [**SEP-2640 が Final ステータスで本文収録**](./latest-detail.md#2-sep-2640-が-final-ステータスで本文収録):  
+  SEP ページの本文が収録され、ステータスが `Final`・種別が Extensions Track・作成日が 2026年04月23日 であることが確認できるようになった。参照実装として Python・C#・Go 各 SDK の PR、conformance テスト、4 つのプロトタイプホストと 1 つのプロトタイプサーバーが列挙されている。`seps/index` の Final 件数も 41 件から 42 件へ更新された。ただし Skills Over MCP WG の charter ページは今回の差分に含まれず、Active Work Items のステータス表記は `In Review` のまま据え置かれている。
+3. [**クライアント対応表に Skills 列が追加**](./latest-detail.md#3-クライアント対応表に-skills-列が追加):  
+  `Extension Support Matrix` の拡張一覧に `Skills over MCP` の行が加わり、対応表には Skills 列が新設された。この列に印が付いたのは ChatGPT・fast-agent・MCP Inspector の 3 件で、いずれも `<CHECK />` ではなく外部ドキュメントへリンクした `Partial` 表記である。fast-agent と MCP Inspector は対応表に初めて現れたクライアントで、`Extensions Overview` にも `Skills over MCP` の節が新設された。
 
 ## 新規追加されたページ
 
-今回索引に増えたページは次の 2 件です。いずれも本文は `llms-full.txt` に未収録で、ここで述べられるのは索引エントリそのものと、既存の収録済みページから読み取れる周辺事情に限られます。
+今回本文が新たに収録されたページは次の 2 件です。いずれも索引には前回の断面で既に載っており、本文が 1 回遅れて追いついた形になります。
 
 - [**Skills**](./latest-detail.md#1-skills) ([MCP Docs](https://modelcontextprotocol.io/extensions/skills/overview)):  
-  索引の extensions ブロック末尾、`Tasks` の直後に加わった拡張ページ。説明文は「Discover and read Agent Skills from MCP servers」で、MCP サーバーから Agent Skills を発見し読み取る方向の機能として紹介されている。
+  Skills 拡張の解説ページ。capability 宣言・3 つのプロトコルメッセージ・メッセージフロー・整合性検証・実装要件・エラー処理・クライアント対応という構成で、規範的な仕様の正本は ext-skills リポジトリ側にあると明記している。
 - [**SEP-2640: Skills Extension**](./latest-detail.md#2-sep-2640-skills-extension) ([MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension)):  
-  SEP 一覧に SEP-2596 と SEP-2663 の間（番号順）で加わったエントリ。Skills Over MCP Working Group の charter が「現在の方向性」として名指ししてきた SEP で、これまで GitHub の PR としてしか参照されていなかったものに公式ドキュメント上のページが与えられた。
+  提案そのものの全文。動機として挙げられた 3 つの問題、`skill://` URI の設計、入れ子スキルの扱い、後方互換性、セキュリティ上の含意、そしてレビュー中に削除された機能を記録する付録までを含む。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。ページ本文を収める `llms-full.txt` には差分が 1 行もなく、42,465 行・収録ページ 148 件のまま既存ページの記述内容は変わっていません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページで最も変更が大きかった `Extension Support Matrix` でも追加 21 行・削除 18 行で、その内訳は表への行・列の追加と、列幅を揃えるための既存行の書き換えです（詳細はハイライト 3 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは索引 `llms.txt` の 1 件のみで、その内容は新規エントリ 2 行の追加（新規追加されたページ 1・2 参照）に尽きます。削除行や既存エントリの書き換え、リンク先 URL の変更、字句修正はなく、これとは別に挙げる軽微な更新はありません。
+今回差分が出たファイルは本文 `llms-full.txt` の 1 件のみで、新規 2 ページの収録を除くと、既存ページ側の変更は 3 件です。いずれも Skills 拡張の追加に伴う追従で、これと無関係な字句修正やリンク先の変更はありません。
+
+**機能改善**
+
+- `Extension Support Matrix` に、拡張一覧の `Skills over MCP` 行と対応表の Skills 列が加わり、ChatGPT・fast-agent・MCP Inspector の 3 クライアントが `Partial` として掲載された。fast-agent と MCP Inspector は行そのものが新設（詳細はハイライト 3 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+- `Extensions Overview` に `### Skills over MCP` の節が新設され、ext-skills リポジトリへの Card・1 行の拡張表・Skills overview と client matrix への誘導が加わった（詳細はハイライト 3 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#skills-over-mcp)
+
+**その他**
+
+- SEP 索引ページの一覧表に SEP-2640 の行が SEP-2663 と SEP-2596 の間（番号順）で挿入され、Summary の Final 件数が 41 から 42 に更新された。差分としては追加 2 行・削除 1 行のみ（詳細はハイライト 2 参照） — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index#all-seps)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-08.md](./archives/latest/2026-09-08.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-08.md](./archives/latest-detail/2026-09-08.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-13.md](./archives/latest/2026-09-13.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-13.md](./archives/latest-detail/2026-09-13.md)
 
 <!--
-base_commit: b8993e0293f2b6b04fd7517ad897abdaa6e0f01b
-head_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
-generated_at_full: 2026-09-14T15:25:42+09:00
+base_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
+head_commit: a19a359d88d83c75d535255e4c3dd79daa4f181f
+generated_at_full: 2026-09-15T15:40:05+09:00
 -->
