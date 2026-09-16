@@ -1,62 +1,46 @@
 ---
-対象期間: 2026年09月13日 〜 2026年09月14日
-作成日: 2026-09-14
+対象期間: 2026年09月14日 〜 2026年09月15日
+作成日: 2026-09-15
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の差分は本文 `llms-full.txt` に限られ、索引 `llms.txt` には 1 行の変更もありません。前回索引にだけ現れて本文が未収録だった Skills 拡張の 2 ページ（拡張ページと SEP-2640）が本文として収録され、これに合わせて既存 3 ページも追従しました。
+今回の対象期間の差分は極めて小さく、本文 `llms-full.txt` の 1 ページ・3 行（追加 2 行・削除 1 行）に限られます。索引 `llms.txt` は 1 行も変わっていません。内容は Skills Over MCP WG の charter における運営体制の変更 1 件だけで、プロトコル仕様・API・クライアント対応に関わる変更はありません。
 
 主要なものを以下に挙げます。
 
-1. Skills 拡張（識別子 `io.modelcontextprotocol/skills`）の仕様本文が収録され、`skills/list`・`skills/get` が必須メソッド、`resources/directory/read` が `directoryRead` 宣言時のみ呼べる任意メソッドと定まった。スキルは既存の Resources プリミティブの上に載り、1 スキルあたり 512 ファイル・16 MiB が上限
-2. SEP-2640 の本文がステータス `Final` として収録され、Python・C#・Go 各 SDK の PR や conformance テスト、プロトタイプ実装の所在が明記された。一方で Skills Over MCP WG の charter ページは今回未更新で、Active Work Items のステータスは `In Review` のまま
-3. `Extension Support Matrix` に Skills の行と列が加わり、ChatGPT・fast-agent・MCP Inspector の 3 クライアントが `Partial` として掲載された。うち fast-agent と MCP Inspector は表に行そのものが新設されている
+1. Skills Over MCP WG の Lead が 2 名から 3 名になり、Participant だった Sambhav Kothari（Bloomberg / MCP Maintainer）が Lead に移った。Leadership 表と Membership 表の双方が更新された一方、同ページの Changelog 表にはこの変更が記録されておらず、最新エントリは 2026年04月25日 のまま
 ```
 
 ## ハイライト
 
-1. [**Skills 拡張の仕様本文が収録され 3 つのメソッドが確定**](./latest-detail.md#1-skills-拡張の仕様本文が収録され-3-つのメソッドが確定):  
-  拡張ページ `extensions/skills/overview` の本文が収録され、前回の断面では確認できなかった識別子・メソッド・宣言方法が明らかになった。サーバーは `server/discover` で `resources` capability と `io.modelcontextprotocol/skills` 拡張の双方を宣言し、`skills/list` と `skills/get` を実装する。ファイル本体の取得は既存の `resources/read` を使い、ディレクトリ列挙の `resources/directory/read` だけが `directoryRead: true`（既定 `false`）を宣言したサーバーに限られる任意機能である。
-2. [**SEP-2640 が Final ステータスで本文収録**](./latest-detail.md#2-sep-2640-が-final-ステータスで本文収録):  
-  SEP ページの本文が収録され、ステータスが `Final`・種別が Extensions Track・作成日が 2026年04月23日 であることが確認できるようになった。参照実装として Python・C#・Go 各 SDK の PR、conformance テスト、4 つのプロトタイプホストと 1 つのプロトタイプサーバーが列挙されている。`seps/index` の Final 件数も 41 件から 42 件へ更新された。ただし Skills Over MCP WG の charter ページは今回の差分に含まれず、Active Work Items のステータス表記は `In Review` のまま据え置かれている。
-3. [**クライアント対応表に Skills 列が追加**](./latest-detail.md#3-クライアント対応表に-skills-列が追加):  
-  `Extension Support Matrix` の拡張一覧に `Skills over MCP` の行が加わり、対応表には Skills 列が新設された。この列に印が付いたのは ChatGPT・fast-agent・MCP Inspector の 3 件で、いずれも `<CHECK />` ではなく外部ドキュメントへリンクした `Partial` 表記である。fast-agent と MCP Inspector は対応表に初めて現れたクライアントで、`Extensions Overview` にも `Skills over MCP` の節が新設された。
+1. [**Skills Over MCP WG の Lead に Sambhav Kothari が加わる**](./latest-detail.md#1-skills-over-mcp-wg-の-lead-に-sambhav-kothari-が加わる):  
+  `Skills Over MCP Charter` の Leadership 表に 3 行目として Sambhav Kothari（Bloomberg / MCP Maintainer、`@sambhav`）が加わり、Membership 表での Level も Participant から Lead へ変わった。WG のメンバー総数 17 名は変わらず、内訳が Lead 2 名・Participant 15 名から Lead 3 名・Participant 14 名へ移った形。同ページの Changelog 表は今回更新されておらず、charter の変更履歴だけを追っていてもこの変更は捕捉できない。
 
 ## 新規追加されたページ
 
-今回本文が新たに収録されたページは次の 2 件です。いずれも索引には前回の断面で既に載っており、本文が 1 回遅れて追いついた形になります。
-
-- [**Skills**](./latest-detail.md#1-skills) ([MCP Docs](https://modelcontextprotocol.io/extensions/skills/overview)):  
-  Skills 拡張の解説ページ。capability 宣言・3 つのプロトコルメッセージ・メッセージフロー・整合性検証・実装要件・エラー処理・クライアント対応という構成で、規範的な仕様の正本は ext-skills リポジトリ側にあると明記している。
-- [**SEP-2640: Skills Extension**](./latest-detail.md#2-sep-2640-skills-extension) ([MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension)):  
-  提案そのものの全文。動機として挙げられた 3 つの問題、`skill://` URI の設計、入れ子スキルの扱い、後方互換性、セキュリティ上の含意、そしてレビュー中に削除された機能を記録する付録までを含む。
+今回本文に新たに収録されたページはありません。`llms-full.txt` の収録ページ数は 150 件で前回から増減がなく、索引 `llms.txt` のエントリ数も 352 件のまま変わっていません。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページで最も変更が大きかった `Extension Support Matrix` でも追加 21 行・削除 18 行で、その内訳は表への行・列の追加と、列幅を揃えるための既存行の書き換えです（詳細はハイライト 3 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。差分があったのは `Skills Over MCP Charter` の 1 ページのみで、変更量は追加 2 行・削除 1 行です（詳細はハイライト 1 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは本文 `llms-full.txt` の 1 件のみで、新規 2 ページの収録を除くと、既存ページ側の変更は 3 件です。いずれも Skills 拡張の追加に伴う追従で、これと無関係な字句修正やリンク先の変更はありません。
-
-**機能改善**
-
-- `Extension Support Matrix` に、拡張一覧の `Skills over MCP` 行と対応表の Skills 列が加わり、ChatGPT・fast-agent・MCP Inspector の 3 クライアントが `Partial` として掲載された。fast-agent と MCP Inspector は行そのものが新設（詳細はハイライト 3 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
-- `Extensions Overview` に `### Skills over MCP` の節が新設され、ext-skills リポジトリへの Card・1 行の拡張表・Skills overview と client matrix への誘導が加わった（詳細はハイライト 3 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#skills-over-mcp)
+今回差分が出たファイルは本文 `llms-full.txt` の 1 件、ページは 1 件のみです。内容は WG の運営体制に関するもので、プロトコル仕様・API・クライアント対応に関わる変更や、字句修正・リンク先の変更はありません。
 
 **その他**
 
-- SEP 索引ページの一覧表に SEP-2640 の行が SEP-2663 と SEP-2596 の間（番号順）で挿入され、Summary の Final 件数が 41 から 42 に更新された。差分としては追加 2 行・削除 1 行のみ（詳細はハイライト 2 参照） — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index#all-seps)
+- `Skills Over MCP Charter` の Leadership 表に Sambhav Kothari（Bloomberg / MCP Maintainer、`@sambhav`）の行が加わり、Membership 表での Level が Participant から Lead へ変わった。WG の Lead は 2 名から 3 名になり、メンバー総数 17 名は変わらない。同ページの Changelog 表はこの変更を記録していない（詳細はハイライト 1 参照） — [Skills Over MCP Charter](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#membership)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-13.md](./archives/latest/2026-09-13.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-13.md](./archives/latest-detail/2026-09-13.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-14.md](./archives/latest/2026-09-14.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-14.md](./archives/latest-detail/2026-09-14.md)
 
 <!--
-base_commit: af4f9aea12060f28aec2b5eafd4af096eee2ec40
-head_commit: a19a359d88d83c75d535255e4c3dd79daa4f181f
-generated_at_full: 2026-09-15T15:40:05+09:00
+base_commit: a19a359d88d83c75d535255e4c3dd79daa4f181f
+head_commit: ebe595356470a094a294bd32d86870726c81d33b
+generated_at_full: 2026-09-16T15:26:41+09:00
 -->
