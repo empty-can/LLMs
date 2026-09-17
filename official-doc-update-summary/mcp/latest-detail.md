@@ -1,43 +1,41 @@
 ---
-対象期間: 2026年09月14日 〜 2026年09月15日
-作成日: 2026-09-15
+対象期間: 2026年09月15日 〜 2026年09月16日
+作成日: 2026-09-16
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の差分は極めて小さく、本文 `llms-full.txt` の 1 ページ・3 行（追加 2 行・削除 1 行）に限られます。索引 `llms.txt` は 1 行も変わっていません。内容は Skills Over MCP WG の charter における運営体制の変更 1 件だけで、プロトコル仕様・API・クライアント対応に関わる変更はありません。
+今回の対象期間の差分は本文 `llms-full.txt` の 1 ページ・14 行（追加 7 行・削除 7 行）のみで、索引 `llms.txt` は 1 行も変わっていません。内容は SEP-2640「Skills Extension」ページが引用する外部リンクのパス書き換えだけで、仕様本文の記述・プロトコル定義・クライアント対応に関わる変更はありません。
 
 主要なものを以下に挙げます。
 
-1. Skills Over MCP WG の Lead が 2 名から 3 名になり、Participant だった Sambhav Kothari（Bloomberg / MCP Maintainer）が Lead に移った。Leadership 表と Membership 表の双方が更新された一方、同ページの Changelog 表にはこの変更が記録されておらず、最新エントリは 2026年04月25日 のまま
+1. SEP-2640 が引用する Working Group 資料 5 文書（problem-statement / experimental-findings / related-work / open-questions / skill-meta-keys）のリンク先が、`ext-skills` リポジトリの `docs/` 直下から `docs/archive/` 配下へ変わった。書き換えは同ページ内の 7 箇所で、`rationale.md`・`decisions.md` を指す残り 3 リンクは従来パスのまま
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Skills Over MCP WG の Lead に Sambhav Kothari が加わる**](#1-skills-over-mcp-wg-の-lead-に-sambhav-kothari-が加わる):  
-  `Skills Over MCP Charter` の Leadership 表に 3 行目として Sambhav Kothari（Bloomberg / MCP Maintainer、`@sambhav`）が加わり、Membership 表での Level も Participant から Lead へ変わった。WG のメンバー総数 17 名は変わらず、内訳が Lead 2 名・Participant 15 名から Lead 3 名・Participant 14 名へ移った形。同ページの Changelog 表は今回更新されておらず、charter の変更履歴だけを追っていてもこの変更は捕捉できない。
+1. [**SEP-2640 が参照する Working Group 資料 5 件のリンク先が docs 直下から archive 配下へ移動**](#1-sep-2640-が参照する-working-group-資料-5-件のリンク先が-docs-直下から-archive-配下へ移動):  
+  `SEP-2640: Skills Extension` ページの Motivation・Backward Compatibility・Security Implications・References の 4 セクションで、`modelcontextprotocol/ext-skills` リポジトリの資料を指す 7 本のリンクが `docs/<file>.md` から `docs/archive/<file>.md` へ書き換えられた。変更はパス文字列の挿入のみで、リンクテキスト・説明文・アンカーはいずれも変わっていない（増加バイト数 56 = `archive/` 8 バイト × 7 とも整合する）。同ページに残る `rationale.md`（2 本）・`decisions.md`（1 本）へのリンクは書き換えられておらず、ページ内の ext-skills 資料リンク 10 本のうち 7 本だけが移動先を指す状態になっている。
 <!-- light:highlight-list:end -->
 
-## 1. Skills Over MCP WG の Lead に Sambhav Kothari が加わる
+## 1. SEP-2640 が参照する Working Group 資料 5 件のリンク先が docs 直下から archive 配下へ移動
 
-今回の対象期間で差分が出たのは本文 `llms-full.txt` の 1 ファイル・1 ページのみで、変更量は追加 2 行・削除 1 行です。索引 `llms.txt` は 354 行・エントリ 352 件・ユニーク URL 347 件のまま 1 行も変わっていません。`llms-full.txt` は 43,588 行から 43,589 行へ 1 行だけ増え、収録ページ数は 150 件で増減がありません。前回が新規 2 ページの本文収録を含む比較的大きな断面だったのに対し、今回は運営体制の記載が 1 箇所動いただけの静かな断面です。
+今回の対象期間で差分が出たのは本文 `llms-full.txt` の 1 ファイル・1 ページのみで、変更量は追加 7 行・削除 7 行です。索引 `llms.txt` は 354 行・エントリ 352 件・ユニーク URL 347 件のまま 1 行も変わっていません。`llms-full.txt` も 43,589 行のままで行数の増減はなく、収録ページ数も 150 件で変わりません。差分が出た `SEP-2640: Skills Extension`（`seps/2640-skills-extension`）自体もページ全体で 673 行のままです。前回が WG の運営体制を 1 箇所書き換えただけの静かな断面でしたが、今回はそれに輪をかけて、参照先パスの機械的な置換だけという断面になりました。
 
-変更があったのは `Skills Over MCP Charter`（`community/working-groups/skills-over-mcp`）で、ページ全体は 143 行から 144 行になりました。まず **Leadership 表が 2 行から 3 行**になり、`| Lead | Sambhav Kothari | Bloomberg / MCP Maintainer | [@sambhav](https://github.com/sambhav) | Initial |` の行が Peter Alexander の下に追加されています。Term 列は `Initial` で、これは既存の Ola Hungerford（Nordstrom / MCP Maintainer）・Peter Alexander（Anthropic / Core Maintainer）と同じ表記です。つまり 3 名とも Term の表記上は区別がありません。
+書き換えられたのは、`modelcontextprotocol/ext-skills` リポジトリに置かれた Working Group の補助資料を指すリンクです。対象は **5 文書・計 7 リンク**で、内訳は次のとおりです。**Motivation** では「Fragmented distribution」の根拠として挙げられている `problem-statement.md` と、「Instruction size limits」で 875 行の mcpGraph skill の例に添えられている `experimental-findings.md`（アンカー `#mcpgraph-skills-in-mcp-server-repo` 付き）の 2 本。**Backward Compatibility** では、他の `skill://` URI 構造を採る既存実装のカタログとして参照されている related-work survey（`related-work.md`）の 1 本。**Security Implications** では、skill コンテンツがプロンプトインジェクション面であることの背景資料として置かれた `open-questions.md`（アンカー `#10-how-should-skills-handle-security-and-trust-boundaries` 付き）の 1 本。そして **References** の一覧で `experimental-findings.md`・`related-work.md`・`skill-meta-keys.md` の 3 本です。いずれも `docs/<file>.md` の部分が `docs/archive/<file>.md` に変わっただけで、リンクテキストも後続の説明文も変わっていません。
 
-**Membership 表の側も同じ人物の 1 行が動きました**。Sambhav Kothari の行は表の末尾（Haoyu Wang の次）から 3 行目（Peter Alexander の次）へ移り、Level 列が `Participant` から `Lead` に変わっています。これが差分上の「削除 1 行・追加 1 行」の実体で、表の行数そのものは 17 名で変わりません。内訳は Lead 2 名・Participant 15 名から **Lead 3 名・Participant 14 名**になりました。
+差分の 7 行を 1 行ずつ照合すると、変わっているのは各 URL の `docs/` と `<file>.md` の間に `archive/` が入った箇所だけで、同じ行のリンクテキストも前後の説明文も一致しています。アンカー（`#mcpgraph-...` / `#10-how-should-...`）もそのまま維持されています。ファイルサイズの変化もこれと整合しており、`llms-full.txt` は 2,487,785 バイトから 2,487,841 バイトへ **56 バイト**増えていて、`archive/` の 8 バイト × 7 箇所とちょうど一致します。
 
-注意が要るのは、**この変更が同ページの Changelog 表に記録されていない**点です。Changelog の最新エントリは依然として 2026年04月25日 の「Linked SEP-2640 in Active Work Items; added @helloeve (Google) as Participant」で、今回の Lead 追加に対応する行はありません。この charter は過去に参加者の追加（@helloeve）を changelog に残しているため、記載の粒度としては載っていてもおかしくないところですが、今回は表本体だけが更新されています。charter の changelog を見て変更の有無を判断する運用をしている場合、この変更は取りこぼされます。
+一方で、**同じページに残る ext-skills 資料へのリンク 3 本は書き換えられていません**。設計判断の根拠をまとめた `rationale.md` は Directory Listing の小節と Rationale セクションの計 2 箇所で、WG の決定ログ `decisions.md` は References で、いずれも `docs/` 直下のパスのままです。つまりページ内の ext-skills 資料リンク 10 本は、7 本が `docs/archive/` 配下・3 本が `docs/` 直下という混在状態になりました。また References に並ぶ各資料の説明文は今回いずれも書き換えられておらず、たとえば `Experimental Findings` は「results from implementations (WIP)」のまま、参照先パスだけが `archive/` 配下になっています。
 
-もう 1 点、前回サマリで留保した **Active Work Items のステータスは今回も動いていません**。前回は「charter ページ自体が差分に含まれない」という理由でしたが、今回は charter ページが差分に入ったうえで、動いたのは Leadership 表と Membership 表の 2 箇所だけです。「Skills Extension SEP (Extensions Track)」「Skills Extension reference implementation」はいずれも `In Review` のままで、SEP-2640 ページが掲げる `Final` との食い違いは解消していません。charter の記述だけを見て現在のステータスを判断しないよう、引き続き注意してください。
+実務上の影響としては、SEP-2640 の引用元として旧 URL（`docs/problem-statement.md` など）を控えている場合、その参照の更新が要る可能性がある点が挙げられます。ただし本サマリは公式ドキュメントの差分のみを根拠にしており、GitHub 側で実ファイルがどう配置されているか（旧パスが残っているか、リダイレクトがあるか）までは確認していません。仕様本体の記述 ―― `skills/list` / `skills/get` / `resources/directory/read` の 3 メソッドの定義、Security Implications の各 MUST 要件、Backward Compatibility が述べる互換性の扱い ―― は今回いずれも変わっていません。差分に現れた 7 行はすべて URL の一部だけが置き換わったもので、同じ行の説明文も含め、リンク以外の字句は一切動いていません。
 
-なお背景として、Sambhav Kothari は SEP-2640 の著者 4 名の 1 人として同 SEP ページに記載されており、`Filesystems Charter`・`Interceptors Charter` では既に Lead、`Financial Services Charter` では Facilitator を務めています。ただしこれらはいずれも以前から記載されている内容で、今回の差分に含まれるものではありません。
-
-- [Skills Over MCP Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#leadership)
-- [Skills Over MCP Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#membership)
+- [SEP-2640: Skills Extension - MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension#motivation)
+- [SEP-2640: Skills Extension - MCP Docs](https://modelcontextprotocol.io/seps/2640-skills-extension#references)
 
 ## 新規追加されたページ
 
@@ -48,26 +46,30 @@
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。差分があったのは `Skills Over MCP Charter` の 1 ページのみで、変更量は追加 2 行・削除 1 行です（詳細はハイライト 1 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。差分があったのは `SEP-2640: Skills Extension` の 1 ページのみで、変更量は追加 7 行・削除 7 行です（詳細はハイライト 1 参照）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは本文 `llms-full.txt` の 1 件、ページは 1 件のみです。内容は WG の運営体制に関するもので、プロトコル仕様・API・クライアント対応に関わる変更や、字句修正・リンク先の変更はありません。
+今回差分が出たファイルは本文 `llms-full.txt` の 1 件、ページは `SEP-2640: Skills Extension` の 1 件のみです。内容は同ページが引用する外部資料のパス変更 5 文書ぶんで、いずれも `modelcontextprotocol/ext-skills` リポジトリの `docs/` 直下から `docs/archive/` 配下への書き換えです（詳細はハイライト 1 参照。以下は文書単位の内訳です）。新機能・機能改善・バグ修正に該当する変更はありません。
 
 **その他**
 
-- `Skills Over MCP Charter` の Leadership 表に Sambhav Kothari（Bloomberg / MCP Maintainer、`@sambhav`）の行が加わり、Membership 表での Level が Participant から Lead へ変わった。WG の Lead は 2 名から 3 名になり、メンバー総数 17 名は変わらない。同ページの Changelog 表はこの変更を記録していない（詳細はハイライト 1 参照） — [Skills Over MCP Charter](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#membership)
+- Motivation の「Fragmented distribution」が参照する問題提起文書のリンク先が `docs/problem-statement.md` から `docs/archive/problem-statement.md` へ変更 — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#motivation)
+- Motivation の「Instruction size limits」と References が参照する実験結果文書のリンク先が `docs/experimental-findings.md` から `docs/archive/experimental-findings.md` へ変更（2 箇所。Motivation 側はアンカー `#mcpgraph-skills-in-mcp-server-repo` 付きのまま） — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#motivation)
+- Backward Compatibility と References が参照する既存実装調査（related-work survey）のリンク先が `docs/related-work.md` から `docs/archive/related-work.md` へ変更（2 箇所） — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#backward-compatibility)
+- Security Implications がプロンプトインジェクションの背景として参照する未解決論点文書のリンク先が `docs/open-questions.md` から `docs/archive/open-questions.md` へ変更（アンカー `#10-how-should-skills-handle-security-and-trust-boundaries` 付きのまま） — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#security-implications)
+- References が参照する skill `_meta` キー規約文書のリンク先が `docs/skill-meta-keys.md` から `docs/archive/skill-meta-keys.md` へ変更 — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#references)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-14.md](./archives/latest/2026-09-14.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-14.md](./archives/latest-detail/2026-09-14.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-15.md](./archives/latest/2026-09-15.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-15.md](./archives/latest-detail/2026-09-15.md)
 
 <!--
-base_commit: a19a359d88d83c75d535255e4c3dd79daa4f181f
-head_commit: ebe595356470a094a294bd32d86870726c81d33b
-generated_at_full: 2026-09-16T15:26:41+09:00
+base_commit: ebe595356470a094a294bd32d86870726c81d33b
+head_commit: fa697d25e355bcd2486c2c9abb1263f94646b401
+generated_at_full: 2026-09-17T15:28:35+09:00
 -->
