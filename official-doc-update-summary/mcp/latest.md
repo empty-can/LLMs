@@ -1,50 +1,67 @@
 ---
-対象期間: 2026年09月15日 〜 2026年09月16日
-作成日: 2026-09-16
+対象期間: 2026年09月16日 〜 2026年09月23日
+作成日: 2026-09-23
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の差分は本文 `llms-full.txt` の 1 ページ・14 行（追加 7 行・削除 7 行）のみで、索引 `llms.txt` は 1 行も変わっていません。内容は SEP-2640「Skills Extension」ページが引用する外部リンクのパス書き換えだけで、仕様本文の記述・プロトコル定義・クライアント対応に関わる変更はありません。
+今回の対象期間では本文 `llms-full.txt` の 9 ページに差分があり（追加 215 行・削除 72 行）、索引 `llms.txt` には Infrastructure Working Group の憲章が 1 件加わりました。中心は、SEP-2640「Skills Extension」が Final 済みであることを前提にした関連ページの書き換えと、コミュニティ運営まわりの整備です。
 
 主要なものを以下に挙げます。
 
-1. SEP-2640 が引用する Working Group 資料 5 文書（problem-statement / experimental-findings / related-work / open-questions / skill-meta-keys）のリンク先が、`ext-skills` リポジトリの `docs/` 直下から `docs/archive/` 配下へ変わった。書き換えは同ページ内の 7 箇所で、`rationale.md`・`decisions.md` を指す残り 3 リンクは従来パスのまま
+1. Skills 拡張（`io.modelcontextprotocol/skills`）が Final 済みの公開仕様であることを前提に、Skills 概要ページ・Skills Over MCP WG 憲章・Filesystems WG 憲章・Primitive Grouping IG 憲章の 4 ページが書き換えられた
+2. MCP の共有インフラと管理作業の自動化を担う Infrastructure Working Group の憲章が新設された（Lead 3 名）
+3. Contributing ガイドに「Join the Community」節が新設され、SEP のスポンサー探しの節が「Getting Help」配下から仕様リポジトリの作業手順（Major Protocol Changes の直後）へ移された
 ```
 
 ## ハイライト
 
-1. [**SEP-2640 が参照する Working Group 資料 5 件のリンク先が docs 直下から archive 配下へ移動**](./latest-detail.md#1-sep-2640-が参照する-working-group-資料-5-件のリンク先が-docs-直下から-archive-配下へ移動):  
-  `SEP-2640: Skills Extension` ページの Motivation・Backward Compatibility・Security Implications・References の 4 セクションで、`modelcontextprotocol/ext-skills` リポジトリの資料を指す 7 本のリンクが `docs/<file>.md` から `docs/archive/<file>.md` へ書き換えられた。変更はパス文字列の挿入のみで、リンクテキスト・説明文・アンカーはいずれも変わっていない（増加バイト数 56 = `archive/` 8 バイト × 7 とも整合する）。同ページに残る `rationale.md`（2 本）・`decisions.md`（1 本）へのリンクは書き換えられておらず、ページ内の ext-skills 資料リンク 10 本のうち 7 本だけが移動先を指す状態になっている。
+1. [**Skills 拡張が Final 済みの前提で関連 4 ページを一斉に書き換え**](./latest-detail.md#1-skills-拡張が-final-済みの前提で関連-4-ページを一斉に書き換え):  
+  Skills 概要ページが ext-skills リポジトリを「公開済みの公式 Skills 拡張（`io.modelcontextprotocol/skills`）の仕様」と位置づけ直し、SEP-2640 が Final であると明記した。Skills Over MCP WG 憲章は進行中の作業項目表を廃して「Completed Milestones」「Current Work」に組み替え、Filesystems WG・Primitive Grouping IG の両憲章も Skills 拡張への言及を公開版前提の記述に改めた。
+2. [**Infrastructure Working Group の憲章を新設**](./latest-detail.md#2-infrastructure-working-group-の憲章を新設):  
+  組織への招待・権限管理、GitHub 管理、グループ立ち上げ、会議・連絡基盤、ホスティングや公開などの定型的な管理作業を、メンテナーや貢献者がセルフサービスで行えるようにすることを使命とする WG が発足した。Lead は David Soria Parra・Den Delimarsky（Anthropic）と Sambhav Kothari（Bloomberg）の 3 名。
+3. [**Contributing ガイドを再編し SEP スポンサー探しの節を仕様リポジトリの作業手順へ移動**](./latest-detail.md#3-contributing-ガイドを再編し-sep-スポンサー探しの節を仕様リポジトリの作業手順へ移動):  
+  「Before You Begin」の冒頭に、変更を用意していなくても MCP Contributor Discord などで参加できると案内する「Join the Community」節が新設された。「Finding a Sponsor for SEPs」節は内容を変えずに Major Protocol Changes の直後へ移り、手順とトラブルシューティングの 2 箇所から同節への相互参照が張られた。
 
 ## 新規追加されたページ
 
-今回本文に新たに収録されたページはありません。`llms-full.txt` の収録ページ数は 150 件で前回から増減がなく、索引 `llms.txt` のエントリ数も 352 件のまま変わっていません。
+- [**Infrastructure Charter**](./latest-detail.md#1-infrastructure-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/infrastructure)):  
+  MCP の共有インフラと管理作業の自動化を担う Infrastructure Working Group の憲章。スコープ、Lead 3 名、意思決定権限、運営方法、初期の成果物と成功基準を定める（詳細はハイライト 2 参照）。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。差分があったのは `SEP-2640: Skills Extension` の 1 ページのみで、変更量は追加 7 行・削除 7 行です（詳細はハイライト 1 参照）。
+- [**Contributing to MCP**](./latest-detail.md#1-contributing-to-mcp) ([MCP Docs](https://modelcontextprotocol.io/community/contributing)):  
+  「Join the Community」節を新設し、「Finding a Sponsor for SEPs」節を内容はそのまま Major Protocol Changes の直後へ移動した（追加 52 行・削除 42 行。詳細はハイライト 3 参照）。
+- [**Skills Over MCP Charter**](./latest-detail.md#2-skills-over-mcp-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp)):  
+  SEP-2640 が Final 済みである前提で Mission Statement・Scope・Resources・Deliverables を書き換え、参加者 1 名を追加した（追加 32 行・削除 21 行。詳細はハイライト 1 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは本文 `llms-full.txt` の 1 件、ページは `SEP-2640: Skills Extension` の 1 件のみです。内容は同ページが引用する外部資料のパス変更 5 文書ぶんで、いずれも `modelcontextprotocol/ext-skills` リポジトリの `docs/` 直下から `docs/archive/` 配下への書き換えです（詳細はハイライト 1 参照。以下は文書単位の内訳です）。新機能・機能改善・バグ修正に該当する変更はありません。
+今回の軽微な更新は 6 ページで、うち 3 ページはハイライト 1 の Skills 拡張に関する追従、残る 3 ページは例示や字句・リンクの修正です。
+
+**機能改善**
+
+- Skills 概要ページの冒頭で、ext-skills リポジトリを公開済みの公式 Skills 拡張（`io.modelcontextprotocol/skills`）の仕様と位置づけ、SEP-2640 が Final であること、保守担当の WG、SDK／ホスト対応状況の確認先を明記（詳細はハイライト 1 参照） — [Skills](https://modelcontextprotocol.io/extensions/skills/overview)
+- Filesystems WG 憲章の Related Groups で、Skills Over MCP WG との関係を「未解決の議題」から「公開済み Skills 拡張は書き込み操作に依存しない」という記述に更新（詳細はハイライト 1 参照） — [Filesystems Charter](https://modelcontextprotocol.io/community/working-groups/filesystems#related-groups)
+- Primitive Grouping IG 憲章の Related Groups と Beyond Scope で、Skills Over MCP WG の役割を公開済み Skills 拡張の保守者として書き改め、MCP サーバーの整理は Registry WG の担当と明記（詳細はハイライト 1 参照） — [Primitive Grouping Charter](https://modelcontextprotocol.io/community/interest-groups/primitive-grouping#related-groups)
+
+**バグ修正**
+
+- SEP-1330 の「Legacy Single Select With Titles」の JSON 例で、`enumNames` キーを囲む全角引用符（`“ ”`）を ASCII の `"` に修正し、`default` の値を `enum` に含まれない `"Green"` から `enum` の値 `"#00FF00"` に修正 — [SEP-1330: Elicitation Enum Schema Improvements and Standards Compliance](https://modelcontextprotocol.io/seps/1330-elicitation-enum-schema-improvements-and-standards#legacy-single-select-with-titles)
 
 **その他**
 
-- Motivation の「Fragmented distribution」が参照する問題提起文書のリンク先が `docs/problem-statement.md` から `docs/archive/problem-statement.md` へ変更 — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#motivation)
-- Motivation の「Instruction size limits」と References が参照する実験結果文書のリンク先が `docs/experimental-findings.md` から `docs/archive/experimental-findings.md` へ変更（2 箇所。Motivation 側はアンカー `#mcpgraph-skills-in-mcp-server-repo` 付きのまま） — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#motivation)
-- Backward Compatibility と References が参照する既存実装調査（related-work survey）のリンク先が `docs/related-work.md` から `docs/archive/related-work.md` へ変更（2 箇所） — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#backward-compatibility)
-- Security Implications がプロンプトインジェクションの背景として参照する未解決論点文書のリンク先が `docs/open-questions.md` から `docs/archive/open-questions.md` へ変更（アンカー `#10-how-should-skills-handle-security-and-trust-boundaries` 付きのまま） — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#security-implications)
-- References が参照する skill `_meta` キー規約文書のリンク先が `docs/skill-meta-keys.md` から `docs/archive/skill-meta-keys.md` へ変更 — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#references)
+- 仕様 2026-07-28 版 Resources ページの Capabilities で、「Serves that support neither `listChanged` or `subscribe`」を「Servers that support neither `listChanged` nor `subscribe`」に字句修正 — [Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#capabilities)
+- Financial Services IG 憲章の Operations で、Discord チャネル `#financial-services-ig` のリンク先を `discord.gg/NzkBHsrGf` から `discord.gg/6CSzBmMkjX`（Contributing ガイドが案内する MCP Contributor Discord と同じ招待リンク）に変更 — [Financial Services Charter](https://modelcontextprotocol.io/community/interest-groups/financial-services#operations)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-15.md](./archives/latest/2026-09-15.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-15.md](./archives/latest-detail/2026-09-15.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-16.md](./archives/latest/2026-09-16.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-16.md](./archives/latest-detail/2026-09-16.md)
 
 <!--
-base_commit: ebe595356470a094a294bd32d86870726c81d33b
-head_commit: fa697d25e355bcd2486c2c9abb1263f94646b401
-generated_at_full: 2026-09-17T15:28:35+09:00
+base_commit: fa697d25e355bcd2486c2c9abb1263f94646b401
+head_commit: 68860adc30f5a3b9e46aeef4cd6db8b1ccdc288e
+generated_at_full: 2026-09-24T02:58:07+09:00
 -->
