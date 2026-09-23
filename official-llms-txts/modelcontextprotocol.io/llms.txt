@@ -337,6 +337,7 @@
 - [Agents Charter](https://modelcontextprotocol.io/community/working-groups/agents.md): Charter for the MCP Agents Working Group.
 - [File Uploads Charter](https://modelcontextprotocol.io/community/working-groups/file-uploads.md): Charter for the MCP File Uploads Working Group.
 - [Filesystems Charter](https://modelcontextprotocol.io/community/working-groups/filesystems.md): Charter for the MCP Filesystems Working Group.
+- [Infrastructure Charter](https://modelcontextprotocol.io/community/working-groups/infrastructure.md): Charter for the MCP Infrastructure Working Group.
 - [Inspector V2 Working Group Charter](https://modelcontextprotocol.io/community/working-groups/inspector-v2.md): Charter for the Inspector V2 Working Group, a Working Group of the Model Context Protocol community.
 - [Interceptors Charter](https://modelcontextprotocol.io/community/working-groups/interceptors.md): Charter for the MCP Interceptors Working Group.
 - [Registry Charter](https://modelcontextprotocol.io/community/working-groups/registry.md): Charter for the MCP Registry Working Group.
