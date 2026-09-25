@@ -1,87 +1,93 @@
 ---
-対象期間: 2026年09月23日 〜 2026年09月23日
-作成日: 2026-09-23
+対象期間: 2026年09月23日 〜 2026年09月24日
+作成日: 2026-09-24
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の変更は小規模で、本文 `llms-full.txt` では入門ページ「What is the Model Context Protocol (MCP)?」の 1 ページだけに差分があり（追加 13 行・削除 1 行）、索引 `llms.txt` には Scientific Computing Interest Group の憲章が 1 件加わりました。
+今回の対象期間の変更は 1 ページのみで、前回索引 `llms.txt` にだけ載っていた Scientific Computing Interest Group の憲章の本文が `llms-full.txt` に収録されました（追加 91 行・削除なし）。索引 `llms.txt` に変更はありません。
 
 主要なものを以下に挙げます。
 
-1. 入門ページ末尾の「Learn more」にセキュリティのベストプラクティスへのカードが加わり、新設の「Community」節から Contributing ガイドへ案内されるようになった
-2. Scientific Computing Interest Group の憲章ページが索引に加わった（本文は `llms-full.txt` に未収録）
+1. Scientific Computing Interest Group の憲章本文が収録され、科学・工学ワークフローでの MCP のユースケースを集めるというミッションと体制が明らかになった
+2. 同憲章のスコープとして、物理量・単位・不確かさ、再現性と来歴、大規模配列・データセット、長時間計算、既存科学標準との相互運用などが示された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**入門ページの案内カードを拡充し Security と Community への導線を追加**](#1-入門ページの案内カードを拡充し-security-と-community-への導線を追加):  
-  「What is the Model Context Protocol (MCP)?」ページ末尾の「Learn more」で、既存カードの表題が「Understand concepts」から「Architecture」に改められ、Security Best Practices へのカードが追加された。さらに「Community」節が新設され、Contributing ガイドへのカードが置かれた。
-2. [**Scientific Computing Interest Group の憲章ページが索引に追加**](#2-scientific-computing-interest-group-の憲章ページが索引に追加):  
-  `community/interest-groups/scientific-computing`（説明文「Charter for the MCP Scientific Computing Interest Group.」）が索引に加わり、エントリは 353 件から 354 件になった。本文は `llms-full.txt` に未収録で、憲章の中身は今回の入力からは確認できない。
+1. [**Scientific Computing Interest Group の憲章本文が収録**](#1-scientific-computing-interest-group-の憲章本文が収録):  
+  前回は索引に 1 行加わっただけだった憲章ページの本文が `llms-full.txt` に入った。科学・工学ワークフローにおける MCP のユースケースを研究・産業の実務者から集め、拡張開発やプロトコル改善が必要なギャップを見極める Interest Group で、ファシリテーターは Cory Kinney 氏、会合の頻度・時間は未定（TBD）。
+2. [**スコープは物理量・再現性・大規模データ・長時間計算・標準相互運用**](#2-スコープは物理量再現性大規模データ長時間計算標準相互運用):  
+  対象範囲（In Scope）として、単位や不確かさを伴う物理量の表現、計算結果の再現性と来歴、コンテキストに収まらない配列・データセットの受け渡し、シミュレーションや HPC ジョブといった長時間計算と MCP の tasks との対応付け、既存の科学標準との相互運用、分野横断での要件収集の 6 項目が挙げられた。
 <!-- light:highlight-list:end -->
 
-## 1. 入門ページの案内カードを拡充し Security と Community への導線を追加
+## 1. Scientific Computing Interest Group の憲章本文が収録
 
-本文 `llms-full.txt` で今回差分があったのは、仕様 2026-07-28 版の入門ページ「What is the Model Context Protocol (MCP)?」（`docs/2026-07-28/getting-started/intro`）の末尾だけです。本文の説明部分（MCP の概要、What can MCP enable?、Why does MCP matter?、Broad ecosystem support、Start Building）には変更がありません。
+前回の対象期間には、索引 `llms.txt` に `community/interest-groups/scientific-computing` のエントリが 1 行加わっただけで、本文は `llms-full.txt` に未収録でした。今回、その本文「Scientific Computing Charter」が Primitive Grouping Charter と Security Charter の間に 91 行（削除なし）で収録され、憲章の中身を確認できるようになりました。
 
-「Learn more」節のカード群は、これまで Architecture ページへの 1 枚だけでした。今回、そのカードの表題が「Understand concepts」から「Architecture」に変わり（リンク先と説明文「Learn the core concepts and architecture of MCP」はそのまま）、2 枚目として **Security** カードが加わりました。Security カードは Security Best Practices ページ（`docs/2026-07-28/tutorials/security/security_best_practices`）を指し、「MCP のセキュリティ上の考慮事項とベストプラクティスを理解する」と説明されています。
+グループ種別は **Interest Group** です。ミッションは、科学・工学ワークフローにおける MCP のユースケースを探ることとされています。研究や産業の実務者からユースケースを集め、拡張の開発やプロトコル改善が必要となるギャップを把握し、それが Working Group の結成につながる可能性もあると述べています。
 
-続けて **「Community」** 節が新設され、Contributing to MCP ページ（`community/contributing`）へのカード「Contributing」（「MCP に参加し貢献する方法を学ぶ」）が置かれました。これにより入門ページの読み手は、構築（Start Building）・理解（Learn more）に加えて、セキュリティの考慮事項とコミュニティ参加の入口にも直接たどり着けるようになっています。
+体制面では、ファシリテーターが Cory Kinney 氏（[@corykinney](https://github.com/corykinney)、任期は Initial）です。会合は「Working Session」（ユースケースの共有と技術的議論）で、頻度・時間はいずれも TBD となっています。参加は誰でも可能で、MCP Contributors Discord の `#scientific-computing-ig` チャンネルが窓口です。Changelog には 2026年08月24日付の「Initial charter」が記録されています。
 
-- [What is the Model Context Protocol (MCP)? - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro#learn-more)
-- [What is the Model Context Protocol (MCP)? - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro#community)
+- [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#mission-statement)
+- [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#leadership)
 
-## 2. Scientific Computing Interest Group の憲章ページが索引に追加
+## 2. スコープは物理量・再現性・大規模データ・長時間計算・標準相互運用
 
-索引 `llms.txt` に `- [Scientific Computing Charter](https://modelcontextprotocol.io/community/interest-groups/scientific-computing.md): Charter for the MCP Scientific Computing Interest Group.` の 1 行が追加されました。Interest Group 憲章群のうち Primitive Grouping Charter と Security Charter の間、つまり既存エントリと同じアルファベット順の位置に挿入されており、削除行はありません。索引のエントリは 353 件から 354 件になりました。
+**対象範囲（In Scope）** は次の 6 項目です。
 
-ページ本文は `llms-full.txt` に収録されていないため、この Interest Group のミッション・スコープ・体制といった憲章の中身は、今回の入力からは確認できません。`llms-full.txt` 全体を見ても「Scientific Computing」という語は 1 か所も現れず、既存ページからの言及もまだありません。過去にも Transports WG 憲章のように、索引が先に更新され本文が後から収録された例があります。
+- **物理量・単位・不確かさ**: 単位や次元情報、ツール入出力の不確かさ、量の種類を伴う物理量を表現し、エージェントやクライアントが物理的制約を守らせるガードレールを設けられるようにする
+- **再現性と来歴**: MCP 経由で得た計算結果を再現するのに必要なパラメータ、ソフトウェアやソルバーのバージョンなどの入力を記録する
+- **配列・数値データセット**: 配列、テンソル、表形式データ、モデルのコンテキストに収まらない大きなデータセットの受け渡しと、そのペイロードをどう参照してツールに渡すか
+- **長時間計算**: シミュレーション、ソルバー実行、バッチや HPC のジョブ投入を、非同期実行・進捗・キャンセルを担う MCP の tasks アーキテクチャにどう対応付けるか
+- **既存科学標準との相互運用**: 確立された分野のフォーマット・語彙・オントロジーを作り直さず、MCP がそれらとどう関わるべきか
+- **分野横断のユースケース把握**: 物理学、化学、生物学、地球・気候科学、天文学、工学から要件を集め、繰り返し現れる要件を特定する
 
-- [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing)
+**対象外（Out of Scope）** は、科学データのフォーマットや語彙そのものの策定（既存の標準化団体・コミュニティが担うため、本グループは相互運用の方法を議論するにとどめる）、特定ソフトウェアやデータセット向けの個別 MCP サーバーの構築・保守（ユースケース収集の材料にはなるがプロトコル作業ではない）、認可・ID の仕組み（Authorization IG の担当）の 3 点です。
+
+**関連グループ**としては、長時間シミュレーションやジョブ投入の土台となる Tasks を扱う Agents WG、クライアント・サーバー間での正しさの検証や単位の正規化の実装手段となりうる Interceptors WG、入力データセットやメッシュ・形状ファイルなど大きなファイルを扱う File Uploads WG、大規模で階層的なツール群の整理に関わる Primitive Grouping IG、共有科学ソフトウェアやデータセット向けサーバーの公開・発見に関わる Registry WG が挙げられています。初期議題（Discussion Topics）は、ツールスキーマでの単位・次元・意味を扱う Quantities 拡張、計算結果の来歴とバージョン管理メタデータ、既存の科学フォーマット・語彙との相互運用の 3 件で、いずれも Open（担当者未定）です。
+
+- [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#scope)
+- [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#discussion-topics)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
 - [**Scientific Computing Charter**](#1-scientific-computing-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing)):  
-  MCP Scientific Computing Interest Group の憲章ページ。今回の差分は索引へのエントリ 1 行の追加だけで、本文は `llms-full.txt` に未収録のため中身は確認できない（詳細はハイライト 2 参照）。
+  MCP Scientific Computing Interest Group の憲章。前回は索引への追加のみだったが、今回 `llms-full.txt` に本文が収録された（詳細はハイライト 1・2 参照）。
 <!-- light:new-pages:end -->
 
 ## 1. Scientific Computing Charter
 
-索引に追加されたのは、タイトル `Scientific Computing Charter`・パス `community/interest-groups/scientific-computing`・説明文「Charter for the MCP Scientific Computing Interest Group.」の 1 行です。タイトルは既存の Interest Group 憲章の多くと同じ「話題名 + `Charter`」の形で、説明文も「Charter for the MCP <名称> Interest Group.」という定型に沿っています。
+`llms-full.txt` にとっては新規のページで、差分は 91 行の追加のみです。構成は Group Type・Mission Statement・Scope（In Scope / Out of Scope / Related Groups）・Leadership・Operations・Discussion Topics・Changelog の各節から成ります。索引 `llms.txt` のエントリは前回の対象期間に追加済みのため、今回の索引側の変更はありません。
 
-本文が今回の入力に含まれていないため、憲章の内容についてここで述べられることはありません（詳細はハイライト 2 参照）。
+内容の詳細はハイライト 1（ミッションと体制）とハイライト 2（スコープ・関連グループ・初期議題）を参照してください。
 
 - [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の軽微な更新は、本文に差分があった入門ページ 1 件です。
-
-**機能改善**
-
-- 入門ページ「What is the Model Context Protocol (MCP)?」の「Learn more」で、カード表題を「Understand concepts」から「Architecture」に改め、Security Best Practices へのカードを追加。あわせて「Community」節を新設し Contributing ガイドへのカードを配置（詳細はハイライト 1 参照） — [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro#learn-more)
+今回の対象期間に軽微な更新はありません。
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-23.md](./archives/latest/2026-09-23.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-23.md](./archives/latest-detail/2026-09-23.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-23_1500.md](./archives/latest/2026-09-23_1500.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-23_1500.md](./archives/latest-detail/2026-09-23_1500.md)
 
 <!--
-base_commit: 68860adc30f5a3b9e46aeef4cd6db8b1ccdc288e
-head_commit: 1cd5f92f259ae91504d3746edb8d0a386ce71bdd
-generated_at_full: 2026-09-24T15:00:22+09:00
+base_commit: 1cd5f92f259ae91504d3746edb8d0a386ce71bdd
+head_commit: 9e4a9ca8dd012676f943d04b4ad641296ec601bb
+generated_at_full: 2026-09-25T15:51:02+09:00
 -->
