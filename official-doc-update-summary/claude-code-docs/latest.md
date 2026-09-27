@@ -1,125 +1,161 @@
 ---
-対象期間: 2026年09月24日 〜 2026年09月25日
-作成日: 2026-09-25
+対象期間: 2026年09月25日 〜 2026年09月26日
+作成日: 2026-09-26
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-**前回「索引にだけ載り、本文はまだ」と書いたプラグインの新しい 20 ページに、今回は本文が入りました**。`llms-full.txt` の展開ページは 197 から 210 に増え、索引の 210 件とそろいました。総行数は 100,393 行から 103,108 行へ **2,715 行増えています**。changelog には **v2.1.282（86 項目）** が積まれ、前回「changelog に項目がない」と書いた AGENTS.md の制約解除も、v2.1.281 の項目として後から加わりました。
+**v2.1.283 から、auto モードがプランやプロバイダーを問わず、対話ターミナルと VS Code の組み込み開始モードになります**。今回の差分は `llms-full.txt` の 1 ファイルだけで、既存 210 ページのうち **97 ページ**の本文が変わりました（ページの追加・削除はなし）。総行数は 103,108 行から 104,099 行へ **991 行増えています**。changelog には **v2.1.283（94 項目）** が積まれ、前回「見出しマップにだけあり、本文はまだ」と書いた見出しにも、今回そろって本文が入りました。
 
 主要なものを以下に挙げます。
 
-1. プラグインの新しい 20 ページに本文が入り、旧 7 ページが本文から消えた
-2. v2.1.282 の 86 項目が積まれ、v2.1.281 に AGENTS.md の項目が後から加わった
-3. OpenTelemetry の変数がプロジェクト設定とローカル設定から無視されるようになった
-4. auto モードのサーバー側レビューの説明が書き直された
-5. プロジェクトのスレッドを自分のマシンで動かせるようになった
+1. v2.1.283 から auto モードがすべてのプランとプロバイダーで開始モードになる
+2. 重要パスの削除が auto モードでは時間制限付きの確認になった
+3. 管理設定で特定のモデルやバージョンを禁止できるようになった
+4. 前回見出しマップにだけあった見出しの本文がそろって入った
+5. v2.1.283 の 94 項目が積まれた
 ```
 
 ## ハイライト
 
-1. [**プラグインの新しい 20 ページに本文が入り、旧 7 ページが本文から消えた**](./latest-detail.md#1-プラグインの新しい-20-ページに本文が入り旧-7-ページが本文から消えた):  
-  前回、`llms.txt` と見出しマップにだけ載っていた `/docs/en/plugins/` 配下の **20 ページの本文が、今回 `llms-full.txt` に入りました**（計 6,999 行）。索引から外れていた**旧 7 ページ**（`discover-plugins`・`plugins`・`plugins-reference`・`plugin-marketplaces`・`plugin-dependencies`・`plugin-hints`・`plugin-relevance`、計 4,705 行）の本文は消えました。既存の **53 ページでも、プラグイン関連のリンク先が新しい URL に張り替えられています**。前回「404」と書いた `plugins/overview` の日本語版も、今回は日本語で公開されていました
-2. [**v2.1.282 の 86 項目が積まれ、v2.1.281 に AGENTS.md の項目が後から加わった**](./latest-detail.md#2-v21282-の-86-項目が積まれv21281-に-agentsmd-の項目が後から加わった):  
-  changelog に **v2.1.282（2026年09月24日）** が積まれました。**修正 59・変更 11・追加 8・改善 6・更新 2** の計 86 項目です。あわせて、既存の **v2.1.281 に「AGENTS.md を Amazon Bedrock・Google Vertex AI・Microsoft Foundry・LLM ゲートウェイ・テレメトリ無効のセッションでも使えるようにした」という項目が追加**され、v2.1.277 の項目からは「（Bedrock・Vertex・Foundry ではまだ使えない）」の但し書きが消えました。前回ハイライト 2 で「changelog に該当項目が見当たらない」と書いた点が、これで解消しました
-3. [**OpenTelemetry の変数がプロジェクト設定とローカル設定から無視されるようになった**](./latest-detail.md#3-opentelemetry-の変数がプロジェクト設定とローカル設定から無視されるようになった):  
-  **v2.1.282 から、リポジトリの `.claude/settings.json` と `.claude/settings.local.json` の `env` に書いた `CLAUDE_CODE_ENABLE_TELEMETRY`・エクスポーターの選択・送信先・内容を記録する `OTEL_LOG_*` などが無視されます**。例外は、`none` や `0` のようにテレメトリを止める値だけです。`settings-reference` に一覧が加わり、`env-vars`・`monitoring-usage`・`settings`・`settings-example` も同じ方針に書き換わりました
-4. [**auto モードのサーバー側レビューの説明が書き直された**](./latest-detail.md#4-auto-モードのサーバー側レビューの説明が書き直された):  
-  `permission-modes` の「サーバー側の分類器レビュー」が、**Anthropic API 直結・クラウドプロバイダーや LLM ゲートウェイ・Claude apps gateway の 3 種類の接続ごと**の説明になりました。**v2.1.282 からは、テレメトリを切ったセッションでも既定でサーバーに問い合わせます**。サーバーが判定を返さなかった操作は拒否され、**判定なしが 10 回続くとターンが止まる**ことも明記され、`errors` にこの状況の新しい節が加わりました
-5. [**プロジェクトのスレッドを自分のマシンで動かせるようになった**](./latest-detail.md#5-プロジェクトのスレッドを自分のマシンで動かせるようになった):  
-  `claude-projects` で、スレッドの説明が「各スレッドはクラウドセッション」から「**各スレッドは通常はクラウドセッション**」に変わりました。**自分のコンピューターにしかないものが要るタスクは、Remote Control 経由でそのスレッドを自分のマシンで動かすよう Claude に頼めます**。そのマシンには **Claude Code v2.1.280 以降**が必要で、claude.ai の設定で **Require trusted devices** がオンだと使えません
+1. [**v2.1.283 から auto モードがすべてのプランとプロバイダーで開始モードになる**](./latest-detail.md#1-v21283-から-auto-モードがすべてのプランとプロバイダーで開始モードになる):  
+  `permission-modes` の「セッションが開始するモード」の表が組み直され、**v2.1.283 以降は、対話ターミナルと VS Code 拡張機能のセッションがプランを問わず auto モードで始まる**ようになりました。Amazon Bedrock・Google Cloud の Agent Platform・Microsoft Foundry、サインインした Claude apps gateway のセッションも対象です（対応モデルのみ）。`glossary`・`quickstart`・`vs-code` など 5 ページで「Pro・Max・Team プランでは」という書き方が「v2.1.283 以降は」に置き換わりました
+2. [**重要パスの削除が auto モードでは時間制限付きの確認になった**](./latest-detail.md#2-重要パスの削除が-auto-モードでは時間制限付きの確認になった):  
+  `rm -rf /` のような重要パス（critical path）の削除は、これまで auto モードでは分類器に回されていました。**v2.1.281 以降は、ターミナルでは 2 分のカウントダウン付きでユーザーに確認し、確認を出せない場所では拒否します**。重要パスとみなす対象も増え、PowerShell ツール経由の `cmd /c rd` などによるシステムパスの削除は、**v2.1.283 からどのモードでも拒否**されます
+3. [**管理設定で特定のモデルやバージョンを禁止できるようになった**](./latest-detail.md#3-管理設定で特定のモデルやバージョンを禁止できるようになった):  
+  管理設定に **`deniedModels`**（指定したモデルを禁止する）と **`availableModelsMatch`**（`"exact"` にすると、`availableModels` のエントリーが名指ししたバージョンだけを許可する）が加わりました（v2.1.283 以降）。`model-config` に新しい節「Block specific models or versions」ができ、Default の選択肢がどの順でモデルを格下げしていくか、どれも許可されないときに起動を拒否することが説明されています
+4. [**前回見出しマップにだけあった見出しの本文がそろって入った**](./latest-detail.md#4-前回見出しマップにだけあった見出しの本文がそろって入った):  
+  前回サマリで「見出しマップにだけあり、本文はまだ」と挙げた見出しは、**今回すべて本文に入りました**。`errors` の 12 節、`settings-reference` の `maxProseWidth` など 3 キー、`agent-sdk/typescript` の `prewarm()`・`SpareProcess`、`claude-projects` の「Run a thread on your own computer」などです。マップから消えていた `remote-control` の 2 見出しも、本文から消えました
+5. [**v2.1.283 の 94 項目が積まれた**](./latest-detail.md#5-v21283-の-94-項目が積まれた):  
+  changelog に **v2.1.283（2026年09月25日）** が積まれました。**修正 53・改善 16・変更 13・追加 11・差し戻し 1** の計 94 項目です。**v2.1.282 で予約した `claude-ai` という名前を差し戻し**、予約は `anthropic-skills` だけになりました
 
 ## 新規追加されたページ
 
-- [**プラグインの新しい 20 ページ**](./latest-detail.md#1-プラグインの新しい-20-ページ) ([日本語](https://code.claude.com/docs/ja/plugins/overview) / [English](https://code.claude.com/docs/en/plugins/overview)):  
-  前回は索引と見出しマップにだけあった `/docs/en/plugins/` 配下の 20 ページに、本文が入りました。**概要・インストール・作成・マーケットプレイス運用・組織管理・トラブルシューティング・リファレンス**の 7 グループです。ここでは本文の実際の構成をもとに、各ページの範囲をまとめています
+今回、新しく追加されたページはありません（`llms-full.txt` の展開ページは前回と同じ 210 ページです）。
 
 ## 大幅に更新されたページ
 
-- [**Environment variables**](./latest-detail.md#1-environment-variables) ([English](https://code.claude.com/docs/en/env-vars#variables)):  
-  差分 746 行の大半は表の桁揃えです。実質的な変更は、テレメトリ変数がプロジェクト設定とローカル設定で無視されることの追記、`CLAUDE_CODE_AUTO_MODE_SERVER` の説明の更新、`CLAUDE_CODE_RESUME_PROMPT` の適用範囲の拡大などです
-- [**Test plugins with evals**](./latest-detail.md#2-test-plugins-with-evals) ([日本語](https://code.claude.com/docs/ja/plugin-evals#troubleshooting) / [English](https://code.claude.com/docs/en/plugin-evals#troubleshooting)):  
-  段落の多くが箇条書きに組み直されました。`CI` 環境変数が真のときは信頼の確認ができずに拒否されること、ベースライン実行でプラグインのエージェントが見つからないときの節などが加わりました
-- [**All settings**](./latest-detail.md#3-all-settings) ([English](https://code.claude.com/docs/en/settings-reference#variables-claude-code-ignores-in-env)):  
-  `env` で無視される変数にテレメトリのグループが加わったほか、`attribution` に `false` を書けること、マーケットプレイスの `hostPattern`・`pathPattern` の照合方法などが更新されました
-- [**Error reference**](./latest-detail.md#4-error-reference) ([日本語](https://code.claude.com/docs/ja/errors#the-server-returned-no-safety-verdict) / [English](https://code.claude.com/docs/en/errors#the-server-returned-no-safety-verdict)):  
-  前回、見出しマップにだけあった 5 項目の本文が入りました
-- [**Let Claude coordinate ongoing work with Projects**](./latest-detail.md#5-let-claude-coordinate-ongoing-work-with-projects) ([日本語](https://code.claude.com/docs/ja/claude-projects#limitations) / [English](https://code.claude.com/docs/en/claude-projects#limitations)):  
-  スレッドを Remote Control 経由で自分のマシンで動かせるようになりました（ハイライト 5）
-- [**Deploy managed settings**](./latest-detail.md#6-deploy-managed-settings) ([English](https://code.claude.com/docs/en/managed-settings#let-an-embedding-host-add-policy)):  
-  埋め込みホストから渡される `strictKnownMarketplaces` と `blockedMarketplaces` の扱いが加わりました。残りは表の桁揃えとリンクの張り替えです
-- [**Explore the .claude directory**](./latest-detail.md#7-explore-the-claude-directory) ([English](https://code.claude.com/docs/en/claude-directory)):  
-  差分 52 行はすべて表の桁揃えとリンクの張り替えで、内容の変更はありません
-- [**Customize keyboard shortcuts**](./latest-detail.md#8-customize-keyboard-shortcuts) ([日本語](https://code.claude.com/docs/ja/keybindings#text-fields) / [English](https://code.claude.com/docs/en/keybindings#text-fields)):  
-  新しい節「Text fields」が加わり、`chat:sendNow` の説明が v2.1.281 の挙動に合わせて書き換わりました
+- [**Error reference**](./latest-detail.md#1-error-reference) ([English](https://code.claude.com/docs/en/errors#managed-settings-block-the-default-model)):  
+  前回、見出しマップにだけあった 12 節の本文が入り、早見表に 25 行が加わりました。プロキシの HTML エラーページの表示や、Desktop アプリで実行したときのメッセージの違いも書き加えられています
+- [**Agent SDK reference - TypeScript**](./latest-detail.md#2-agent-sdk-reference---typescript) ([English](https://code.claude.com/docs/en/agent-sdk/typescript#prewarm)):  
+  フォルダーが決まる前にプロセスを温めておく `prewarm()` と `SpareProcess`（alpha）、バンドル向けの `/core` エントリー、プロンプトをそのまま届ける `verbatimPrompts`・`client_composed`、`system/init` の `plugin_errors` が加わりました
+- [**Continue local sessions from any device with Remote Control**](./latest-detail.md#3-continue-local-sessions-from-any-device-with-remote-control) ([English](https://code.claude.com/docs/en/remote-control#requirements)):  
+  `DISABLE_TELEMETRY`・`DO_NOT_TRACK` だけなら Remote Control が使えるようになり（v2.1.283 以降）、Desktop アプリから始めるタブが加わりました。古い版の注記が大量に削除されています
+- [**Choose a permission mode**](./latest-detail.md#4-choose-a-permission-mode) ([English](https://code.claude.com/docs/en/permission-modes#critical-paths)):  
+  開始モードの表の組み直し（ハイライト 1）と、重要パスの削除の扱いの変更（ハイライト 2）です
+- [**Agent SDK reference - Python**](./latest-detail.md#5-agent-sdk-reference---python) ([English](https://code.claude.com/docs/en/agent-sdk/python)):  
+  差分の大半は表の桁揃えで、実質の変更は `verbatim_prompts` オプションの追加です
+- [**All settings**](./latest-detail.md#6-all-settings) ([English](https://code.claude.com/docs/en/settings-reference#maxprosewidth)):  
+  `availableModelsMatch`・`deniedModels`・`maxProseWidth` の 3 キーが加わり、`modelPicker` の行に `behavesAs` が書き足されました
+- [**Extend Claude with skills**](./latest-detail.md#7-extend-claude-with-skills) ([English](https://code.claude.com/docs/en/skills#names-reserved-for-synced-skills)):  
+  `anthropic-skills` の名前の予約と、スキルディレクトリのフロントマター `name` がコマンド名になることが加わりました
+- [**Model configuration**](./latest-detail.md#8-model-configuration) ([English](https://code.claude.com/docs/en/model-config#block-specific-models-or-versions)):  
+  新しい節「Block specific models or versions」（ハイライト 3）と、Opus 5.5 の既定の effort が `medium` であることの説明が加わりました
+- [**Interactive mode**](./latest-detail.md#9-interactive-mode) ([English](https://code.claude.com/docs/en/interactive-mode#queue-messages-while-claude-works)):  
+  差分の半分は表の桁揃えです。vim モードのキー、タイムアウトしたコマンドのバックグラウンド化、キューのメッセージの表示位置などが更新されました
+- [**Customize keyboard shortcuts**](./latest-detail.md#10-customize-keyboard-shortcuts) ([English](https://code.claude.com/docs/en/keybindings#tabs-actions)):  
+  巻き戻しメニューと差分ダイアログの一覧が `Select` アクションで動くようになり（v2.1.283 以降）、`footer:dismiss` が削除されました
+- [**Monitoring**](./latest-detail.md#11-monitoring) ([English](https://code.claude.com/docs/en/monitoring-usage#tool-output-span-event)):  
+  `tool.output` スパンイベントが MCP ツール・WebFetch・WebSearch も記録するようになり（v2.1.283 以降）、`request_id` がイベント相関属性として整理されました
+- [**Let Claude coordinate ongoing work with Projects**](./latest-detail.md#12-let-claude-coordinate-ongoing-work-with-projects) ([English](https://code.claude.com/docs/en/claude-projects#run-a-thread-on-your-own-computer)):  
+  新しい節「Run a thread on your own computer」に、スレッドを自分のマシンで動かす 3 ステップが入りました
+- [**Deploy managed settings**](./latest-detail.md#13-deploy-managed-settings) ([English](https://code.claude.com/docs/en/managed-settings#keys-that-fail-closed)):  
+  差分の大半は表の桁揃えで、`deniedModels`・`availableModelsMatch` のマージ方法と不正な値の扱いが加わりました
 
 ## 軽微な更新
 
-今回の差分は **3 ファイル**です。`git diff` の行数では `llms-full.txt` が 106,481 行（追加 54,598・削除 51,883）と大きく出ますが、これはページの差し替えで行の対応がずれたためで、**ページ単位で比べると追加 8,386 行・削除 5,697 行**です。見出しマップ（`en/claude_code_docs_map.md`）は 43 行（追加 38・削除 5）、`llms.txt` は 26 行（追加 13・削除 13）でした。`llms-full.txt` の総行数は **100,393 行から 103,108 行へ 2,715 行増え**、展開ページ数は **197 から 210** になりました（20 ページ追加・7 ページ削除）。既存のページで本文が変わったのは **79 ページ**で、そのうち 19 ページはリンクの張り替えだけです。changelog に積まれたのは **v2.1.282 の 1 本**です（詳細はハイライト 2）。
+今回の差分は **`llms-full.txt` の 1 ファイル**で、`git diff` の行数は 2,235 行（追加 1,613・削除 622）です。ページの並べ替えはなく、ページ単位で数えても同じ行数になります。総行数は **103,108 行から 104,099 行へ 991 行増え**、展開ページは前回と同じ **210 ページ**です。本文が変わった既存ページは **97 ページ**で、`llms.txt` と見出しマップに変更はありません。changelog に積まれたのは **v2.1.283 の 1 本**です（詳細はハイライト 5）。
 
 **新機能**
 
-- **プラグインのドキュメント 20 ページの本文が公開されました**（詳細はハイライト 1 と新規追加ページ 1 を参照）
-- **テキストフィールドでは、裸の文字にバインドを割り当てていても文字を入力できる**ことが、新しい節として説明されました（詳細は大幅更新ページ 8 を参照）— [日本語](https://code.claude.com/docs/ja/keybindings#text-fields) / [Customize keyboard shortcuts](https://code.claude.com/docs/en/keybindings#text-fields)
-- **Claude apps gateway に `load_test_mode` ブロックが加わりました**。モデルプロバイダーを呼ばずにゲートウェイを負荷試験するモードで、プロバイダーへのリクエストを組み立てて署名したうえで送らずに捨て、定型の応答をストリームで返します。`reply_tokens`（既定 750）と `reply_seconds`（既定 9.5）で応答の大きさと長さを決め、`x-load-test-user` ヘッダーで開発者を最大 7 桁の番号で分けて数えられます。**必要な版は v2.1.283 以降と書かれていますが、今回の changelog の最新は v2.1.282 です**。開発者が使うゲートウェイでは決して有効にしないよう警告されています — [Claude apps gateway configuration](https://code.claude.com/docs/en/claude-apps-gateway-config#load_test_mode)
-- **Agent SDK のトラブルシューティングページに、症状から該当ページを引く表が加わりました**。スキル・MCP・プラグイン・サブエージェント・ファイルのチェックポイント・フック・デプロイ・認証エラーごとに参照先が示され、ページ自体は CLI の起動・CLI プロセスの終了・構造化出力のエラーに範囲を絞りました（`llms.txt` の説明文は前回すでに変わっていました）— [Troubleshoot the Agent SDK](https://code.claude.com/docs/en/agent-sdk/troubleshooting)
-- **フルスクリーン表示で、選択メニューをマウスホイールでスクロールできる**ようになりました（v2.1.280 以降）。短いウィンドウでの `/model` の一覧などが対象です — [Fullscreen rendering](https://code.claude.com/docs/en/fullscreen)
+- **auto モードが、v2.1.283 以降はすべてのプランとプロバイダーで対話セッションの開始モードになりました**（詳細はハイライト 1）— [Choose a permission mode](https://code.claude.com/docs/en/permission-modes#which-mode-a-session-starts-in)
+- **管理設定 `deniedModels` と `availableModelsMatch` が加わりました**（詳細はハイライト 3）— [Model configuration](https://code.claude.com/docs/en/model-config#block-specific-models-or-versions)
+- **`maxProseWidth` 設定で、横に広いターミナルでの文章の幅を制限できます**（詳細はハイライト 4）。`terminal-config` にも新しい節「Cap response width in wide terminals」が入りました — [Configure your terminal for Claude Code](https://code.claude.com/docs/en/terminal-config#cap-response-width-in-wide-terminals)
+- **TypeScript Agent SDK に `prewarm()`・`SpareProcess`・`/core` エントリー・`verbatimPrompts` が加わりました**（詳細は大幅更新ページ 2）— [Agent SDK reference - TypeScript](https://code.claude.com/docs/en/agent-sdk/typescript#prewarm)
+- **Claude apps gateway の `telemetry.resource_attributes` で、ゲートウェイ経由でサインインしたセッションのテレメトリに固定のラベルを付けられます**（`service.namespace` や `deployment.environment.name` など）。`telemetry.forward_to` と `listen.public_url` も設定している場合だけ効き、名前と値の規則に反すると起動を拒否します。ゲートウェイのサーバーに Claude Code v2.1.281 以降が必要です — [Claude apps gateway configuration](https://code.claude.com/docs/en/claude-apps-gateway-config#add-your-own-labels)
+- **LLM ゲートウェイのヒントヘッダーに `x-claude-code-prompt-id` が加わりました**。1 つのユーザープロンプトに対応するリクエスト（そのプロンプトが始めたサブエージェントのターンも含む）が同じランダムな UUID を持ちます（v2.1.283 以降）— [Claude Code gateway compatibility guide](https://code.claude.com/docs/en/llm-gateway-protocol)
+- **`claude --bg` と、セッションを再起動するコマンドが、先にワークスペースの信頼を確認するようになりました**（v2.1.281 以降）。ターミナルなら信頼ダイアログが出て、ダイアログを出せないスクリプトなどでは `Workspace not trusted` で終わります。あわせて、`--setting-sources` の制限が、バックグラウンドに移したセッション・エージェントビューから始めたセッション・分割ペインのチームメイトに引き継がれるようになりました（v2.1.281 以降）— [Manage multiple agents with agent view](https://code.claude.com/docs/en/agent-view#what-carries-over-when-you-background)
+- **`--agents` に、`-p` のときだけ JSON ファイルのパスを渡せるようになりました**（v2.1.281 以降）。定義の `prompt` を空にすることもでき、空の `prompt` のエージェントを `--agent` でセッションのエージェントにすると、システムプロンプトは変わりません — [Create custom subagents](https://code.claude.com/docs/en/sub-agents#choose-the-subagent-scope)
+- **フルスクリーン表示で、項目が多い一覧パネル（`/skills`・`/mcp`・`/plugin` など）にスクロールバーが出る**ようになりました（v2.1.281 以降）。チームメイトなどからの `Message from @<sender>` の行はクリックで展開できます — [Fullscreen rendering](https://code.claude.com/docs/en/fullscreen)
+- **`plugins/create` に、Anthropic の `plugin-dev` プラグインで大きめのプラグインを作る案内が加わりました**。インストール後に `/plugin-dev:create-plugin` を実行すると、設計・作成・検証を Claude が案内します — [Create a Claude Code plugin](https://code.claude.com/docs/en/plugins/create)
 
 **機能改善**
 
-- **OpenTelemetry の変数がプロジェクト設定とローカル設定から無視されるようになりました**（詳細はハイライト 3 を参照）— [All settings](https://code.claude.com/docs/en/settings-reference#variables-claude-code-ignores-in-env)
-- **auto モードのサーバー側レビューが、接続の種類ごとに説明し直され、テレメトリを切ったセッションでも既定で使われるようになりました**（詳細はハイライト 4 を参照）— [日本語](https://code.claude.com/docs/ja/permission-modes#server-side-classifier-review) / [Choose a permission mode](https://code.claude.com/docs/en/permission-modes#server-side-classifier-review)
-- **プロジェクトのスレッドを Remote Control 経由で自分のマシンで動かせるようになりました**（詳細はハイライト 5 を参照）— [日本語](https://code.claude.com/docs/ja/claude-projects#limitations) / [Let Claude coordinate ongoing work with Projects](https://code.claude.com/docs/en/claude-projects#limitations)
-- **送信の即時実行（`Ctrl+Enter` / `Ctrl+X Ctrl+S`）の本文が、v2.1.281 の挙動に更新されました**。新しい節「When Claude Code sends what you queued」によると、キューの先頭に `!` のシェルコマンドがあればターンを中断します。それ以外は、Claude がシェルコマンドやサブエージェントなどバックグラウンドへ移せる作業をしていればそれを移してそのターンでメッセージを読み、応答を書いているだけかバックグラウンドへ移せない作業なら、ターンを中断して次にメッセージを送ります。「v2.1.281 より前は、どちらの場合も中断していた」と書かれています — [日本語](https://code.claude.com/docs/ja/interactive-mode#when-claude-code-sends-what-you-queued) / [Interactive mode](https://code.claude.com/docs/en/interactive-mode#when-claude-code-sends-what-you-queued)
-- **`Ctrl+S` での退避と復元が、入力モードも戻す**ようになりました。退避した `!` のシェルコマンドは、シェルモードのまま戻ります — [日本語](https://code.claude.com/docs/ja/interactive-mode) / [Interactive mode](https://code.claude.com/docs/en/interactive-mode)
-- **Remote Control の Trusted Devices が Pro・Max プランでも使えるようになりました**。Team・Enterprise では Owner が組織に対して有効にし、Pro・Max では各自が Cowork またはアカウントの設定ページで **Require trusted devices** をオンにします。組織での有効化の場所も、Claude Code の管理設定から **Organization settings > Capabilities > Remote sessions** に変わりました（見出しも「Team または Enterprise 組織で Trusted Devices を有効にする」に改称）— [日本語](https://code.claude.com/docs/ja/remote-control#trusted-devices) / [Continue local sessions from any device with Remote Control](https://code.claude.com/docs/en/remote-control#trusted-devices)
-- **Amazon Bedrock の Mantle エンドポイントに必要な IAM アクションが明記されました**。Mantle には `bedrock-mantle:` プレフィックスの独自アクションがあり、`bedrock:` のアクションでは足りません。推論には `bedrock-mantle:CreateInference`、トークン数の計測には `bedrock-mantle:CountTokens` を付与します。`403` の読み方も、エラーが `bedrock-mantle:` のアクションを名指ししていればそのアクションを付与する、名指ししていなければモデルへのアクセスが許可されていない、の 2 通りに分けられました — [日本語](https://code.claude.com/docs/ja/amazon-bedrock#use-the-mantle-endpoint) / [Claude Code on Amazon Bedrock](https://code.claude.com/docs/en/amazon-bedrock#use-the-mantle-endpoint)
-- **`/batch` が、各サブエージェントに「プルリクエストを開く」ではなく「変更を公開する」と書かれるようになり、git リポジトリの外でも `WorktreeCreate` フックがあれば動く**ことが本文に入りました（git リポジトリの外では v2.1.281 以降）。プルリクエストを開けないときは、何を公開したかを報告します（`commands`・`worktrees`・`best-practices`・`agents`）— [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees)
-- **中断されたツール呼び出しの再開時の扱いが更新されました**。前のプロセスが終わったときに実行中だったツールは、「結果が記録される前に打ち切られた」と Claude に示され、もう一度実行する前に効果があったかを確かめるよう伝えられます（`CLAUDE_CODE_RESUME_INTERRUPTED_TURN` を設定していない場合）。v2.1.281 より前は、その呼び出しを会話から落とすか、ユーザーが中断したものとして見せていました — [Manage sessions](https://code.claude.com/docs/en/sessions)
-- **プロンプト候補（prompt suggestions）のコストの説明が詳しくなりました**。候補を作るリクエストはセッションと同じモデルに送られ、プランの使用量上限か API コストに数えられます。プロンプトキャッシュを再利用するので大半はキャッシュ読み取りと少しの出力トークンで、`costs` にも同じ説明と、止める方法へのリンクが加わりました — [Manage costs effectively](https://code.claude.com/docs/en/costs)
-- **テレメトリの帰属属性の伏せ字が、`OTEL_LOG_TOOL_DETAILS=1` で外せる**ことが明記されました。`agent.name`・`skill.name`・`plugin.name`・`mcp_server.name` が対象です — [Monitoring](https://code.claude.com/docs/en/monitoring-usage)
-- **Agent SDK（Python）の説明が更新されました**。`user` は「ユーザー識別子」から「POSIX で Claude Code のサブプロセスを実行する OS ユーザー」に、`debug_stderr` は「SDK はこの値を無視する」に、`env` には `CLAUDE_AGENT_SDK_CLIENT_APP` で User-Agent にアプリを示せることが加わりました。`agent-sdk/permissions` には、Linux と macOS では認識されたサンドボックスの外で root や `sudo` のもと `bypassPermissions` で起動すると、最初のターンの前にクエリが失敗することが加わりました — [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python)
-- **Claude apps gateway の IdP 停止時の説明が変わりました**。停止中のセッション更新は「失敗する」から「再試行を促す応答を受け、IdP が戻れば通る」になりました — [Claude apps gateway for Amazon Bedrock, Claude Platform on AWS, Google Cloud, and Microsoft Foundry](https://code.claude.com/docs/en/claude-apps-gateway)
+- **重要パスの削除が、auto モードでは時間制限付きの確認か拒否になり、PowerShell の `cmd /c rd` などによるシステムパスの削除も拒否されるようになりました**（詳細はハイライト 2）— [Choose a permission mode](https://code.claude.com/docs/en/permission-modes#critical-paths)
+- **`errors` に 12 節が加わりました**（詳細は大幅更新ページ 1）— [Error reference](https://code.claude.com/docs/en/errors#disk-quota-or-temp-filesystem-is-full)
+- **`DISABLE_TELEMETRY`・`DO_NOT_TRACK` だけなら Remote Control が使えるようになりました**（v2.1.283 以降。詳細は大幅更新ページ 3）— [Continue local sessions from any device with Remote Control](https://code.claude.com/docs/en/remote-control#requirements)
+- **スキルディレクトリのフロントマター `name` がコマンド名になり、`anthropic-skills` の名前が予約されました**（詳細は大幅更新ページ 7）— [Extend Claude with skills](https://code.claude.com/docs/en/skills#names-reserved-for-synced-skills)
+- **`plugins/publish` の公開先が「Anthropic のコミュニティマーケットプレイス」から「Anthropic's directory」に書き直されました**。見出しも「Submit to Anthropic's directory」になり、前回「本文はまだ旧名」と書いた食い違いが解消しました。directory は claude.ai と Cowork で閲覧する一覧で、1 つの掲載が claude.ai・Cowork・Claude Code に届き、Claude Code には `<name>@synced` として同期されます。提出は claude.ai の開発者ポータルから行い、有料の claude.ai プランが要ります（`plugins/anthropic-marketplaces`・`plugins/create`・`plugins/create-marketplace`・`plugins/overview`・`plugins/components` などの記述とリンクも更新）— [Publish and distribute a plugin](https://code.claude.com/docs/en/plugins/publish#submit-to-anthropics-directory)
+- **`claude plugin validate` が、`outputStyles`・`lspServers`・`monitors`・`themes` のパスも検査するようになりました**（v2.1.283 以降）— [Plugin manifest reference](https://code.claude.com/docs/en/plugins/manifest-reference)
+- **`claude plugin eval` は git 2.31 以降を必要とするようになりました**（v2.1.283 以降）。古い git では、リポジトリの git フックやヘルパーを止める環境設定（`GIT_CONFIG_COUNT`）が効かないため、ケースを実行する前に止まります — [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals#git-is-too-old-for-claude-plugin-eval)
+- **プロンプトキャッシュの無効化の説明が表になりました**。ツール検索がない場合に、サーバーの接続（無効化）・ユーザー操作なしの切断（維持）・自動再接続（原則維持）・意図的なツールの削除（無効化）ごとに、キャッシュと次のリクエストのツール定義がどうなるかを示しています。見出しも「Connecting or removing an MCP server」に改称されました — [How Claude Code uses prompt caching](https://code.claude.com/docs/en/prompt-caching#connecting-or-removing-an-mcp-server)
+- **`DISABLE_PROMPT_CACHING_HAIKU` は既定の Haiku モデル（`haiku` エイリアスが指すモデル）が対象で、それがメインモデルのときもキャッシュを止める**と明記されました（メインの会話への適用は v2.1.283 以降）。別の Haiku のバージョンをメインモデルに固定したときは `DISABLE_PROMPT_CACHING` を使います — [How Claude Code uses prompt caching](https://code.claude.com/docs/en/prompt-caching#disable-prompt-caching)
+- **クラウド環境に新しい節「Time limits」が加わりました**。コマンドの既定 2 分・最大 10 分、SessionStart フックの 600 秒、約 5 分を超えたセットアップスクリプトはキャッシュされないこと、アイドル時の停止をまとめ、`BASH_DEFAULT_TIMEOUT_MS`・`BASH_MAX_TIMEOUT_MS` で延ばせることが書かれています — [Configure cloud environments](https://code.claude.com/docs/en/cloud-environments#time-limits)
+- **Stop フックの上限が「8 回続けてブロックすると打ち切る」から「8 回続けて継続させると次のブロックを打ち切る」になり、`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` で上限を変えられる**と書かれました（`best-practices` も参照先を変更）— [Hooks reference](https://code.claude.com/docs/en/hooks)
+- **`-p` で SIGTERM で中断したセッションを再開したときは、中断したターンをそのままにして次のプロンプトで進む**ようになりました。中断したターンを続けるには `CLAUDE_CODE_RESUME_INTERRUPTED_TURN=1` を設定します。作業ディレクトリが途中で消えてもセッションは続き、警告メッセージを出すことも加わりました — [Run Claude Code programmatically](https://code.claude.com/docs/en/headless#if-the-working-directory-is-deleted)
+- **CLAUDE.md やルールファイルが推奨の長さを超えたとき、また各ファイルは収まっていても合計が上限を超えたときに、起動時と `/status` で警告が出る**ことが書き加えられました。ネットワークパス（UNC 共有など）を指す `.claude/rules/` や `CLAUDE.md` のシンボリックリンクは読み込まれません — [How Claude remembers your project](https://code.claude.com/docs/en/memory)
+- **MCP の重複判定で、スキーム・ホストの大文字小文字、既定ポート、末尾のスラッシュだけが違う URL は同じエンドポイントとみなす**ことが明記されました。`.mcp.json` などの `"type": "sdk"` のエントリーは読み飛ばされ、MCP Apps の UI リソース（`ui://`）は `@` の候補とリソース一覧に出なくなります — [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp)
+- **Agent SDK（TypeScript）の MCP の表で、プロセス内の SDK サーバーの最初のターンの待ち時間が「なし」から「`MCP_TIMEOUT`（既定 30 秒）」に直りました** — [Connect to external tools with MCP](https://code.claude.com/docs/en/agent-sdk/mcp)
+- **Claude apps gateway の `load_test_mode` の必要な版が、「v2.1.283 以降」から「ゲートウェイのサーバーに Claude Code v2.1.282 以降」に変わりました**。一方、changelog は `load_test_mode` の追加を v2.1.283 の項目に載せており、本文と changelog で版がそろっていません。レプリカ 1 台あたりの CPU はプロバイダーへの暗号化がないぶん低く出る見積もりで、v2.1.283 より前はさらに低く出る、とも書き加えられました — [Claude apps gateway configuration](https://code.claude.com/docs/en/claude-apps-gateway-config#load_test_mode)
+- **インストール手順（`quickstart`・`setup`・`overview`）に、ターミナルを初めて使う人向けの案内と、インストール後に新しいターミナルで `claude --version` を確かめ、見つからなければ PATH を直す、という手順が加わりました**。`troubleshoot-install` には macOS の Bash では `~/.bash_profile` に PATH を書く説明が加わっています — [Quickstart](https://code.claude.com/docs/en/quickstart)
+- **`authentication` の `CLAUDE_CODE_OAUTH_TOKEN` の設定例が、macOS・Linux・WSL／Windows PowerShell／Windows CMD のタブに分かれました** — [Authentication](https://code.claude.com/docs/en/authentication)
+- **`desktop-quickstart` の冒頭が書き直されました**。前回 `llms.txt` の説明文が変わった件に本文が追いつき、「Claude デスクトップアプリをインストールし、Code タブを開いて、コンピューター上のプロジェクトフォルダーで最初の Claude Code セッションを始める」という説明になりました — [Get started with the desktop app](https://code.claude.com/docs/en/desktop-quickstart)
+- **VS Code 拡張機能の Web タブに Remote Control のセッションも並ぶ**ようになりました。開いているフォルダーで動いたセッションを選ぶと、コピーをダウンロードせずにそのローカルの会話を開きます — [Use Claude Code in VS Code](https://code.claude.com/docs/en/vs-code)
+- **ultracode をオンにしているあいだは、`Large workflow` の警告・同時サブエージェント数の上限・auto モードでの最初のワークフロー起動の承認が適用されない**ことが書き加えられました。ultracode だけを止める設定はなく、effort の上限を `xhigh` より下にすると使えなくなります — [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows#let-claude-decide-with-ultracode)
+- **サブエージェントとワークフローが、メインの会話と同じ使用量上限に数えられる**ことが `sub-agents`・`costs`・`workflows` に書き加えられました — [Manage costs effectively](https://code.claude.com/docs/en/costs)
+- **クラウドセッションの GitHub 資格情報は Anthropic のサーバーで暗号化して保存され、VM に入らない**ことが、`security`・`data-usage`・`claude-code-on-the-web` で統一して説明されました — [Security](https://code.claude.com/docs/en/security)
+- **サーバー管理設定のキャッシュの扱いが詳しくなりました**。すべての設定が検証に失敗したときは何も適用せず、原因として `no setting in the server response could be applied as written` を表示します（v2.1.282 より前は `server returned invalid settings`）— [Configure server-managed settings](https://code.claude.com/docs/en/server-managed-settings)
+- **Code Review が、中断されたレビューの一部を自動で再試行する**ようになりました。失敗したチェックのタイトルは「Code review failed」などになり、自動で再キューされたと書かれていなければ自分で再実行します — [Code Review](https://code.claude.com/docs/en/code-review)
+- **ルーチンを毎時ちょうどに設定すると数分遅れて始まることがあるので、9:07 のように数分ずらすよう**案内が変わりました — [Automate work with routines](https://code.claude.com/docs/en/routines)
+- **worktree のセッションを抜けるときに作業を残すと、あとで戻るための `claude --worktree <name> --resume` コマンドが表示される**ことが書かれました。再開時に worktree へ戻るのは、worktree を抜けずに終わったセッションで、`--continue` は起動したディレクトリで記録された最新のセッションを選ぶ、とも明記されています — [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees)
+- **`self-hosted-environments-deploy` のイメージのビルド例が、固定の版ではなく `stable` の最新番号を取得して渡す形になりました** — [Deploy self-hosted environments to production](https://code.claude.com/docs/en/self-hosted-environments-deploy)
 
 **バグ修正**
 
-- **v2.1.282 の修正 59 件のうち、本文ページに対応する記述が今回の差分で見つかったものは、ほぼありません。** 影響の大きいものを挙げます
-- **API が復号できない Web 検索結果を履歴に持つ会話で、すべてのリクエストが 400 で失敗する問題を修正しました**（サードパーティのゲートウェイ経由で答えたターンなど）。`errors` の新しい節「Invalid encrypted_content in search_result block」はこの状況を説明しています
-- **`Invalid data in redacted_thinking block` の API エラーで毎ターン失敗するセッションを修正しました**。Claude Code は会話の思考ブロックを落として 1 回だけ再試行します
-- **`--continue`・`--resume` で続けた会話が、以前のメッセージを形を変えて送り直すケースをさらに修正しました**。API が Claude の以前の推論を捨てる原因になっていました。`/model` などのスラッシュコマンドを作業中に使ったときや、以前に提供した組み込みツールを外した `--tools` で再起動したときに、拡張思考が失われる問題も直りました
-- **別の Claude Code プロセスがログインの更新中に閉じられたり強制終了されたりすると、最大 1 分間「another Claude Code process is refreshing it」でリクエストが失敗する問題を修正しました**
-- **設定ファイルで、パターン途中に `:*` を含む Bash の許可ルールが読み飛ばされていた問題を修正しました**（`--allowedTools` では効いていました）。どこから設定しても効くようになり、起動時にどう一致するかの警告が出ます
-- **管理設定の `permissions`・`autoMode`・`worktree`・`attribution` が、入れ子の値が 1 つ不正なだけで丸ごと無視されていた問題を修正しました**。残りの値は適用されます
-- **Bash と PowerShell が、ディスククォータの満杯を「Exit code 1」の陰に隠し、一時領域に大きな出力ファイルを残していた問題を修正しました**
-- **要約リクエストが拒否されると圧縮（compaction）が失敗していた問題を修正しました**。代替モデルで再試行します
-- **vim モードの不具合をまとめて修正しました**。`>>` が空行をインデントする、回数付きの `r` が行より長いと文字を変える、`2J` が 1 行多く連結する、`.` の前の回数を無視する、などです
+- **v2.1.283 の修正 53 件のうち、本文ページの記述と対応するものを挙げます**
+- **PowerShell ツールで、`Remove-Item` が拒否するドライブのルートやホームフォルダーを `cmd /c rd`・`rmdir`・`del`・`erase` で消せてしまう問題を修正しました**（ハイライト 2）
+- **テレメトリを `DISABLE_TELEMETRY` か `DO_NOT_TRACK` で切ると、有料プランで Remote Control が使えなくなる問題を修正しました**（大幅更新ページ 3）
+- **Haiku がセッションのメインモデルのとき `DISABLE_PROMPT_CACHING_HAIKU` が効かなかった問題を修正しました**
+- **`claude plugin validate` が、`outputStyles`・`themes`・`monitors`・`lspServers` のパスが存在しない、またはプラグインのディレクトリの外を指すプラグインを通していた問題を修正しました**
+- **長時間実行の MCP ツール呼び出しがバックグラウンドに移ると、MCP の進捗通知が捨てられていた問題を修正しました**。バックグラウンドのタスクが最新の進捗を表示します（Agent SDK の `summary` にも反映）
+- **管理設定の `sandbox` で入れ子の値が 1 つ不正なだけで、ブロック全体が無視されていた問題を修正しました**。不正な値は厳しい側に倒し、残りは適用します
+- **`/context` が MCP サーバーの指示を数えていなかった問題を修正しました**。独立した行として合計に入ります
+- **Claude の組み込みのキーバインドのガイドが、コードの 2 打目の待ち時間を 3 秒ではなく 1 秒と説明し、`cmd` を `meta` の別名としていた問題を修正しました**
+- **スクリーンリーダーモードの権限ダイアログが、引用したコマンドやパスをダイアログ自身の文として読み上げていた問題を修正しました**
+- **vim モードの不具合をまとめて修正しました**。`.` が Shift+Enter の改行を落とす、最終行での `3J` や Visual モードの `J` のあとで古い変更を繰り返す、`J` の空白の入れ方が Vim と違う、などです
 
 **その他**
 
-- **v2.1.153〜v2.1.191 の古い版の注記 30 か所が、14 ページから外されました**。`mcp`（`claude mcp login` の v2.1.186・v2.1.191 など）、`sub-agents`（v2.1.153・v2.1.178・v2.1.186・v2.1.191）、`settings-reference`（`sandbox.credentials` の v2.1.187 など）、`cli-reference`・`commands`・`agent-teams`・`hooks`・`hooks-guide`・`checkpointing`・`github-actions`・`fullscreen`・`sandboxing`・`server-managed-settings`・`claude-platform-on-aws` です
-- **クラウドセッションでプラグインを使う方法として「claude.ai アカウントで有効にすれば同期プラグインとして読み込まれる」と書いていた案内が、`cloud-environments`・`desktop`・`hooks`・`security-guidance` から削除されました**。`security-guidance` では代わりに、組織が管理設定で配布するプラグインの案内（`plugins/org`）へのリンクが置かれています
-- **Claude Tag へのリンクが、`/docs/en/claude-tag` から `https://claude.com/docs/claude-tag` に変わりました**（`platforms`・`zero-data-retention`）
-- **`channels-reference` から「承認済み許可リストは Anthropic が選定する」という記述が外れました**。研究プレビュー中は自作のチャネルが許可リストに載らないので開発フラグのままにする、という説明に変わっています
-- **`github-enterprise-server` と `monitoring-usage` の組織設定のリンク先が、「Organization settings > Plugins」から「Organization settings > Plugins & skills」に変わりました**
-- **`llms.txt` では、`desktop-quickstart` と `plugins/publish` の説明文が書き換わりました**。前者は「Claude デスクトップアプリをインストールし、Code タブを開いて、コンピューター上のプロジェクトフォルダーで最初の Claude Code セッションを始める」に、後者は公開先が「Anthropic のコミュニティマーケットプレイス」から「**Anthropic's directory**」になりました（本文はまだ旧名。ハイライト 1 を参照）
-- **`llms.txt` の言語別インデックスのページ数が、おおむね 197 から 209 に増えました**（日本語は 196 → 209）。中国語は「Chinese（`cn.md`）」が「Simplified Chinese（`zh-cn.md`・210 ページ）」に、繁体字中国語は `zh-hant.md` が `zh-tw.md` に変わっています
-- **見出しマップにだけ新しい見出しが入り、本文にはまだないものが約 35 件あります**。`settings-reference` の `availableModelsMatch`・`deniedModels`・`maxProseWidth`、`model-config` の `Block specific models or versions`、`terminal-config` の `Cap response width in wide terminals`、`agent-sdk/typescript` の `prewarm()`・`SpareProcess`、`mcp` の `Images in tool results`、`skills` の `Names reserved for synced skills`、`remote-control` の `"Couldn't verify your organization's policy for remote control"`、`errors` の 12 件、`troubleshoot-install` の 2 件（`claude.exe` missing after an update on Windows など）などです。逆に、マップから消えた `remote-control` の `Session URL reminders`・`Choose the right approach` は、**本文にはまだ残っています**
-- **見出しマップ冒頭の自動生成スタンプが、2026年09月25日 03時24分49秒 UTC から 2026年09月26日 05時25分36秒 UTC へ進みました**
+- **古い版の注記が、`remote-control`（v2.1.154〜v2.1.261 の約 20 か所）と `auto-mode-config`（v2.1.193〜v2.1.211 の約 10 か所）からまとめて外されました**
+- **スクリーンリーダーモードの番号付きメニューの案内文が、`Enter selection` から `Select with numbers` に変わりました** — [Use Claude Code with a screen reader](https://code.claude.com/docs/en/accessibility)
+- **`advisor` に、アドバイザーの呼び出しが失敗したときの `Advisor unavailable (<error_code>)` の表示が加わりました** — [Escalate hard decisions with the advisor tool](https://code.claude.com/docs/en/advisor)
+- **`channels-reference` から、コミュニティマーケットプレイスへの提出フォームへのリンクが外れました**。`channels` では、開発中のチャネルは `plugin:<name>@<marketplace>` か `server:<name>` の形で `--dangerously-load-development-channels` に渡す、と具体化されました
+- **`goal` で、認証の失敗時にゴールを有効なまま残すホストの例から VS Code 拡張機能が外れ、Desktop アプリとクラウドセッションだけになりました**
+- **`github-enterprise-server` から「クラウドセッションには Team または Enterprise の組織が必要」という一文が外れました**
+- **`sandbox-environments` の `~/.claude.json` を作るコマンドが、既存のファイルを上書きしない形に直りました**
+- **`statusline` の `claude --debug` の説明が、スクリプトの stderr を毎回ログに残し、終了コードは最初の実行だけ記録する、に直りました**
+- **プロジェクトスコープでプラグインを有効にしても、コミットした設定は共同作業者のマシンにプラグインをダウンロードしない**ことが明記されました。共同作業者はそれぞれ `claude plugin install <name>@<marketplace> --scope project` を 1 回実行します — [Install and manage plugins](https://code.claude.com/docs/en/plugins/install)
+- **`claude -p --resume`・`--continue` がプランモードで再開する条件に、「`--permission-prompts none` を渡していないこと」が加わりました**。`hooks` の遅延ツール呼び出しの説明も、この条件の節を参照する形になっています — [Manage sessions](https://code.claude.com/docs/en/sessions#resume-in-plan-mode-with-p)
+- **`plugins/org` に、1 つのプラグインを claude.ai・Cowork・Claude Code へまとめて展開する方法として、claude.com の「Choose a rollout route」への案内が加わりました** — [Manage Claude Code plugins for your organization](https://code.claude.com/docs/en/plugins/org)
+- **Desktop の定期タスクの Daily プリセットの説明から「既定は午前 9:00」が外れ、「選んだローカル時刻に毎日実行する」になりました** — [Schedule recurring tasks in Claude Code Desktop](https://code.claude.com/docs/en/desktop-scheduled-tasks)
+- **`plugins/measure` に、Anthropic's directory に掲載したプラグインの利用状況は claude.com の「Track published plugin usage」を参照する、という案内が加わりました** — [Measure plugin cost and usage](https://code.claude.com/docs/en/plugins/measure)
+- **次のページは、上に挙げた変更の反映（`--setting-sources` の引き継ぎ、`tool.output` の対象拡大、Remote Control の Desktop 対応、バックグラウンドセッションの信頼確認、`plugin_errors` への参照、リンクの張り替えなど）か字句の修正だけです**: `agent-sdk/observability`・`agent-sdk/plugins`・`agent-sdk/tool-search`・`agent-teams`・`checkpointing`・`claude-apps-gateway-deploy`・`claude-apps-gateway`・`cli-reference`・`debug-your-config`・`llm-gateway-connect`・`permissions`・`platforms`・`plugins/cli-hints`・`plugins/host-marketplace`・`plugins/loading`・`troubleshooting`・`voice-dictation`
+- **プラグイン関連のページで、claude.ai・Cowork 向けのリンク先が `https://claude.com/docs/plugins/` 配下の個別ページ（`build`・`platform-support`・`org-sync`・`admin` など）に張り替わりました**
 
-**参考リンクについて**: **日本語版の追従状況は、リンクするページごとに実測しました。反映を確認できたページにだけ日本語リンクを付けています。** 確認できたのは、`plugins/overview`（前回は 404）、`permission-modes`（v2.1.282 の記述まで反映）、`errors`（新しい 5 節あり）、`claude-projects`（制限事項に Remote Control の記述あり）、`interactive-mode`（`#when-claude-code-sends-what-you-queued` と v2.1.281 の注記あり）、`keybindings`（`#text-fields` あり）、`remote-control`（Trusted Devices の Pro・Max 対応あり）、`amazon-bedrock`（`bedrock-mantle:` の記述あり）、`plugin-evals`（`CI` 環境変数とエージェントが見つからない件の節あり）です。`claude-apps-gateway-config` の日本語版には `load_test_mode` がまだなく、`settings-reference` は取得した内容が途中で切れて確認できなかったため、いずれも英語版だけにしています。そのほかの未確認ページも英語版だけです。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
+**参考リンクについて**: **日本語版の追従状況は、主要なページで実測しました。今回は、反映を確認できたページがなかったため、すべて英語版だけにしています。** `permission-modes`（冒頭が「Pro、Max、Team プランでは」のまま。重要パスの時間制限の記述なし）、`model-config`（`deniedModels` の記述なし）、`claude-projects`（「Run a thread on your own computer」の節なし）、`remote-control`（「Session URL reminders」と「Choose the right approach」が残り、`DISABLE_TELEMETRY` の新しい扱いなし）はいずれも旧版の内容でした。`errors` は取得した内容が途中で切れて新しい節を確認できなかったため、英語版だけにしています。そのほかの未確認ページも英語版だけです。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
 
 ## 新着情報
 
-**`whats-new/` 配下では 7 ページが動きましたが、いずれもリンク先の張り替えだけです。** 2026年の Week 14・17・19・23・32・33・37 の各ダイジェストで、`/docs/en/plugins`・`/docs/en/plugins-reference` などへのリンクが `/docs/en/plugins/` 配下の新しい URL に置き換わりました（たとえば Week 37 の「`--plugin-dir` にプラグインのフォルダーを渡す」のリンク先は `plugins/create#load-a-directory-or-archive-for-one-session` になりました）。ダイジェストの本文に変更はなく、**Week 38 はまだ追加されていません**。
+**`whats-new/` 配下のページに変更はありません。** Week 38 のダイジェストも、まだ追加されていません。
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-24.md](./archives/latest/2026-09-24.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-24.md](./archives/latest-detail/2026-09-24.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-25.md](./archives/latest/2026-09-25.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-25.md](./archives/latest-detail/2026-09-25.md)
 
 <!--
-base_commit: 9e4a9ca8dd012676f943d04b4ad641296ec601bb
-head_commit: df1f117ca1144390ad3e12cf43bbdea20661d7d4
-generated_at_full: 2026-09-26T15:07:47+09:00
+base_commit: df1f117ca1144390ad3e12cf43bbdea20661d7d4
+head_commit: 4b44c61fdbb75b9b84fdaf00a4bdaded9af968af
+generated_at_full: 2026-09-27T15:00:24+09:00
 -->
