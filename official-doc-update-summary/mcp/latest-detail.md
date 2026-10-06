@@ -1,106 +1,63 @@
 ---
-対象期間: 2026年09月24日 〜 2026年09月29日
-作成日: 2026-09-29
+対象期間: 2026年09月29日 〜 2026年10月05日
+作成日: 2026-10-05
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間は `llms-full.txt` の 109 ページに変更がありましたが、そのうち 100 ページは表の桁揃えの空白を除いただけの書式変更で、内容が変わったのは 9 ページです。索引 `llms.txt` に変更はなく、新規追加・大幅更新に当たるページもありません。
+今回の対象期間に差分が出たのは索引ファイル `llms.txt` の 1 件のみで、ページ本文を収める `llms-full.txt` には変更がありません。変更内容は、ローカル実行の MCP サーバーのセキュリティを扱う新規ページ 1 件の追加です。
 
 主要なものを以下に挙げます。
 
-1. SEP を提出する前に、関連する Working Group / Interest Group での事前議論が必須になり、PR 説明にその議論へのリンクが求められるようになった
-2. 公式 SDK 一覧で Ruby SDK が Tier 2 から Tier 1 に格上げされた
-3. 拡張機能のサポート表に mcpc MCP CLI が加わり、OAuth Client Credentials・Enterprise Auth・Skills の 3 拡張に対応と記載された
+1. セキュリティ系チュートリアルに、自分のマシン上で MCP サーバーを安全に動かすための実践的な既定値を扱う「Local Server Security」ページが追加された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**SEP 提出前のグループでの事前議論が必須に**](#1-sep-提出前のグループでの事前議論が必須に):  
-  これまで「採択されやすくするコツ」として勧められていた Working Group / Interest Group での事前議論が必須要件になった。PR 説明に議論へのリンクが無い SEP は受け付けられず、手順の 1 番目に「関連グループでの議論」が加わって全 10 ステップになった。
-2. [**Ruby SDK が Tier 1 に昇格**](#2-ruby-sdk-が-tier-1-に昇格):  
-  SDKs ページの公式 SDK 一覧で、Ruby SDK の区分が Tier 2 から Tier 1 に変わり、表の並びも Java SDK（Tier 2）の上に移った。Tier 1 は TypeScript・Python・C#・Go・Rust・Ruby の 6 つになった。
-3. [**拡張サポート表に mcpc MCP CLI が追加**](#3-拡張サポート表に-mcpc-mcp-cli-が追加):  
-  Extension Support Matrix の対応表に Apify の mcpc MCP CLI の行が追加された。OAuth Client Credentials・Enterprise Auth・Skills の 3 拡張に対応とされ、MCP Apps は空欄になっている。
+1. [**Local Server Security ページを新規追加**](#1-local-server-security-ページを新規追加):  
+  Security Best Practices の直後に、ローカルで MCP サーバーを安全に動かすための実践的な既定値を扱うページが索引に追加された。現行版（2026-07-28）と draft 版の両方に追加されている。本文は `llms-full.txt` に未収録のため、内容は索引の 1 行説明の範囲でしか確認できない。
 <!-- light:highlight-list:end -->
 
-## 1. SEP 提出前のグループでの事前議論が必須に
+## 1. Local Server Security ページを新規追加
 
-SEP Guidelines の「Step-by-Step Process」で、事前議論の位置づけが変わりました。従来は `<Note>` の中で、採択の可能性を高めるための勧めとして「まず Discord の関連 Working Group / Interest Group でアイデアを議論する」ことが挙げられていました。今回その記述が本文に移り、冒頭に **Prior discussion is required.** と明記されています。SEP の作成者は、SEP のプルリクエストを開く前に関連グループの Discord で議論し、PR 説明にその議論（Discord のスレッド、WG/IG の会議メモ、GitHub Discussion のいずれか）へのリンクを載せなければなりません。リンクされた事前議論の無い SEP は受け付けられません。関連グループが存在しない場合は、GitHub Discussions か Discord の `#general` チャンネルで議論を始めることになっています。
+索引ファイル `llms.txt` に **Local Server Security**（`tutorials/security/local-server-security`）のエントリが追加されました。公式の 1 行説明は「Practical defaults for running MCP servers safely on your own machine.」で、自分のマシン上で MCP サーバーを安全に動かすための実践的な既定値を扱うページとされています。
 
-これに伴い手順は 9 ステップから 10 ステップになりました。先頭に「**Discuss with the relevant group**」（該当グループでアイデアを練り、議論へのリンクを控えておく）が加わり、以降が 1 つずつ繰り下がっています。ほかに次の変更があります。
+エントリはセキュリティ系チュートリアルの並びで、Security Best Practices の直後、MCP Inspector の直前に置かれました。現行のプロトコルバージョン 2026-07-28 の系統（`/docs/2026-07-28/`）と draft の系統（`/docs/draft/`）の両方に同じエントリが 1 行ずつ追加されています（追加は計 2 行で、削除はありません）。
 
-- 「Create a pull request」に、仕様リポジトリがプルリクエストを受け付けるのはコラボレーターからのみ、という一文が加わりました
-- 「Formal review」に、スポンサーはステータスを `in-review` にする前に、グループでの議論が行われ PR 説明にリンクされていることを確認する、という条件が加わりました
-- 「Finalization」の末尾に、マージされた SEP は SEP 索引に掲載され、`modelcontextprotocol.io/seps/<number>` の形で番号から直接開ける、という説明が加わりました
-- `<Note>` に残ったのは、Core Maintainer の優先事項や設計原則との整合を確認するよう勧める項目だけです
+本サマリが参照する全文データ `llms-full.txt` には、現時点でこのページの本文が含まれていません。推奨される具体的な設定や対策の内容は、下記の原ページで確認してください。
 
-同じ方針は Working and Interest Groups ページの FAQ「Do I need to be in a WG to submit a SEP?」にも反映されました。回答は「誰でも SEP を提出でき、グループへの所属は不要」のままですが、SEP のプルリクエストを開く前に関連グループの Discord チャンネルへ提案を持ち込む必要がある、という但し書きが加わり、SEP Guidelines の手順へのリンクが張られています。
-
-- [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
-- [Working and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#do-i-need-to-be-in-a-wg-to-submit-a-sep)
-
-## 2. Ruby SDK が Tier 1 に昇格
-
-SDKs ページの「Available SDKs」の表で、Ruby SDK（`modelcontextprotocol/ruby-sdk`）のバッジが `Tier 2` から `Tier 1` に変わりました。表の並びも変わり、Ruby は Rust の直後、Java（Tier 2）の上に置かれています。
-
-これで Tier 1 は TypeScript・Python・C#・Go・Rust・Ruby の 6 つ、Tier 2 は Java、Tier 3 は Swift・PHP・Kotlin となりました。変わったのは一覧表の区分だけで、各 Tier の要件を定めた SDK Tiers のページの内容は変わっていません（同ページの変更は表の書式のみです）。
-
-- [SDKs - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#available-sdks)
-
-## 3. 拡張サポート表に mcpc MCP CLI が追加
-
-Extension Support Matrix の「Support matrix」の表の末尾に、[mcpc MCP CLI](https://github.com/apify/mcpc) の行が追加されました。OAuth Client Credentials・Enterprise Auth・Skills の 3 列にチェックが付き、MCP Apps の列は空欄です。
-
-既存のクライアントで、3 つの拡張すべてにチェックが付いているものはありません。Enterprise Auth のチェックは Archestra.AI に次いで 2 例目、OAuth Client Credentials と Skills（「Partial」ではない完全な対応）のチェックはいずれも初めてです。
-
-- [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+- [Local Server Security - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回の対象期間に新規追加されたページはありません。
+- [**Local Server Security**](#1-local-server-security-ページを新規追加) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security)):  
+  自分のマシン上で MCP サーバーを安全に動かすための実践的な既定値を扱うセキュリティ系チュートリアル。現行版と draft 版の両方の索引に追加された（詳細はハイライト 1 参照）。
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。生の差分行数が 50 行を超えたページもありますが、いずれも表の書式変更によるもので、内容の変更ではありません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-内容が変わった 9 ページの変更と、多数のページに及んだ書式変更を以下にまとめます。
-
-**機能改善**
-
-- SEP の提出前に、関連グループでの事前議論と PR 説明への議論リンクが必須になった（詳細はハイライト 1 参照） — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
-- Working and Interest Groups の FAQ で、SEP 提出には事前にグループの Discord チャンネルへ提案を持ち込む必要があると追記された（詳細はハイライト 1 参照） — [Working and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#do-i-need-to-be-in-a-wg-to-submit-a-sep)
-- 公式 SDK 一覧で Ruby SDK が Tier 1 に昇格した（詳細はハイライト 2 参照） — [SDKs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#available-sdks)
-- 拡張サポート表に mcpc MCP CLI が追加された（詳細はハイライト 3 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
-- SEP 索引ページの冒頭に、各 SEP は `/seps/<number>`（例: `/seps/1850`）で番号から直接開けるという説明が加わった — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index)
-
-**その他**
-
-- Connect to remote MCP Servers で、「自分でリモート MCP サーバーを作る」ためのリンク 2 箇所（本文の箇条書きと「Next Steps」のカード）の参照先が、Anthropic サポート記事から MCP ドキュメント内の Build an MCP server ページに変わった — [Connect to remote MCP Servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-remote-servers#what-are-custom-connectors)
-- Build an MCP server の Java（Spring AI）の説明で、「MCP Client Boot Starters」のリファレンスへのリンク先 URL が修正された — [Build an MCP server](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#use-mcp-client-boot-starter)
-- Example Servers の「Additional resources」2 箇所で、GitHub Discussions へのリンク先が組織レベル（`github.com/orgs/modelcontextprotocol/discussions`）から仕様リポジトリの Discussions に変わった — [Example Servers](https://modelcontextprotocol.io/examples#additional-resources)
-- File Uploads Charter の「Related Groups」で、OWASP ASVS V5 へのリンク先 URL が `owasp.org/projects/asvs` に変わった — [File Uploads Charter](https://modelcontextprotocol.io/community/working-groups/file-uploads#related-groups)
-- 表の桁揃えの空白が、ほぼすべての表で除去された。列幅をそろえていた空白がなくなり、`| --------- |` のように伸ばしていた区切り行 281 本も `| - |` や `| :-: |` の短い書き方になった。書式だけが変わったページは 100 ページで、差分の約 3,700 行（追加 1,839 行・削除 1,831 行）の大半はこの変更による。表示される内容は変わらない
+今回の対象期間に軽微な更新に当たる変更はありません。差分は新規ページ 1 件の索引エントリ追加（ハイライト 1 参照）のみで、既存ページの本文・索引エントリに変更はありません。
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-24.md](./archives/latest/2026-09-24.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-24.md](./archives/latest-detail/2026-09-24.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-09-29.md](./archives/latest/2026-09-29.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-29.md](./archives/latest-detail/2026-09-29.md)
 
 <!--
-base_commit: 9e4a9ca8dd012676f943d04b4ad641296ec601bb
-head_commit: e32314a088a1505e08e5cd54f11e49586740f360
-generated_at_full: 2026-09-30T15:16:53+09:00
+base_commit: e32314a088a1505e08e5cd54f11e49586740f360
+head_commit: c3f00327d040ed4b125f7bfb47f07adb2a4785cc
+generated_at_full: 2026-10-06T15:14:47+09:00
 -->
