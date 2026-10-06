@@ -14,6 +14,7 @@
 - [SDKs](https://modelcontextprotocol.io/docs/2026-07-28/sdk.md): Official SDKs for building with Model Context Protocol
 - [Understanding Authorization in MCP](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization.md): Learn how to implement secure authorization for MCP servers using OAuth 2.1 to protect sensitive resources and operations
 - [Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices.md): Security considerations, attack vectors, and best practices for MCP implementations
+- [Local Server Security](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security.md): Practical defaults for running MCP servers safely on your own machine.
 - [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector.md): Interactive developer tooling for testing and debugging MCP servers, in the browser, on the command line, and in the terminal
 - [Web client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web.md): A tab-by-tab walkthrough of the graphical MCP Inspector
 - [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli.md): Scripting the MCP Inspector: methods, output formats, exit codes, and CI recipes
@@ -106,6 +107,7 @@
 - [SDKs](https://modelcontextprotocol.io/docs/draft/sdk.md): Official SDKs for building with Model Context Protocol
 - [Understanding Authorization in MCP](https://modelcontextprotocol.io/docs/draft/tutorials/security/authorization.md): Learn how to implement secure authorization for MCP servers using OAuth 2.1 to protect sensitive resources and operations
 - [Security Best Practices](https://modelcontextprotocol.io/docs/draft/tutorials/security/security_best_practices.md): Security considerations, attack vectors, and best practices for MCP implementations
+- [Local Server Security](https://modelcontextprotocol.io/docs/draft/tutorials/security/local-server-security.md): Practical defaults for running MCP servers safely on your own machine.
 - [MCP Inspector](https://modelcontextprotocol.io/docs/draft/tools/inspector.md): Interactive developer tooling for testing and debugging MCP servers, in the browser, on the command line, and in the terminal
 - [Web client](https://modelcontextprotocol.io/docs/draft/tools/inspector/web.md): A tab-by-tab walkthrough of the graphical MCP Inspector
 - [CLI client](https://modelcontextprotocol.io/docs/draft/tools/inspector/cli.md): Scripting the MCP Inspector: methods, output formats, exit codes, and CI recipes
