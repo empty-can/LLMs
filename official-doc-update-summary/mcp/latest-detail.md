@@ -1,42 +1,65 @@
 ---
-対象期間: 2026年09月29日 〜 2026年10月05日
-作成日: 2026-10-05
+対象期間: 2026年10月05日 〜 2026年10月06日
+作成日: 2026-10-06
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間に差分が出たのは索引ファイル `llms.txt` の 1 件のみで、ページ本文を収める `llms-full.txt` には変更がありません。変更内容は、ローカル実行の MCP サーバーのセキュリティを扱う新規ページ 1 件の追加です。
+今回の対象期間には新規ページ 2 件の本文が追加されました。前回は索引への追加のみだったローカルサーバーのセキュリティガイドの本文と、HTTP サーバーの事前ディスカバリーを定める SEP-2127（MCP Server Cards）です。
 
 主要なものを以下に挙げます。
 
-1. セキュリティ系チュートリアルに、自分のマシン上で MCP サーバーを安全に動かすための実践的な既定値を扱う「Local Server Security」ページが追加された
+1. 前回は索引エントリのみだった「Local Server Security」の本文が収録され、ローカル MCP サーバーを信頼できないコードとして扱い、隔離・資格情報・ファイル・ネットワークを絞る実践的な既定値が示された
+2. 接続前にリモート MCP サーバーのトランスポートやプロトコルバージョンを把握できるようにする Extensions Track の SEP-2127「MCP Server Cards - HTTP Server Discovery」が Final として追加された
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Local Server Security ページを新規追加**](#1-local-server-security-ページを新規追加):  
-  Security Best Practices の直後に、ローカルで MCP サーバーを安全に動かすための実践的な既定値を扱うページが索引に追加された。現行版（2026-07-28）と draft 版の両方に追加されている。本文は `llms-full.txt` に未収録のため、内容は索引の 1 行説明の範囲でしか確認できない。
+1. [**Local Server Security ページの本文を収録**](#1-local-server-security-ページの本文を収録):  
+  前回は索引エントリのみだったセキュリティ系チュートリアルの本文が `llms-full.txt` に入った。ローカルサーバーを「渡した権限をそのまま持つ信頼できないコード」として扱い、来歴確認・ツール定義の警戒・プロセス隔離・資格情報の分離・ファイルシステムとネットワークの制限、組織での管理方法までを既定値付きで解説する。
+2. [**SEP-2127: MCP Server Cards を追加**](#2-sep-2127-mcp-server-cards-を追加):  
+  接続前にリモート MCP サーバーの識別情報・トランスポートのエンドポイント・対応プロトコルバージョンを記述する静的メタデータ「Server Card」の拡張を定める Extensions Track の SEP。Final ステータスで追加された。
 <!-- light:highlight-list:end -->
 
-## 1. Local Server Security ページを新規追加
+## 1. Local Server Security ページの本文を収録
 
-索引ファイル `llms.txt` に **Local Server Security**（`tutorials/security/local-server-security`）のエントリが追加されました。公式の 1 行説明は「Practical defaults for running MCP servers safely on your own machine.」で、自分のマシン上で MCP サーバーを安全に動かすための実践的な既定値を扱うページとされています。
+前回のサマリでは、**Local Server Security**（`tutorials/security/local-server-security`）は索引 `llms.txt` へのエントリ追加のみで、本文は `llms-full.txt` に未収録でした。今回、2026-07-28 版のページ本文（442 行）が `llms-full.txt` に収録され、Security Best Practices の直前に置かれました（draft 版の本文は未収録です）。
 
-エントリはセキュリティ系チュートリアルの並びで、Security Best Practices の直後、MCP Inspector の直前に置かれました。現行のプロトコルバージョン 2026-07-28 の系統（`/docs/2026-07-28/`）と draft の系統（`/docs/draft/`）の両方に同じエントリが 1 行ずつ追加されています（追加は計 2 行で、削除はありません）。
+このガイドが扱うのはプロトコルの脅威モデル（OAuth・トークン処理・セッションハイジャック等）ではなく、**自分のマシン**という脅威モデルです。ローカルサーバーはプロトコルが用意するサンドボックス内のプラグインではなく、ホストアプリが起動する通常の子プロセスで、環境変数・アカウントで読めるファイル・無制限の外向き通信・インストール時に取得した依存ツリーにアクセスできます。stdio トランスポートではクライアントとサーバーが同じ信頼ドメインを共有し、プロトコルも SDK も両者の間を防御しないため、実質的なセキュリティ判断は起動**前**（何を入れるか＝来歴、どう動かすか＝隔離）に行われる、と整理しています。想定する脅威は、悪意あるサーバー、過剰収集するサーバー、侵害された依存関係、ツール説明に指示を仕込む「汚染されたツールカタログ」（tool poisoning / shadowing、承認後の定義変更＝rug pull を含む）、脆弱なサーバーやブリッジの 5 つです。
 
-本サマリが参照する全文データ `llms-full.txt` には、現時点でこのページの本文が含まれていません。推奨される具体的な設定や対策の内容は、下記の原ページで確認してください。
+対策は「サードパーティのローカルサーバーは渡した権限をそのまま持つ信頼できないコードとして扱い、渡す権限を最小限にする」という原則に沿い、各項目に基準・「さらに進めるなら」・迷ったときの既定値が示されています。主な内容は次のとおりです。
 
-- [Local Server Security - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security)
+- **ローカル実行が本当に必要か確認する**: リモート API を包むだけのサーバーは、Streamable HTTP のリモート版があればそちらを使う
+- **来歴を確認する**: 発行者の特定、パッケージ名の確認（タイポスクワッティング対策）、バージョンの固定。`npx` / `uvx` での固定はトップレベルのパッケージのみで、コンテナイメージをダイジェスト（`image@sha256:...`）で固定すれば依存ツリー全体が固定される
+- **ツール定義を信頼できない入力として扱う**: MCP Inspector などでツール一覧を確認し、定義の変更時に再確認を求めるクライアントを選ぶ
+- **隔離環境で実行する**: 最も効果の高い対策として、必要なディレクトリ以外をマウントしないコンテナでの実行を基準とする
+- **資格情報・ファイルシステム・ネットワークを絞る**: サーバーごとの環境変数設定と最小スコープのトークン、単一プロジェクトディレクトリの読み取り専用許可、不要なら `--network=none` で外向き通信を遮断。設定レベルの許可リストは「協調的な境界」にすぎず、強制は隔離層が担うと明記している
+
+さらに組織の管理者向けに、承認済みサーバーの許可リスト、既定の実行方針、中央でのリモート展開、クライアント設定の継続的な棚卸し、監査ログ、全社的インシデントへの備え（SBOM の活用を含む）を挙げ、個人用・組織用のチェックリストで締めくくっています。
+
+- [Local Server Security - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security#run-servers-in-an-isolated-environment)
+
+## 2. SEP-2127: MCP Server Cards を追加
+
+**SEP-2127「MCP Server Cards - HTTP Server Discovery」**（Final / Extensions Track、作成日 2026年01月21日）のページが追加されました。接続を確立する前に MCP サーバーを発見できるよう、サーバーを記述する標準化された自己完結型のフォーマットを導入するものです。動機として、トランスポート URL を手動で設定する必要があること、ドメイン単位でサーバーを自動発見できないこと、`server/discover` のような実行時の仕組みは接続先が分かった後でないと使えないことを挙げています。
+
+Server Card は**リモート** MCP サーバーを記述する静的メタデータ文書で、識別情報（`name` / `version` / `description` など）、リモートトランスポートのエンドポイント（URL・ヘッダー・変数テンプレート・対応プロトコルバージョン）、任意の名前空間付き `_meta` を持ちます。カードは任意の非予約 URI に置けますが、推奨位置として `<streamable-http-url>/server-card` が予約されます。ドメイン単位の発見は AI Catalog（`/.well-known/ai-catalog.json`）がカードへリンクまたは埋め込む形で担います。ツール・リソース・プロンプトといったプリミティブは、認証ユーザーやセッションなどで変わるため静的文書では表現できないとして意図的に含めず、MCP の capabilities や拡張サポートも広告しません。詳細な規範的仕様は `experimental-ext-server-card` リポジトリ側で管理されます。
+
+Server Card は任意かつ追加的で、既存の実装とは完全に後方互換です。セキュリティ面では、カードは公開を前提とするため資格情報や内部ネットワーク構成を含めてはならない（MUST NOT）こと、HTTPS での配信が推奨される（SHOULD）ことなどが定められています。参照実装として Python SDK・Go SDK の実験的実装と、Goose クライアントでのデモが挙げられています。
+
+- [SEP-2127: MCP Server Cards - HTTP Server Discovery - MCP Docs](https://modelcontextprotocol.io/seps/2127-mcp-server-cards#abstract)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Local Server Security**](#1-local-server-security-ページを新規追加) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security)):  
-  自分のマシン上で MCP サーバーを安全に動かすための実践的な既定値を扱うセキュリティ系チュートリアル。現行版と draft 版の両方の索引に追加された（詳細はハイライト 1 参照）。
+- [**Local Server Security**](#1-local-server-security-ページの本文を収録) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security#run-servers-in-an-isolated-environment)):  
+  ローカル MCP サーバーを安全に動かすための実践的な既定値を扱うセキュリティ系チュートリアル。索引エントリは前回追加済みで、今回本文が収録された（詳細はハイライト 1 参照）。
+- [**SEP-2127: MCP Server Cards - HTTP Server Discovery**](#2-sep-2127-mcp-server-cards-を追加) ([MCP Docs](https://modelcontextprotocol.io/seps/2127-mcp-server-cards#abstract)):  
+  接続前のサーバー発見のための静的メタデータ「Server Card」を定める Extensions Track の SEP（詳細はハイライト 2 参照）。
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
@@ -48,16 +71,21 @@
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の対象期間に軽微な更新に当たる変更はありません。差分は新規ページ 1 件の索引エントリ追加（ハイライト 1 参照）のみで、既存ページの本文・索引エントリに変更はありません。
+既存ページの本文変更は SEP 一覧ページの 1 行のみです。
+
+**その他**
+
+- SEP 一覧の表（All SEPs）に SEP-2127 の行が追加された（詳細はハイライト 2 参照） — [MCP Docs](https://modelcontextprotocol.io/seps/index#all-seps)
+- `llms-full.txt` 内で SEP-1699（Support SSE polling via server-side disconnect）と SEP-1730（SDKs Tiering System）の収録位置が移動した。ページ本文に変更はない
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-09-29.md](./archives/latest/2026-09-29.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-09-29.md](./archives/latest-detail/2026-09-29.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-05.md](./archives/latest/2026-10-05.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-05.md](./archives/latest-detail/2026-10-05.md)
 
 <!--
-base_commit: e32314a088a1505e08e5cd54f11e49586740f360
-head_commit: c3f00327d040ed4b125f7bfb47f07adb2a4785cc
-generated_at_full: 2026-10-06T15:14:47+09:00
+base_commit: c3f00327d040ed4b125f7bfb47f07adb2a4785cc
+head_commit: 4732026713f96a1268695ab6d1e2f0fc2a78d528
+generated_at_full: 2026-10-07T15:08:18+09:00
 -->
