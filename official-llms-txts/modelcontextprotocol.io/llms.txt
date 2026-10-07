@@ -306,6 +306,7 @@
 - [SEP-1865: MCP Apps - Interactive User Interfaces for MCP](https://modelcontextprotocol.io/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp.md): MCP Apps - Interactive User Interfaces for MCP
 - [SEP-2085: Governance Succession and Amendment Procedures](https://modelcontextprotocol.io/seps/2085-governance-succession-and-amendment.md): Governance Succession and Amendment Procedures
 - [SEP-2106: Tools `inputSchema` & `outputSchema` Conform to JSON Schema 2020-12](https://modelcontextprotocol.io/seps/2106-json-schema-2020-12.md): Tools `inputSchema` & `outputSchema` Conform to JSON Schema 2020-12
+- [SEP-2127: MCP Server Cards - HTTP Server Discovery](https://modelcontextprotocol.io/seps/2127-mcp-server-cards.md): MCP Server Cards - HTTP Server Discovery
 - [SEP-2133: Extensions](https://modelcontextprotocol.io/seps/2133-extensions.md): Extensions
 - [SEP-2148: MCP Contributor Ladder](https://modelcontextprotocol.io/seps/2148-contributor-ladder.md): MCP Contributor Ladder
 - [SEP-2149: MCP Group Governance and Charter Template](https://modelcontextprotocol.io/seps/2149-working-group-charter-template.md): MCP Group Governance and Charter Template
