@@ -1,58 +1,50 @@
 ---
-対象期間: 2026年10月10日 〜 2026年10月11日
-作成日: 2026-10-11
+対象期間: 2026年10月11日 〜 2026年10月12日
+作成日: 2026-10-12
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の中心は、前回索引 `llms.txt` にだけ載っていた Governance Working Group の憲章の本文が `llms-full.txt` に収録されたことです（追加 185 行）。ほかに、Claude Desktop の対応 OS に Linux が加わった記述修正 2 ページと、Financial Services Interest Group のメンバー追加 1 行があります。
+今回の対象期間の変更は、チュートリアル「Build an MCP server」の TypeScript タブ 1 か所だけです。サンプルの天気サーバーが、新旧どちらのプロトコルのクライアントにも応答できる `serveStdio` ベースの構成に書き換えられ、その動作を確かめる手順も加わりました。
 
 主要なものを以下に挙げます。
 
-1. Governance Working Group の憲章本文が収録され、ガバナンス文書の管理とコミュニティの声を Core Maintainers へ届ける役割、暫定 Lead の体制、月 1 回の運営形態が明らかになった
-2. 対象範囲（ガバナンス文書・意思決定の記録・行動規範・コミュニティの価値観など 7 項目）と対象外 6 項目、および「編集上の修正」と「実質的な改訂」を分ける意思決定権限の区分が定められた
-3. 2027 年 1〜5 月を期限とする 6 件の作業項目と、6 か月・12 か月の成功基準が示された（憲章は 2026 年 11 月の承認を想定し、現時点では未承認）
+1. TypeScript 版の天気サーバーが、ファクトリ関数 `createServer()` を `serveStdio` に渡して起動する構成になり、`2026-07-28` のクライアントと 2025 年系のクライアントの両方に応答できるようになった
+2. Inspector CLI を `--protocol-era modern` と `--protocol-era legacy` で 1 回ずつ実行し、どちらでもツール一覧が返るかを確かめる手順が加わった
 ```
 
 ## ハイライト
 
-1. [**Governance Working Group の憲章本文が収録**](./latest-detail.md#1-governance-working-group-の憲章本文が収録):  
-  前回は索引への追加のみだった Governance WG 憲章の本文が収録された。ガバナンス文書の管理と、コミュニティの懸念を Core Maintainers へ届ける助言的な窓口を担う。暫定 Lead は Sarah Novotny（任期 1 年以内）で、月 1 回 60 分の作業セッションで運営する。
-2. [**対象範囲と意思決定権限の区分**](./latest-detail.md#2-対象範囲と意思決定権限の区分):  
-  ガバナンス文書の管理・意思決定の記録・行動規範の文面・コミュニティの価値観など 7 項目を担い、仕様の策定やメンテナーの選任、個別の行動規範違反の裁定などは対象外とする。字句修正などの「編集上の修正」は Lead が自律的に反映でき、意味を変える「実質的な改訂」は WG の合意と Core Maintainers の承認を要する。
-3. [**作業項目と成功基準**](./latest-detail.md#3-作業項目と成功基準):  
-  意思決定記録の規約（2027年01月31日）から「コード以外の貢献方法」ページ（2027年05月31日）まで 6 件の作業項目を掲げる。成功基準は 2026 年 11 月の憲章承認を前提に 6 か月・12 か月の節目で定められている。
+1. [**TypeScript 版サーバーの起動が serveStdio とファクトリ関数に移行**](./latest-detail.md#1-typescript-版サーバーの起動が-servestdio-とファクトリ関数に移行):  
+  Build an MCP server の TypeScript タブで、サーバーインスタンスの生成とツールの登録を `createServer()` にまとめ、`serveStdio(createServer, …)` で起動する構成に変わった。`serveStdio` はクライアントごとにプロトコルのリビジョンを取り決めるため、`2026-07-28` のクライアントにも 2025 年系のクライアントにも応答できる。他の言語のタブは変わっていない。
+2. [**Inspector CLI で新旧両プロトコルへの応答を確認する手順を追加**](./latest-detail.md#2-inspector-cli-で新旧両プロトコルへの応答を確認する手順を追加):  
+  ビルド後のサーバーに対し、Inspector CLI で `--protocol-era modern` を指定してツール一覧を取得し、続けて `--protocol-era legacy` でも同じコマンドを実行する手順が加わった。原文では、どちらの実行でも `get_alerts` と `get_forecast` が一覧に出るとしている。
 
 ## 新規追加されたページ
 
-- [**Governance Working Group Charter**](./latest-detail.md#1-governance-working-group-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/governance)):  
-  MCP Governance Working Group の憲章。前回は索引への追加のみだったが、今回 `llms-full.txt` に本文が収録された（詳細はハイライト 1〜3 参照）。
+今回の対象期間に新規追加されたページはありません。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。Build an MCP server は差分の行数をそのまま数えると 50 行を超えますが、空白の違いを無視すると 47 行のため、軽微な更新として扱います（詳細は「軽微な更新」参照）。
 
 ## 軽微な更新
 
-新規ページ以外では、`llms-full.txt` の既存 3 ページに計 3 か所の変更（追加 3 行・削除 2 行）がありました。索引 `llms.txt` に変更はありません。
+変更があったのは既存 1 ページ（Build an MCP server）の TypeScript タブだけです。差分の行数は追加 149 行・削除 142 行ですが、大半はコードを `createServer()` の内側へ移したことによる字下げの変更で、空白の違いを無視して数えた行数（`git diff -w --numstat`）は追加 27 行・削除 20 行の計 47 行です。50 行に満たないため、軽微な更新に分類しました。`llms-full.txt` は 45,371 行から 45,378 行になり、収録ページは 157 件のままです。索引 `llms.txt` に変更はありません。
 
 **機能改善**
 
-- Connect to local MCP servers の前提条件で、Claude Desktop の対応 OS を「macOS and Windows」から「macOS, Windows, and Linux」に修正 — [MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#claude-desktop)
-- Debugging の「Debugging in Claude Desktop」節で、Claude Desktop の対応 OS を同様に「macOS, Windows, and Linux」に修正 — [MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/debugging#debugging-in-claude-desktop)
-
-**その他**
-
-- Financial Services Interest Group 憲章のメンバー表に、King Yew Choo（True Primary、@kychooo）を Participant として追加 — [MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services#membership)
+- Build an MCP server の TypeScript タブで、サーバーの組み立てと起動を、ファクトリ関数 `createServer()` と `serveStdio` による構成に書き換え（詳細はハイライト 1 参照） — [MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#running-the-server)
+- 同タブの「Running the server」節に、Inspector CLI で `modern` と `legacy` の両方のプロトコル世代に応答するかを確かめる手順を追加（詳細はハイライト 2 参照） — [MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#running-the-server)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-10.md](./archives/latest/2026-10-10.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-10.md](./archives/latest-detail/2026-10-10.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-11.md](./archives/latest/2026-10-11.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-11.md](./archives/latest-detail/2026-10-11.md)
 
 <!--
-base_commit: 096d54cbb316fc19ca321240fcef28dc6ea22401
-head_commit: 98d1f105aec298de4131f50d6044a9d5ea41da93
-generated_at_full: 2026-10-12T15:10:12+09:00
+base_commit: 98d1f105aec298de4131f50d6044a9d5ea41da93
+head_commit: a96f629ae39d1bbdbc8a90f79fba6100e8de16c0
+generated_at_full: 2026-10-13T15:03:56+09:00
 -->
