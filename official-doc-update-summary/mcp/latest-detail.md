@@ -1,86 +1,91 @@
 ---
-対象期間: 2026年10月11日 〜 2026年10月12日
-作成日: 2026-10-12
+対象期間: 2026年10月12日 〜 2026年10月13日
+作成日: 2026-10-13
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の変更は、チュートリアル「Build an MCP server」の TypeScript タブ 1 か所だけです。サンプルの天気サーバーが、新旧どちらのプロトコルのクライアントにも応答できる `serveStdio` ベースの構成に書き換えられ、その動作を確かめる手順も加わりました。
+今回の対象期間の変更は索引 `llms.txt` の 2 行だけで、本文 `llms-full.txt` には差分がありません。Working Group の憲章ページが 1 件加わり、Interest Group の憲章ページが 1 件外れました。
 
 主要なものを以下に挙げます。
 
-1. TypeScript 版の天気サーバーが、ファクトリ関数 `createServer()` を `serveStdio` に渡して起動する構成になり、`2026-07-28` のクライアントと 2025 年系のクライアントの両方に応答できるようになった
-2. Inspector CLI を `--protocol-era modern` と `--protocol-era legacy` で 1 回ずつ実行し、どちらでもツール一覧が返るかを確かめる手順が加わった
+1. Progressive Disclosure Working Group の憲章ページが索引に加わった（本文は `llms-full.txt` に未収録）
+2. Primitive Grouping Interest Group の憲章ページが索引から外れた（本文は `llms-full.txt` に残ったまま）
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**TypeScript 版サーバーの起動が serveStdio とファクトリ関数に移行**](#1-typescript-版サーバーの起動が-servestdio-とファクトリ関数に移行):  
-  Build an MCP server の TypeScript タブで、サーバーインスタンスの生成とツールの登録を `createServer()` にまとめ、`serveStdio(createServer, …)` で起動する構成に変わった。`serveStdio` はクライアントごとにプロトコルのリビジョンを取り決めるため、`2026-07-28` のクライアントにも 2025 年系のクライアントにも応答できる。他の言語のタブは変わっていない。
-2. [**Inspector CLI で新旧両プロトコルへの応答を確認する手順を追加**](#2-inspector-cli-で新旧両プロトコルへの応答を確認する手順を追加):  
-  ビルド後のサーバーに対し、Inspector CLI で `--protocol-era modern` を指定してツール一覧を取得し、続けて `--protocol-era legacy` でも同じコマンドを実行する手順が加わった。原文では、どちらの実行でも `get_alerts` と `get_forecast` が一覧に出るとしている。
+1. [**Progressive Disclosure Working Group の憲章ページが索引に追加**](#1-progressive-disclosure-working-group-の憲章ページが索引に追加):  
+  `community/working-groups/progressive-disclosure`（説明文「Charter for the MCP Progressive Disclosure Working Group.」）が、Working Group 憲章群の Interceptors Charter と Registry Charter の間に加わった。本文は `llms-full.txt` に未収録で、憲章の中身は今回の入力からは確認できない。
+2. [**Primitive Grouping Interest Group の憲章ページが索引から削除**](#2-primitive-grouping-interest-group-の憲章ページが索引から削除):  
+  `community/interest-groups/primitive-grouping` のエントリが索引から外れた。一方、今回差分の無い `llms-full.txt` には本文がそのまま残っており、他の憲章ページからの参照も残っている。
 <!-- light:highlight-list:end -->
 
-## 1. TypeScript 版サーバーの起動が serveStdio とファクトリ関数に移行
+## 1. Progressive Disclosure Working Group の憲章ページが索引に追加
 
-天気サーバーを作るチュートリアル「Build an MCP server」の TypeScript タブで、サーバーの組み立て方と起動方法が書き換えられました。Python・Java・Kotlin・C#・Ruby など、他の言語のタブに変更はありません。
+索引 `llms.txt` の Working Group 憲章群に、タイトル `Progressive Disclosure Charter`・パス `community/working-groups/progressive-disclosure`・説明文「Charter for the MCP Progressive Disclosure Working Group.」の 1 行が追加されました。既存エントリと同じアルファベット順で Interceptors Charter と Registry Charter の間に挿入されており、索引に並ぶ Working Group 憲章は 13 件から 14 件になりました。
 
-これまでの手順では、ファイル冒頭で `new McpServer({ name: "weather", version: "1.0.0" })` によりサーバーインスタンスを 1 つ作り、そこへ `server.registerTool()` で `get_alerts` と `get_forecast` を登録したうえで、`main()` 関数の中で `server.connect(new StdioServerTransport())` を呼んで stdio に接続していました。新しい手順では、インスタンスの生成と 2 つのツールの登録を関数 `createServer()` にまとめ、最後に `serveStdio(createServer, { onerror: … })` を呼んで stdio で公開します。インポートも `StdioServerTransport` から `serveStdio`（どちらも `@modelcontextprotocol/server/stdio` から読み込む）に替わり、冒頭の節の見出しは「Importing packages and setting up the instance」から「Importing packages and setting up constants」に改められました。エラー処理も、`main()` が失敗したら `process.exit(1)` でプロセスを終了する形から、`serveStdio` の `onerror` でエラーを標準エラー出力に書き出す形に変わっています。一方、ツールの処理内容（NWS API の呼び出しや応答の整形）は変わっておらず、差分の大半はコードを `createServer()` の内側へ移したことによる字下げの変更です。
+ページ本文は `llms-full.txt` に収録されていないため、この Working Group のミッション・スコープ・リーダーシップといった憲章の中身は、今回の入力からは確認できません。`llms-full.txt` には `/community/working-groups/progressive-disclosure` を指すリンクも無く、既存ページからの参照もまだありません。過去にも Transports WG 憲章や Enterprise IG 憲章のように、索引が先に更新され、本文が後から収録された例があります。
 
-この構成にした理由も新たに説明されています。`serveStdio` はクライアントごとにプロトコルのリビジョンを取り決めるため、同じサーバーが `2026-07-28` のクライアントにも、従来どおり 2025 年系（2025-era）の `initialize` ハンドシェイクで接続してくるクライアントにも応答できます。`serveStdio` はインスタンスが必要になるたびに `createServer()` を呼び出し、その中には `server/discover` によるプローブのための 1 回も含まれます。このインスタンスは、クライアントが `initialize` にフォールバックした場合には破棄されます。ファクトリが呼び出しのたびに新しい `McpServer` を返す必要があるのはこのためです。なお、`server.connect(new StdioServerTransport())` で手作業で接続する従来の書き方もコンパイルは通りますが、その方法で起動したサーバーは 2025 年系のクライアントにしか応答しません。
+参考までに、「progressive disclosure」という語は既存の収録ページにも現れます。Skills Over MCP Working Group の憲章は、連携するグループの一つに Primitive Grouping IG を挙げ、その連携テーマを「Progressive disclosure patterns」としています。また Primitive Grouping IG 自身の憲章も、Skills Over MCP WG との関係について「skill discovery and progressive disclosure overlap with grouping」と記しています。同じ取り込みでこの Primitive Grouping IG の憲章が索引から外れていますが（ハイライト 2 参照）、新しい Working Group と Primitive Grouping IG の関係（後継・改称・統合などにあたるかどうか）は、今回の入力からは確認できません。
 
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-tool-execution)
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#running-the-server)
+- [Progressive Disclosure Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/progressive-disclosure)
 
-## 2. Inspector CLI で新旧両プロトコルへの応答を確認する手順を追加
+## 2. Primitive Grouping Interest Group の憲章ページが索引から削除
 
-同じ TypeScript タブの「Running the server」節に、ビルドしたサーバーが `2026-07-28` のクライアントに応答するかを確かめる手順が加わりました。[Inspector CLI](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli) をプロトコル世代（protocol era）`modern` で動かし、ツール一覧を取得します。
+索引 `llms.txt` の Interest Group 憲章群から、タイトル `Primitive Grouping Charter`・パス `community/interest-groups/primitive-grouping`・説明文「Charter for the MCP Primitive Grouping Interest Group.」の 1 行が削除されました。Financial Services Charter と Scientific Computing Charter の間にあったエントリで、索引に並ぶ Interest Group 憲章は 8 件から 7 件になりました。ハイライト 1 の追加と相殺され、索引のエントリ数は 362 件のまま変わっていません。
 
-```bash
-npx @modelcontextprotocol/inspector --cli node build/index.js --protocol-era modern --method tools/list
-```
+これまでの憲章ページの追加では、索引が先に更新されて本文が後から収録される例がありましたが、今回は逆に、索引からは外れたものの本文が残っている状態です。今回の取り込みでは `llms-full.txt` に差分が無く、Primitive Grouping Charter の本文はそのまま収録されています。それによると、この Interest Group は、ツール・リソース・プロンプト・タスクといった MCP のプリミティブを、プロトコルが持つフラットな一覧を超えてどう整理できるかを探るグループとされています。状態は「Active Exploration」と記され、Working Group への移行を提案できる条件を定めた「Graduation Criteria (IG → WG)」節もあります。Changelog に記録された初版の制定日は 2026年06月18日 です。
 
-Inspector の既定の世代は `legacy` で、こちらは 2025 年系のハンドシェイクしか試しません。そのため、同じコマンドを `--protocol-era legacy` でもう一度実行するよう求めています。原文では、どちらの実行でも `get_alerts` と `get_forecast` が一覧に出るとしており、ハイライト 1 の `serveStdio` による構成が新旧どちらのクライアントにも応答することを、この 2 回の実行で確かめる形になっています。
+既存ページからの参照も残っています。Scientific Computing Interest Group の憲章は「Related Groups」節で Primitive Grouping IG のページへリンクしており、Skills Over MCP Working Group の憲章も、連携するグループとして Primitive Grouping IG の名前を挙げています。
 
-参考までに、Protocol eras ページによると、Inspector のプロトコル世代には `legacy`・`auto`・`modern` の 3 種類があります。`legacy`（既定）はプローブせず素の `initialize` で接続し、`auto` はまず `server/discover` でプローブして modern で応答が得られなければ `initialize` にフォールバックし、`modern` は `2026-07-28` に固定してフォールバックしません。
+今回のエントリ削除が、グループの活動終了・Working Group への移行・改称のいずれによるものかは、今回の入力からは確認できません。
 
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#running-the-server)
-- [Protocol eras - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras#the-protocol-era-setting)
+- [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#related-groups)
+- [Skills Over MCP Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#related-groups)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回の対象期間に新規追加されたページはありません。
+- [**Progressive Disclosure Charter**](#1-progressive-disclosure-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/progressive-disclosure)):  
+  MCP Progressive Disclosure Working Group の憲章ページ。今回の差分は索引へのエントリ 1 行の追加だけで、本文は `llms-full.txt` に未収録のため中身は確認できない（詳細はハイライト 1 参照）。
 <!-- light:new-pages:end -->
+
+## 1. Progressive Disclosure Charter
+
+索引に追加されたのは、タイトル `Progressive Disclosure Charter`・パス `community/working-groups/progressive-disclosure`・説明文「Charter for the MCP Progressive Disclosure Working Group.」の 1 行です。タイトルは既存の Working Group 憲章の多くと同じ「話題名 + `Charter`」の形で、説明文も「Charter for the MCP <名称> Working Group.」という定型に沿っています。
+
+本文が今回の入力に含まれていないため、憲章の内容についてここで述べられることはありません（詳細はハイライト 1 参照）。
+
+- [Progressive Disclosure Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/progressive-disclosure)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。Build an MCP server は差分の行数をそのまま数えると 50 行を超えますが、空白の違いを無視すると 47 行のため、軽微な更新として扱います（詳細は「軽微な更新」参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-変更があったのは既存 1 ページ（Build an MCP server）の TypeScript タブだけです。差分の行数は追加 149 行・削除 142 行ですが、大半はコードを `createServer()` の内側へ移したことによる字下げの変更で、空白の違いを無視して数えた行数（`git diff -w --numstat`）は追加 27 行・削除 20 行の計 47 行です。50 行に満たないため、軽微な更新に分類しました。`llms-full.txt` は 45,371 行から 45,378 行になり、収録ページは 157 件のままです。索引 `llms.txt` に変更はありません。
+今回の差分は索引 `llms.txt` の追加 1 行・削除 1 行のみで、本文 `llms-full.txt` には差分がありません。追加の 1 行は「新規追加されたページ」で扱い、ここでは削除の 1 行を挙げます。
 
-**機能改善**
+**その他**
 
-- Build an MCP server の TypeScript タブで、サーバーの組み立てと起動を、ファクトリ関数 `createServer()` と `serveStdio` による構成に書き換え（詳細はハイライト 1 参照） — [MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#running-the-server)
-- 同タブの「Running the server」節に、Inspector CLI で `modern` と `legacy` の両方のプロトコル世代に応答するかを確かめる手順を追加（詳細はハイライト 2 参照） — [MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#running-the-server)
+- 索引から Primitive Grouping Interest Group の憲章ページ（`community/interest-groups/primitive-grouping`）のエントリを削除。本文は `llms-full.txt` に残っている（詳細はハイライト 2 参照）
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-11.md](./archives/latest/2026-10-11.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-11.md](./archives/latest-detail/2026-10-11.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-12.md](./archives/latest/2026-10-12.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-12.md](./archives/latest-detail/2026-10-12.md)
 
 <!--
-base_commit: 98d1f105aec298de4131f50d6044a9d5ea41da93
-head_commit: a96f629ae39d1bbdbc8a90f79fba6100e8de16c0
-generated_at_full: 2026-10-13T15:03:56+09:00
+base_commit: a96f629ae39d1bbdbc8a90f79fba6100e8de16c0
+head_commit: fff3c0a4cd3191932565fb654f66a1d7539bbc49
+generated_at_full: 2026-10-14T15:28:59+09:00
 -->
