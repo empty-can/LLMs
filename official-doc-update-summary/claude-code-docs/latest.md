@@ -1,34 +1,22 @@
 ---
-対象期間: 2026年10月16日 〜 2026年10月17日
-作成日: 2026-10-17
+対象期間: 2026年10月17日 〜 2026年10月18日
+作成日: 2026-10-18
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-**今回は changelog に変更がなく、前回は見出しマップにだけ先に載っていた 7 つの見出しの本文が `llms-full.txt` に入りました。plan モードではフックや mod の allow でファイルの編集を承認できないことが明記され、Git Bash のない Windows で失敗したフックがツールの呼び出しを止める場合の節ができたほか、MCP のツール名でのサーバー名の書き方、Agent SDK の auto モードが対応しないモデルへの切り替えで `default` モードに変わること（v2.1.299 以降）、bypass の同意が `~/.claude/settings.json` にないときのセッションの始まり方も載りました**。新しいページはなく、228 ページ中 17 ページが変わり、変更は 204 行（追加 157・削除 47）、大幅更新は `hooks` の 1 ページです。総行数は 120,838 行から 120,948 行に増えました。
+**今回の差分は、changelog に加わった v2.1.303（2026年10月18日）のエントリの 4 行だけで、その項目も「バグ修正と信頼性の改善」の 1 つだけです**。ほかのページの本文・`llms.txt`・見出しマップは変わっておらず、228 ページ中で変わったのは changelog の 1 ページです。`llms-full.txt` の総行数は 120,948 行から 120,952 行になりました。取り上げる項目が 1 つしかないため、ハイライトも 1 件です。
 
 主要なものを以下に挙げます。
 
-1. plan モードでは、`PreToolUse` フックの `"allow"`（`ExitPlanMode` を除く）も `tool.check` を扱う mod の承認も、ファイルの編集など読み取り専用でない呼び出しに効かないと明記された（`permissions` の新しい 2 つの h3）
-2. Git Bash のない Windows で `PreToolUse` か `PermissionRequest` のコマンドフックが失敗すると呼び出しが止まる場合の節ができ、メッセージごとの直し方が載った
-3. MCP のツール名に書くサーバー名は、`.` やスペースが `_` になる・プラグインのサーバーはプラグインスコープの形・`__` を含む名前はワイルドカード形、と書き方が載った
-4. Agent SDK で auto モードのセッションを対応しないモデルへ切り替えると `default` モードに変わり、戻すには対応モデルに戻して auto を設定し直す、と載った（v2.1.299 以降）
-5. bypass の同意が `.claude/settings.local.json` などにだけあると、起動時の bypass の要求は無視され、セッションは Manual モードで始まることがあると明記された
+1. changelog に v2.1.303 が加わったが、項目は「バグ修正と信頼性の改善」の 1 つだけで、どの不具合を直したかは書かれていない
 ```
 
 ## ハイライト
 
-1. [**plan モードではフックと mod の allow がファイルの編集に効かないと明記された**](./latest-detail.md#1-plan-モードではフックと-mod-の-allow-がファイルの編集に効かないと明記された):  
-  `permissions` に「Precedence among rules, hooks, and mods」と「Hook approvals in plan mode」の h3 ができました。plan モードでは、`ExitPlanMode` を除き、`PreToolUse` フックの `"allow"` はファイルの編集やほかの読み取り専用でない呼び出しに効かず、`tool.check` を扱う mod もそうした呼び出しを承認できません。`hooks-guide`・`hooks`・`plugins/mods/events`・`agent-sdk/permissions` も同じ内容に改められています
-2. [**Git Bash のない Windows で失敗したフックが呼び出しを止める場合の節ができた**](./latest-detail.md#2-git-bash-のない-windows-で失敗したフックが呼び出しを止める場合の節ができた):  
-  `hooks` に「Failed hooks on Windows without Git Bash」の h4 ができました。`shell` を設定しない shell 形式のフックは Git Bash がないと PowerShell で動き、`onFailure` を設定しない `PreToolUse` か `PermissionRequest` のコマンドフックは、失敗かタイムアウトすると呼び出しを止めることがあります。フックの書き方に応じた 4 つの直し方が載り、`onFailure` の「既定値は `"continue"`」の文は外れました
-3. [**MCP のツール名に書くサーバー名の綴り方が載った**](./latest-detail.md#3-mcp-のツール名に書くサーバー名の綴り方が載った):  
-  `permissions` の「MCP」で、ルールの `<server>` にはそのサーバーのツール名に現れる形を書く、として `my.server`・プラグインのサーバー・`reports__v2` の 3 つの例が加わりました。`agent-sdk/mcp` の命名規則には表が、`errors` のツールが 0 個のエラーには対処の項目が加わり、`sub-agents` には MCP サーバー単位のエントリの表ができています
-4. [**Agent SDK の auto モードは対応しないモデルへの切り替えで default モードに変わる**](./latest-detail.md#4-agent-sdk-の-auto-モードは対応しないモデルへの切り替えで-default-モードに変わる):  
-  `agent-sdk/permissions` に「Auto mode (`auto`)」の h4 ができました。`set_model()`・`setModel()`・`applyFlagSettings()` で auto モードの対応しないモデルへ切り替えると、セッションは `default` モードに変わり、`permissionMode` が `"default"` の `status` メッセージが届きます（v2.1.299 以降）。auto に戻すには、対応するモデルに戻したうえで権限モードを設定し直します
-5. [**bypass の同意がユーザー設定にないとセッションが Manual モードで始まることがあると明記された**](./latest-detail.md#5-bypass-の同意がユーザー設定にないとセッションが-manual-モードで始まることがあると明記された):  
-  `permission-modes` で、`skipDangerousModePermissionPrompt` が `.claude/settings.local.json` にだけあるバックグラウンドのセッションは、通知を出したまま動き続け、無視されたフラグによって `Shift+Tab` の切り替えから `bypassPermissions` が外れるか、Manual モードで始まる、と書かれました。`agent-view` と `errors` にも同じ通知の説明が加わっています
+1. [**changelog に v2.1.303 が加わり、項目は「バグ修正と信頼性の改善」の 1 つだけ**](./latest-detail.md#1-changelog-に-v21303-が加わり項目はバグ修正と信頼性の改善の-1-つだけ):  
+  changelog の冒頭に v2.1.303（原文の日付は 2026年10月18日）のエントリが加わりました。項目は「Bug fixes and reliability improvements」（バグ修正と信頼性の改善）の 1 行だけで、どの不具合を直したのかは書かれていません。収録されている 447 件のリリースのうち、この 1 行だけのものは今回で 12 件目で、1 つ前は v2.1.272（2026年09月15日）です。ほかのページの本文に、このリリースに対応する変更はありません
 
 ## 新規追加されたページ
 
@@ -36,36 +24,21 @@
 
 ## 大幅に更新されたページ
 
-- [**Hooks reference**](./latest-detail.md#1-hooks-reference) ([日本語](https://code.claude.com/docs/ja/hooks#other-exit-codes) / [English](https://code.claude.com/docs/en/hooks#other-exit-codes)):  
-  65 行（追加 49・削除 16）が変わりました。新しい 2 つの h4（「Failed hooks on Windows without Git Bash」はハイライト 2、「PreModelSwitch timeouts and other exit codes」）のほかは、非ブロッキングエラーの説明を「失敗が操作を止めるフック」を除く形に改めた書き換えが中心です
+（本カテゴリの該当はありません。今回 `llms-full.txt` で本文が変わったページは changelog の 1 ページだけで、その差分も 4 行です。50 行の閾値に届くページはありません）
 
 ## 軽微な更新
 
-今回の差分は **`llms-full.txt` の 1 ファイル**だけで、`llms.txt` と見出しマップは変わっていません。`llms-full.txt` の生の差分は追加 157 行・削除 47 行で、ページの並びは変わっていないため、ページ単位に切り出して数えても同じ量です。228 ページ中 **17 ページ**が変わり、**changelog は変わっていません**（最新の収録は前回と同じ v2.1.302）。大幅更新の `hooks` を除く **16 ページ**の変更を以下にまとめます。
+今回の差分は **`llms-full.txt` の 1 ファイル・4 行（追加 4・削除 0）** だけで、`llms.txt` と見出しマップは変わっていません。228 ページ中で変わったのは **changelog の 1 ページ**で、収録されているリリースは 446 件から 447 件になりました。`llms-full.txt` の総行数は **120,948 行から 120,952 行へ 4 行増え**ました。`Source:` の行は 231、固有のページは 228 のままで、加わった 4 行に見出しは含まれないため、見出しの追加・削除もありません。
 
-`llms-full.txt` の総行数は **120,838 行から 120,948 行へ 110 行増え**ました。`Source:` の行は 231、固有のページは 228 のままです。コードフェンスの外の見出しは 5,648 から 5,655 へ 7 つ増え、外れた見出しはありません。増えた 7 つは、前回のサマリで「見出しマップには載ったが、`llms-full.txt` にはまだ見出しも本文もない」とした 7 見出し（`sub-agents` の「Restrict which tools a subagent can use」、`permissions` の「Precedence among rules, hooks, and mods」「Hook approvals in plan mode」、`sandboxing` の「`/sandbox` prints `Sandbox settings not changed`」、`hooks` の「Failed hooks on Windows without Git Bash」「PreModelSwitch timeouts and other exit codes」、`agent-sdk/permissions` の「Auto mode (`auto`)」）そのもので、今回その本文が取り込まれました。
+**バグ修正**
 
-**新機能**
-
-- **Agent SDK の auto モードのセッションが、対応しないモデルへの切り替えで `default` モードに変わる**（`agent-sdk/permissions`・`agent-sdk/python`・`agent-sdk/typescript`。v2.1.299 以降。詳細はハイライト 4 参照）
-
-**機能改善**
-
-- **plan モードではフックと mod の allow がファイルの編集に効かないと明記された**（`permissions`・`hooks-guide`・`hooks`・`plugins/mods/events`・`agent-sdk/permissions`。詳細はハイライト 1 参照）
-- **Git Bash のない Windows で失敗したフックが呼び出しを止める場合の節ができた**（`hooks`・`hooks-guide`。詳細はハイライト 2 参照）
-- **MCP のツール名に書くサーバー名の綴り方が載った**（`permissions`・`agent-sdk/mcp`・`agent-sdk/custom-tools`・`agent-sdk/hooks`・`errors`・`sub-agents`。詳細はハイライト 3 参照）
-- **bypass の同意がユーザー設定にないときのセッションの始まり方が明記された**（`permission-modes`・`agent-view`・`errors`。詳細はハイライト 5 参照）
-- **フックの非ブロッキングエラーの説明が「失敗が操作を止めるフック」を除く形に改められ、`UserPromptSubmit` の入力でスキルのコマンドが展開前の行のまま渡ると明記された**（`hooks`。詳細は大幅更新 1 参照）
-- **`/sandbox` が `Sandbox settings not changed` と出したときの対処が載った**（`sandboxing` の「Troubleshooting」の新しい h3）。`/sandbox` のパネルで選んだ内容をプロジェクトの `.claude/settings.local.json` に保存できなかったことを示し、括弧の中の理由が `EACCES`・`EPERM`・`EROFS` なら、書き込めるプロジェクトのフォルダーで Claude Code を起動して `/sandbox` をやり直し、`Invalid JSON syntax in settings file` で始まるなら、そのファイルの JSON を直してやり直します — [日本語](https://code.claude.com/docs/ja/sandboxing#%2Fsandbox-prints-sandbox-settings-not-changed) / [English](https://code.claude.com/docs/en/sandboxing#%2Fsandbox-prints-sandbox-settings-not-changed)
-- **Claude が書く mod のフォルダーが保護されたパスに挙がった**（`permission-modes` の「Protected paths」・`plugins/mods/create`）。保護されたディレクトリの一覧に、Claude がユーザーのために書いた mod を保存する `~/.claude/dev-mods/`（または `CLAUDE_CONFIG_DIR` が指すディレクトリの `dev-mods/`）が加わりました。`plugins/mods/create` の Note も、`default` と `acceptEdits` のモードで mod のファイルごとに確認を求める理由を、「`~/.claude` が保護されたパスだから」から「mods のフォルダーが保護されたパスだから」に改めています — [日本語](https://code.claude.com/docs/ja/permission-modes#protected-paths) / [English](https://code.claude.com/docs/en/permission-modes#protected-paths)
-- **権限モードの変更のイベントで `trigger` が付かない場合の説明が改められた**（`monitoring-usage` の「Permission mode changed event」）。「SDK やブリッジからの遷移では付かない」から、「SDK が `setPermissionMode()` で権限モードを設定したときなど、一部の変更では付かない」になりました — [日本語](https://code.claude.com/docs/ja/monitoring-usage#permission-mode-changed-event) / [English](https://code.claude.com/docs/en/monitoring-usage#permission-mode-changed-event)
+- **v2.1.303（2026年10月18日）で「バグ修正と信頼性の改善」が行われた**。原文はこの 1 行だけで、個々の修正は挙げられていません（詳細はハイライト 1 参照）
 
 **その他**
 
-- **サンドボックスの `denyWrite` から `.env` の注意が外れた**（`agent-sdk/python` の `SandboxSettings`・`agent-sdk/typescript` の `SandboxFilesystemConfig`）。前回加わった「`.env` や `./.env` と書くと、サンドボックスの中のコマンドは作業ディレクトリの `.env` に書き込める」の文が外れ、Python は「サンドボックスが始まると、書いた各絶対パスへの書き込みをブロックする」で終わる形になりました。前回、日本語版にだけこの注意がなかったため英語版だけにリンクしていましたが、今回は日本語版と英語版が同じ内容です — [日本語](https://code.claude.com/docs/ja/agent-sdk/python#sandboxsettings) / [English](https://code.claude.com/docs/en/agent-sdk/python#sandboxsettings)
-- **見出しマップ**: 変わっていません。前回のマップにだけ載っていた 7 見出しは、上に書いたとおり今回の `llms-full.txt` に入りました
+- **見出しマップ**: 変わっていません。先頭の自動生成スタンプも 2026年10月17日 01時28分06秒 UTC のままです。マップに載っている見出しはすべて `llms-full.txt` にもあり、マップにだけ先に載っている見出しはありません
 
-**参考リンクについて**: 日本語版は、ハイライト・大幅更新・軽微な更新で取り上げたページのうち次の 13 ページ（`permissions`・`hooks`・`hooks-guide`・`permission-modes`・`sandboxing`・`sub-agents`・`errors`・`plugins/mods/events`・`agent-view`・`agent-sdk/permissions`・`agent-sdk/mcp`・`agent-sdk/python`・`monitoring-usage`）を取得し、該当する節があるかと今回の内容（新しい節や書き換えた文）になっているかを確かめました。今回も日本語版の追従が早く、新しい 7 つの見出しを含め、確かめた節はすべてすでに今回の内容でした。取得して確かめていないページ（`agent-sdk/typescript`・`agent-sdk/custom-tools`・`agent-sdk/hooks`・`plugins/mods/create`）にはリンクを付けていません。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
+**参考リンクについて**: 今回本文が変わったのは changelog だけで、対応する通常ページの変更がないため、参考リンクは付けていません。そのため、日本語版のページを取得して確かめる対象もありませんでした。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
 
 ## 新着情報
 
@@ -73,11 +46,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-16.md](./archives/latest/2026-10-16.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-16.md](./archives/latest-detail/2026-10-16.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-17.md](./archives/latest/2026-10-17.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-17.md](./archives/latest-detail/2026-10-17.md)
 
 <!--
-base_commit: 954ed4f3b5d84b7a8a63fa77f4b496af355f42d6
-head_commit: df8be8b99ca6342f63f7c7b52da55b4609b1c128
-generated_at_full: 2026-10-18T15:08:12+09:00
+base_commit: df8be8b99ca6342f63f7c7b52da55b4609b1c128
+head_commit: 89bfb93ab0ab2422ef0e14b2b39a18af1326a84c
+generated_at_full: 2026-10-19T15:05:23+09:00
 -->
