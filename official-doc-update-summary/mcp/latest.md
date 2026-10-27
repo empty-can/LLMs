@@ -1,25 +1,25 @@
 ---
-対象期間: 2026年10月20日 〜 2026年10月23日
-作成日: 2026-10-23
+対象期間: 2026年10月23日 〜 2026年10月26日
+作成日: 2026-10-26
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の差分は本文 `llms-full.txt` の追加 64 行・削除 6 行だけで、索引 `llms.txt` には変更がありません。変更のあった 11 ページのうち 8 ページは画像の直後に説明文（キャプション）が入ったもの、残る 3 ページは Peter Alexander の GitHub アカウントの表記が変わったものです。
+今回の対象期間の差分は本文 `llms-full.txt` の追加 7 行・削除 1 行だけで、索引 `llms.txt` には変更がありません。変更のあったページは File Uploads Charter と Working and Interest Groups の 2 件で、どちらもコミュニティの運営に関する文書です。
 
 主要なものを以下に挙げます。
 
-1. Inspector の 6 ページの画像 24 枚と、MCP Apps の 2 ページの画像 5 枚の直後に、キャプションの文が入った。Inspector の画像は代替テキストが空だったため、何を示す画面かが本文から読めるようになった。MCP Apps の 5 件のうち 3 件は、既存の代替テキストと同じ文
-2. Skills Over MCP WG・Tasks and Events WG の憲章と Roadmap で、Peter Alexander の GitHub アカウントが `@pja-ant` から `@poita` に変わり、両憲章の Organization の列から Anthropic の表記が外れた。SEP 4 件の Author(s)・Sponsor の欄は `@pja-ant` のまま
+1. File Uploads WG の憲章で、JSON-RPC のメッセージに収まらないほど大きいファイルや、取得に認可が要るファイルをツールが返す方法が、副次的なスコープとして加わった。Out of Scope は小さなファイルの配送だけに狭まった
+2. Working and Interest Groups のページで、すべての WG・IG の会議が満たすべき要件に、自動の記録は Google Meet の公式の文字起こしだけとし、サードパーティの AI ノートテイカーや会議ボットは認めないという項目が加わった
 ```
 
 ## ハイライト
 
-1. [**画像 29 枚にキャプションが付き Inspector の画面の説明が読めるようになった**](./latest-detail.md#1-画像-29-枚にキャプションが付き-inspector-の画面の説明が読めるようになった):  
-  Inspector の 6 ページ（MCP Inspector・Authorization・Protocol eras・Recipes・TUI client・Web client）で、代替テキストが空の画像 24 枚の直後に、何を示す画面かを説明する文が入った。Protocol eras では legacy と modern の画面の違いや、各機能が画面にどう現れるかが書かれている。MCP Apps の 2 ページ（Build an MCP App・MCP Apps）でも画像 5 枚にキャプションが付いたが、うち 3 件は既存の代替テキストと同じ文。
-2. [**憲章と Roadmap で Peter Alexander の GitHub アカウントの表記が変わった**](./latest-detail.md#2-憲章と-roadmap-で-peter-alexander-の-github-アカウントの表記が変わった):  
-  Skills Over MCP WG と Tasks and Events WG の憲章の Leadership・Membership の表、Roadmap の優先領域 2 つの Core Maintainers の行で、Peter Alexander の GitHub アカウントが `@pja-ant` から `@poita` に変わった。両憲章では Organization の列も「Anthropic / Core Maintainer」が「Core Maintainer」に、「Anthropic」が「-」になった。SEP 4 件の Author(s)・Sponsor の欄は `@pja-ant` のまま据え置かれている。
+1. [**File Uploads WG の憲章にファイルのダウンロードが副次的なスコープとして加わった**](./latest-detail.md#1-file-uploads-wg-の憲章にファイルのダウンロードが副次的なスコープとして加わった):  
+  File Uploads WG の憲章の Mission Statement と In Scope に、JSON-RPC のメッセージに収まらないほど大きいファイルや、取得に認可が要るファイルを、ツールがどう返すかを扱う副次的な目標が加わった。アップロードの作業が優先される。Out of Scope は、サーバーからクライアントへのファイルの配送全般から、小さなファイルの配送だけに狭まった。
+2. [**WG と IG の会議の自動記録が Google Meet の公式文字起こしに限られた**](./latest-detail.md#2-wg-と-ig-の会議の自動記録が-google-meet-の公式文字起こしに限られた):  
+  Working and Interest Groups の Meeting Requirements で、すべての会議が満たすべき要件が 4 項目から 5 項目になった。加わったのは、Google Meet の公式の文字起こしを会議の唯一の自動の記録とし、サードパーティの AI ノートテイカーや会議ボットは Code of Conduct に従い認めない、という項目。
 
 ## 新規追加されたページ
 
@@ -27,36 +27,27 @@
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。差分が出た 11 ページで最も大きいのは Protocol eras の追加 22 行（キャプション 11 件と区切りの空行）で、いずれも「軽微な更新」で扱います。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。差分が出た 2 ページで大きいほうは File Uploads Charter の追加 6 行・削除 1 行で、いずれも「軽微な更新」で扱います。
 
 ## 軽微な更新
 
-今回差分が出たファイルは `llms-full.txt` の 1 件のみで、変更のあったページは次の 11 件です。
+今回差分が出たファイルは `llms-full.txt` の 1 件のみで、変更のあったページは次の 2 件です。
 
 **機能改善**
 
-- Protocol eras の画像 11 枚の直後にキャプションを追加。Logging・Tasks などの節で、legacy と modern の画面の違いを説明している（詳細はハイライト 1 参照） — [Protocol eras](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras#logging)
-- Web client の各節の画像 8 枚の直後にキャプションを追加（詳細はハイライト 1 参照） — [Web client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#the-tab-bar)
-- TUI client のページ冒頭と Authorizing an HTTP server の節の画像 2 枚の直後にキャプションを追加（詳細はハイライト 1 参照） — [TUI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui#authorizing-an-http-server)
-- MCP Inspector のページ冒頭の画像 1 枚の直後にキャプションを追加（詳細はハイライト 1 参照） — [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector)
-- Authorization の The flow, end to end の節の画像 1 枚の直後にキャプションを追加（詳細はハイライト 1 参照） — [Authorization](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization#the-flow-end-to-end)
-- Recipes の Importing an existing client config の節の画像 1 枚の直後にキャプションを追加（詳細はハイライト 1 参照） — [Recipes](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes#importing-an-existing-client-config)
-- Build an MCP App の画像 4 枚の直後にキャプションを追加。うち 3 件は既存の代替テキストと同じ文（詳細はハイライト 1 参照） — [Build an MCP App](https://modelcontextprotocol.io/extensions/apps/build#using-an-ai-coding-agent)
-- MCP Apps のページ冒頭の Excalidraw の画像の直後に、代替テキストとは別のキャプションを追加（詳細はハイライト 1 参照） — [MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview)
+- File Uploads Charter の Mission Statement と In Scope に、大きなファイルや取得に認可が要るファイルをツールが返す方法を副次的な項目として追加し、Out of Scope を小さなファイルの配送に限定（詳細はハイライト 1 参照） — [File Uploads Charter](https://modelcontextprotocol.io/community/working-groups/file-uploads#in-scope)
 
 **その他**
 
-- Skills Over MCP WG の憲章の Leadership と Membership の表で、Peter Alexander の GitHub アカウントを `@pja-ant` から `@poita` に、Organization を「Anthropic / Core Maintainer」から「Core Maintainer」に変更（詳細はハイライト 2 参照） — [Skills Over MCP Charter](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#leadership)
-- Tasks and Events WG の憲章の Leadership と Membership の表で、Peter Alexander の GitHub アカウントを `@pja-ant` から `@poita` に、Organization を「Anthropic」から「-」に変更（詳細はハイライト 2 参照） — [Tasks and Events Charter](https://modelcontextprotocol.io/community/working-groups/tasks-events#leadership)
-- Roadmap の優先領域「1. Agentic Messaging Primitives」と「4. Improved Primitives」の Core Maintainers の行で、Peter Alexander のリンク先を `https://github.com/pja-ant` から `https://github.com/poita` に変更（詳細はハイライト 2 参照） — [Roadmap](https://modelcontextprotocol.io/development/roadmap#1-agentic-messaging-primitives)
+- Working and Interest Groups の Meeting Requirements に、Google Meet の公式の文字起こしを唯一の自動の記録とし、サードパーティの AI ノートテイカーや会議ボットを認めない要件を追加（詳細はハイライト 2 参照） — [Working and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#meeting-requirements)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-20.md](./archives/latest/2026-10-20.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-20.md](./archives/latest-detail/2026-10-20.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-23.md](./archives/latest/2026-10-23.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-23.md](./archives/latest-detail/2026-10-23.md)
 
 <!--
-base_commit: 9a810fc542230f7d1d5e0e958b239a460a6d260f
-head_commit: 5536db396725852afccd11c0a05e205b631b83fa
-generated_at_full: 2026-10-24T15:54:14+09:00
+base_commit: 5536db396725852afccd11c0a05e205b631b83fa
+head_commit: f43c40d31d95ea8ce1ef817f41d68a409f4e53f6
+generated_at_full: 2026-10-27T15:24:21+09:00
 -->
