@@ -1,85 +1,120 @@
 ---
-対象期間: 2026年10月23日 〜 2026年10月26日
-作成日: 2026-10-26
+対象期間: 2026年10月26日 〜 2026年10月27日
+作成日: 2026-10-27
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の差分は本文 `llms-full.txt` の追加 7 行・削除 1 行だけで、索引 `llms.txt` には変更がありません。変更のあったページは File Uploads Charter と Working and Interest Groups の 2 件で、どちらもコミュニティの運営に関する文書です。
+今回の対象期間の取り込みは 1 回で、新規ページが 1 件（SEP-3398: Release Cycle Updates）、既存ページの小さな変更が 2 件ありました。中心は、仕様のリリースを年 2 回の定期サイクルにする Process SEP の追加です。
 
 主要なものを以下に挙げます。
 
-1. File Uploads WG の憲章で、JSON-RPC のメッセージに収まらないほど大きいファイルや、取得に認可が要るファイルをツールが返す方法が、副次的なスコープとして加わった。Out of Scope は小さなファイルの配送だけに狭まった
-2. Working and Interest Groups のページで、すべての WG・IG の会議が満たすべき要件に、自動の記録は Google Meet の公式の文字起こしだけとし、サードパーティの AI ノートテイカーや会議ボットは認めないという項目が加わった
+1. SEP-3398（Release Cycle Updates）が Accepted の状態で加わった。仕様のリリースを原則 3 月と 9 月の最終火曜日の年 2 回とし、8 か月のサイクルの中にソフトフリーズ・SDK ベータ・ハードフリーズを置く。2026年12月を目標としていたリリースは 2027年03月30日 へ移すことを提案している
+2. 同じ SEP-3398 は、SEP が WG か Core Maintainer グループのスポンサーを得て公開の審査キューに入り、7 日間の記録投票で有権者全体の過半数の賛成を得て採択される手順を定めている
+3. Extension Support Matrix の Support matrix に Tasks 拡張の列が加わった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**File Uploads WG の憲章にファイルのダウンロードが副次的なスコープとして加わった**](#1-file-uploads-wg-の憲章にファイルのダウンロードが副次的なスコープとして加わった):  
-  File Uploads WG の憲章の Mission Statement と In Scope に、JSON-RPC のメッセージに収まらないほど大きいファイルや、取得に認可が要るファイルを、ツールがどう返すかを扱う副次的な目標が加わった。アップロードの作業が優先される。Out of Scope は、サーバーからクライアントへのファイルの配送全般から、小さなファイルの配送だけに狭まった。
-2. [**WG と IG の会議の自動記録が Google Meet の公式文字起こしに限られた**](#2-wg-と-ig-の会議の自動記録が-google-meet-の公式文字起こしに限られた):  
-  Working and Interest Groups の Meeting Requirements で、すべての会議が満たすべき要件が 4 項目から 5 項目になった。加わったのは、Google Meet の公式の文字起こしを会議の唯一の自動の記録とし、サードパーティの AI ノートテイカーや会議ボットは Code of Conduct に従い認めない、という項目。
+1. [**仕様のリリースを 3 月と 9 月の年 2 回にする SEP-3398 が Accepted になった**](#1-仕様のリリースを-3-月と-9-月の年-2-回にする-sep-3398-が-accepted-になった):  
+  Process SEP の SEP-3398（Release Cycle Updates）が新規ページとして加わり、SEP の索引にも Accepted の 1 件として載った。仕様のリリースを原則 3 月と 9 月の最終火曜日に置き、リリースごとに 8 か月のサイクル（計画 2 か月・Core Maintainer の審査期間・安定化）を回す。リリースに入る SEP はソフトフリーズまでに Final でマージ済みであることが求められ、間に合わない提案は後のサイクルへ回してリリース日は動かさない。2026年12月を目標としていたリリースは 2027年03月30日 へ移すことを提案している。
+2. [**SEP-3398 は SEP の審査にスポンサーと 7 日間の記録投票を求める**](#2-sep-3398-は-sep-の審査にスポンサーと-7-日間の記録投票を求める):  
+  SEP は formal review の前に WG か Core Maintainer グループのスポンサーを得て、公開の SEP 審査キューに入る。審査は Core Maintainer の定例会議で行い、発表の後に 7 日間の記録投票を開く。採択には、投票開始時点の Core Maintainer グループ全体の過半数の賛成が要り、棄権や不在は賛成に数えない。
+3. [**Extension Support Matrix に Tasks 列が加わった**](#3-extension-support-matrix-に-tasks-列が加わった):  
+  Extension Support Matrix の Support matrix の表に、Tasks 拡張の列が 5 列目として加わった。ただし表のセルは Partial のリンクを除いてすべて空で、どのクライアントが Tasks に対応しているかは `llms-full.txt` からは読み取れない。
 <!-- light:highlight-list:end -->
 
-## 1. File Uploads WG の憲章にファイルのダウンロードが副次的なスコープとして加わった
+## 1. 仕様のリリースを 3 月と 9 月の年 2 回にする SEP-3398 が Accepted になった
 
-今回の差分は本文 `llms-full.txt` だけで、追加 7 行・削除 1 行という内訳です。索引 `llms.txt` には 1 行の変更もなく、`llms-full.txt` の総行数は 45,127 行から 45,133 行になりました。収録ページ数は 157 件（`examples` が 2 回収録されているため、URL としては 156 件）のままです。対象期間中には取り込みが 3 回ありましたが、MCP 側の入力が変わったのは最後の 1 回だけです。変更のうち追加 6 行・削除 1 行が、File Uploads Charter のものです。
+今回の取り込みは 1 回で、差分は索引 `llms.txt` の追加 1 行と、本文 `llms-full.txt` の追加 293 行・削除 16 行です。`llms-full.txt` の総行数は 45,133 行から 45,410 行に、収録ページ数は 157 件から 158 件（`examples` が 2 回収録されているため、URL としては 156 件から 157 件）に、`llms.txt` のエントリ数は 362 件から 363 件になりました。追加行の大半（275 行）は新規ページの SEP-3398 で、残りは SEP の索引ページ（追加 2 行）と Extension Support Matrix（16 行の書き換え）です。
 
-**スコープにファイルのダウンロードが加わりました。** File Uploads WG は、ツールや elicitation のリクエストがファイルの入力を宣言し、ホストがネイティブのファイルピッカーを表示して、ユーザーが選んだファイルの内容をサーバーに渡せるようにする仕組みを定める WG です（SEP-2356 を軸にしています）。今回、Mission Statement の末尾に、副次的な目標として「JSON-RPC のメッセージには大きすぎるファイルや、取得に認可が要るファイルを、ツールがどう返すか」を扱うという 1 文が加わりました。In Scope にも同じ内容の項目「File Downloads (secondary)」が Specification Work と Reference Implementations の間に入り、アップロードの作業が優先される（Upload work takes priority）と明記されています。
+**SEP-3398 は、MCP の仕様リリースに予測できる周期を与える Process SEP です。** 作成は 2026年09月17日、Accepted は 2026年10月14日 で、著者とスポンサーはいずれも Kurtis Van Gent 氏（[@kurtisvg](https://github.com/kurtisvg)、スポンサーは Core Maintainers を代表して）です。動機として、現行の SEP ガイドラインはスポンサー・審査・採択・Final 化を定めているものの、それらを定期的なリリースの暦に結び付けていないこと、SDK Tiering System は仕様リリースの前に Tier 1 の対応を求めながら、その期限をリリースごとに取り決めていることが挙げられています。MCPCon Europe での直近の Core Maintainer Day で Core Maintainers がまとめたプロセスを正式化するものだと説明されています。
 
-**Out of Scope は小さなファイルの配送に絞られました。** これまでの Out of Scope の項目は「サーバーからクライアントへのファイルの配送。Resources と `BlobResourceContents` で既に扱われている」で、サーバーからクライアントへの方向は丸ごと対象外でした。今回これが「サーバーからクライアントへの小さなファイルの配送。Resources と `BlobResourceContents` が既に扱っている」に書き換わり、対象外は小さなファイルに限られました。In Scope に入った副次的な項目と対になる書き換えです。transport の層やセッションのモデルの変更が対象外であることは変わっていません。
+**リリースは原則 3 月と 9 月の最終火曜日で、各リリースは 8 か月のサイクルを持ちます。** 正確な日付は、サイクルごとに公開するカレンダーでリリースマネージャーが確定します。最初の 2 か月が計画にあてられ、最後の 2 か月は次のリリースの計画と重なります。マイルストーンはリリースまでの月数で表されています。
 
-**変わっていない部分もあります。** Leadership（Lead は Den Delimarsky）・Membership・Active Work Items・Success Criteria は変わっておらず、Active Work Items にダウンロードに関する項目は加わっていません。Out of Scope の後ろにある、streaming・chunked transfer・presigned upload URL などの方式を設計の中で検討してよいとする段落も、以前からあるものです。憲章の Changelog には、2026年10月21日 付で「Add file downloads to scope as a secondary item」の行が加わりました。ただし `llms-full.txt` にこの変更が現れたのは対象期間中の 3 回の取り込みのうち最後の 1 回で、前回サマリの時点（head `5536db3`）の `llms-full.txt` にはまだ含まれていませんでした。
+| リリースまで | マイルストーン | 内容 |
+|---|---|---|
+| 8 か月 | 計画開始 | ロードマップを提案し、メンテナーと WG の意見を集める |
+| 6 か月 | Core Maintainer の審査期間が始まる | 優先事項を公開し、予定を組んだ SEP の審査を始める |
+| 2.5 か月 | ソフトフリーズ | 審査を締め切り、範囲を Final でマージ済みの SEP に固定する |
+| 2 か月 | 次サイクルの計画開始 | 次のリリースの計画を始める |
+| 1.5 か月 | SDK ベータ | Tier 1 SDK がエコシステムでの試験用にベータを公開する |
+| 1 か月 | ハードフリーズ | 仕様の変更を緊急のものに限る |
+| 0 か月 | リリース | 仕様・リリースノート・準備状況の案内を公開する |
 
-- [File Uploads Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/file-uploads#in-scope)
+**フリーズの規則は厳格です。** ソフトフリーズの時点で、リリースに入る SEP はすべて Final になり、変更がマージされていなければなりません。仕様本文、該当するスキーマの変更、changelog の項目、完成した参照実装、SEP-2484 が求める適合テストまでが含まれ、Accepted だけでは締め切りを満たしません。その後ハードフリーズまでは、凍結した範囲の中のバグ修正・磨き込み・明確化だけが認められます。間に合わなかった Accepted の提案は Accepted のまま後のリリースで追跡され、リリース日は未完の提案に合わせて動かしません。ハードフリーズ以降は、凍結した仕様へのあらゆる変更に Core Maintainer 全体の投票が必要で、投票にかけられるのは重大なセキュリティ脆弱性と、リリースを止めるほどの正しさや相互運用性の欠陥に対処する変更だけです。
 
-## 2. WG と IG の会議の自動記録が Google Meet の公式文字起こしに限られた
+**SDK とリリースマネージャーの役割も定められました。** Tier 1 SDK はリリースの 1.5 か月前に凍結範囲に対応したベータを公開し、クライアントやサーバーの開発者にはハードフリーズまで半月の報告期間が与えられます。この節目は実験的な機能や拡張を Tier 1 の必須にするものではなく、個々の SDK の遅れで仕様の公開が延期されることもありません。Tier 1 SDK は仕様の公開より前に安定版で対応し、プロトコルのバージョンは日付による形式のままです。各リリースには正副 2 名のリリースマネージャーが付きます。Maintainers の自薦から、適格な Core Maintainer 全体の過半数の賛成で選ばれ、副を 1 サイクル務めた人が次のサイクルで正を務めます。
 
-残る 1 行の追加は、Working and Interest Groups のページの Governance 配下にある Meeting Requirements の節です。このページは、MCP の Working Group（WG）と Interest Group（IG）に共通する運営のルールを定めたものです。Meeting Requirements の節では、会議の頻度・形式・時間は Lead がグループの状況に応じて決めるとしたうえで、形式や頻度にかかわらずすべての会議が満たすべき要件を箇条書きで挙げています。
+**移行の計画も含まれています。** 2026年12月を目標としていたリリースを、3 月の最終火曜日である 2027年03月30日 へ移すことを提案しており、移行カレンダーで確定することが前提です。直近の仕様リリースは 2026年07月28日 で、最初のサイクルは 2026年08月に済ませた計画を使います。このプロセスの採用から 2 週間以内に Core Maintainers が最初の正副リリースマネージャーを選び、そのマネージャーが移行カレンダーと審査会議、フリーズ・ベータ・リリースの正確な期限を公開します。2027年09月のリリースの計画は 2027年01月下旬に、2028年03月のリリースの計画は 2027年07月下旬に始まります。
 
-これまでの要件は次の 4 項目でした。コミュニティの参加者全員に開かれていること（非公開の会議や組織内部の会議にしない）、少なくとも 7 日前に meet.modelcontextprotocol.io で公開すること、議題を公開し GitHub Discussions の Meeting Notes カテゴリに Discussion として載せること、48 時間以内に同じ Discussion にメモを公開すること、です。今回、5 項目目として「Google Meet の公式の文字起こしを、会議の唯一の自動の記録として使う。サードパーティの AI ノートテイカーや会議ボットは、Code of Conduct（`CODE_OF_CONDUCT.md` の `#community-meetings` の節）に従い認めない」が加わりました。
+**ただし、Status は Accepted で、Final ではありません。** SEP-3398 によると、Process SEP と Informational SEP は採択されたうえで実装の要件を満たすと効力を持ちます。SEP-3398 の Reference Implementation には、Final までに必要な作業として、SEP ガイドラインと WG のガイダンスの更新、リリースサイクルの文書と最初のカレンダー（UTC の正確な期限付き）の公開、公開の SEP 審査キューの設置などが挙がっています。また SEP-3398 自身は、このプロセスの採用前に有効だったプロセスのもとで審議されるとされています。今回の差分で変わったのはこの SEP を含む 3 ページだけで、SEP Guidelines・Roadmap・SDK Tiering System などの既存ページは変わっていません。プロトコルのメッセージやスキーマには変更がないと Backward Compatibility の節に明記されています。
 
-同じ Meeting Requirements の一覧は、SEP-2149（MCP Group Governance and Charter Template）の「1.6 Meeting Requirements」にもありますが、こちらは 4 項目のまま据え置かれています。SEP-2149 は Final の状態で、採択時点の設計を記録として残すものと冒頭に注記されています。
+SEP の索引ページ（Specification Enhancement Proposals (SEPs)）では、これまで「Final: 43」だけだった Summary に「Accepted: 1」の行が加わり、All SEPs の表の先頭に SEP-3398 の行（Release Cycle Updates・Accepted・Process・作成 2026年09月17日）が入りました。
 
-- [Working and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#meeting-requirements)
+- [SEP-3398: Release Cycle Updates - MCP Docs](https://modelcontextprotocol.io/seps/3398-release-cycle-updates#release-cadence-overview)
+
+## 2. SEP-3398 は SEP の審査にスポンサーと 7 日間の記録投票を求める
+
+SEP-3398 は、リリースの暦と並んで、SEP が審査されて採択されるまでの手順も定めています。
+
+**formal review の前にスポンサーが要ります。** スポンサーの道は 2 つあります。WG がスポンサーになる場合は、誰でも読める WG 指定のリポジトリかフォークで提案を練り、既存の WG の意思決定プロセスで承認を得たうえで、WG の Lead が決定と未解決の懸念を記録して、準備のできた SEP を [SEP 審査キュー](https://voting.modelcontextprotocol.io/p/seps)に出します。Core Maintainer グループがスポンサーになる場合は、Core Maintainers が合意して代表の Core Maintainer を指名し、その人が関係する WG に相談したうえで同じキューに出します。この場合、別途 WG の承認は要りません。どちらの道でも、formal review のためにキューへ出す前に、MCP の本体リポジトリに正規の SEP PR が必要です（番号は SEP-1850 に従い、その PR から決まります）。
+
+**審査キューは公開され、優先順位が決まっています。** キューを管理するのはリリースマネージャーです。議題には、準備のできた formal review、次に pre-review の順で入れ、それぞれの中ではロードマップに沿う提案を先にし、その次は準備のできた日付が古い順に並べます。pre-review は任意で、方向性や依存関係を早めに話し合うためのものです。採択を保証したり、リリースの範囲を確保したりするものではありません。Core Maintainer の審査期間（リリースの 6 か月前からソフトフリーズまで）は Standards Track・Extensions Track・Process・Informational のすべての種類の SEP に適用され、キューへの提出は 1 年中できます。formal review は Core Maintainer の定例会議で行い、会議の 2 週間前に議題を公開し、前の週に非同期でコメントを集め、会議で発表し、発表の後に記録投票を開く、という流れです。
+
+**採択の条件は、有権者全体の過半数です。** 発表の後、名前の挙がったメンテナーのスポンサーが、メンテナーの Discord サーバーで 7 日間（暦日）の記録投票を開きます。有権者は、投票開始の時点の Core Maintainer グループ（Lead Maintainers を含み、emeritus のメンバーを除く）です。採択には有権者全体の過半数の賛成が要り、棄権や不在は賛成に数えず、会議の出席者の過半数だけでは足りません。過半数が反対すれば却下となり、どちらにも届かなければ修正や後の審査に戻ります。投票の期間中に提案を実質的に変えた場合は、それまでの票で採択とはせず、審査に差し戻します。
+
+**採択の後と既存の提案の扱い**も書かれています。SDK のメンテナーは、SEP が採択されたらすぐに実装を始めることが求められますが、SDK の実装は SEP が Final になる条件ではありません。既存の SEP PR は番号・議論・決定を保ったまま有効で、次の formal review までにスポンサーを得てキューに入ります。既に Accepted の提案は採択を保ちます。SEP-3398 は SEP-1850 のうちスポンサーと予定の組み方の部分を更新するもので、正規の PR・PR に基づく番号付け・スポンサーによる状態管理・既存の Final 化の要件は保たれると説明されています。
+
+- [SEP-3398: Release Cycle Updates - MCP Docs](https://modelcontextprotocol.io/seps/3398-release-cycle-updates#sponsorship-and-submission)
+
+## 3. Extension Support Matrix に Tasks 列が加わった
+
+Extension Support Matrix は、どの MCP クライアントがどの公式拡張に対応しているかをまとめたページです。今回、Support matrix の表に、MCP Apps・OAuth Client Credentials・Enterprise Auth・Skills に続く 5 列目として、Tasks の列（[Tasks](https://modelcontextprotocol.io/extensions/tasks/overview) のページへのリンク付き）が加わりました。見出しの行と区切りの行に列が加わり、14 クライアントの各行にもセルが 1 つずつ増えています（16 行の書き換え）。
+
+表のセルは、Skills 列にある 3 件の Partial のリンク（ChatGPT・fast-agent・MCP Inspector）を除いてすべて空です。このため、Tasks 列を含め、どのクライアントがどの拡張に対応しているかは `llms-full.txt` からは読み取れません。また、同じページの上部にある Extension overview の表（拡張ごとの識別子と説明）は 4 件のままで、Tasks の行は加わっていません。
+
+- [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回の対象期間に新たに追加されたページはありません。索引 `llms.txt` に変更はなく、索引側のエントリ数（362 件）と本文 `llms-full.txt` の収録ページ数（157 件）はどちらも前回と同じです。
+- [**SEP-3398: Release Cycle Updates**](#1-仕様のリリースを-3-月と-9-月の年-2-回にする-sep-3398-が-accepted-になった) ([MCP Docs](https://modelcontextprotocol.io/seps/3398-release-cycle-updates)):  
+  仕様のリリースを 3 月と 9 月の年 2 回とし、8 か月のサイクル・フリーズ・SEP のスポンサーと審査と投票の手順を定める Process SEP（Accepted）。索引 `llms.txt` にもエントリが加わった（詳細はハイライト 1・2 参照）。
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。差分が出た 2 ページで大きいほうは File Uploads Charter の追加 6 行・削除 1 行で、いずれも「軽微な更新」で扱います。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページで差分が最も大きいのは Extension Support Matrix の 16 行の書き換えで、「軽微な更新」で扱います。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms-full.txt` の 1 件のみで、変更のあったページは次の 2 件です。
+今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページのほかに次の変更がありました。
 
 **機能改善**
 
-- File Uploads Charter の Mission Statement と In Scope に、大きなファイルや取得に認可が要るファイルをツールが返す方法を副次的な項目として追加し、Out of Scope を小さなファイルの配送に限定（詳細はハイライト 1 参照） — [File Uploads Charter](https://modelcontextprotocol.io/community/working-groups/file-uploads#in-scope)
+- Extension Support Matrix の Support matrix に Tasks 拡張の列を追加（詳細はハイライト 3 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
 
 **その他**
 
-- Working and Interest Groups の Meeting Requirements に、Google Meet の公式の文字起こしを唯一の自動の記録とし、サードパーティの AI ノートテイカーや会議ボットを認めない要件を追加（詳細はハイライト 2 参照） — [Working and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#meeting-requirements)
+- Specification Enhancement Proposals (SEPs) の索引ページで、Summary に「Accepted: 1」の行を追加し、All SEPs の表の先頭に SEP-3398 の行を追加（詳細はハイライト 1 参照） — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index#all-seps)
+- 索引 `llms.txt` の SEP の一覧で、SEP-2663: Tasks Extension の次に SEP-3398: Release Cycle Updates のエントリを追加 — [SEP-3398: Release Cycle Updates](https://modelcontextprotocol.io/seps/3398-release-cycle-updates)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-23.md](./archives/latest/2026-10-23.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-23.md](./archives/latest-detail/2026-10-23.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-26.md](./archives/latest/2026-10-26.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-26.md](./archives/latest-detail/2026-10-26.md)
 
 <!--
-base_commit: 5536db396725852afccd11c0a05e205b631b83fa
-head_commit: f43c40d31d95ea8ce1ef817f41d68a409f4e53f6
-generated_at_full: 2026-10-27T15:24:21+09:00
+base_commit: f43c40d31d95ea8ce1ef817f41d68a409f4e53f6
+head_commit: 86d4f217654bd239db958544d6a55b7e3eb8a3e7
+generated_at_full: 2026-10-28T15:34:18+09:00
 -->
