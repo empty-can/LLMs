@@ -1,57 +1,62 @@
 ---
-対象期間: 2026年10月27日 〜 2026年10月28日
-作成日: 2026-10-28
+対象期間: 2026年10月28日 〜 2026年10月29日
+作成日: 2026-10-29
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の取り込みは 1 回で、既存の 3 ページに変更がありました（うち 1 件は 50 行以上の大幅更新）。新規ページはありません。中心は、拡張機能の宣言を `2025-11-25` 以前のプロトコルバージョンでどう扱うかを Extensions Overview に追記したことです。
+今回の対象期間の取り込みは 1 回で、新規ページが 1 件（SEP-3392: Extension Lifecycle）、既存ページの変更が 3 件ありました（うち 1 件は 50 行以上の大幅更新）。中心は、拡張に成熟度の段階を設ける Process SEP が Final になり、Extensions Overview がそれに合わせて書き換えられたことです。
 
 主要なものを以下に挙げます。
 
-1. Extensions Overview の Negotiation に「Initialization-Based Versions」の節が加わり、`2025-11-25` 以前のバージョンでは `initialize` のやり取りの `capabilities.extensions` で拡張を宣言する方法が示された
-2. Extension Support Matrix の Support matrix に、Claude Code と Kiro Crew の 2 クライアントの行が加わった
-3. 仕様（2026-07-28 版）の Tools の Embedded Resources の JSON の例で、`annotations` の位置が `resource` の内側からコンテンツブロックの直下へ直された
+1. SEP-3392（Extension Lifecycle）が Final の状態で加わり、拡張に Experimental・Beta・Stable の 3 段階と、コア仕様への昇格の道筋が定められた。Extensions Overview にも「Extension Lifecycle」の節が新設された
+2. Extensions Overview の公式拡張の一覧に Stage の列が加わり、Auth の 2 件と MCP Apps が Stable、MCP Tasks と Skills over MCP が Beta とされた。Beta の Server Cards も一覧に加わった
+3. 破壊的変更をしても拡張の識別子は変えず、Beta では設定オブジェクトの `revision`、Stable ではコアプロトコルのリビジョンに対応した版で変更を扱う規則に改められた
+4. Creating Extensions の手順が 5 段階から 7 段階になり、Stable へ進むには 2 つ目の Extensions Track SEP と、相互運用する独立した 2 つの実装・適合シナリオが要るようになった
 ```
 
 ## ハイライト
 
-1. [**2025-11-25 以前のバージョンでの拡張の宣言方法が明文化された**](./latest-detail.md#1-2025-11-25-以前のバージョンでの拡張の宣言方法が明文化された):  
-  Extensions Overview の Negotiation に「Initialization-Based Versions」の節が加わった。拡張がプロトコルの正式な一部になったのは `2026-07-28` だが、それ以前のバージョンでも多くの SDK・クライアント・サーバーが `initialize` のやり取りで拡張を交渉していたとして、リクエストの `params.capabilities.extensions` とレスポンスの `result.capabilities.extensions` を使う方法を JSON の例付きで示している。この `extensions` フィールドは当該バージョンの公開スキーマには無く、対応は適合性の要件でもない。
-2. [**Extension Support Matrix に Claude Code と Kiro Crew が加わった**](./latest-detail.md#2-extension-support-matrix-に-claude-code-と-kiro-crew-が加わった):  
-  Support matrix の表に Claude Code（Claude Desktop の次）と Kiro Crew（PostHog Code の次）の行が加わり、掲載クライアントは 14 件から 16 件になった。ただし 2 行ともセルは空で、どの拡張に対応しているかは `llms-full.txt` からは読み取れない。
-3. [**Tools の Embedded Resources の例で annotations の位置が直された**](./latest-detail.md#3-tools-の-embedded-resources-の例で-annotations-の位置が直された):  
-  仕様（2026-07-28 版）の Tools ページで、Embedded Resources の JSON の例の `annotations` が `resource` オブジェクトの内側からコンテンツブロックの直下へ移った。同じ版の Schema Reference では `annotations` は `EmbeddedResource` のフィールドで、`resource` に入る `TextResourceContents` には無いため、例がスキーマの定義に揃ったことになる。
+1. [**拡張に 3 段階の成熟度を定める SEP-3392 が Final になった**](./latest-detail.md#1-拡張に-3-段階の成熟度を定める-sep-3392-が-final-になった):  
+  Process SEP の SEP-3392（Extension Lifecycle）が Final の状態で新規ページとして加わり、Extensions Overview にも「Extension Lifecycle」の節が新設された。拡張は Experimental から始まって必ず Beta を経て、Beta からは Stable になるか、Standards Track SEP でコア仕様に昇格する。段階は `ext-` リポジトリの中で仕様を置くディレクトリ（`specification/experimental/`・`specification/beta/`・`specification/stable/`）で示し、段階が変わっても拡張の識別子は変わらない。
+2. [**公式拡張の一覧に段階が付き Server Cards が加わった**](./latest-detail.md#2-公式拡張の一覧に段階が付き-server-cards-が加わった):  
+  Extensions Overview の Official Extension Repositories の表に Stage の列が加わり、OAuth Client Credentials・Enterprise-Managed Authorization・MCP Apps が Stable、MCP Tasks が「Beta, to Core」、Skills over MCP が「Beta, destination not yet stated」とされた。`ext-server-card` リポジトリの Server Cards（Beta）も新たに載った。分類は SEP-3392 の Transition の節に沿ったもの。
+3. [**破壊的変更でも拡張の識別子を変えない規則に改められた**](./latest-detail.md#3-破壊的変更でも拡張の識別子を変えない規則に改められた):  
+  Extensions Overview の Evolution の節が段階別に書き換えられた。これまでは破壊的変更が避けられないなら新しい識別子を使うとしていたが、今後は識別子を保ち、新しい識別子は 1 つのプロトコルのリビジョンの中で新旧の挙動を共存させる場合にだけ使う。Beta では設定オブジェクトの `revision` 文字列で食い違いを検出させ、Stable ではコアプロトコルのリビジョンに対応した版として公開し、公開した版は変えない。
+4. [**拡張を作る手順が 7 段階になり Stable には 2 つ目の SEP が要るようになった**](./latest-detail.md#4-拡張を作る手順が-7-段階になり-stable-には-2-つ目の-sep-が要るようになった):  
+  Extensions Overview の Creating Extensions の手順が、Prototype から Stabilize or promote までの 7 段階になった。Beta へは Extensions Track SEP の採択後に `specification/beta/` へ移す PR（Core Maintainer が承認）で入り、Stable へは 2 つ目の Extensions Track SEP と、相互運用する独立した 2 つの実装・適合シナリオが要る。コア仕様への昇格後の扱いを定める「Promotion to Core」の節も加わった。
 
 ## 新規追加されたページ
 
-今回の対象期間に新たに追加されたページはありません。索引 `llms.txt` に変更はなく、索引側のエントリ数（363 件）と本文 `llms-full.txt` の収録ページ数（158 件）はどちらも前回と同じです。
+- [**SEP-3392: Extension Lifecycle**](./latest-detail.md#1-sep-3392-extension-lifecycle) ([MCP Docs](https://modelcontextprotocol.io/seps/3392-extension-lifecycle)):  
+  拡張に Experimental・Beta・Stable の段階と、コア仕様への昇格の道筋を定める Process SEP（Final、作成 2026年09月25日）。索引 `llms.txt` にもエントリが加わった（詳細はハイライト 1〜4 参照）。
 
 ## 大幅に更新されたページ
 
-- [**Extensions Overview**](./latest-detail.md#1-extensions-overview) ([MCP Docs](https://modelcontextprotocol.io/extensions/overview#initialization-based-versions)):  
-  Negotiation に、`2025-11-25` 以前のバージョンで `initialize` を通じて拡張を宣言する方法を説明する「Initialization-Based Versions」の節と、そこへの案内文を追加した（追加 63 行・削除 0 行。詳細はハイライト 1 参照）。
+- [**Extensions Overview**](./latest-detail.md#1-extensions-overview) ([MCP Docs](https://modelcontextprotocol.io/extensions/overview#extension-lifecycle)):  
+  SEP-3392 に合わせて、Extension Lifecycle の節の新設、公式拡張の表への Stage の列の追加と Server Cards の掲載、Creating Extensions と Evolution の書き換え、Promotion to Core の節の新設を行った（追加 66 行・削除 33 行。詳細はハイライト 1〜4 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは `llms-full.txt` の 1 件のみで、Extensions Overview（大幅更新）のほかに、50 行未満の変更があったページは次の 2 件です。
+今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（SEP-3392）と大幅更新（Extensions Overview）のほかに、次の変更がありました。
 
 **機能改善**
 
-- Extension Support Matrix の Support matrix に Claude Code と Kiro Crew の行を追加。掲載クライアントは 14 件から 16 件になった（詳細はハイライト 2 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+- SEP Guidelines の SEP Types で、Extensions Track の説明に「採択された Extensions Track SEP は拡張を Beta へ移し、2 つ目の SEP が Stable へ移す」という記述を加え、案内先を Extensions Overview の Creating Extensions から Extension Lifecycle に変更 — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#sep-types)
 
-**バグ修正**
+**その他**
 
-- 仕様（2026-07-28 版）の Tools の Embedded Resources の JSON の例で、`annotations` を `resource` オブジェクトの内側からコンテンツブロックの直下へ移し、Schema Reference の `EmbeddedResource` の定義に揃えた（詳細はハイライト 3 参照） — [Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#embedded-resources)
+- Specification Enhancement Proposals (SEPs) の索引ページで、Summary の Final を 43 件から 44 件にし、All SEPs の表の 2 行目（SEP-3398 の次）に SEP-3392 の行（Extension Lifecycle・Final・Process・作成 2026年09月25日）を追加 — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index#all-seps)
+- 索引 `llms.txt` の SEP の一覧で、SEP-2663: Tasks Extension の次（SEP-3398: Release Cycle Updates の前）に SEP-3392: Extension Lifecycle のエントリを追加 — [SEP-3392: Extension Lifecycle](https://modelcontextprotocol.io/seps/3392-extension-lifecycle)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-27.md](./archives/latest/2026-10-27.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-27.md](./archives/latest-detail/2026-10-27.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-28.md](./archives/latest/2026-10-28.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-28.md](./archives/latest-detail/2026-10-28.md)
 
 <!--
-base_commit: 86d4f217654bd239db958544d6a55b7e3eb8a3e7
-head_commit: 7ff696fc9bf91ed3aa99a3749a2d4e451d873d85
-generated_at_full: 2026-10-29T15:21:28+09:00
+base_commit: 7ff696fc9bf91ed3aa99a3749a2d4e451d873d85
+head_commit: daf68aee10e1e23402b90d685734b8fa2df7beb5
+generated_at_full: 2026-10-30T15:31:23+09:00
 -->
