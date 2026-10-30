@@ -328,6 +328,7 @@
 - [SEP-2596: Specification Feature Lifecycle and Deprecation Policy](https://modelcontextprotocol.io/seps/2596-spec-feature-lifecycle-and-deprecation.md): Specification Feature Lifecycle and Deprecation Policy
 - [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension.md): Skills Extension
 - [SEP-2663: Tasks Extension](https://modelcontextprotocol.io/seps/2663-tasks-extension.md): Tasks Extension
+- [SEP-3392: Extension Lifecycle](https://modelcontextprotocol.io/seps/3392-extension-lifecycle.md): Extension Lifecycle
 - [SEP-3398: Release Cycle Updates](https://modelcontextprotocol.io/seps/3398-release-cycle-updates.md): Release Cycle Updates
 - [Contributing to MCP](https://modelcontextprotocol.io/community/contributing.md): How to contribute to the Model Context Protocol project
 - [Contributor Communication](https://modelcontextprotocol.io/community/communication.md): Communication strategy and framework for the Model Context Protocol community
