@@ -1,178 +1,207 @@
 ---
-対象期間: 2026年10月28日 〜 2026年10月29日
-作成日: 2026-10-29
+対象期間: 2026年10月29日 〜 2026年10月30日
+作成日: 2026-10-30
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、新規ページが 1 件（SEP-3392: Extension Lifecycle）、既存ページの変更が 3 件ありました（うち 1 件は 50 行以上の大幅更新）。中心は、拡張に成熟度の段階を設ける Process SEP が Final になり、Extensions Overview がそれに合わせて書き換えられたことです。
+今回の対象期間の取り込みは 1 回で、新規ページはなく、既存ページ 12 件に変更がありました（うち 2 件は 50 行以上の大幅更新）。中心は、Enterprise-Managed Authorization に対応製品の一覧が加わったことと、Filesystems Working Group の憲章が書き込み操作からファイルシステムの意味論全般へと対象を広げたことです。
 
 主要なものを以下に挙げます。
 
-1. SEP-3392（Extension Lifecycle）が Final の状態で加わり、拡張に Experimental・Beta・Stable の 3 段階と、コア仕様への昇格の道筋が定められた。Extensions Overview にも「Extension Lifecycle」の節が新設された
-2. Extensions Overview の公式拡張の一覧に Stage の列が加わり、Auth の 2 件と MCP Apps が Stable、MCP Tasks と Skills over MCP が Beta とされた。Beta の Server Cards も一覧に加わった
-3. 破壊的変更をしても拡張の識別子は変えず、Beta では設定オブジェクトの `revision`、Stable ではコアプロトコルのリビジョンに対応した版で変更を扱う規則に改められた
-4. Creating Extensions の手順が 5 段階から 7 段階になり、Stable へ進むには 2 つ目の Extensions Track SEP と、相互運用する独立した 2 つの実装・適合シナリオが要るようになった
+1. Enterprise-Managed Authorization に「Implementation support」の節が新設され、ID-JAG を発行する IdP と受け入れる認可サーバーについて、12 製品の対応状況（Available・Early access・Experimental）が一覧になった
+2. Filesystems Working Group の憲章が、Resources への書き込み操作から、範囲を絞った一覧・サーバー側の検索・読み取り・書き込み・型付きのエラーまでを含むファイルシステムの意味論全般へと対象を広げた
+3. OAuth Client Credentials の SDK 例が、資格情報を発行した認可サーバーの発行元（issuer）を固定する形になった。あわせて ext-auth の仕様へのリンクが `specification/stable/<name>/2026-07-28/` の版付きパスになった
+4. Build an MCP client のサンプルで、TypeScript と Kotlin がツール呼び出し後の応答のテキストブロックをすべて拾うようになり、Ruby は複数のツール結果を 1 つの user メッセージにまとめて返すようになった
+5. Example Servers の「Official integrations」「Community implementations」の節が「More servers」にまとまり、案内先が GitHub の servers リポジトリから MCP Registry に変わった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**拡張に 3 段階の成熟度を定める SEP-3392 が Final になった**](#1-拡張に-3-段階の成熟度を定める-sep-3392-が-final-になった):  
-  Process SEP の SEP-3392（Extension Lifecycle）が Final の状態で新規ページとして加わり、Extensions Overview にも「Extension Lifecycle」の節が新設された。拡張は Experimental から始まって必ず Beta を経て、Beta からは Stable になるか、Standards Track SEP でコア仕様に昇格する。段階は `ext-` リポジトリの中で仕様を置くディレクトリ（`specification/experimental/`・`specification/beta/`・`specification/stable/`）で示し、段階が変わっても拡張の識別子は変わらない。
-2. [**公式拡張の一覧に段階が付き Server Cards が加わった**](#2-公式拡張の一覧に段階が付き-server-cards-が加わった):  
-  Extensions Overview の Official Extension Repositories の表に Stage の列が加わり、OAuth Client Credentials・Enterprise-Managed Authorization・MCP Apps が Stable、MCP Tasks が「Beta, to Core」、Skills over MCP が「Beta, destination not yet stated」とされた。`ext-server-card` リポジトリの Server Cards（Beta）も新たに載った。分類は SEP-3392 の Transition の節に沿ったもの。
-3. [**破壊的変更でも拡張の識別子を変えない規則に改められた**](#3-破壊的変更でも拡張の識別子を変えない規則に改められた):  
-  Extensions Overview の Evolution の節が段階別に書き換えられた。これまでは破壊的変更が避けられないなら新しい識別子を使うとしていたが、今後は識別子を保ち、新しい識別子は 1 つのプロトコルのリビジョンの中で新旧の挙動を共存させる場合にだけ使う。Beta では設定オブジェクトの `revision` 文字列で食い違いを検出させ、Stable ではコアプロトコルのリビジョンに対応した版として公開し、公開した版は変えない。
-4. [**拡張を作る手順が 7 段階になり Stable には 2 つ目の SEP が要るようになった**](#4-拡張を作る手順が-7-段階になり-stable-には-2-つ目の-sep-が要るようになった):  
-  Extensions Overview の Creating Extensions の手順が、Prototype から Stabilize or promote までの 7 段階になった。Beta へは Extensions Track SEP の採択後に `specification/beta/` へ移す PR（Core Maintainer が承認）で入り、Stable へは 2 つ目の Extensions Track SEP と、相互運用する独立した 2 つの実装・適合シナリオが要る。コア仕様への昇格後の扱いを定める「Promotion to Core」の節も加わった。
+1. [**Enterprise-Managed Authorization に対応製品の一覧が加わった**](#1-enterprise-managed-authorization-に対応製品の一覧が加わった):  
+  Enterprise-Managed Authorization に「Implementation support」の節が新設された。ID-JAG を発行する企業の IdP と、それを受け入れてアクセストークンを返す MCP サーバーの認可サーバーという 2 つの役割について、Athenz・Auth0・Okta・Ping Identity など 12 製品の対応状況を、各ベンダー自身のリリース表記（Available・Early access・Experimental）で一覧にしている。ID-JAG を受け入れるサーバー側のフレームワークとして、Cloudflare の `workers-oauth-provider` と FastMCP も挙がった。
+2. [**Filesystems Working Group が対象をファイルシステムの意味論全般に広げた**](#2-filesystems-working-group-が対象をファイルシステムの意味論全般に広げた):  
+  Filesystems Charter の Mission Statement が「Resources を双方向にして書き戻せるようにする」から「Resources を一般的なファイルシステムの意味論にそろえる」に改められた。In Scope の仕様作業は 3 項目から 7 項目になり、範囲を絞った一覧とディレクトリの走査、サーバー側の検索、一括読み取りや `seek` を含む読み取りの意味論、型付きのエラーが加わった。成果物も「単一の SEP」から「1 つ以上の Extensions Track SEP」になった。
+3. [**OAuth Client Credentials の SDK 例が認可サーバーの発行元を固定するようになった**](#3-oauth-client-credentials-の-sdk-例が認可サーバーの発行元を固定するようになった):  
+  OAuth Client Credentials の SDK 例に、資格情報を発行した認可サーバーの発行元を固定し、MCP サーバーが別の認可サーバーを示しても資格情報を送らないようにする、という説明が加わった。TypeScript の例には `expectedIssuer`、Python の例には `issuer` が加わり、Python の `scopes` 引数は `scope` に改められた。あわせて ext-auth の仕様へのリンクが `specification/stable/<name>/2026-07-28/` の版付きパスになった。
+4. [**Build an MCP client のサンプルで応答とツール結果の扱いが改められた**](#4-build-an-mcp-client-のサンプルで応答とツール結果の扱いが改められた):  
+  Build an MCP client のサンプルコードで、TypeScript と Kotlin は、ツール呼び出し後の応答から先頭のブロックだけを取り出していた処理を、テキストブロックをすべて拾う処理に変えた。Ruby は、ツール呼び出しのたびに結果を別々の user メッセージで送っていた処理を、すべてのツール結果を 1 つの user メッセージにまとめて送る処理に書き換えた。
+5. [**Example Servers の外部サーバーの案内先が MCP Registry になった**](#5-example-servers-の外部サーバーの案内先が-mcp-registry-になった):  
+  Example Servers で、企業が保守するサーバーと、コミュニティが保守するサーバーを GitHub の servers リポジトリの各セクションへ案内していた 2 つの節が、「More servers」の 1 つの節にまとまり、案内先が MCP Registry（registry.modelcontextprotocol.io）になった。Claude での設定例からは GitHub サーバーの項目が、Additional resources からは servers リポジトリの Resources セクションへの案内が削除された。
 <!-- light:highlight-list:end -->
 
-## 1. 拡張に 3 段階の成熟度を定める SEP-3392 が Final になった
+## 1. Enterprise-Managed Authorization に対応製品の一覧が加わった
 
-今回の取り込みは 1 回で、差分は索引 `llms.txt` の追加 1 行と、本文 `llms-full.txt` の追加 368 行・削除 35 行です。`llms-full.txt` の総行数は 45,475 行から 45,808 行に、収録ページ数は 158 件から 159 件（`examples` が 2 回収録されているため、URL としては 157 件から 158 件）に、`llms.txt` のエントリ数は 363 件から 364 件になりました。追加行の大半（299 行）は新規ページの SEP-3392 で、残りは Extensions Overview（追加 66 行・削除 33 行）、SEP の索引ページ（追加 2 行・削除 1 行）、SEP Guidelines（1 行の書き換え）です。
+今回の取り込みは 1 回で、差分は本文 `llms-full.txt` の追加 145 行・削除 90 行だけです。索引 `llms.txt` は変わらず（エントリ数は 364 件のまま）、`llms-full.txt` の総行数は 45,808 行から 45,863 行になり、収録ページ数は 159 件（`examples` が 2 回収録されているため、URL としては 158 件）で変わっていません。差分のハンクをページに振り分けて数えると、変更のあったページは 12 件で、50 行以上の変更は Filesystems Charter（追加 42 行・削除 22 行）と Build an MCP client（追加 28 行・削除 23 行）の 2 件です。Enterprise-Managed Authorization は追加 44 行・削除 3 行で 50 行に届かないため分類上は軽微な更新ですが、今回最も大きな内容の追加なのでハイライトの先頭に置きます。
 
-**SEP-3392 は、MCP の拡張に成熟度の段階を与える Process SEP です。** 作成は 2026年09月25日、Status は Final で、著者とスポンサーはいずれも Peter Alexander 氏（[@pja-ant](https://github.com/pja-ant)）です。SEP-2133（Extensions）が定めた拡張のライフサイクルを更新するもので、拡張の交渉（negotiation）の仕組みは変えないと明記されています。
+**「Implementation support」の節が、Client support の節の後（Related resources の前）に新設されました。** 冒頭の NOTE は、この一覧は網羅的ではなく、文書化された対応だけを記録したものなので、製品が載っていないことや空欄のセルは、その役割に対応していないことを意味しない、と断っています。本文によると、このフローには MCP クライアントのほかに 2 つの製品が関わります。ID-JAG（Identity Assertion JWT Authorization Grant）を発行する企業の IdP と、それを受け入れてアクセストークンを返す MCP サーバーの認可サーバーで、1 つの製品が両方の役割を担うこともあります。表には、少なくとも一方の役割について公開ドキュメントがある製品を載せ、各ベンダー自身のリリース表記を使います。**Available** は先行リリースの表記がない本番リリース、**Early access** はプラン・環境・申請によって提供が限られるもの、**Experimental** はベンダーの先行リリースの表記です。ID-JAG は IETF の OAuth ワーキンググループが [draft-ietf-oauth-identity-assertion-authz-grant](https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/) で定めていますが、実装ごとに追っているドラフトの版が違うため、対象の版は各ベンダーのドキュメントで確かめるよう求めています。
 
-**段階は Experimental・Beta・Stable の 3 つです。** Extensions Overview に新設された「Extension Lifecycle」の節は、各段階を次の表で示しています。
+表の内容は次のとおりです（「—」は原文で空欄のセル）。
 
-| 段階 | プロトコルの変更 | 変更の承認者 | 入る条件 | 実装者が期待できること |
-|---|---|---|---|---|
-| Experimental | いつでも予告なしに何でも変えられる | Extension Maintainer | Extension Maintainer が追加する | 何もない。設計は変わることも、無くなることもある |
-| Beta | 何でも変えられるが、破壊的変更はまれとされる | Extension Maintainer | Extensions Track SEP | 実際の利用を歓迎する。破壊的変更は記録される |
-| Stable | 新しいコアプロトコルのリビジョンに合わせてのみ | Extension Maintainer | 2 つ目の Extensions Track SEP | プロトコルのリビジョンの中では挙動が固定される |
+| 製品 | ID-JAG の発行 | ID-JAG の受け入れ | 備考 |
+|---|---|---|---|
+| Athenz | Available | Available | オープンソース。ZTS がトークン交換で ID-JAG を発行し、JWT bearer grant で受け入れる |
+| Auth0 | — | Early access | Cross App Access for Resource Apps。Enterprise・B2B Pro・B2B Essential の各プランで early access。外部の OIDC や SAML のエンタープライズ接続から来た ID-JAG を検証する |
+| AuthPlane | — | Available | MCP 向けのセルフホスト型の認可サーバー。JWT bearer grant で受け入れ、v0.2.0 から既定で有効 |
+| Descope | Available | Available | Agentic Identity Hub がエージェント向けにトークン交換で発行する。MCP サーバーの認可サーバーとしては、テナントごとの信頼する発行元に照らして検証し、Descope のアクセストークンを返す |
+| Janssen Project | Available | Available | 2.2.0 以降。`identity_assertion_authz_grant` のフィーチャーフラグで既定は無効。ドラフトの revision 04 が対象 |
+| Keycloak | — | Experimental | 26.7.0 以降、`identity-assertion-jwt` のフィーチャーフラグで受け入れ側に対応。ガイドはドラフトの revision 01 が対象 |
+| Okta | Available | Available | Cross App Access（XAA）。発行は Identity Engine の組織向けの Okta SSO に含まれ、ユーザーごと・リソースアプリごとに月 250 件まで。それを超えるには Okta for AI Agents が要る。受け入れは、カスタム認可サーバーが Okta の発行した ID-JAG を、Okta for AI Agents とともに JWT bearer grant で受け入れる |
+| Ping Identity | Available | Available | PingFederate 13.1 以降。SP 接続でのトークン交換で発行し、OAuth assertion grant の IdP 接続で受け入れる |
+| Scalekit | — | Early access | Enterprise プラン。ワークスペースごとに、申請に応じて XAA を有効にする |
+| Stytch | — | Available | B2B プロジェクトの Connected Apps が、外部の従業員向け IdP の ID-JAG を JWT bearer grant で Stytch のアクセストークンに交換する |
+| ThunderID | Available | Available | LF Decentralized Trust のオープンソースの IAM プロジェクトで、1.0 以降。両方の役割を扱う Enterprise-Managed Authorization 専用のガイドがある |
+| WorkOS AuthKit | — | Early access | 環境ごとに、申請に応じて Cross App Access を有効にする。その後はサーバーのコードの変更が要らない。Standalone MCP Auth では使えない |
 
-拡張は Experimental から始まり、必ず Beta を経ます。Beta からは Stable になるか、Standards Track SEP によってコア仕様に昇格（promote）するかのどちらかで、Stable の拡張も後から昇格できます。Beta の拡張はそれぞれ行き先（Stable か Core か）を示し、行き先は Beta の間に変わってもかまいません。段階が変わっても拡張の識別子は変わりません。SEP-3392 本体の Stages の表は、これに Location の列と Core の行（場所は `specification/archived/<name>`、変更の承認者は Core Maintainers、入る条件は Standards Track SEP）を加えた形です。また SEP-3392 は、Core Maintainers が記録投票で免除した場合を除き、Beta を飛ばすことを禁じています（MUST NOT）。
+発行と受け入れの両方が Available なのは 6 製品（Athenz・Descope・Janssen Project・Okta・Ping Identity・ThunderID）です。表の後には、ID-JAG を受け入れるサーバー側のフレームワークとして、Cloudflare の [`workers-oauth-provider`](https://github.com/cloudflare/workers-oauth-provider)（0.7.0 以降、実験的な `enterpriseManagedAuthorization` オプション）と FastMCP 4.0 以降（ベータ）が挙がっています。また、要求側のアプリケーションも含むコミュニティの一覧として oauth.net の [Cross-App Access directory](https://oauth.net/cross-app-access/) を紹介し、MCP クライアントの対応状況は client matrix を見るよう案内しています。
 
-**段階はリポジトリ名ではなくディレクトリで表します。** 公式の拡張は `ext-<area>` リポジトリに置かれ、1 つのリポジトリに段階の異なる複数の拡張を置けます。段階は拡張の仕様を置くディレクトリ（`specification/experimental/`・`specification/beta/`・`specification/stable/`）で示し、コア仕様に昇格した拡張や終了した拡張は `specification/archived/` へ移ります。段階の変更はディレクトリ間の移動で、Extension Maintainer が（必要な SEP があればそれを添えて）PR を出し、Core Maintainer が承認します。SEP-3392 によると、これが拡張のリポジトリへの変更の中で Core Maintainer の承認を要する唯一のものです。
+同じページでは、ほかに 2 つの変更がありました。冒頭と Related resources にある仕様へのリンクが、`ext-auth` リポジトリの `specification/stable/enterprise-managed-authorization.mdx` から `specification/stable/enterprise-managed-authorization/2026-07-28/enterprise-managed-authorization.mdx` に変わりました（版のディレクトリが挟まった形。ハイライト 3 参照）。また What it is の節で、IdP の例として挙げていた「Okta, Azure AD, or a corporate SSO system」の括弧書きが削除されました。
 
-- [SEP-3392: Extension Lifecycle - MCP Docs](https://modelcontextprotocol.io/seps/3392-extension-lifecycle#stages)
-- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#extension-lifecycle)
+- [Enterprise-Managed Authorization - MCP Docs](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#implementation-support)
 
-## 2. 公式拡張の一覧に段階が付き Server Cards が加わった
+## 2. Filesystems Working Group が対象をファイルシステムの意味論全般に広げた
 
-Extensions Overview の「Official Extension Repositories」の節では、リポジトリごとの拡張の表に Stage の列が加わりました。
+Filesystems Working Group の憲章（Filesystems Charter）が書き換えられました（追加 42 行・削除 22 行）。
 
-| リポジトリ | 拡張 | Stage |
-|---|---|---|
-| `ext-auth` | OAuth Client Credentials | Stable |
-| `ext-auth` | Enterprise-Managed Authorization | Stable |
-| `ext-apps` | MCP Apps | Stable |
-| `ext-tasks` | MCP Tasks | Beta, to Core |
-| `ext-skills` | Skills over MCP | Beta, destination not yet stated |
-| `ext-server-card` | Server Cards | Beta, destination not yet stated |
+**Mission Statement** はこれまで、MCP の Resources を双方向にして、エージェントが入力を読んだサーバーへ結果を書き戻せるようにすることを目的に掲げ、現状の Resources は読み取りの方向しか扱っていないとして、書き込み操作・楽観的並行性制御・変更通知とキャッシュとの関係を扱う単一の Extensions Track SEP を作るとしていました。新しい記述では、Resources を一般的なファイルシステムの意味論にそろえ、MCP クライアントが提供元をまたいで、ファイルシステムの形をしたリソースを見つけ・取得し・変更するための 1 つのインターフェースを、効率よく使えるようにすることを目的としています。WG はどのファイルシステムの意味論が MCP に合うかを見極め、それを Resources に一貫して適用する 1 つ以上の Extensions Track SEP を作ります。
 
-新たに「MCP Server Cards」の小節が加わり、`modelcontextprotocol/ext-server-card` リポジトリ（説明は「HTTP discovery of MCP server metadata.」）の Server Cards が、接続する前にサーバーのメタデータを見つけられるようにする拡張として載りました。リンク先は拡張のページではなく、SEP-2127（MCP Server Cards - HTTP Server Discovery）のページです。また MCP Tasks の小節には、他の小節と同じ形で、リポジトリ `modelcontextprotocol/ext-tasks`（説明は「Extensions for long-running operations.」）の引用ブロックが加わりました。節の冒頭の説明文には、1 つのリポジトリが段階の異なる関連する拡張を持てること、段階は仕様を置くディレクトリで示すことが追記されています。
+**In Scope** の仕様作業は、「Filesystem Operations for Resources」という仮題の単一の SEP から、リソースの操作を定める 1 つ以上の Extensions Track SEP に変わり、扱う項目が 3 つから 7 つになりました。
 
-この分類は、SEP-3392 の Transition の節が定めたものです。`ext-apps` と `ext-auth` は Stable、`ext-skills`・`ext-tasks`・`ext-server-card` は Beta とされ、`experimental-ext-interceptors`・`experimental-ext-variants`・`experimental-ext-triggers-events`・`experimental-ext-tool-annotations` の 4 つは Experimental のまま変わりません。分類された拡張に新しい SEP は要らず、`ext-server-card` の SEP-2127 を含む既存の SEP が、割り当てられた段階の SEP とみなされます。識別子と通信上の挙動も変わりません。既存の SEP は行き先を示していないため、Beta の拡張の Extension Maintainers が拡張のページに行き先を記すとされており、Extensions Overview の一覧では MCP Tasks の行き先が「to Core」、Skills over MCP と Server Cards は「destination not yet stated」（行き先は未表明）となっています。リポジトリの名前は変わりませんが、仕様は段階のディレクトリへ移るため、既定ブランチ上の古いパスへのリンクは切れると説明されています。
+| 新 | 項目 | 内容 | 旧との対応 |
+|---|---|---|---|
+| 1 | Scoped listing and directory traversal | URI を起点にした、階層を意識した一覧を検討する。URI の 1 階層下を列挙する `readdir` に相当する操作、サブツリー全体の走査、両者と既存の平坦な `resources/list` との関係を含む | 新規 |
+| 2 | Server-side search | サーバー側で評価する検索と glob マッチを検討し、すべてのリソースを一覧して読まなくても内容を見つけられるようにする。サーバーが受け付ける URI を示すリソーステンプレートを超えるもので、1 と合わせて、クライアントがサーバー上の内容を見つける方法を扱う | 新規 |
+| 3 | Read semantics | MCP に合う読み取りの意味論を検討する。1 回のリクエストで複数の URI を読む一括読み取りと、プロトコルが `seek` 操作を扱えるかを含む | 新規 |
+| 4 | Write and metadata operations | 作成・更新・削除と、本体を取得せずに 1 つの URI の有無・サイズ・最終更新日時を答えるメタデータの読み取り（`stat`）を定める | 旧 1（Operations） |
+| 5 | Optimistic concurrency control | 2 つの書き手が更新を失わずに済む方法と、存在しない場合だけ作成する前提条件でのリソースの作成を定める | 旧 2（文面は同じ） |
+| 6 | Typed errors | not found・already exists・precondition failed・permission denied などのリソース操作のエラーを定め、サーバーが違ってもクライアントが同じように失敗を扱えるようにする。現状、存在しないリソースには汎用の `-32602`（Invalid Params）が返る | 新規 |
+| 7 | Change notification and caching | `notifications/resources/updated`、有効期間とキャッシュ範囲のフィールド `ttlMs`・`cacheScope`、`lastModified` 注釈との関係を定める | 旧 3（対象が「書き込み」から「ファイルシステムの操作」に） |
 
-- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#official-extension-repositories)
-- [SEP-3392: Extension Lifecycle - MCP Docs](https://modelcontextprotocol.io/seps/3392-extension-lifecycle#transition)
+周辺の記述も、書き込みからファイルシステムの意味論全般へと言い換えられています。
 
-## 3. 破壊的変更でも拡張の識別子を変えない規則に改められた
+- **Documentation**: 仕様に記すものが「新しい操作」から「採用したファイルシステムの意味論」に、サーバー作者向けの指針が「リソースの書き込み経路とツールベースの経路のどちらを選ぶか」から「リソースの操作とツールベースの操作のどちらを選ぶか」になった
+- **Out of Scope**: 「POSIX など、OS のファイルシステム API の完全な写像」が加わった（WG はクライアントとサーバーのプロトコルに合う意味論を選び、除外したものはその理由を記録する）。認可ポリシーの除外対象は「書き込み」から「ファイルシステムの操作」になった
+- **Related Groups**: File Uploads WG の項目に、発見・検索・メタデータ・小さなインラインの書き込みは大きな内容の転送に依存しないので独立に進められること、ツールがすでにリソースリンクを返すことから、ファイルを受け取るツールの入力が Resource への参照を受け取れるかについても両グループで合意すべきことが加わった。Agents IG の項目は、マルチエージェントやジョブのオーケストレーションの仕組みを「共有の書き込み経路」ではなく「共有のファイルシステムの意味論」の主な利用者と位置付けた
+- **Success Criteria**: 1 つ目の基準が、範囲を絞った一覧とディレクトリの走査、サーバー側の検索、一括読み取りを含む読み取り・書き込み・メタデータの意味論を定める 1 つ以上の Extensions Track SEP の採択に変わった。採択される成果物には、`seek` についての WG の結論の記録、楽観的並行性制御の仕組みと型付きのエラーの一式の定義、`notifications/resources/updated`・`ttlMs`・`cacheScope`・`lastModified` との関係の規定が求められる。4 つ目の基準の「書き込み経路を使う独立した 2 つのサーバー実装」は「採用したファイルシステムの操作を使う独立した 2 つのサーバー実装」になった
 
-Extensions Overview の Evolution の節が書き換えられました。これまでは、拡張はコアプロトコルとは独立に進化し、更新は拡張リポジトリのメンテナーが管理して Core Maintainer の審査は要らないとしたうえで、拡張を変えるときは新しい識別子を作るより設定オブジェクトの中の capability フラグやバージョニングを使うことを勧め、破壊的変更が避けられない場合は新しい識別子（例: `io.modelcontextprotocol/my-extension-v2`）を使うとしていました。
+**Changelog** の表には、初版（2026年08月24日「Initial charter」）の上に 2 行が加わりました。2026年09月10日の「Broaden scope to filesystem semantics」と 2026年10月27日の「Add search, bulk reads and typed errors to resource scope」で、2026年09月10日付けの行も今回の取り込みで初めて現れたものです。なお Active Work Items の表は変わっておらず、「SEP: Filesystem Operations for Resources」（Ideating）の行も旧来の仮題のまま残っています。
 
-新しい記述では、拡張への変更はその Extension Maintainers が承認し、Core Maintainer の審査は要らないとしたうえで、変えてよいことを段階ごとに分けています。
+- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#in-scope)
 
-- **Experimental**: いつでも何でも変えてよい
-- **Beta**: 新しい省略可能なフィールドや、設定オブジェクトの capability フラグのような、追加的な変更を優先する。破壊的変更も認められるが、まれにしてまとめて行い、先に Working Group か Interest Group で告知し、changelog に記録する。破壊的変更をする拡張は、相手側が食い違いを検出できるよう、設定オブジェクトに `revision` 文字列を加えるか、その値を上げる
-- **Stable**: コアプロトコルのリビジョンに対応する版として公開する（例: `specification/stable/<name>/2026-07-28/`）。公開した版は変更しない。変更は `draft/` ディレクトリに貯め、新しいコアプロトコルのリビジョンとともにだけ効力を持つ。2 者の間での拡張の挙動は、両者が交渉したプロトコルのリビジョンについて定められた挙動になる
+## 3. OAuth Client Credentials の SDK 例が認可サーバーの発行元を固定するようになった
 
-そのうえで、破壊的変更でも拡張の識別子は変えず、新しい識別子（例: `io.modelcontextprotocol/my-extension-v2`）は、1 つのプロトコルのリビジョンの中で新旧の挙動を共存させる必要がある場合にだけ使う、と改められました。破壊的変更の定義（フィールドの削除や改名、型の変更、既存の挙動の意味の変更、新しい必須フィールドの追加）は変わっていません。
+OAuth Client Credentials の SDK examples の節で、資格情報の形式を選ぶよう促す文の後に、「各サンプルは資格情報を発行した認可サーバーの発行元（issuer）を固定しており、MCP サーバーが別の認可サーバーを示しても、クライアントはそこへ資格情報を送らない」という説明が加わりました。これに合わせて、4 つのサンプルが次のように変わっています。
 
-SEP-3392 の Identifiers and compatibility の節は、これが SEP-2133 の「破壊的変更のたびに新しい識別子を使わなければならない（MUST）」という規則を置き換えるものだと明記しています。同節によると、`revision` が無い場合は最初の版を意味し、知らない `revision` を受け取った相手はその拡張を有効にすべきではありません（SHOULD NOT）。また拡張の仕様は、自身の各版がどのプロトコルのリビジョンに適用されるかを示さなければなりません（MUST）。
+- **TypeScript**: クライアントシークレットを使う `ClientCredentialsProvider` と、JWT の秘密鍵を使う `PrivateKeyJwtProvider` の両方に `expectedIssuer: "https://auth.example.com"` が加わった
+- **Python**: `ClientCredentialsOAuthProvider` と `PrivateKeyJWTOAuthProvider` の両方で、`scopes="read write"` が `scope="read write"` に改められ、`issuer="https://auth.example.com"` が加わった
 
-- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#evolution)
-- [SEP-3392: Extension Lifecycle - MCP Docs](https://modelcontextprotocol.io/seps/3392-extension-lifecycle#identifiers-and-compatibility)
+**あわせて、ext-auth の仕様へのリンクが版付きのパスになりました。** OAuth Client Credentials の冒頭と Related resources にある仕様へのリンクは、`specification/draft/oauth-client-credentials.mdx` から `specification/stable/oauth-client-credentials/2026-07-28/oauth-client-credentials.mdx` に変わりました。Enterprise-Managed Authorization の仕様へのリンクも `specification/stable/enterprise-managed-authorization/2026-07-28/` 配下になり（ハイライト 1 参照）、Authorization Extensions の Specification の節で両拡張の仕様の置き場所として示すリンクは、`ext-auth` リポジトリの `specification/draft` から `specification/stable` に変わりました。SEP-2133（Extensions）の Official Extensions の節で、拡張の例として挙げているリンクも、同じ OAuth Client Credentials の新しいパスに差し替えられています。この `specification/stable/<name>/2026-07-28/` という形は、Extensions Overview が Stable の拡張について「コアプロトコルのリビジョンに対応する版として公開する（例: `specification/stable/<name>/2026-07-28/`）」としている置き場所と同じ形です。
 
-## 4. 拡張を作る手順が 7 段階になり Stable には 2 つ目の SEP が要るようになった
+- [OAuth Client Credentials - MCP Docs](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials#sdk-examples)
+- [Authorization Extensions - MCP Docs](https://modelcontextprotocol.io/extensions/auth/overview#specification)
 
-Extensions Overview の Creating Extensions の手順が、5 段階から 7 段階になりました。これまでの手順は、Extensions Track の SEP を出す（Propose）、公式 SDK で参照実装を作る（Implement）、Core Maintainers が審査する（Review）、承認後に拡張リポジトリへ追加する PR を出す（Publish）、他のクライアント・サーバー・SDK も実装する（Adopt）の 5 つで、冒頭に SEP-2133 への案内がありました。冒頭の案内は削除され、新しい手順は次のようになっています。
+## 4. Build an MCP client のサンプルで応答とツール結果の扱いが改められた
 
-1. **Prototype**: `ext-` リポジトリの `specification/experimental/` に拡張を置くか、`experimental-ext-` リポジトリを作る
-2. **Propose Beta**: 本体の MCP リポジトリに Extensions Track の SEP を出し、Stable を目指すか、Core への昇格を目指すかを書く
-3. **Implement**: 公式 SDK で参照実装を 1 つ以上作る（SEP の審査を受ける前提条件）
-4. **Review**: Core Maintainers が SEP を審査し、採否の最終的な権限を持つ
-5. **Publish**: SEP が採択されたら、`ext-` リポジトリの `specification/beta/` へ拡張を移す PR を出し、Core Maintainer がその移動を承認する
-6. **Gather evidence**: Beta の間、既知の実装と、そこから得たフィードバックの一覧を公開しておく
-7. **Stabilize or promote**: 2 つ目の Extensions Track SEP で Stable へ移す。独立して相互運用する 2 つの実装（クライアント側とサーバー側を 1 つずつ）と適合シナリオ（conformance scenario）が要る。あるいは Standards Track SEP でコア仕様に昇格させる
+Build an MCP client のチュートリアルで、クエリを処理するサンプルコードが 3 つの言語のタブで書き換えられました。いずれも、モデルがツールを呼び出した後の処理です。
 
-周辺の節も、これに合わせて変わりました。
+- **TypeScript**（Query Processing Logic）: ツールの結果を送った後の応答について、これまでは `response.content[0]` だけを見て、それがテキストならその文字列を、そうでなければ空文字列を加えていた。新しいコードは応答のブロックを順に見て、テキストのブロックをすべて加える
+- **Kotlin**（Query processing logic）: 同様に、`aiResponse.content().first()` の先頭のブロックからテキストを取り出していた処理が、`aiResponse.content().forEach` でテキストのブロックをすべて加える処理になった
+- **Ruby**（Query Processing Logic）: これまでは応答の `tool_use` ブロックごとに、ツールの結果を 1 件だけ含む user メッセージを加えてモデルを呼び直していた。新しいコードは、まずすべてのツールの結果を集め、それらを 1 つの user メッセージにまとめて送ってから、モデルを 1 回だけ呼び直す。その箇所には「すべての `tool_use` ブロックには、1 つの user メッセージの中に対応する `tool_result` が要る」というコメントが付いている
 
-- **Graduation to Official Status**: Extensions Track の SEP で実験的な拡張を公式に昇格させる手順を述べていたこの小節は削除された
-- **Requirements**: 拡張には、関連する Working Group か Interest Group に加えて、リポジトリの `MAINTAINERS.md` に載った Extension Maintainer が 1 人以上必要になった
-- **Experimental Extensions**: 試作の位置付けが「正式な SEP の提出前」から「SEP の前、または SEP と並行して」に変わり、置き場所として既存の `ext-` リポジトリの `specification/experimental/` が加わった（`experimental-ext-` リポジトリの中はすべて Experimental）。Ground Rules は 3 項目から 4 項目になり、「Experimental の拡張の 2 つの版は互換とは限らないので、実装者はタグかコミットに固定すべき」が加わった。実験的であることの明示を求める対象は「リポジトリと公開パッケージ」から「公開パッケージ」に、Core Maintainers が監督する対象は「実験的な拡張のリポジトリ」から「実験的な拡張」になった
-- **SDK Implementation**: 拡張は既定で無効で、開発者が明示的にオプトインする必要がある、という NOTE に「どの段階でも」が加わった
-- **Promotion to Core**（新設）: Standards Track SEP がプロトコルのリビジョン R で拡張をコア仕様に昇格させると、R 以降を宣言するリクエストでは、拡張を広告しているかどうかに関わらず、その機能はコアの挙動になる。それより前のリビジョンには拡張の最終版が引き続き適用されるため、前のリビジョンに対応するクライアントは拡張の広告を続けるべきとされる。拡張の仕様は R のリリース後に `specification/archived/` へ移る
+ほかのタブにも小さな変更があります（詳細は「大幅に更新されたページ」を参照）。
 
-- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#creating-extensions)
+- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)
+
+## 5. Example Servers の外部サーバーの案内先が MCP Registry になった
+
+Example Servers では、これまで 2 つの h2 の節で外部のサーバーを案内していました。「Official integrations」は企業が自社のプラットフォーム向けに保守するサーバーの一覧として、「Community implementations」はコミュニティのメンバーが保守するサーバーの一覧として、それぞれ GitHub の `modelcontextprotocol/servers` リポジトリの該当セクションへのリンクを置いていました。この 2 つの節が「More servers」の 1 つの節にまとまり、企業やコミュニティのメンバーが公開したサーバーは MCP Registry（[registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io/)）で探すよう案内する 1 文になりました。
+
+同じページでは、ほかに 2 つの項目が削除されました。
+
+- **Configuring with Claude**: 設定の JSON の例から、`@modelcontextprotocol/server-github` を `npx` で起動し `GITHUB_PERSONAL_ACCESS_TOKEN` を渡す `github` サーバーの項目が削除され、`memory` と `filesystem` の 2 つが残った
+- **Additional resources**: servers リポジトリの Resources セクション（MCP に関連するリソースやプロジェクトの一覧）への案内が削除され、GitHub Discussions への案内だけが残った
+
+Reference implementations の節（現行の参照サーバー 7 件と、アーカイブ済みのサーバーの案内）は変わっていません。このページは `llms-full.txt` に 2 回収録されており、両方に同じ変更が入っています（それぞれ追加 2 行・削除 15 行）。
+
+- [Example Servers - MCP Docs](https://modelcontextprotocol.io/examples#more-servers)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**SEP-3392: Extension Lifecycle**](#1-sep-3392-extension-lifecycle) ([MCP Docs](https://modelcontextprotocol.io/seps/3392-extension-lifecycle)):  
-  拡張に Experimental・Beta・Stable の段階と、コア仕様への昇格の道筋を定める Process SEP（Final、作成 2026年09月25日）。索引 `llms.txt` にもエントリが加わった（詳細はハイライト 1〜4 参照）。
+*(新規追加されたページはありません)*
 <!-- light:new-pages:end -->
-
-## 1. SEP-3392: Extension Lifecycle
-
-SEP-3392 は 299 行のページで、Abstract・Motivation・Specification（Stages・Roles・Repositories and directories・Experimental・Beta・Stable・Core・Ending an extension・Identifiers and compatibility・Transition）・Rationale・Backward Compatibility・Security Implications・Reference Implementation の各節から成ります。他の Final の SEP と同じく、冒頭には「Final に達した SEP は採択時の設計の歴史的な記録で、確定後のプロトコルの変更は反映されない」という注記があります。段階の定義・既存の拡張の分類・識別子の規則はハイライト 1〜3 で扱ったので、ここではそれ以外の要点をまとめます。
-
-**動機（Motivation）**: SEP-2133 には、実験的な拡張（`experimental-ext-` リポジトリ、安定性の約束なし）と公式の拡張（`ext-` リポジトリ、Extensions Track SEP を経たもの）の 2 種類しかなく、成熟度の概念がありませんでした。そのため、公式の拡張には安定性の目印がなく、いつ変わりうるかも決まっていなかったと述べています。実際に各拡張は成熟度を別々の言葉で示しており、`ext-auth` は `specification/stable/` と `specification/draft/`、`ext-tasks` はスキーマのスナップショットに「Stable」と「Development」、`ext-skills` は `specification/stable/` を使っている、と例が挙がっています。SEP-2596 が未解決の問いとして残した「機能の成熟度の段階（feature maturity tiers）」に、拡張について答えるものだとも説明されています。
-
-**役割（Roles）**: Extension Maintainer は、拡張のリポジトリの `MAINTAINERS.md` に載ったメンテナーです。Core Maintainers が任命し、通常は関連する Working Group の Lead か、Interest Group の facilitator が務めます。すべての拡張に Extension Maintainer が 1 人以上必要です。「Extension Maintainer の承認」とは、作者以外の Extension Maintainer 1 人以上が PR を承認することを指します。Core Maintainers は SEP-2133 が与えたすべての拡張への権限（変更・非推奨化・アーカイブ・削除など）を保ち、Lead Maintainers はこの SEP における Core Maintainer の各決定への拒否権を保ちます。
-
-**各段階の補足**: Experimental の拡張は、Extension Maintainer が既存の `ext-<area>` リポジトリの `specification/experimental/` に追加するか、Maintainer であれば誰でも `experimental-ext-<name>` リポジトリを作って始められます。Beta から Stable へ進む 2 つ目の SEP は、Beta の SEP と拡張の場所へのリンク、既知の実装の一覧による実際の利用の実績、クライアント側とサーバー側を少なくとも 1 つずつ含む相互運用する 2 つの独立した実装、SEP-2484 の要件を満たす適合シナリオ（観測できるプロトコルの挙動が無い拡張を除く）を示さなければなりません。コア仕様への昇格の後は、R より前のリビジョンに対応しなくなった時点で拡張の広告をやめればよく、別の移行期間（sunset period）は設けないとしています。
-
-**拡張の終了（Ending an extension）**: Extension Maintainer は Experimental か Beta の拡張を取り下げられ、取り下げた拡張は `specification/archived/` へ移ります。6 か月間、マージされた変更も Working Group・Interest Group の活動も無い Experimental か Beta の拡張は、Core Maintainers がアーカイブできます。Stable の拡張の非推奨化には Extensions Track SEP が必要で、SEP-2596 がコアの機能に定めた要件・最低期間・Tier 1 SDK の義務が適用されます。
-
-**互換性とセキュリティ**: Backward Compatibility の節は、この SEP はプロセスだけを変え、通信上のメッセージは変えないと明記しています。Security Implications の節は、Experimental と Beta の拡張は Core Maintainer の審査なしに更新されるため、セキュリティの専門家が読む前に安全でない設計が実装されうると認めたうえで、拡張が既定で無効であること、Beta と Stable に入る際の SEP の審査、`specification/beta/`・`specification/stable/` への移動に Core Maintainer の承認が要ることなどを抑止策に挙げています。また、同じ識別子のまま破壊的変更を認めるため、異なる版に基づく実装どうしが交渉に成功したうえで互いのデータを誤って解釈しうるとし、拡張のデータの検証（SEP-2133）と `revision` による拒否で対処するとしています。
-
-**ドキュメントへの反映**: Transition の節は、この SEP が Final になった時点で `docs/extensions/overview.mdx` と、`docs/community/sep-guidelines.mdx` の Extensions Track の説明をこの SEP に合わせて更新し、拡張のページに各拡張の段階を載せるとしています。今回の取り込みでは、実際にこの 2 ページが変わっています（ハイライト 2〜4 と「軽微な更新」を参照）。
-
-- [SEP-3392: Extension Lifecycle - MCP Docs](https://modelcontextprotocol.io/seps/3392-extension-lifecycle#motivation)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Extensions Overview**](#1-extensions-overview) ([MCP Docs](https://modelcontextprotocol.io/extensions/overview#extension-lifecycle)):  
-  SEP-3392 に合わせて、Extension Lifecycle の節の新設、公式拡張の表への Stage の列の追加と Server Cards の掲載、Creating Extensions と Evolution の書き換え、Promotion to Core の節の新設を行った（追加 66 行・削除 33 行。詳細はハイライト 1〜4 参照）。
+- [**Filesystems Charter**](#1-filesystems-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#in-scope)):  
+  Filesystems Working Group の憲章で、Mission Statement・In Scope・Out of Scope・Related Groups・Success Criteria を、Resources への書き込みからファイルシステムの意味論全般へと対象を広げる形に書き換え、Changelog に 2 行を加えた（追加 42 行・削除 22 行。詳細はハイライト 2 参照）。
+- [**Build an MCP client**](#2-build-an-mcp-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)):  
+  TypeScript・Kotlin・Ruby のクエリ処理のサンプルを書き換えたほか、Java（Spring AI）の設定・C# の `using`・Ruby の依存 gem からそれぞれ 1 項目を削除した（追加 28 行・削除 23 行。詳細はハイライト 4 参照）。
 <!-- light:updated-pages:end -->
 
-## 1. Extensions Overview
+## 1. Filesystems Charter
 
-追加 66 行・削除 33 行の変更は、すべてページの冒頭から Creating Extensions の節の末尾まで（Negotiation の節の手前まで）に収まっており、Negotiation 以降（Client Capabilities・Server Capabilities・Initialization-Based Versions・Graceful Degradation）は変わっていません。見出しの面では、h2 の「Extension Lifecycle」（TIP の後、Official Extension Repositories の前）と、h3 の「MCP Server Cards」（Skills over MCP の後）・「Promotion to Core」（Evolution の後）が加わり、h3 の「Graduation to Official Status」が無くなりました。
+変更は Mission Statement・Scope（In Scope・Out of Scope・Related Groups）・Success Criteria・Changelog の各節にあり、Group Type・Leadership・Authority & Decision Rights・Membership・Operations の各節と、Deliverables & Success Metrics の Active Work Items の表は変わっていません。In Scope のうち Cross-Cutting Concerns の項目（SEP-2571・SEP-2532・SEP-1708 の 3 つの提案を 1 つの設計にまとめる）と、Out of Scope の `files/*` の並立する仕組みとホスト側のサンドボックスを除外する 2 項目も、そのままです。内容はハイライト 2 を参照してください。
 
-公式拡張の表は、既存の 4 つの表が「Extension | Description」の 2 列から「Extension | Stage | Description」の 3 列になり、新設の MCP Server Cards の表も同じ 3 列です。ページから SEP への参照は、Creating Extensions の冒頭にあった SEP-2133 への案内が無くなり、Extension Lifecycle の節から SEP-3392 を、MCP Server Cards の表から SEP-2127 を参照する形に変わりました。内容はハイライト 1〜4 を参照してください。
+- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#mission-statement)
 
-- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#extension-lifecycle)
+## 2. Build an MCP client
+
+変更（追加 28 行・削除 23 行）は、言語のタブごとに次のとおりです。Python と Rust のタブは変わっていません。
+
+| タブ | 節 | 行数 | 変更 |
+|---|---|---|---|
+| TypeScript | Query Processing Logic | 追加 5・削除 3 | ツール呼び出し後の応答のテキストブロックをすべて加える（ハイライト 4） |
+| Java | MCP Client Configuration | 削除 1 | Spring AI の `application.yml` の例で、`spring.ai.mcp.client.stdio` の下の `root-change-notification: true` を削除 |
+| Kotlin | Query processing logic | 追加 3・削除 1 | ツール呼び出し後の応答のテキストブロックをすべて加える（ハイライト 4） |
+| C# | Basic Client Structure | 削除 1 | `using ModelContextProtocol.Protocol.Transport;` を削除 |
+| Ruby | Setting Up Your Environment | 追加 2・削除 2 | 2 つのコマンド例（`touch client.rb` の版と `new-item client.rb` の版）で、`bundle add` から `base64` を外し `anthropic dotenv mcp` にした |
+| Ruby | Query Processing Logic | 追加 18・削除 15 | ツールの結果を 1 つの user メッセージにまとめて送る（ハイライト 4） |
+
+- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（SEP-3392）と大幅更新（Extensions Overview）のほかに、次の変更がありました。
+今回差分が出たファイルは `llms-full.txt` の 1 件で、大幅更新の 2 ページのほかに、次の 10 ページに変更がありました。
+
+**新機能**
+
+- Enterprise-Managed Authorization に、ID-JAG の発行・受け入れに対応する製品の一覧「Implementation support」の節を新設（詳細はハイライト 1 参照） — [Enterprise-Managed Authorization](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#implementation-support)
 
 **機能改善**
 
-- SEP Guidelines の SEP Types で、Extensions Track の説明に「採択された Extensions Track SEP は拡張を Beta へ移し、2 つ目の SEP が Stable へ移す」という記述を加え、案内先を Extensions Overview の Creating Extensions から Extension Lifecycle に変更 — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#sep-types)
+- OAuth Client Credentials の SDK 例で、認可サーバーの発行元を固定する `expectedIssuer`（TypeScript）・`issuer`（Python）を追加し、Python の `scopes` を `scope` に変更（詳細はハイライト 3 参照） — [OAuth Client Credentials](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials#sdk-examples)
+- Connect to local MCP servers の Installing the Filesystem Server で、設定ファイルの場所に Linux の `~/.config/Claude/claude_desktop_config.json` を追加 — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#installing-the-filesystem-server)
+- 同ページの Troubleshooting の「Getting logs from Claude Desktop」で、ログの場所に Linux の `~/.config/Claude/logs` を加え、ログを追うコマンド例を macOS（`~/Library/Logs/Claude/mcp*.log`。これまでは「macOS/Linux」の表記）と Linux（`~/.config/Claude/logs/mcp*.log`）に分けた — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#troubleshooting)
+- Skills の Reading Directories で、`resources/directory/read` の応答例に `"ttlMs": 300000` と `"cacheScope": "public"` を追加（Listing Skills と Reading Skill Content の応答例と同じ値） — [Skills](https://modelcontextprotocol.io/extensions/skills/overview#reading-directories)
 
 **その他**
 
-- Specification Enhancement Proposals (SEPs) の索引ページで、Summary の Final を 43 件から 44 件にし、All SEPs の表の 2 行目（SEP-3398 の次）に SEP-3392 の行（Extension Lifecycle・Final・Process・作成 2026年09月25日）を追加 — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index#all-seps)
-- 索引 `llms.txt` の SEP の一覧で、SEP-2663: Tasks Extension の次（SEP-3398: Release Cycle Updates の前）に SEP-3392: Extension Lifecycle のエントリを追加 — [SEP-3392: Extension Lifecycle](https://modelcontextprotocol.io/seps/3392-extension-lifecycle)
+- Example Servers で、「Official integrations」「Community implementations」の節を MCP Registry へ案内する「More servers」にまとめ、設定例の `github` サーバーと Additional resources の servers リポジトリへの案内を削除（詳細はハイライト 5 参照） — [Example Servers](https://modelcontextprotocol.io/examples#more-servers)
+- Enterprise-Managed Authorization で、仕様へのリンク（冒頭と Related resources の 2 か所）を `specification/stable/enterprise-managed-authorization/2026-07-28/` 配下に変更（詳細はハイライト 3 参照） — [Enterprise-Managed Authorization](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#related-resources)
+- 同ページの What it is で、IdP の例「such as Okta, Azure AD, or a corporate SSO system」の括弧書きを削除 — [Enterprise-Managed Authorization](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#what-it-is)
+- OAuth Client Credentials で、仕様へのリンク（冒頭と Related resources の 2 か所）を `specification/draft/` から `specification/stable/oauth-client-credentials/2026-07-28/` 配下に変更（詳細はハイライト 3 参照） — [OAuth Client Credentials](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials#related-resources)
+- Authorization Extensions の Specification で、両拡張の仕様の置き場所として示すリンクを `ext-auth` リポジトリの `specification/draft` から `specification/stable` に変更 — [Authorization Extensions](https://modelcontextprotocol.io/extensions/auth/overview#specification)
+- SEP-2133: Extensions の Official Extensions で、拡張の例として挙げるリンクを `specification/draft/oauth-client-credentials.mdx` から `specification/stable/oauth-client-credentials/2026-07-28/oauth-client-credentials.mdx` に変更 — [SEP-2133: Extensions](https://modelcontextprotocol.io/seps/2133-extensions#official-extensions)
+- Build an MCP server の Go のタブの System requirements で、必要な Go のバージョンを 1.24 以上から 1.25 以上に変更 — [Build an MCP server](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#system-requirements)
+- Build an MCP App の Prerequisites で、必要な Node.js のバージョンを 18 以上から 20 以上に変更 — [Build an MCP App](https://modelcontextprotocol.io/extensions/apps/build#prerequisites)
+- Security Best Practices の Confused Deputy Problem で、攻撃の説明にある dynamic client registration へのリンク先を `/specification/latest/basic/authorization#dynamic-client-registration` から `/specification/latest/basic/authorization/client-registration#dynamic-client-registration` に変更 — [Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#confused-deputy-problem)
+- Connect to local MCP servers の Troubleshooting で、ログの説明へのページ内リンクを `#getting-logs-from-claude-for-desktop` から `#getting-logs-from-claude-desktop` に修正 — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#troubleshooting)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-28.md](./archives/latest/2026-10-28.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-28.md](./archives/latest-detail/2026-10-28.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-29.md](./archives/latest/2026-10-29.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-29.md](./archives/latest-detail/2026-10-29.md)
 
 <!--
-base_commit: 7ff696fc9bf91ed3aa99a3749a2d4e451d873d85
-head_commit: daf68aee10e1e23402b90d685734b8fa2df7beb5
-generated_at_full: 2026-10-30T15:31:23+09:00
+base_commit: daf68aee10e1e23402b90d685734b8fa2df7beb5
+head_commit: a900109552b6641cda7666a841e6800cad45d7ae
+generated_at_full: 2026-10-31T15:29:12+09:00
 -->
