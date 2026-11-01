@@ -1,133 +1,124 @@
 ---
-対象期間: 2026年10月29日 〜 2026年10月30日
-作成日: 2026-10-30
+対象期間: 2026年10月30日 〜 2026年10月31日
+作成日: 2026-10-31
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、新規ページはなく、既存ページ 12 件に変更がありました（うち 2 件は 50 行以上の大幅更新）。中心は、Enterprise-Managed Authorization に対応製品の一覧が加わったことと、Filesystems Working Group の憲章が書き込み操作からファイルシステムの意味論全般へと対象を広げたことです。
+今回の対象期間の取り込みは 1 回で、新規ページはなく、`llms-full.txt` の 32 ページに差分がありました。うち 17 ページはタブなどの書式の書き換えだけで、内容が変わったのは 15 ページ（うち 2 件は 50 行以上の大幅更新）です。中心は、Build an MCP client の Rust 版が Messages API を直接呼ぶ形に書き直されたことと、MCP Inspector に負荷試験と `Host` ヘッダーの検査が加わったことです。
 
 主要なものを以下に挙げます。
 
-1. Enterprise-Managed Authorization に「Implementation support」の節が新設され、ID-JAG を発行する IdP と受け入れる認可サーバーについて、12 製品の対応状況（Available・Early access・Experimental）が一覧になった
-2. Filesystems Working Group の憲章が、Resources への書き込み操作から、範囲を絞った一覧・サーバー側の検索・読み取り・書き込み・型付きのエラーまでを含むファイルシステムの意味論全般へと対象を広げた
-3. OAuth Client Credentials の SDK 例が、資格情報を発行した認可サーバーの発行元（issuer）を固定する形になった。あわせて ext-auth の仕様へのリンクが `specification/stable/<name>/2026-07-28/` の版付きパスになった
-4. Build an MCP client のサンプルで、TypeScript と Kotlin がツール呼び出し後の応答のテキストブロックをすべて拾うようになり、Ruby は複数のツール結果を 1 つの user メッセージにまとめて返すようになった
-5. Example Servers の「Official integrations」「Community implementations」の節が「More servers」にまとまり、案内先が GitHub の servers リポジトリから MCP Registry に変わった
+1. Build an MCP client の Rust 版が書き直され、`genai` クレートをやめて Messages API を直接呼び、プロトコルの版の自動交渉・`outputSchema` による結果の検証・複数回のツール呼び出しのループを備えた
+2. MCP Inspector の CLI に、ツールを繰り返し並行して呼ぶ負荷試験の `--load` と、エラー率や p99 のしきい値を超えると終了コード `10` で終わる CI ゲートが加わった（mcpdo でも使える）
+3. Inspector の Web バックエンドがすべての経路の前で `Host` ヘッダーを許可リストと照合するようになり（`MCP_INSPECTOR_ALLOWED_HOSTS`）、`INSPECTOR_TLS_KEY_PATH`・`INSPECTOR_TLS_CERT_PATH` で Web UI を `https` で配信できるようになった
+4. Java と Kotlin のサンプルに、各 SDK の最新の安定版が対応するプロトコルの版は `2025-11-25` で、`2026-07-28` にしか対応しない相手とはつながらないという注記が加わり、SDKs のページも、SDK は新しいリビジョンを独自の予定で採用すると明記した
+5. `llms-full.txt` で、タブが `> [tab]` の行で始まる引用のブロックになり、アコーディオンとカードにも `[accordion]`・`[card]` の印が付いた。生の差分の大半はこの書き換え
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Enterprise-Managed Authorization に対応製品の一覧が加わった**](#1-enterprise-managed-authorization-に対応製品の一覧が加わった):  
-  Enterprise-Managed Authorization に「Implementation support」の節が新設された。ID-JAG を発行する企業の IdP と、それを受け入れてアクセストークンを返す MCP サーバーの認可サーバーという 2 つの役割について、Athenz・Auth0・Okta・Ping Identity など 12 製品の対応状況を、各ベンダー自身のリリース表記（Available・Early access・Experimental）で一覧にしている。ID-JAG を受け入れるサーバー側のフレームワークとして、Cloudflare の `workers-oauth-provider` と FastMCP も挙がった。
-2. [**Filesystems Working Group が対象をファイルシステムの意味論全般に広げた**](#2-filesystems-working-group-が対象をファイルシステムの意味論全般に広げた):  
-  Filesystems Charter の Mission Statement が「Resources を双方向にして書き戻せるようにする」から「Resources を一般的なファイルシステムの意味論にそろえる」に改められた。In Scope の仕様作業は 3 項目から 7 項目になり、範囲を絞った一覧とディレクトリの走査、サーバー側の検索、一括読み取りや `seek` を含む読み取りの意味論、型付きのエラーが加わった。成果物も「単一の SEP」から「1 つ以上の Extensions Track SEP」になった。
-3. [**OAuth Client Credentials の SDK 例が認可サーバーの発行元を固定するようになった**](#3-oauth-client-credentials-の-sdk-例が認可サーバーの発行元を固定するようになった):  
-  OAuth Client Credentials の SDK 例に、資格情報を発行した認可サーバーの発行元を固定し、MCP サーバーが別の認可サーバーを示しても資格情報を送らないようにする、という説明が加わった。TypeScript の例には `expectedIssuer`、Python の例には `issuer` が加わり、Python の `scopes` 引数は `scope` に改められた。あわせて ext-auth の仕様へのリンクが `specification/stable/<name>/2026-07-28/` の版付きパスになった。
-4. [**Build an MCP client のサンプルで応答とツール結果の扱いが改められた**](#4-build-an-mcp-client-のサンプルで応答とツール結果の扱いが改められた):  
-  Build an MCP client のサンプルコードで、TypeScript と Kotlin は、ツール呼び出し後の応答から先頭のブロックだけを取り出していた処理を、テキストブロックをすべて拾う処理に変えた。Ruby は、ツール呼び出しのたびに結果を別々の user メッセージで送っていた処理を、すべてのツール結果を 1 つの user メッセージにまとめて送る処理に書き換えた。
-5. [**Example Servers の外部サーバーの案内先が MCP Registry になった**](#5-example-servers-の外部サーバーの案内先が-mcp-registry-になった):  
-  Example Servers で、企業が保守するサーバーと、コミュニティが保守するサーバーを GitHub の servers リポジトリの各セクションへ案内していた 2 つの節が、「More servers」の 1 つの節にまとまり、案内先が MCP Registry（registry.modelcontextprotocol.io）になった。Claude での設定例からは GitHub サーバーの項目が、Additional resources からは servers リポジトリの Resources セクションへの案内が削除された。
+1. [**Build an MCP client の Rust 版が Messages API を直接呼ぶ形に書き直された**](#1-build-an-mcp-client-の-rust-版が-messages-api-を直接呼ぶ形に書き直された):  
+  Build an MCP client の Rust のタブが書き直された。Claude の呼び出しを `genai` クレートから `reqwest` による Messages API の直接の呼び出しに替え、rmcp を `3.4` のクライアント部分だけにして、`ClientLifecycleMode::Auto` で `2026-07-28` を試し `2025-11-25` にフォールバックする形にした。ツールの `outputSchema` による結果の検証、最大 10 回のツール呼び出しのループ、拒否されたツール呼び出しを `is_error` 付きの `tool_result` で Claude に返す処理も加わった。
+2. [**MCP Inspector の CLI に負荷試験と CI ゲートが加わった**](#2-mcp-inspector-の-cli-に負荷試験と-ci-ゲートが加わった):  
+  Inspector の CLI の `tools/call` に、ツールを繰り返し並行して呼び、結果の代わりにレイテンシとエラー率の要約を出す `--load` の一連のフラグが加わった。`--load-max-error-rate`・`--load-max-p99` のしきい値を超えると終了コード `10` で終わる。サーバーが HTTP 429 を返したときの終了コード `11`（`rate_limited`）も加わり、mcpdo の `tools/call` も同じフラグを受け付ける。
+3. [**Inspector の Web バックエンドが Host ヘッダーを検査し UI を HTTPS で配信できるようになった**](#3-inspector-の-web-バックエンドが-host-ヘッダーを検査し-ui-を-https-で配信できるようになった):  
+  Inspector の Web バックエンドは、`GET /` を含むすべての経路の前で `Host` ヘッダーを許可リストと照合し、合わなければ `403` を返す。DNS リバインディングを使うページがトークンを読み取るのを防ぐためで、`Host` を書き換えるリバースプロキシのために `MCP_INSPECTOR_ALLOWED_HOSTS` で許可するホスト名を足せる。`INSPECTOR_TLS_KEY_PATH`・`INSPECTOR_TLS_CERT_PATH` を設定すると、Web UI 自体を `https` で配信できる。
+4. [**Java と Kotlin のサンプルに対応するプロトコルの版の注記が加わった**](#4-java-と-kotlin-のサンプルに対応するプロトコルの版の注記が加わった):  
+  Build an MCP server の Java・Kotlin のタブと Build an MCP client の Java のタブに、サンプルは各 SDK の最新の安定版が対応するプロトコルの版 `2025-11-25` を使い、`2026-07-28` にしか対応しない相手とはつながらない、という注記が加わった。SDKs のページも「どの SDK も同じ機能を提供する」という記述をやめ、SDK は新しいリビジョンを独自の予定で採用するので、対応するリビジョンは各 SDK のドキュメントで確かめるよう求めている。
+5. [**llms-full.txt でタブが印付きの引用として出るようになった**](#5-llms-fulltxt-でタブが印付きの引用として出るようになった):  
+  `llms-full.txt` で、これまで太字の行で始まり中身が地の文として続いていたタブが、`> [tab] 名前` の行で始まり中身も引用の中に入るブロックになった。すでに引用だったアコーディオンとカードにも `[accordion]`・`[card]` の印が付いた。24 ページに及び、生の差分の大半と、差分のあった 32 ページのうち 17 ページの変更はこの書き換えだけ。
 <!-- light:highlight-list:end -->
 
-## 1. Enterprise-Managed Authorization に対応製品の一覧が加わった
+## 1. Build an MCP client の Rust 版が Messages API を直接呼ぶ形に書き直された
 
-今回の取り込みは 1 回で、差分は本文 `llms-full.txt` の追加 145 行・削除 90 行だけです。索引 `llms.txt` は変わらず（エントリ数は 364 件のまま）、`llms-full.txt` の総行数は 45,808 行から 45,863 行になり、収録ページ数は 159 件（`examples` が 2 回収録されているため、URL としては 158 件）で変わっていません。差分のハンクをページに振り分けて数えると、変更のあったページは 12 件で、50 行以上の変更は Filesystems Charter（追加 42 行・削除 22 行）と Build an MCP client（追加 28 行・削除 23 行）の 2 件です。Enterprise-Managed Authorization は追加 44 行・削除 3 行で 50 行に届かないため分類上は軽微な更新ですが、今回最も大きな内容の追加なのでハイライトの先頭に置きます。
+今回の取り込みは 1 回で、差分は本文 `llms-full.txt` だけです。索引 `llms.txt` は変わらず（エントリ数は 364 件のまま）、`llms-full.txt` の総行数は 45,863 行から 46,205 行になり、収録ページ数は 159 件（`examples` が 2 回収録されているため、URL としては 158 件）で変わっていません。ファイル全体の生の差分は追加 10,113 行・削除 9,771 行ですが、その大半はタブの書式の書き換えです（ハイライト 5）。書き換えを戻してページごとに数えると、内容が変わったのは 15 ページ・追加 553 行・削除 239 行で（数え方はハイライト 5 の末尾）、50 行以上の変更は Build an MCP client（追加 445 行・削除 195 行）と Configuration and flags（追加 47 行・削除 8 行）の 2 件です。Build an MCP client の変更のほとんどは Rust のタブ（追加 438 行・削除 190 行）にあります。
 
-**「Implementation support」の節が、Client support の節の後（Related resources の前）に新設されました。** 冒頭の NOTE は、この一覧は網羅的ではなく、文書化された対応だけを記録したものなので、製品が載っていないことや空欄のセルは、その役割に対応していないことを意味しない、と断っています。本文によると、このフローには MCP クライアントのほかに 2 つの製品が関わります。ID-JAG（Identity Assertion JWT Authorization Grant）を発行する企業の IdP と、それを受け入れてアクセストークンを返す MCP サーバーの認可サーバーで、1 つの製品が両方の役割を担うこともあります。表には、少なくとも一方の役割について公開ドキュメントがある製品を載せ、各ベンダー自身のリリース表記を使います。**Available** は先行リリースの表記がない本番リリース、**Early access** はプラン・環境・申請によって提供が限られるもの、**Experimental** はベンダーの先行リリースの表記です。ID-JAG は IETF の OAuth ワーキンググループが [draft-ietf-oauth-identity-assertion-authz-grant](https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/) で定めていますが、実装ごとに追っているドラフトの版が違うため、対象の版は各ベンダーのドキュメントで確かめるよう求めています。
+**依存と前提が変わりました。** System Requirements は「Linux のシステム」から「システム」になり、Rust と Cargo は「最新の安定版」から「1.88 以降」になりました。`Cargo.toml` の依存からは `genai`・`tracing`・`tracing-subscriber` が外れ、`jsonschema`（`0.59`）と `serde`（`derive` 機能付き）が加わりました。rmcp は `0.8.0` から `3.4` になり、`default-features = false` でクライアントと子プロセスの stdio トランスポートの機能だけを有効にしています。`reqwest` は `0.12.23` から `0.13`（`json` 機能付き）になりました。
 
-表の内容は次のとおりです（「—」は原文で空欄のセル）。
+**Claude を Messages API で直接呼ぶようになりました。** これまでは `genai` クレートの `Client` で Claude を呼び、ツールも `genai` の型で表していました。新しいコードは `reqwest` で Messages API の `/v1/messages` に POST し、`x-api-key` と `anthropic-version`（`2023-06-01`）のヘッダーを付けます。直接呼ぶ理由として、各応答の content block をそのまま保てることを挙げており、アシスタントの応答は次のリクエストで、thinking block とその `signature` も含めて手を加えずに送り返します。`ANTHROPIC_API_KEY` はリクエストのたびに読み、`ANTHROPIC_BASE_URL` でエンドポイントを差し替えられます（ローカルの代替サーバーに向けるため）。定数として `MAX_TOKENS`（`10000`。thinking と応答の合計の上限）・`MAX_TOOL_TURNS`（`10`）・`REQUEST_TIMEOUT`（120 秒）が加わりました。
 
-| 製品 | ID-JAG の発行 | ID-JAG の受け入れ | 備考 |
-|---|---|---|---|
-| Athenz | Available | Available | オープンソース。ZTS がトークン交換で ID-JAG を発行し、JWT bearer grant で受け入れる |
-| Auth0 | — | Early access | Cross App Access for Resource Apps。Enterprise・B2B Pro・B2B Essential の各プランで early access。外部の OIDC や SAML のエンタープライズ接続から来た ID-JAG を検証する |
-| AuthPlane | — | Available | MCP 向けのセルフホスト型の認可サーバー。JWT bearer grant で受け入れ、v0.2.0 から既定で有効 |
-| Descope | Available | Available | Agentic Identity Hub がエージェント向けにトークン交換で発行する。MCP サーバーの認可サーバーとしては、テナントごとの信頼する発行元に照らして検証し、Descope のアクセストークンを返す |
-| Janssen Project | Available | Available | 2.2.0 以降。`identity_assertion_authz_grant` のフィーチャーフラグで既定は無効。ドラフトの revision 04 が対象 |
-| Keycloak | — | Experimental | 26.7.0 以降、`identity-assertion-jwt` のフィーチャーフラグで受け入れ側に対応。ガイドはドラフトの revision 01 が対象 |
-| Okta | Available | Available | Cross App Access（XAA）。発行は Identity Engine の組織向けの Okta SSO に含まれ、ユーザーごと・リソースアプリごとに月 250 件まで。それを超えるには Okta for AI Agents が要る。受け入れは、カスタム認可サーバーが Okta の発行した ID-JAG を、Okta for AI Agents とともに JWT bearer grant で受け入れる |
-| Ping Identity | Available | Available | PingFederate 13.1 以降。SP 接続でのトークン交換で発行し、OAuth assertion grant の IdP 接続で受け入れる |
-| Scalekit | — | Early access | Enterprise プラン。ワークスペースごとに、申請に応じて XAA を有効にする |
-| Stytch | — | Available | B2B プロジェクトの Connected Apps が、外部の従業員向け IdP の ID-JAG を JWT bearer grant で Stytch のアクセストークンに交換する |
-| ThunderID | Available | Available | LF Decentralized Trust のオープンソースの IAM プロジェクトで、1.0 以降。両方の役割を扱う Enterprise-Managed Authorization 専用のガイドがある |
-| WorkOS AuthKit | — | Early access | 環境ごとに、申請に応じて Cross App Access を有効にする。その後はサーバーのコードの変更が要らない。Standalone MCP Auth では使えない |
+**サーバーとはプロトコルの版を交渉して接続します。** `connect_to_server` は、`ClientConfig` でクライアントの名前を `mcp-client-rust` とし、`serve_with_lifecycle` に `ClientLifecycleMode::Auto` を渡して接続します。これは `server/discover` で `2026-07-28` を試し、`2025-11-25` の `initialize` のハンドシェイクにフォールバックするもので、Python と TypeScript のクライアントに合わせたものだと説明しています。rmcp の `serve` だけでは旧来のハンドシェイクしか行わず、根が配列の `outputSchema` のような現行リビジョンの機能が使えないためです。接続すると、取り決めたプロトコルの版をツール名と並べて表示します（例: `Connected over protocol 2026-07-28 with tools: ["get_alerts", "get_forecast"]`）。
 
-発行と受け入れの両方が Available なのは 6 製品（Athenz・Descope・Janssen Project・Okta・Ping Identity・ThunderID）です。表の後には、ID-JAG を受け入れるサーバー側のフレームワークとして、Cloudflare の [`workers-oauth-provider`](https://github.com/cloudflare/workers-oauth-provider)（0.7.0 以降、実験的な `enterpriseManagedAuthorization` オプション）と FastMCP 4.0 以降（ベータ）が挙がっています。また、要求側のアプリケーションも含むコミュニティの一覧として oauth.net の [Cross-App Access directory](https://oauth.net/cross-app-access/) を紹介し、MCP クライアントの対応状況は client matrix を見るよう案内しています。
+**ツールの結果を検証する節が新設されました。** 「Validating Structured Tool Output」の節の説明によると、仕様はツールが宣言した `outputSchema` に照らして `structuredContent` を検証するようクライアントに求めていますが、rmcp はこれを行いません。そこでクライアントがツールごとに `jsonschema` の検証器をコンパイルしておき、成功した結果を検証します。`is_error` が立った結果は対象外で、スキーマを宣言したツールが構造化された内容を返さなければエラーとします。
 
-同じページでは、ほかに 2 つの変更がありました。冒頭と Related resources にある仕様へのリンクが、`ext-auth` リポジトリの `specification/stable/enterprise-managed-authorization.mdx` から `specification/stable/enterprise-managed-authorization/2026-07-28/enterprise-managed-authorization.mdx` に変わりました（版のディレクトリが挟まった形。ハイライト 3 参照）。また What it is の節で、IdP の例として挙げていた「Okta, Azure AD, or a corporate SSO system」の括弧書きが削除されました。
+**ツール呼び出しはループになりました。** これまでの `process_query` は、最初の応答で求められたツールを実行して結果を送り、次の応答のテキストを集めて終わっていました。新しいコードは、Claude がツールを呼ばずに答えるまで、最大 `MAX_TOOL_TURNS` 回ループします。サーバーが拒否したツール呼び出しはクエリを打ち切らずに `is_error` 付きの `tool_result` として返し、すべての `tool_use` に対応する結果を 1 つの user メッセージにまとめて送ります。結果は、これまでの「結果全体を JSON にした文字列」ではなく、テキストのブロックをつないだものを送り、テキストのブロックが無いときは `structured_content` をシリアライズして代わりに送ります。上限に達すると `[Stopped after 10 tool-use turns]` を加えます。
 
-- [Enterprise-Managed Authorization - MCP Docs](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#implementation-support)
+**API キーが無くても接続までは試せます。** `.env` は任意になり（無ければ環境変数から読む）、`ANTHROPIC_API_KEY` が未設定か空なら、サーバーに接続してツールを一覧した後、キーの設定方法を表示して終了します。
 
-## 2. Filesystems Working Group が対象をファイルシステムの意味論全般に広げた
+節の構成は、「Converting MCP Tools」がなくなって同じ `convert_tools` 関数が末尾の新しい節「Describing Tools to the Model」に移り（Messages API 向けの `ToolDefinition` を返す）、「Query Processing Logic」が「Sending Model Requests」の前に移りました。各節の詳細は「大幅に更新されたページ」の表を参照してください。
 
-Filesystems Working Group の憲章（Filesystems Charter）が書き換えられました（追加 42 行・削除 22 行）。
+- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#server-connection-management-5)
+- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#validating-structured-tool-output)
 
-**Mission Statement** はこれまで、MCP の Resources を双方向にして、エージェントが入力を読んだサーバーへ結果を書き戻せるようにすることを目的に掲げ、現状の Resources は読み取りの方向しか扱っていないとして、書き込み操作・楽観的並行性制御・変更通知とキャッシュとの関係を扱う単一の Extensions Track SEP を作るとしていました。新しい記述では、Resources を一般的なファイルシステムの意味論にそろえ、MCP クライアントが提供元をまたいで、ファイルシステムの形をしたリソースを見つけ・取得し・変更するための 1 つのインターフェースを、効率よく使えるようにすることを目的としています。WG はどのファイルシステムの意味論が MCP に合うかを見極め、それを Resources に一貫して適用する 1 つ以上の Extensions Track SEP を作ります。
+## 2. MCP Inspector の CLI に負荷試験と CI ゲートが加わった
 
-**In Scope** の仕様作業は、「Filesystem Operations for Resources」という仮題の単一の SEP から、リソースの操作を定める 1 つ以上の Extensions Track SEP に変わり、扱う項目が 3 つから 7 つになりました。
+CLI client の CI gates の節に、`--load-max-error-rate <fraction>` と `--load-max-p99 <ms>` の項目が加わり、負荷試験の `--load` の一連のフラグが説明されました。
 
-| 新 | 項目 | 内容 | 旧との対応 |
-|---|---|---|---|
-| 1 | Scoped listing and directory traversal | URI を起点にした、階層を意識した一覧を検討する。URI の 1 階層下を列挙する `readdir` に相当する操作、サブツリー全体の走査、両者と既存の平坦な `resources/list` との関係を含む | 新規 |
-| 2 | Server-side search | サーバー側で評価する検索と glob マッチを検討し、すべてのリソースを一覧して読まなくても内容を見つけられるようにする。サーバーが受け付ける URI を示すリソーステンプレートを超えるもので、1 と合わせて、クライアントがサーバー上の内容を見つける方法を扱う | 新規 |
-| 3 | Read semantics | MCP に合う読み取りの意味論を検討する。1 回のリクエストで複数の URI を読む一括読み取りと、プロトコルが `seek` 操作を扱えるかを含む | 新規 |
-| 4 | Write and metadata operations | 作成・更新・削除と、本体を取得せずに 1 つの URI の有無・サイズ・最終更新日時を答えるメタデータの読み取り（`stat`）を定める | 旧 1（Operations） |
-| 5 | Optimistic concurrency control | 2 つの書き手が更新を失わずに済む方法と、存在しない場合だけ作成する前提条件でのリソースの作成を定める | 旧 2（文面は同じ） |
-| 6 | Typed errors | not found・already exists・precondition failed・permission denied などのリソース操作のエラーを定め、サーバーが違ってもクライアントが同じように失敗を扱えるようにする。現状、存在しないリソースには汎用の `-32602`（Invalid Params）が返る | 新規 |
-| 7 | Change notification and caching | `notifications/resources/updated`、有効期間とキャッシュ範囲のフィールド `ttlMs`・`cacheScope`、`lastModified` 注釈との関係を定める | 旧 3（対象が「書き込み」から「ファイルシステムの操作」に） |
+- **`--load`**（`tools/call --tool-name` と併用）: ツールを繰り返し並行して呼び、結果の代わりにレイテンシとエラー率の要約を出す。実行は `--load-duration <sec>`（`--load-requests` を指定しないときの既定は `10`）と `--load-requests <n>` で区切られ、実行中の呼び出しは最後まで終える
+- **`--load-concurrency <n>`**（既定 `10`）: 同時に実行中にする呼び出しの上限
+- **`--load-connections <n>`**（既定 `1`、`--load-concurrency` 以下、HTTP と SSE のサーバーのみ）: 計測を始める前に開いておく独立したセッションの数。呼び出しをこれらに振り分ける
+- **`--load-rate <n>`**（既定は無制限）: 1 秒あたりに始める呼び出しの上限
+- **`--load-max-error-rate <fraction>` と `--load-max-p99 <ms>`**: 負荷試験をゲートにする。要約を出した後、失敗した呼び出しの割合が指定の比率（`0`〜`1`。`0` なら 1 件でも失敗があれば失敗）を超えたとき、p99 のレイテンシが指定のミリ秒を超えたとき、または 1 件も呼び出しが完了しなかったときに、終了コード `10` で終わる
 
-周辺の記述も、書き込みからファイルシステムの意味論全般へと言い換えられています。
+例として `mcp-inspector --cli <server> --method tools/call --tool-name get_weather --load --load-requests 200 --load-max-p99 500` が加わりました。
 
-- **Documentation**: 仕様に記すものが「新しい操作」から「採用したファイルシステムの意味論」に、サーバー作者向けの指針が「リソースの書き込み経路とツールベースの経路のどちらを選ぶか」から「リソースの操作とツールベースの操作のどちらを選ぶか」になった
-- **Out of Scope**: 「POSIX など、OS のファイルシステム API の完全な写像」が加わった（WG はクライアントとサーバーのプロトコルに合う意味論を選び、除外したものはその理由を記録する）。認可ポリシーの除外対象は「書き込み」から「ファイルシステムの操作」になった
-- **Related Groups**: File Uploads WG の項目に、発見・検索・メタデータ・小さなインラインの書き込みは大きな内容の転送に依存しないので独立に進められること、ツールがすでにリソースリンクを返すことから、ファイルを受け取るツールの入力が Resource への参照を受け取れるかについても両グループで合意すべきことが加わった。Agents IG の項目は、マルチエージェントやジョブのオーケストレーションの仕組みを「共有の書き込み経路」ではなく「共有のファイルシステムの意味論」の主な利用者と位置付けた
-- **Success Criteria**: 1 つ目の基準が、範囲を絞った一覧とディレクトリの走査、サーバー側の検索、一括読み取りを含む読み取り・書き込み・メタデータの意味論を定める 1 つ以上の Extensions Track SEP の採択に変わった。採択される成果物には、`seek` についての WG の結論の記録、楽観的並行性制御の仕組みと型付きのエラーの一式の定義、`notifications/resources/updated`・`ttlMs`・`cacheScope`・`lastModified` との関係の規定が求められる。4 つ目の基準の「書き込み経路を使う独立した 2 つのサーバー実装」は「採用したファイルシステムの操作を使う独立した 2 つのサーバー実装」になった
+Exit codes and error envelopes の表には 2 つの終了コードが加わりました。`10` は、`--load` の実行が 2 つのしきい値のどちらかを破ったときで、要約が先に出て、エラーのエンベロープの `code` がしきい値の名前（`load_error_rate_exceeded` か `load_p99_exceeded`）になります。`11` は、サーバーが HTTP 429 を返したときで、`code` は `rate_limited` です。エンベロープには `method` が入り、サーバーが解釈できる `Retry-After` ヘッダーを送ったときは、`retryAfter`（ヘッダーの値そのまま）と `retryAfterMs` も入ります。`code` の値の一覧にも `rate_limited` が加わりました。
 
-**Changelog** の表には、初版（2026年08月24日「Initial charter」）の上に 2 行が加わりました。2026年09月10日の「Broaden scope to filesystem semantics」と 2026年10月27日の「Add search, bulk reads and typed errors to resource scope」で、2026年09月10日付けの行も今回の取り込みで初めて現れたものです。なお Active Work Items の表は変わっておらず、「SEP: Filesystem Operations for Resources」（Ideating）の行も旧来の仮題のまま残っています。
+mcpdo の `tools/call` も同じ一連のフラグを受け付け、同じ既定値と同じ要約で、デーモンの中で接続に対して実行します（`--load-connections` の追加のセッションは保存済みの資格情報だけで開き、実行が終わるまで同じ接続への後続のコマンドは待たされる）。Configuration and flags の CLI-only flags の表にも「Load test」の行として 8 つのフラグが加わりました。
 
-- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#in-scope)
+- [CLI client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#ci-gates)
+- [mcpdo connection client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#addressing-a-connection)
 
-## 3. OAuth Client Credentials の SDK 例が認可サーバーの発行元を固定するようになった
+## 3. Inspector の Web バックエンドが Host ヘッダーを検査し UI を HTTPS で配信できるようになった
 
-OAuth Client Credentials の SDK examples の節で、資格情報の形式を選ぶよう促す文の後に、「各サンプルは資格情報を発行した認可サーバーの発行元（issuer）を固定しており、MCP サーバーが別の認可サーバーを示しても、クライアントはそこへ資格情報を送らない」という説明が加わりました。これに合わせて、4 つのサンプルが次のように変わっています。
+**`Host` ヘッダーの許可リストが加わりました。** Web client の Host binding and origins の節によると、この許可リストは `GET /` を含むすべての経路の前で働き、`Host` が次のいずれでもなければ `403` を返します。ポートは比べません。
 
-- **TypeScript**: クライアントシークレットを使う `ClientCredentialsProvider` と、JWT の秘密鍵を使う `PrivateKeyJwtProvider` の両方に `expectedIssuer: "https://auth.example.com"` が加わった
-- **Python**: `ClientCredentialsOAuthProvider` と `PrivateKeyJWTOAuthProvider` の両方で、`scopes="read write"` が `scope="read write"` に改められ、`issuer="https://auth.example.com"` が加わった
+- `localhost` か `*.localhost` の名前
+- IPv4 か、角括弧で囲んだ IPv6 のリテラル
+- バインドしたホスト（Configuration and flags によると、ワイルドカードでない場合）
+- `ALLOWED_ORIGINS` の各エントリのホスト名
+- `MCP_INSPECTOR_ALLOWED_HOSTS` のエントリ
 
-**あわせて、ext-auth の仕様へのリンクが版付きのパスになりました。** OAuth Client Credentials の冒頭と Related resources にある仕様へのリンクは、`specification/draft/oauth-client-credentials.mdx` から `specification/stable/oauth-client-credentials/2026-07-28/oauth-client-credentials.mdx` に変わりました。Enterprise-Managed Authorization の仕様へのリンクも `specification/stable/enterprise-managed-authorization/2026-07-28/` 配下になり（ハイライト 1 参照）、Authorization Extensions の Specification の節で両拡張の仕様の置き場所として示すリンクは、`ext-auth` リポジトリの `specification/draft` から `specification/stable` に変わりました。SEP-2133（Extensions）の Official Extensions の節で、拡張の例として挙げているリンクも、同じ OAuth Client Credentials の新しいパスに差し替えられています。この `specification/stable/<name>/2026-07-28/` という形は、Extensions Overview が Stable の拡張について「コアプロトコルのリビジョンに対応する版として公開する（例: `specification/stable/<name>/2026-07-28/`）」としている置き場所と同じ形です。
+同じ節は、同一オリジンの `GET /` には `Origin` ヘッダーが付かないのでオリジンの許可リストでは検査されず、DNS リバインディングを使うページがこのページを読み込んでトークンを読み取るのを止めるのは `Host` の検査だ、と説明しています（`GET /` は再読み込みやブックマークでも使えるよう、トークンを HTML に埋め込んで返す）。Security の The web backend and its API token の節にも、同じ説明が加わりました。
 
-- [OAuth Client Credentials - MCP Docs](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials#sdk-examples)
-- [Authorization Extensions - MCP Docs](https://modelcontextprotocol.io/extensions/auth/overview#specification)
+Configuration and flags の Web backend environment variables の表には `MCP_INSPECTOR_ALLOWED_HOSTS` が加わりました。カンマ区切りで、`Host` を書き換えるリバースプロキシのために許可するホスト名を足すもので、`.` で始まるエントリ（`.example.com`）はそのドメインとサブドメインを許します。スキーム・ポート・パス・ワイルドカード・空白を含むエントリは警告とともに捨てられます。
 
-## 4. Build an MCP client のサンプルで応答とツール結果の扱いが改められた
+**Web UI を `https` で配信できるようになりました。** 同じ表に `INSPECTOR_TLS_KEY_PATH`（Web UI のリスナーの PEM の秘密鍵）と `INSPECTOR_TLS_CERT_PATH`（その鍵の PEM の証明書またはチェーン）が加わりました。両方を設定すると UI を `https` で配信します。片方だけの設定、読めないファイル、組にならない鍵と証明書は起動時のエラーで、`http` にはフォールバックしません。空の値は未設定とみなします。対象は UI のリスナーだけで、サンドボックスと app-origin のリスナーは `http` のままです。両方が設定されていると、CLI の `--print-handoff` は `https://` のディープリンクを出します。
 
-Build an MCP client のチュートリアルで、クエリを処理するサンプルコードが 3 つの言語のタブで書き換えられました。いずれも、モデルがツールを呼び出した後の処理です。
+これに合わせて、Web client の Apps の節には、サンドボックスの URL が既定で `http` のため `https` の Inspector のページでは混在コンテンツとしてフレームが止められる点は、プロキシ経由で `https` にした場合も 2 つの TLS の変数で `https` にした場合も同じだ、という説明が加わりました。Recipes の Hosting on a network の表の「Behind TLS or a reverse proxy」の行にも、プロキシが `Host` を `ALLOWED_ORIGINS` に無い名前に書き換えるなら `MCP_INSPECTOR_ALLOWED_HOSTS=inspector.example.com`（ドメインとサブドメインなら `.example.com`）も設定しないとバックエンドが `403` を返すこと、プロキシを使わなければ 2 つの TLS の変数で UI 自体を `https` で配信できることが加わりました。
 
-- **TypeScript**（Query Processing Logic）: ツールの結果を送った後の応答について、これまでは `response.content[0]` だけを見て、それがテキストならその文字列を、そうでなければ空文字列を加えていた。新しいコードは応答のブロックを順に見て、テキストのブロックをすべて加える
-- **Kotlin**（Query processing logic）: 同様に、`aiResponse.content().first()` の先頭のブロックからテキストを取り出していた処理が、`aiResponse.content().forEach` でテキストのブロックをすべて加える処理になった
-- **Ruby**（Query Processing Logic）: これまでは応答の `tool_use` ブロックごとに、ツールの結果を 1 件だけ含む user メッセージを加えてモデルを呼び直していた。新しいコードは、まずすべてのツールの結果を集め、それらを 1 つの user メッセージにまとめて送ってから、モデルを 1 回だけ呼び直す。その箇所には「すべての `tool_use` ブロックには、1 つの user メッセージの中に対応する `tool_result` が要る」というコメントが付いている
+- [Web client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#host-binding-and-origins)
+- [Configuration and flags - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration#web-backend-environment-variables)
 
-ほかのタブにも小さな変更があります（詳細は「大幅に更新されたページ」を参照）。
+## 4. Java と Kotlin のサンプルに対応するプロトコルの版の注記が加わった
 
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)
+Build an MCP server の Java と Kotlin のタブ、Build an MCP client の Java のタブの冒頭に、NOTE が加わりました。サンプルは、各 SDK（Java SDK・Kotlin SDK）の最新の安定版が対応する MCP プロトコルの版 `2025-11-25` を使う、という内容です。サーバーの NOTE は「その版にも対応するクライアントからは接続できるが、`2026-07-28` にしか対応しないクライアントは接続できない」、クライアントの NOTE は「その版を受け付けるサーバーには接続できるが、`2026-07-28` しか受け付けないサーバーには接続できない」としており、いずれも仕様の versioning の backward compatibility の節へ案内しています。
 
-## 5. Example Servers の外部サーバーの案内先が MCP Registry になった
+SDKs の Getting Started も、「各 SDK は同じ機能を提供し、その言語の慣用とベストプラクティスに従う」から、「各 SDK はその言語の慣用とベストプラクティスに従う。SDK は新しいプロトコルのリビジョンを独自の予定で採用するので、対応するリビジョンは各 SDK のドキュメントで確かめる」に改められました。
 
-Example Servers では、これまで 2 つの h2 の節で外部のサーバーを案内していました。「Official integrations」は企業が自社のプラットフォーム向けに保守するサーバーの一覧として、「Community implementations」はコミュニティのメンバーが保守するサーバーの一覧として、それぞれ GitHub の `modelcontextprotocol/servers` リポジトリの該当セクションへのリンクを置いていました。この 2 つの節が「More servers」の 1 つの節にまとまり、企業やコミュニティのメンバーが公開したサーバーは MCP Registry（[registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io/)）で探すよう案内する 1 文になりました。
+同じタブでは、ほかにも次の変更がありました。
 
-同じページでは、ほかに 2 つの項目が削除されました。
+- **Build an MCP server の Java**: System requirements の Spring Boot が「3.3.x 以上」から「4.1.x 以上」になった。Create an MCP Client manually の例で、`new StdioClientTransport(stdioParams)` が `new StdioClientTransport(stdioParams, McpJsonDefaults.getMapper())` になった
+- **Build an MCP server の Kotlin**: `build.gradle.kts` の `mcpVersion` が `0.9.0` から `0.16.0` になり、`repositories { mavenCentral() }` のブロックが加わった。ビルドされる jar の名前が `weather-0.1.0-all.jar` から `weather-all.jar` になり、実行コマンド、Claude for Desktop の設定例（macOS/Linux と Windows）、設定の説明の 4 か所が改められた
+- **Build an MCP client の Java（Spring AI）**: リポジトリを clone した後の `cd` のパスの先頭に `spring-ai-examples/` が付いた。`spring.ai.mcp.client.toolcallback.enabled` の説明が「既定で無効」から「既定で有効」になった。`ChatClient` の例が `.defaultTools(SyncMcpToolCallbackProvider.builder().mcpClients(mcpSyncClients).build())` と `MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build()` を使う形になり、会話の記憶は `InMemoryChatMemory` から `MessageWindowChatMemory` になった
 
-- **Configuring with Claude**: 設定の JSON の例から、`@modelcontextprotocol/server-github` を `npx` で起動し `GITHUB_PERSONAL_ACCESS_TOKEN` を渡す `github` サーバーの項目が削除され、`memory` と `filesystem` の 2 つが残った
-- **Additional resources**: servers リポジトリの Resources セクション（MCP に関連するリソースやプロジェクトの一覧）への案内が削除され、GitHub Discussions への案内だけが残った
+- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#system-requirements-3)
+- [SDKs - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#getting-started)
 
-Reference implementations の節（現行の参照サーバー 7 件と、アーカイブ済みのサーバーの案内）は変わっていません。このページは `llms-full.txt` に 2 回収録されており、両方に同じ変更が入っています（それぞれ追加 2 行・削除 15 行）。
+## 5. llms-full.txt でタブが印付きの引用として出るようになった
 
-- [Example Servers - MCP Docs](https://modelcontextprotocol.io/examples#more-servers)
+**`llms-full.txt` で、タブ・アコーディオン・カードの書き方が変わりました。** これまでタブは `**Python**` のような太字の行で始まり、中身は印のない地の文として続いていました。今回からは `> [tab] Python` の行で始まる引用のブロックになり、中身の行もすべて `> ` 付きで続きます（中のコールアウトは `> > [!NOTE]` のような二重の引用になる）。アコーディオンとカードは以前から `> **題**`・`> **[題](url)**` のような引用の中の太字の行でしたが、それぞれ `> [accordion] 題`・`> [card] [題](url)` になりました。
+
+- **数**: `[tab]` が 41 行（8 ページ）、`[accordion]` が 8 行（3 ページ。うち 1 行は Build an MCP client の Kotlin のタブの中にあり `> > [accordion]` になっている）、`[card]` が 83 行（21 ページ）で、合わせて 24 ページです。字下げの後ろが `>` で始まる行は 1,641 行から 8,303 行に、二重の引用のコールアウトは 2 行から 26 行になりました
+- **差分への影響**: 生の差分の追加 10,113 行・削除 9,771 行のほとんどはこの書き換えで、差分のあった 32 ページのうち 17 ページはこの書き換えだけです（一覧は「軽微な更新」の「その他」）。内容の変わった 15 ページのうち 7 ページにも、この書き換えがあります
+- **見出しの数への影響**: タブの中の見出しが引用の中に入ったので、行頭が `#` の見出し（h2〜h6、コードフェンスの外）だけを数えると 2,628 から 2,415 に減って見えます。引用の中も数えると 2,631 から 2,632 で、増えた 1 つは Build an MCP client の Rust のタブで 2 つの節が加わり 1 つがなくなった差です（ハイライト 1）
+
+**行数の数え方**: 本サマリのページごとの行数は、両側で `[tab]`・`[accordion]`・`[card]` の印の行を元の太字の行に戻し、行頭（字下げの後ろ）の `> ` を外し、空行を除いてから、ページごとに difflib（autojunk 無効）で比べたものです。2 回収録されている `examples` は写しごとに比べました（今回はどちらも変わっていない）。
 
 ## 新規追加されたページ
 
@@ -138,70 +129,122 @@ Reference implementations の節（現行の参照サーバー 7 件と、アー
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Filesystems Charter**](#1-filesystems-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#in-scope)):  
-  Filesystems Working Group の憲章で、Mission Statement・In Scope・Out of Scope・Related Groups・Success Criteria を、Resources への書き込みからファイルシステムの意味論全般へと対象を広げる形に書き換え、Changelog に 2 行を加えた（追加 42 行・削除 22 行。詳細はハイライト 2 参照）。
-- [**Build an MCP client**](#2-build-an-mcp-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)):  
-  TypeScript・Kotlin・Ruby のクエリ処理のサンプルを書き換えたほか、Java（Spring AI）の設定・C# の `using`・Ruby の依存 gem からそれぞれ 1 項目を削除した（追加 28 行・削除 23 行。詳細はハイライト 4 参照）。
+- [**Build an MCP client**](#1-build-an-mcp-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#imports-and-client-structure)):  
+  Rust のタブを、Messages API の直接の呼び出し・プロトコルの版の交渉・`outputSchema` による検証・ツール呼び出しのループを備えた形に書き直し、Java のタブにプロトコルの版の注記を加えて Spring AI の例を改めた（追加 445 行・削除 195 行。詳細はハイライト 1・4 参照）。
+- [**Configuration and flags**](#2-configuration-and-flags) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration#catalog-file-format)):  
+  Inspector に固有のカタログの項目と既定値の表（27 行）を Catalog file format に加え、負荷試験のフラグ、TUI・mcpdo が読む環境変数、`Host` の許可リストと TLS の環境変数などを表に足した（追加 47 行・削除 8 行）。
 <!-- light:updated-pages:end -->
 
-## 1. Filesystems Charter
+## 1. Build an MCP client
 
-変更は Mission Statement・Scope（In Scope・Out of Scope・Related Groups）・Success Criteria・Changelog の各節にあり、Group Type・Leadership・Authority & Decision Rights・Membership・Operations の各節と、Deliverables & Success Metrics の Active Work Items の表は変わっていません。In Scope のうち Cross-Cutting Concerns の項目（SEP-2571・SEP-2532・SEP-1708 の 3 つの提案を 1 つの設計にまとめる）と、Out of Scope の `files/*` の並立する仕組みとホスト側のサンドボックスを除外する 2 項目も、そのままです。内容はハイライト 2 を参照してください。
+変更（追加 445 行・削除 195 行）は Rust のタブ（追加 438 行・削除 190 行）と Java のタブ（追加 7 行・削除 5 行）にあり、Python・TypeScript・Kotlin・C#・Ruby のタブは書式の書き換えだけです。Java のタブの変更はハイライト 4 を参照してください。Rust のタブの変更は、節ごとに次のとおりです（内容はハイライト 1）。
 
-- [Filesystems Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/filesystems#mission-statement)
+| 節 | 変更 |
+|---|---|
+| System Requirements | 対象を「Linux のシステム」から「システム」に。Rust と Cargo を 1.88 以降に |
+| Setting Up Your Environment | `Cargo.toml` の依存を差し替え、`Cargo.toml` の後の説明を Messages API を直接呼ぶ理由と `jsonschema` の役割に |
+| Setting Up Your API Key | `.env` があれば読み、シェルで `ANTHROPIC_API_KEY` を export してもよい、と追加 |
+| Imports and Client Structure | 定数と、Messages API 向けの型（`Message`・`ToolDefinition`・`MessagesRequest`・`MessagesResponse`）と `block_type` 関数を追加。`MCPClient` に `http`・`output_schemas` を持たせた |
+| Client Initialization | `impl MCPClient` のブロックをここで開き、タイムアウト付きの `reqwest::Client` を作る |
+| Validating Structured Tool Output | 新設 |
+| Server Connection Management | `ClientConfig` と `ClientLifecycleMode::Auto` で接続し、取り決めた版を表示して、`outputSchema` の検証器をコンパイルする |
+| Query Processing Logic | 「Sending Model Requests」の後から前に移り、最大 `MAX_TOOL_TURNS` 回のループと `is_error` の `tool_result` を備えた |
+| Sending Model Requests | `/v1/messages` への直接の POST に |
+| Interactive Chat Interface | エラーを `{:#}` で、`anyhow` の文脈ごと 1 行に出す |
+| Cleanup | ここで `impl MCPClient` のブロックを閉じる |
+| Main Entry Point | `.env` を任意にし、API キーが無ければツールを一覧して終了する |
+| Describing Tools to the Model | 新設。旧 Converting MCP Tools の `convert_tools` が移り、`ToolDefinition` を返す |
+| Verify the Complete File | 確認項目に `validate_tool_output`、`impl Message` の `user`・`assistant`、`block_type` を追加 |
+| Running the Client | 取り決めた版を表示することと、その出力例を追加 |
+| How It Works | 6 つの手順を、検証・`is_error`・`MAX_TOOL_TURNS` までのループを含む形に |
+| Best Practices | 「Conversation History」の項目を加えて 4 項目に。Security の項目に構造化された結果の検証を追加 |
+| Troubleshooting | `.env` が任意になったことと、新しいエラーメッセージ（`[... failed: ...]`、出力スキーマの不一致、`Anthropic request failed with ...`、`[Stopped after 10 tool-use turns]`）を説明 |
 
-## 2. Build an MCP client
+- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#imports-and-client-structure)
 
-変更（追加 28 行・削除 23 行）は、言語のタブごとに次のとおりです。Python と Rust のタブは変わっていません。
+## 2. Configuration and flags
 
-| タブ | 節 | 行数 | 変更 |
-|---|---|---|---|
-| TypeScript | Query Processing Logic | 追加 5・削除 3 | ツール呼び出し後の応答のテキストブロックをすべて加える（ハイライト 4） |
-| Java | MCP Client Configuration | 削除 1 | Spring AI の `application.yml` の例で、`spring.ai.mcp.client.stdio` の下の `root-change-notification: true` を削除 |
-| Kotlin | Query processing logic | 追加 3・削除 1 | ツール呼び出し後の応答のテキストブロックをすべて加える（ハイライト 4） |
-| C# | Basic Client Structure | 削除 1 | `using ModelContextProtocol.Protocol.Transport;` を削除 |
-| Ruby | Setting Up Your Environment | 追加 2・削除 2 | 2 つのコマンド例（`touch client.rb` の版と `new-item client.rb` の版）で、`bundle add` から `base64` を外し `anthropic dotenv mcp` にした |
-| Ruby | Query Processing Logic | 追加 18・削除 15 | ツールの結果を 1 つの user メッセージにまとめて送る（ハイライト 4） |
+Inspector の起動・フラグ・環境変数をまとめたページで、次の変更がありました（追加 47 行・削除 8 行）。
 
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)
+- **The launcher owns exactly two things**: `-V` / `--version` の行が加わった。ランチャーのヘルプには載っているがランチャー自身は処理せず、選んだクライアントに渡され、クライアントが Inspector の版を出す（`mcp-inspector -V` は Web クライアント、`mcp-inspector --cli -V` は CLI を通して出す）
+- **CLI-only flags**: 「Load test」の行（ハイライト 2）
+- **Read by the launcher**: TUI も、自身のトップレベルの失敗について `MCP_DEBUG` と `DEBUG` を同じ規則で読む、と追加
+- **CLI and TUI**: 「Read by」の列で、`MCP_CATALOG_PATH`・`MCP_CLIENT_CONFIG_PATH`・`MCP_OAUTH_CALLBACK_URL`・`MCP_STORAGE_DIR`・`MCP_INSPECTOR_OAUTH_STATE_PATH`・`MCP_AUTO_OPEN_ENABLED` の 6 つに mcpdo が加わった。新しい変数として、`MCP_INSPECTOR_LOG_DIR`（TUI の `auth.log` の置き場所。既定は `~/.mcp-inspector`）、`LOG_LEVEL`（そのログのレベル。pino のレベル名で、既定は `info`）、`NO_COLOR`（CLI と mcpdo。空でない値を入れると、人が読む出力の ANSI の装飾を止める。対象は mcpdo の `--format text` の出力すべて（`--plain` と同じ）と、CLI が標準エラーに出すサインインの案内）が加わった
+- **Web backend environment variables**: `MCP_INSPECTOR_ALLOWED_HOSTS`・`INSPECTOR_TLS_KEY_PATH`・`INSPECTOR_TLS_CERT_PATH`（ハイライト 3）
+- **Catalog file format**: `"type": "http"` を `"streamable-http"` の別名として受け付け、書き戻すときは長い形にする、と追加。さらに、Inspector に固有の項目と既定値の表（27 行。最上位の 16 項目と `oauth.` の 11 項目）が加わった
+
+カタログの項目の表の主なものは次のとおりです（既定値が空欄の項目は省略）。
+
+| 項目 | 既定値 | 意味 |
+|---|---|---|
+| `protocolEra` | `legacy` | `legacy`・`auto`・`modern` のいずれか |
+| `elicitCapability` | `both` | サーバーに示す elicitation の能力（`off`・`url`・`form`・`both`）。mcpdo だけが読む |
+| `modernLogLevel` | `debug` | modern の接続でリクエストごとに付けるログのレベル、または `off`。legacy の接続では無視 |
+| `connectionTimeout` | `30000` | 接続時のタイムアウト（ミリ秒）。`0` で無効 |
+| `taskTtl` | `60000` | **Run as task** で作ったタスクの TTL（ミリ秒） |
+| `autoRefreshOnListChanged` | `false` | `list_changed` で、表示の印を付けるだけでなく、ツール・リソース・プロンプトの一覧を読み直す |
+| `paginatedLists` | `false` | 読み込み時に全ページをまとめる代わりに、一覧を 1 ページずつ取る |
+| `suppressNotificationStream` | `false` | legacy の Streamable HTTP のみ。単独の `GET` の通知ストリームを開かない |
+| `maxFetchRequests` | `1000` | このサーバーについて Network のログに残す HTTP リクエストの数。`0` で無制限 |
+| `skillCatalogMaxSkills` | `256` | 1 回のスキルの検証で読むスキルの最大数 |
+| `skillCatalogMaxBytes` | `67108864` | 1 回のスキルの検証で読む合計の最大バイト数（64 MiB） |
+| `oauth.onInsufficientScope` | `reauthorize` | `403 insufficient_scope` のときの方針（`reauthorize` か `throw`） |
+| `oauth.requestRefreshToken` | `true` | 登録時に `refresh_token` のグラントを宣言するか。`false` のときだけ書き出す |
+| `oauth.scopeOnRefresh` | `false` | リフレッシュトークンのリクエストに `scope` を付けるか。`true` のときだけ書き出す |
+| `oauth.revokeOnClear` | `true` | このサーバーの OAuth の状態を消すときに、認可サーバーでグラントも取り消すか（RFC 7009）。`false` のときだけ書き出す |
+
+既定値の無い項目は、`headers`・`metadata`・`requestTimeout`・`advertisedExtensions`・`roots`・`oauth.clientId`・`oauth.clientSecret`・`oauth.scopes`・`oauth.enterpriseManaged`（`true` で標準の OAuth の代わりに企業の IdP（EMA）を通して接続）・`oauth.authorizationParams`・`oauth.authorizationUrl`・`oauth.tokenUrl` です。
+
+- [Configuration and flags - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration#catalog-file-format)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms-full.txt` の 1 件で、大幅更新の 2 ページのほかに、次の 10 ページに変更がありました。
+今回差分が出たファイルは `llms-full.txt` の 1 件で、大幅更新の 2 ページのほかに、13 ページで内容が変わり、17 ページは書式の書き換えだけでした。
 
 **新機能**
 
-- Enterprise-Managed Authorization に、ID-JAG の発行・受け入れに対応する製品の一覧「Implementation support」の節を新設（詳細はハイライト 1 参照） — [Enterprise-Managed Authorization](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#implementation-support)
+- CLI client に、負荷試験の `--load` の一連のフラグと、しきい値を超えると終了コード `10` で終わる `--load-max-error-rate`・`--load-max-p99` を追加（詳細はハイライト 2 参照） — [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#ci-gates)
+- CLI client の Exit codes and error envelopes に、サーバーが HTTP 429 を返したときの終了コード `11` を追加し、エンベロープの `code` の値に `rate_limited` を追加（詳細はハイライト 2 参照） — [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#exit-codes-and-error-envelopes)
+- mcpdo の `tools/call` が、CLI と同じ `--load` の一連のフラグを受け付けるようになった（詳細はハイライト 2 参照） — [mcpdo connection client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#addressing-a-connection)
+- mcpdo に、サーバーへ何も送らずに、指定した接続を直近に使った接続として設定する `mcpdo connections/use <name>` を追加 — [mcpdo connection client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#addressing-a-connection)
+- mcpdo に、カタログのエントリをその接続に限り enterprise-managed として扱う `mcpdo connect <name> --ema` を追加（エントリの `oauth.enterpriseManaged` より優先される。エントリの OAuth のクライアント ID とシークレットが要るので、アドホックの接続先には使えない） — [mcpdo connection client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#authorization)
+- Web client の Host binding and origins に、`Host` ヘッダーの許可リストの段落を追加（詳細はハイライト 3 参照） — [Web client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#host-binding-and-origins)
+- Inspector の Security の The web backend and its API token に、同じ `Host` ヘッダーの許可リストが DNS リバインディングを使うページからトークンを守る、という説明を追加（詳細はハイライト 3 参照） — [Security](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/security#the-web-backend-and-its-api-token)
 
 **機能改善**
 
-- OAuth Client Credentials の SDK 例で、認可サーバーの発行元を固定する `expectedIssuer`（TypeScript）・`issuer`（Python）を追加し、Python の `scopes` を `scope` に変更（詳細はハイライト 3 参照） — [OAuth Client Credentials](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials#sdk-examples)
-- Connect to local MCP servers の Installing the Filesystem Server で、設定ファイルの場所に Linux の `~/.config/Claude/claude_desktop_config.json` を追加 — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#installing-the-filesystem-server)
-- 同ページの Troubleshooting の「Getting logs from Claude Desktop」で、ログの場所に Linux の `~/.config/Claude/logs` を加え、ログを追うコマンド例を macOS（`~/Library/Logs/Claude/mcp*.log`。これまでは「macOS/Linux」の表記）と Linux（`~/.config/Claude/logs/mcp*.log`）に分けた — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#troubleshooting)
-- Skills の Reading Directories で、`resources/directory/read` の応答例に `"ttlMs": 300000` と `"cacheScope": "public"` を追加（Listing Skills と Reading Skill Content の応答例と同じ値） — [Skills](https://modelcontextprotocol.io/extensions/skills/overview#reading-directories)
+- Build an MCP server の Java のタブに、対応するプロトコルの版の注記を追加し、Spring Boot を 4.1.x 以上に、`StdioClientTransport` の例を `McpJsonDefaults.getMapper()` を渡す形に変更（詳細はハイライト 4 参照） — [Build an MCP server](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#system-requirements-3)
+- Build an MCP server の Kotlin のタブに、対応するプロトコルの版の注記を追加し、`mcpVersion` を `0.16.0` に、jar の名前を `weather-all.jar` に変更（詳細はハイライト 4 参照） — [Build an MCP server](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#set-up-your-environment-4)
+- SDKs の Getting Started で、SDK は新しいプロトコルのリビジョンを独自の予定で採用するので、対応するリビジョンは各 SDK のドキュメントで確かめるよう明記（詳細はハイライト 4 参照） — [SDKs](https://modelcontextprotocol.io/docs/2026-07-28/sdk#getting-started)
+- Recipes の Hosting on a network の「Behind TLS or a reverse proxy」の行に、`MCP_INSPECTOR_ALLOWED_HOSTS` と 2 つの TLS の変数の案内を追加（詳細はハイライト 3 参照） — [Recipes](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes#hosting-on-a-network)
+- Web client の Apps で、サンドボックスの URL が `http` のままなのは、プロキシ経由で `https` にした場合も 2 つの TLS の変数で `https` にした場合も同じだと追記（詳細はハイライト 3 参照） — [Web client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#apps)
+- Debugging の Viewing logs で、ログの場所に Linux の `~/.config/Claude/logs` を加え、ログを追うコマンド例に Linux 版（`tail -n 20 -F ~/.config/Claude/logs/mcp*.log`）を追加 — [Debugging](https://modelcontextprotocol.io/docs/2026-07-28/tools/debugging#viewing-logs)
+- mcpdo の Tasks で、`--task` が意味を持つのは legacy の接続だけで、modern の接続ではタスクを返すかどうかをサーバーがリクエストごとに決めるので、このフラグは通信の内容を変えないと明記 — [mcpdo connection client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#tasks)
+- Protocol eras の Tasks（modern）で、modern の接続には **Run as task** の操作がなく、タスクの作成はサーバー主導で、`tools/call` が `CreateTaskResult` を返すかどうかはサーバーがリクエストごとに決めると改めた — [Protocol eras](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras#tasks)
+- Recipes の Keeping a connection open with mcpdo の例で、`--task` のコメントを「legacy の接続での」タスク付きの呼び出しと明記 — [Recipes](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes#keeping-a-connection-open-with-mcpdo)
+- mcpdo の Using mcpdo from a coding agent に、`npx skills add modelcontextprotocol/inspector --skill mcpdo` でもスキルを入れられると追加 — [mcpdo connection client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#using-mcpdo-from-a-coding-agent)
+- Understanding MCP clients の Sampling の Overview にある例で、モデルのヒントを `claude-sonnet-4-20250514` から `claude-sonnet`（コメントは「Sonnet クラスのモデルを優先」）に変更 — [Understanding MCP clients](https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts#overview-3)
+- Security Charter（Security Interest Group の憲章）の Mission Statement を、「MCP 固有の脅威を整理し、セキュリティに関わる提案をレビューし、検証した問題を WG や SEP に切り出す」から「MCP 固有のセキュリティの話題の最初の窓口として、持ち込まれた脅威・提案・開示の質問を見極め、担当の WG や SEP に回す」に改め、In Scope の先頭に「Triage and routing」（Discord や GitHub で挙がった話題を Auth IG・Transports WG・Registry WG・Tool Annotations IG・SDK メンテナーに渡す）を追加 — [Security Charter](https://modelcontextprotocol.io/community/interest-groups/security#mission-statement)
+- 同じ憲章の Operations で、会合を隔週 45 分の「Office Hours」から月次 45 分の「Forum call」と月次の「Digest」（回した項目・未決の話題・勧告のまとめ）に変え、各回の議題はファシリテーターが `#security-ig` で募り誰でも足せる、とした。Membership の記述も、会合の間はチャンネルで非同期に議論し、月次の会合の議題もそこでまとめる、という形に。Changelog に 2026年08月26日 の行（ルーティング型のグループへの再編。discussion #3316）を追加 — [Security Charter](https://modelcontextprotocol.io/community/interest-groups/security#operations)
+- Security Policy の Security Interest Group の節を、「MCP 固有のセキュリティの話題を持ち込む場で、ファシリテーターが担当のグループに回す」という新しい位置付けに合わせて書き換え — [Security Policy](https://modelcontextprotocol.io/community/security#security-interest-group)
 
 **その他**
 
-- Example Servers で、「Official integrations」「Community implementations」の節を MCP Registry へ案内する「More servers」にまとめ、設定例の `github` サーバーと Additional resources の servers リポジトリへの案内を削除（詳細はハイライト 5 参照） — [Example Servers](https://modelcontextprotocol.io/examples#more-servers)
-- Enterprise-Managed Authorization で、仕様へのリンク（冒頭と Related resources の 2 か所）を `specification/stable/enterprise-managed-authorization/2026-07-28/` 配下に変更（詳細はハイライト 3 参照） — [Enterprise-Managed Authorization](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#related-resources)
-- 同ページの What it is で、IdP の例「such as Okta, Azure AD, or a corporate SSO system」の括弧書きを削除 — [Enterprise-Managed Authorization](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization#what-it-is)
-- OAuth Client Credentials で、仕様へのリンク（冒頭と Related resources の 2 か所）を `specification/draft/` から `specification/stable/oauth-client-credentials/2026-07-28/` 配下に変更（詳細はハイライト 3 参照） — [OAuth Client Credentials](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials#related-resources)
-- Authorization Extensions の Specification で、両拡張の仕様の置き場所として示すリンクを `ext-auth` リポジトリの `specification/draft` から `specification/stable` に変更 — [Authorization Extensions](https://modelcontextprotocol.io/extensions/auth/overview#specification)
-- SEP-2133: Extensions の Official Extensions で、拡張の例として挙げるリンクを `specification/draft/oauth-client-credentials.mdx` から `specification/stable/oauth-client-credentials/2026-07-28/oauth-client-credentials.mdx` に変更 — [SEP-2133: Extensions](https://modelcontextprotocol.io/seps/2133-extensions#official-extensions)
-- Build an MCP server の Go のタブの System requirements で、必要な Go のバージョンを 1.24 以上から 1.25 以上に変更 — [Build an MCP server](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#system-requirements)
-- Build an MCP App の Prerequisites で、必要な Node.js のバージョンを 18 以上から 20 以上に変更 — [Build an MCP App](https://modelcontextprotocol.io/extensions/apps/build#prerequisites)
-- Security Best Practices の Confused Deputy Problem で、攻撃の説明にある dynamic client registration へのリンク先を `/specification/latest/basic/authorization#dynamic-client-registration` から `/specification/latest/basic/authorization/client-registration#dynamic-client-registration` に変更 — [Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#confused-deputy-problem)
-- Connect to local MCP servers の Troubleshooting で、ログの説明へのページ内リンクを `#getting-logs-from-claude-for-desktop` から `#getting-logs-from-claude-desktop` に修正 — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#troubleshooting)
+- Protocol eras の Tasks と Multi-round tool results (MRTR) で、elicitation・sampling・roots へのリンク先を `/specification/draft/client/…` から `/specification/2026-07-28/client/…` に変更 — [Protocol eras](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras#multi-round-tool-results-mrtr)
+- CLI client の Choosing a server で、roots へのリンク先を `/specification/draft/client/roots` から `/specification/2026-07-28/client/roots` に変更 — [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#choosing-a-server)
+- CLI client の CI gates の冒頭の「Three flags」を「These flags」に変更 — [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#ci-gates)
+- OAuth Client Credentials の SDK examples で、「各サンプルは資格情報を発行した認可サーバーの発行元を固定している」の文が、「Choose the credential format that matches your setup:」の後ろから前に移った（文面は同じ） — [OAuth Client Credentials](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials#sdk-examples)
+- **書式の書き換えだけのページ**（詳細はハイライト 5 参照）: 次の 17 ページは、タブ・アコーディオン・カードの書き換えだけで、内容は変わっていません。`community/contributing`・`docs/2026-07-28/develop/build-with-agent-skills`・`docs/2026-07-28/develop/connect-local-servers`・`docs/2026-07-28/develop/connect-remote-servers`・`docs/2026-07-28/getting-started/intro`・`docs/2026-07-28/tools/inspector`・`docs/2026-07-28/tutorials/security/authorization`・`docs/2026-07-28/tutorials/security/local-server-security`・`extensions/apps/build`・`extensions/auth/enterprise-managed-authorization`・`extensions/auth/overview`・`extensions/overview`・`extensions/skills/overview`・`extensions/tasks/overview`・`seps/index`・`specification/2026-07-28/index`・`specification/2026-07-28/server/index`。内容の変わった 15 ページのうち 7 ページ（`develop/build-client`・`develop/build-server`・`sdk`・`tools/debugging`・`tools/inspector/protocol-eras`・`tools/inspector/recipes`・`extensions/auth/oauth-client-credentials`）にも、この書き換えがあります
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-10-29.md](./archives/latest/2026-10-29.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-29.md](./archives/latest-detail/2026-10-29.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-10-30.md](./archives/latest/2026-10-30.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-10-30.md](./archives/latest-detail/2026-10-30.md)
 
 <!--
-base_commit: daf68aee10e1e23402b90d685734b8fa2df7beb5
-head_commit: a900109552b6641cda7666a841e6800cad45d7ae
-generated_at_full: 2026-10-31T15:29:12+09:00
+base_commit: a900109552b6641cda7666a841e6800cad45d7ae
+head_commit: 40e270212cf60c02b47a1f36e25f55319f572f41
+generated_at_full: 2026-11-01T15:08:35+09:00
 -->
