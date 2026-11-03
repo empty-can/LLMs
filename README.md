@@ -18,9 +18,9 @@ Claude Code 周辺の公式ドキュメントを LLM／人間の双方が扱い�
 ```
 LLMs/
 ├── official-llms-txts/            # 取り込んだ公式 llms.txt 等（入力）
-│   ├── code.claude.com/docs/      # Claude Code 公式（llms.txt / llms-full.txt / docs map）
+│   ├── code.claude.com/docs/      # Claude Code 公式（llms.txt / llms-full.txt / docs map / changelog 等）
 │   ├── modelcontextprotocol.io/   # MCP 公式（llms.txt / llms-full.txt）
-│   └── ...                        # claude.com / platform.claude.com / agentskills.io / raw.githubusercontent.com 等
+│   └── ...                        # claude.com / platform.claude.com / agentskills.io / anthropics（Marketplace）等
 ├── official-doc-update-summary/   # 生成した更新サマリ（出力）
 │   ├── claude-code-docs/          # latest.md（ライト版）/ latest-detail.md（詳細版）/ archives/
 │   └── mcp/                       # 同上

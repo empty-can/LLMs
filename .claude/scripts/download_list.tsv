@@ -5,13 +5,13 @@ https://code.claude.com/docs/en/claude_code_docs_map.md	claude_code_docs_map.md	
 https://modelcontextprotocol.io/llms.txt	llms.txt	./modelcontextprotocol.io	TRUE
 https://modelcontextprotocol.io/llms-full.txt	llms-full.txt	./modelcontextprotocol.io	TRUE
 https://code.claude.com/docs/en/changelog.md	changelog.md	./code.claude.com/docs/en	TRUE
-https://raw.githubusercontent.com/anthropics/claude-code/refs/heads/main/CHANGELOG.md	CHANGELOG.md	./raw.githubusercontent.com/anthropics/claude-code	TRUE
-https://raw.githubusercontent.com/anthropics/claude-code/refs/heads/main/feed.xml	feed.xml	./raw.githubusercontent.com/anthropics/claude-code	TRUE
+https://raw.githubusercontent.com/anthropics/claude-code/refs/heads/main/CHANGELOG.md	CHANGELOG.md	./code.claude.com/docs	TRUE
+https://raw.githubusercontent.com/anthropics/claude-code/refs/heads/main/feed.xml	feed.xml	./code.claude.com/docs	TRUE
 https://claude.com/docs/llms.txt	llms.txt	./claude.com/docs	TRUE
 https://claude.com/docs/llms-full.txt	llms-full.txt	./claude.com/docs	TRUE
 https://claude.com/sitemap.xml	sitemap.xml	./claude.com	TRUE
 https://platform.claude.com/llms.txt	llms.txt	./platform.claude.com	TRUE
 https://agentskills.io/llms.txt	llms.txt	./agentskills.io	TRUE
 https://agentskills.io/llms-full.txt	llms-full.txt	./agentskills.io	TRUE
-https://raw.githubusercontent.com/anthropics/claude-plugins-official/refs/heads/main/.claude-plugin/marketplace.json	marketplace.json	./raw.githubusercontent.com/anthropics/claude-plugins-official/.claude-plugin	TRUE
-https://raw.githubusercontent.com/anthropics/skills/refs/heads/main/.claude-plugin/marketplace.json	marketplace.json	./raw.githubusercontent.com/anthropics/skills/.claude-plugin	TRUE
+https://raw.githubusercontent.com/anthropics/claude-plugins-official/refs/heads/main/.claude-plugin/marketplace.json	marketplace.json	./anthropics/claude-plugins-official/.claude-plugin	TRUE
+https://raw.githubusercontent.com/anthropics/skills/refs/heads/main/.claude-plugin/marketplace.json	marketplace.json	./anthropics/skills/.claude-plugin	TRUE
