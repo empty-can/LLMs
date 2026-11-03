@@ -16,6 +16,10 @@ work/categorize-algorithm/output/manual-runs/
 # 異常終了で残った場合に bot の git add へ混入させないため無視する
 official-doc-update-summary/**/*.tmp
 
+# dl_llms.sh が取得中に書く一時ファイル。転送失敗時は消すが、kill 等で残った場合に
+# 手順 4 の git add official-llms-txts へ混入させないため無視する
+official-llms-txts/**/*.tmp
+
 # Python キャッシュ
 __pycache__/
 *.pyc

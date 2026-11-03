@@ -14,6 +14,33 @@ TSV_FILE="${SCRIPT_DIR}/download_list.tsv"
 # スクリプトは .claude/scripts/ にあるため、リポジトリルートは ../../。
 OUTPUT_BASE="${SCRIPT_DIR}/../../official-llms-txts"
 
+# 1 ファイルあたりの保存上限（95 MiB）。GitHub は 100 MiB 超のファイルを含む push を
+# 拒否し、一度コミットされると履歴を書き換えない限り bot の push が毎日失敗し続ける
+# （anchor 保全のため履歴の書き換えは禁止）。上限を超えたら既存ファイルを残して保存しない。
+MAX_BYTES=$((95 * 1024 * 1024))
+
+# 一時ファイルへ取得し、成功かつ上限以下のときだけ置き換える。転送が途中で切れても
+# 前日のファイルを壊さない（切り詰めたファイルが commit+push されるのを防ぐ）。
+# 失敗時は一時ファイルを消す（残すと手順 4 の git add に混入する。.gitignore でも除外済み）。
+# 戻り値は curl の終了コード、上限超過は 1。スクリプト全体の終了コードは従来どおり変えない
+# （終了コードの正常化はフロー再設計で commit 順序とあわせて扱う）。
+download_atomic() {
+    local url="$1" dest="$2" tmp="$2.tmp" rc size
+    curl -L -f --retry 3 --retry-delay 5 "$url" -o "$tmp"
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        rm -f "$tmp"
+        return $rc
+    fi
+    size=$(wc -c < "$tmp")
+    if [ "$size" -gt "$MAX_BYTES" ]; then
+        echo "WARN: size limit exceeded (${size} bytes > ${MAX_BYTES}). Keeping existing file: $dest"
+        rm -f "$tmp"
+        return 1
+    fi
+    mv -f "$tmp" "$dest"
+}
+
 # TSV の相対パス解決のため出力ベースに cd
 cd "$OUTPUT_BASE" || { echo "ERROR: cannot cd to $OUTPUT_BASE"; exit 1; }
 
@@ -40,8 +67,8 @@ do
 
         echo "Overwrite mode: ENABLED"
 
-        # 強制上書きダウンロード
-        curl -L -f "$url" -o "$filepath"
+        # 強制上書きダウンロード（一時ファイル経由・サイズ上限つき）
+        download_atomic "$url" "$filepath"
 
     else
 

@@ -6,7 +6,7 @@ Claude Code 周辺の公式ドキュメントを LLM／人間の双方が扱い�
 
 ## 何を公開するか
 
-1. **公式 `llms.txt` / `llms-full.txt` の取り込み**: Claude Code 公式ドキュメント（`code.claude.com`）と Model Context Protocol 公式（`modelcontextprotocol.io`）が公開する `llms.txt` / `llms-full.txt` を定期取得して保存する。
+1. **公式 `llms.txt` / `llms-full.txt` 等の取り込み**: Claude Code 公式ドキュメント（`code.claude.com`）と Model Context Protocol 公式（`modelcontextprotocol.io`）が公開する `llms.txt` / `llms-full.txt` を定期取得して保存する。あわせて `claude.com` / `platform.claude.com` / `agentskills.io` の `llms.txt` 系、Claude Code の changelog・Atom フィード、公式 Marketplace の `marketplace.json` も日次で取り込む（一覧は [`official-llms-txts/`](./official-llms-txts/README.md)）。
 2. **更新サマリ（人間向け changelog）**: 上記の更新差分を、人間が読みやすい changelog／リリースノート風の Markdown として自動生成・蓄積する（詳細版＋ライト版の 2 ファイル方式）。
 
 > 📄 **公開中の更新サマリは [`official-doc-update-summary/`（トップページ）](./official-doc-update-summary/README.md) から閲覧できます。** 最新版・過去アーカイブへのリンクと読み方をまとめています。
@@ -19,7 +19,8 @@ Claude Code 周辺の公式ドキュメントを LLM／人間の双方が扱い�
 LLMs/
 ├── official-llms-txts/            # 取り込んだ公式 llms.txt 等（入力）
 │   ├── code.claude.com/docs/      # Claude Code 公式（llms.txt / llms-full.txt / docs map）
-│   └── modelcontextprotocol.io/   # MCP 公式（llms.txt / llms-full.txt）
+│   ├── modelcontextprotocol.io/   # MCP 公式（llms.txt / llms-full.txt）
+│   └── ...                        # claude.com / platform.claude.com / agentskills.io / raw.githubusercontent.com 等
 ├── official-doc-update-summary/   # 生成した更新サマリ（出力）
 │   ├── claude-code-docs/          # latest.md（ライト版）/ latest-detail.md（詳細版）/ archives/
 │   └── mcp/                       # 同上

@@ -56,9 +56,15 @@ $GEN_MODEL   = "opus"               # ヘッドレス生成のモデル（レビ
 $ALLOWED_TOOLS = "Read Write Edit Grep Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(mkdir -p:*) Bash(mv:*) Bash(git mv:*) Bash(git checkout:*) Bash(git clean:*) Bash(python:*) Bash(python3:*) Bash(node:*) Bash(awk:*) Bash(echo:*) Task Agent(doc-summary-reviewer)"
 
 # サイト設定（SKILL.md サイト設定テーブルと一致させる）
+# InputFiles は要約の入力ファイル（SKILL.md の INPUT_LLMS_TXT / INPUT_LLMS_FULL / INPUT_DOCS_MAP）。
+# 差分の判定はこのファイルだけで行い、Input ディレクトリ全体は見ない。同じディレクトリには
+# 要約対象外の取り込みファイル（code.claude.com/docs/en/changelog.md や ja/ ミラー）も置かれるため、
+# ディレクトリで判定すると「それだけが変わった日」に生成が走り、その差分が要約に混入する。
 $SITES = @(
-    [pscustomobject]@{ Slug = "claude-code-docs"; Input = "official-llms-txts/code.claude.com/docs/"; Detail = "official-doc-update-summary/claude-code-docs/latest-detail.md" }
-    [pscustomobject]@{ Slug = "mcp";              Input = "official-llms-txts/modelcontextprotocol.io/"; Detail = "official-doc-update-summary/mcp/latest-detail.md" }
+    [pscustomobject]@{ Slug = "claude-code-docs"; Input = "official-llms-txts/code.claude.com/docs/"; Detail = "official-doc-update-summary/claude-code-docs/latest-detail.md"
+                       InputFiles = @("official-llms-txts/code.claude.com/docs/llms.txt", "official-llms-txts/code.claude.com/docs/llms-full.txt", "official-llms-txts/code.claude.com/docs/en/claude_code_docs_map.md") }
+    [pscustomobject]@{ Slug = "mcp";              Input = "official-llms-txts/modelcontextprotocol.io/"; Detail = "official-doc-update-summary/mcp/latest-detail.md"
+                       InputFiles = @("official-llms-txts/modelcontextprotocol.io/llms.txt", "official-llms-txts/modelcontextprotocol.io/llms-full.txt") }
 )
 
 # --- ログ -------------------------------------------------------------------
@@ -393,7 +399,7 @@ try {
         # 未参照オブジェクトの GC）になると git diff は stderr に fatal を出して exit 128 で
         # 終わり stdout は空になる。exit を見ないと「原文差分なし」と誤判定し、そのサイトが
         # 以後ずっと無言でスキップされ続ける（ログにも残らず SUCCESS で終わる）。
-        $diffRaw = & git diff $baseCommit $headCommit -- $s.Input 2>&1
+        $diffRaw = & git diff $baseCommit $headCommit -- @($s.InputFiles) 2>&1
         $diffExit = $LASTEXITCODE
         if ($diffExit -ne 0) {
             Write-Log "[$($s.Slug)] git diff が失敗 (exit $diffExit)。base=$baseCommit が到達不能の可能性" "ERROR"

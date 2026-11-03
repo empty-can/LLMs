@@ -69,10 +69,13 @@ git rev-parse HEAD
 
 Bash で実行:
 ```
-git diff <BASE_COMMIT> <HEAD_COMMIT> -- <INPUT_BASE>
+git diff <BASE_COMMIT> <HEAD_COMMIT> -- <INPUT_LLMS_TXT> <INPUT_LLMS_FULL> [<INPUT_DOCS_MAP>]
 ```
+(`<INPUT_DOCS_MAP>` は docs_map=あり のサイトのみ付ける)
 出力が空なら標準出力に `差分なし、処理停止` を出して終了 (exit 0)。
 非空ならその内容を `DIFF_CONTENT` とする。
+
+> **差分の範囲は上記の入力ファイルに限る**: `<INPUT_BASE>` ディレクトリ全体を pathspec にしてはならない(補助スクリプトで差分をダンプする場合も同じ)。同じディレクトリには要約対象外の取り込みファイル(`en/changelog.md`、`ja/` ミラー等)が置かれており、ディレクトリ全体で取るとそれらの差分が `DIFF_CONTENT` に混入する。無人実行のラッパー(`run-doc-summary.ps1` の `InputFiles`)と第三者レビュー Agent も同じファイル集合で差分を取る。
 
 > **scratch ファイルの置き場所**: 差分照合等で一時ファイルが必要な場合でも、`official-llms-txts/` や `official-doc-update-summary/` 配下には**書き込まない**(誤って `git add` で混入する)。`git diff` / `git show` の出力は直接変数・パイプで扱い、どうしてもファイルが要るなら gitignore 済みの `work/` 配下に置く。Windows 絶対パス(`C:\...`)を bash のリダイレクト先に渡すと名前が壊れた scratch が cwd に残るので避ける。
 

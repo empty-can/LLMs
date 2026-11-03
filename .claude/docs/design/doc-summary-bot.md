@@ -17,7 +17,7 @@
 
 | 区分 | 対象 |
 |---|---|
-| 入力（取得元） | `download_list.tsv` の 5 URL（`code.claude.com/docs/` の `llms.txt` / `llms-full.txt` / `en/claude_code_docs_map.md`、`modelcontextprotocol.io` の `llms.txt` / `llms-full.txt`） |
+| 入力（取得元） | `download_list.tsv` の 16 URL。うち要約の入力は 5 本（`code.claude.com/docs/` の `llms.txt` / `llms-full.txt` / `en/claude_code_docs_map.md`、`modelcontextprotocol.io` の `llms.txt` / `llms-full.txt`）。残り 11 本（2026-11-03 追加: `claude.com` / `agentskills.io` の llms 系、`platform.claude.com` の `llms.txt`、changelog・RSS、Marketplace の `marketplace.json` 等）は日次取り込み・commit のみで、要約対象にするかは未定 |
 | 中間（原文） | `official-llms-txts/<host>/...` — **上書きフラグ全行 TRUE のためスナップショットは残らない** |
 | 出力（成果物） | `official-doc-update-summary/<slug>/latest-detail.md` / `latest.md` と `archives/latest[-detail]/<日付>.md` |
 | 出力先ブランチ | `bot/doc-summary`（push もここ限定） |
@@ -35,7 +35,7 @@
 ```mermaid
 flowchart TD
     A["タスクスケジューラ 15:00"] --> B["手順1-2 整地<br/>Initialize-TreeForDownload<br/><b>throw しない</b>"]
-    B --> D["手順3 dl_llms.sh<br/>curl で 5 URL を取得"]
+    B --> D["手順3 dl_llms.sh<br/>curl で 16 URL を取得"]
     D -->|"出力先へ cd できない等の致命時のみ"| X1["throw → FAILURE"]
     D --> D2{"bot ブランチにいる?"}
     D2 -->|"いない"| X1
@@ -139,7 +139,11 @@ staged 残留がそのまま生き残ってしまうからである。破棄す�
 
 ### 手順 3-4: 取り込みと分離コミット
 
-`dl_llms.sh` が `download_list.tsv` を 1 行ずつ読み、`official-llms-txts/` へ `curl -L -f` で保存する。
+`dl_llms.sh` が `download_list.tsv` を 1 行ずつ読み、`official-llms-txts/` へ `curl -L -f --retry 3` で保存する。
+上書き取得は一時ファイル（`<name>.tmp`）経由で、成功時だけ置き換える（転送中断で前日のファイルを壊さない）。
+**1 ファイル 95 MiB の上限**があり、超えたら既存ファイルを残して `WARN: size limit exceeded` を出す。
+GitHub は 100 MiB 超のファイルを含む push を拒否し、一度コミットすると履歴を書き換えない限り push が毎日失敗し続けるため
+（`platform.claude.com/llms-full.txt` は約 49 MB あり、公開リポジトリの clone 容量を考えて取得対象から外した）。
 上書きフラグが TRUE なら単純上書き、FALSE なら既存を `<folder>/archive/<name>_<timestamp>.<ext>` へ退避して
 から取得する（**現行 TSV は全行 TRUE なので退避分岐は動かない**）。
 
@@ -161,6 +165,8 @@ staged 残留がそのまま生き残ってしまうからである。破棄す�
 
 `BASE_COMMIT` は前回サマリのフッタ `head_commit:` から取る（＝前回生成に使った原文の断面）。
 `HEAD_COMMIT` は手順 4 直後の HEAD。この 2 点間に原文差分が無ければ生成をスキップする。
+差分は `$SITES[].InputFiles`（要約の入力ファイル）だけで取り、サイトのディレクトリ全体は見ない。
+同じディレクトリに要約対象外の取り込みファイル（`en/changelog.md`、`ja/` ミラー）が同居するため。
 
 ```
 claude -p "/update-official-doc-summary --site <slug> --automated"

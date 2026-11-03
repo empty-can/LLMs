@@ -22,7 +22,7 @@ model: sonnet
 
 ## プロセス
 
-1. **原文差分の取得**: `git diff <BASE_COMMIT> <HEAD_COMMIT> -- <INPUT_BASE>` を実行し、結果を `DIFF_CONTENT` とする。これがサマリ記述の唯一の根拠ソース。
+1. **原文差分の取得**: `git diff <BASE_COMMIT> <HEAD_COMMIT> -- <INPUT_BASE>llms.txt <INPUT_BASE>llms-full.txt` を実行し（`SITE=claude-code-docs` のときは末尾に `<INPUT_BASE>en/claude_code_docs_map.md` も付ける）、結果を `DIFF_CONTENT` とする。これがサマリ記述の唯一の根拠ソース。`<INPUT_BASE>` ディレクトリ全体を pathspec にしない（要約対象外の取り込みファイル `en/changelog.md`・`ja/` ミラー等が同居しており、混入すると生成側と根拠がずれる）。
 2. **生成物の読み込み**: Read tool で `LATEST_DETAIL` と `LATEST_LIGHT` を読む。
 3. **原文本文の参照**: 記述の裏取りに必要な範囲で `<INPUT_BASE>llms-full.txt` を Grep tool でセクション抽出する（全読みはしない）。
 4. 下記 2 系統の検査を実施し、重大度順に整理する。
