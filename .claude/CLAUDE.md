@@ -250,7 +250,7 @@ LLMs/  (= リポジトリルート)
 
 - **実行**: `pwsh -NoProfile -File .claude/scripts/run-doc-summary.ps1 -Site all`（リポジトリルートから。スクリプトは `$PSScriptRoot\..\..` で本リポジトリルートを解決し自分で `Set-Location` する）。`-DryRun` は push のみ抑止、`-SkipDownload` は dl をスキップ。
 - **`claude -p` の前提**: ラッパーは `cwd=本リポジトリ（B）` で `claude -p "/update-official-doc-summary --site <slug> --automated"` を起動する。Skill は本リポジトリの `.claude/skills/` からロードされる。
-- **差分検出**: 各サマリ末尾フッタの `head_commit` を起点に `git diff <BASE> <HEAD> -- official-llms-txts` で原文差分を取得する。フッタの運用メタ（`base_commit` / `head_commit` / `generated_at_full`）が次回実行の差分起点。
+- **差分検出**: 各サマリ末尾フッタの `head_commit` を起点に サイトの入力ファイル（`llms.txt` / `llms-full.txt` / docs_map）だけを pathspec にした `git diff <BASE> <HEAD> -- <入力ファイル...>` で原文差分を取得する（ラッパーの `$SITES[].InputFiles`・SKILL 手順 2・reviewer 手順 1 で同じ集合）。**`official-llms-txts` やサイトのディレクトリ全体で取らない**。要約対象外の取り込みファイル（`code.claude.com/docs/en/changelog.md`、`ja/` ミラー、2026-11-03 追加の他サイト分）が同じツリーにあり、混入するため。フッタの運用メタ（`base_commit` / `head_commit` / `generated_at_full`）が次回実行の差分起点。
 - **第三者レビュー（Phase 3）**: 無人実行（`--automated`）では `doc-summary-reviewer` Agent によるレビューを必須化し、PASS まで反復（最大 3 回）。打ち切り時は生成物を破棄して push を抑止。
 - **アーカイブ命名**: 旧版は `archives/<作成日=対象期間の最終日>/` へ退避。同一作成日のサマリを同日に複数生成した場合は衝突回避のため `<YYYY-MM-DD>_<HHMM>` を使う。
 
