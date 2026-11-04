@@ -3775,6 +3775,9 @@
     <loc>https://claude.com/it/product/claude-science</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/product/claude-security</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/product/cowork</loc>
   </url>
   <url>
@@ -6055,6 +6058,9 @@
     <loc>https://claude.com/marketplace/agents-products/webflow</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/agents-products/zoom</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors-plugins</loc>
   </url>
   <url>
@@ -6671,6 +6677,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/codewords</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/coefficient</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/cognito-forms</loc>
@@ -8317,6 +8326,9 @@
     <loc>https://claude.com/marketplace/connectors/quartr</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/questrade</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/quickbooks</loc>
   </url>
   <url>
@@ -8705,6 +8717,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/square</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/squarespace</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/stack-overflow</loc>
