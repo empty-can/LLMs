@@ -6178,6 +6178,9 @@
     <loc>https://claude.com/marketplace/connectors/airwallex</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/airwallex-c8725a</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/aiwyn-tax</loc>
   </url>
   <url>
@@ -6206,6 +6209,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/amazon-selling-partner</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/ample-computer</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/amplitude</loc>
@@ -7126,6 +7132,9 @@
     <loc>https://claude.com/marketplace/connectors/flexport</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/flipsnack</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/flitiq-fmcsa-carrier-intelligence</loc>
   </url>
   <url>
@@ -7595,6 +7604,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/lawvu</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/lawy</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/leadfeeder</loc>
@@ -8284,6 +8296,9 @@
     <loc>https://claude.com/marketplace/connectors/printdotcom</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/prism-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/privacy</loc>
   </url>
   <url>
@@ -8345,6 +8360,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/railway</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/rainfocus</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/rally-mcp</loc>
@@ -8737,6 +8755,9 @@
     <loc>https://claude.com/marketplace/connectors/steadybit</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/strand-ai</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/strava</loc>
   </url>
   <url>
@@ -8900,6 +8921,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/todoist</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/toffu</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/tomba-mcp-server</loc>
@@ -9137,6 +9161,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/windsor-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/windsor-ai-for-social-media</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/wingify</loc>
@@ -11542,6 +11569,9 @@
     <loc>https://claude.com/resources/articles/multi-agent-coordination-patterns</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/new-agents-and-products-claude-marketplace</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/new-guide-deploying-claude-across-the-enterprise-with-claude-cowork</loc>
   </url>
   <url>
@@ -12203,6 +12233,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/webinar-series/claude-on-google-cloud</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/webinar-series/claude-startup-webinars</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/webinar-series/guest-lecture-series-leadership-in-engineering</loc>

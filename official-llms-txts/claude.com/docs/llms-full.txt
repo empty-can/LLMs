@@ -9344,7 +9344,7 @@ Claude replies in the DM:
 
 **What it means**
 
-One-to-one DMs run on the user's own claude.ai account and need a qualifying seat, which this user doesn't have. A seat that includes Claude Code always qualifies; on the Enterprise plan, a **Standard** or **Usage-Based Chat** seat also qualifies when the user has Cowork. Mentioning `@Claude` in a channel doesn't depend on the sender's seat.
+One-to-one DMs run on the user's own claude.ai account and need a qualifying seat, which this user doesn't have. To qualify, the user needs either a seat that includes Claude Code or, on the Enterprise plan, Cowork access on a **Standard** seat or a usage-based **Chat** seat. Mentioning `@Claude` in a channel doesn't depend on the sender's seat.
 
 **How to resolve**
 
@@ -9873,7 +9873,9 @@ The controls that delete Claude Tag data, from largest to smallest:
 * **Delete memory files**: open the workspace's page from the **Channels** tab (or a channel's page, when that channel has memory of its own), choose **View memory files** from its **⋯** menu if the menu lists it, pick a file, then select **Delete**. Deleting requires the Owner role. You can also tell Claude in the channel to forget an entry. See [Check and correct what Claude Tag remembers](/docs/claude-tag/users/memory#check-and-correct-what-claude-tag-remembers)
 * **Delete a routine**: an Owner deletes a channel's routine from the **Scheduled work** tab. You can also ask Claude to delete a routine in the channel or direct message where it was set up. See [Audit Claude Tag activity](/docs/claude-tag/admins/audit)
 
-There is no control in Slack or in your Claude admin settings that deletes a single thread's transcript on its own. During the beta, Claude Tag session transcripts and memory aren't included in your organization's data exports, and the Compliance API doesn't list or delete Claude Tag sessions. For a deletion request these controls don't cover, contact your account team or [privacy@anthropic.com](mailto:privacy@anthropic.com).
+There is no control in Slack or in your Claude admin settings that deletes a single thread's transcript on its own. For a deletion request these controls don't cover, contact your account team or [privacy@anthropic.com](mailto:privacy@anthropic.com).
+
+During the beta, Claude Tag session transcripts and memory aren't included in your organization's data exports. If your organization is on the Enterprise plan and has the [Compliance API](https://platform.claude.com/docs/en/api/compliance) enabled, you can list Claude Tag sessions and read their transcripts through the API. The Compliance API can't delete Claude Tag sessions or their transcripts.
 
 ## Audit records for deletions
 
@@ -10336,12 +10338,12 @@ One-to-one DMs are outside this picture; they run on your own account, as covere
 
 ## What admins can see of your conversations with Claude
 
-Admins have no page or export that shows the individual messages people send Claude.
+No page in Slack or in your organization's Claude Tag admin settings shows admins the individual messages people send Claude.
 
 * **Analytics:** the [analytics page](https://claude.ai/analytics/claude-tag) reports spend by channel and by kind of work
 * **Activity page:** the [**Activity** page](/docs/claude-tag/admins/audit) in Claude Tag admin settings, available to Owners, lists scheduled work, memory files, and network events
 * **Slack threads:** everyone in a channel can read the threads where Claude works, admins included
-* **Session transcripts:** Anthropic keeps a [transcript of each session](/docs/claude-tag/concepts/data-lifecycle#what-anthropic-stores)
+* **Session transcripts:** Anthropic keeps a [transcript of each session](/docs/claude-tag/concepts/data-lifecycle#what-anthropic-stores). On the Enterprise plan with the [Compliance API](https://platform.claude.com/docs/en/api/compliance) enabled, your organization can read session transcripts through that API. See [Delete data or request deletion](/docs/claude-tag/concepts/data-lifecycle#delete-data-or-request-deletion) for what the Compliance API can and can't do with Claude Tag sessions.
 
 ## Related resources
 
@@ -10708,7 +10710,7 @@ Slack users don't each need a Claude seat to work with Claude in channels.
 
 * **In channels**: by default, anyone in the paired Slack workspace can tag `@Claude` in a channel, and an Owner can [restrict who can use Claude](/docs/claude-tag/admins/restrict-access#restrict-who-can-use-claude) to people in your Claude organization or, on Enterprise, to specific roles. Channel work bills by usage to your organization's usage balance, under a [spend limit](/docs/claude-tag/admins/set-spend-limit) an Owner sets.
 * **In group DMs**: the same restriction on who can use Claude applies, and the work bills to your organization's usage balance. See [Group DMs](/docs/claude-tag/admins/restrict-access#group-dms).
-* **In one-to-one DMs**: a DM from a member who has connected a Claude account runs on that account and bills to that person's seat. The seat must include Claude Code, or, on the Enterprise plan, be a **Standard** or **Usage-Based Chat** seat held by someone who also has Cowork. A [DM from a member who hasn't connected a Claude account](/docs/claude-tag/admins/restrict-access#direct-messages-from-members-without-a-claude-account) can bill to your organization for a limited time.
+* **In one-to-one DMs**: a DM from a member who has connected a Claude account runs on that account and bills to that person's seat. For the DM to work, that person needs either a seat that includes Claude Code or, on the Enterprise plan, Cowork access on a **Standard** seat or a usage-based **Chat** seat. A [DM from a member who hasn't connected a Claude account](/docs/claude-tag/admins/restrict-access#direct-messages-from-members-without-a-claude-account) can bill to your organization for a limited time.
 
 ## Where Claude Tag runs
 
@@ -12619,7 +12621,7 @@ Your Slack workspace is connected to a Claude organization, and the connect link
 
 ## DMs aren't working
 
-One-to-one DMs run on your own Claude account rather than the organization's agent. They need a qualifying seat (a seat that includes Claude Code, or on the Enterprise plan a **Standard** or **Usage-Based Chat** seat when the member also has Cowork), and they use your personal connectors rather than the channel connections. If channels work but DMs don't, first check that your Claude account is connected; DM `@Claude` and it prompts you to connect if it isn't.
+One-to-one DMs run on your own Claude account rather than the organization's agent. To use them, you need either a seat that includes Claude Code or, on the Enterprise plan, Cowork access on a **Standard** seat or a usage-based **Chat** seat. DMs also use the connectors on your own Claude account rather than the channel connections. If channels work but DMs don't, first check that your Claude account is connected; DM `@Claude` and it prompts you to connect if it isn't.
 
 ### I get an environment error in a DM
 
@@ -12652,7 +12654,7 @@ The Claude app's **Messages** tab and Slack's assistant panel both count as DMs 
 
 **What it means**
 
-Your seat doesn't qualify for one-to-one DMs. A seat that includes Claude Code always qualifies; on the Enterprise plan, a **Standard** or **Usage-Based Chat** seat also qualifies when you have Cowork. Mentioning `@Claude` in a real channel doesn't depend on your seat type and keeps working.
+Your seat doesn't qualify for one-to-one DMs. To qualify, you need either a seat that includes Claude Code or, on the Enterprise plan, Cowork access on a **Standard** seat or a usage-based **Chat** seat. Mentioning `@Claude` in a real channel doesn't depend on your seat type and keeps working.
 
 **How to resolve**
 
@@ -14173,7 +14175,7 @@ If you already know MCP authorization, these are the places where Claude's OAuth
 
 * A `401` is required to start sign-in, and Claude ignores a `WWW-Authenticate` header on a `200` response, as [Serve discovery metadata](#serve-discovery-metadata) describes
 * Claude uses only the first entry in your metadata's `authorization_servers` list, as [Serve discovery metadata](#serve-discovery-metadata) describes
-* Claude uses a Client ID Metadata Document only when your authorization server metadata advertises both values in [DCR and CIMD details](#dcr-and-cimd-details), and otherwise falls back to DCR
+* Claude normally uses a Client ID Metadata Document only when your authorization server metadata advertises both values in [DCR and CIMD details](#dcr-and-cimd-details), and otherwise falls back to DCR
 * Claude Code's loopback redirect needs a port-agnostic match for `localhost` as well as `127.0.0.1`, as [Callback URLs](#callback-urls) describes
 * Claude gives your discovery, registration, and token endpoints 10 seconds to respond and refresh requests 30 seconds, as [Endpoint latency](#endpoint-latency) describes
 * A machine-to-machine `client_credentials` grant isn't supported, and [Anthropic-held client credentials](#anthropic-held-client-credentials) are the consent-gated alternative
@@ -14181,7 +14183,7 @@ If you already know MCP authorization, these are the places where Claude's OAuth
 > [!NOTE]
 >
 > * If some of your tools work without the user's account, see [Lazy authentication](/docs/connectors/building/lazy-authentication) to let people use those right away and sign in only when Claude reaches a tool that needs their account
-> * If you want enterprise users to connect through their organization's SSO without a consent screen, see [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth)
+> * If you want to support auto-connect, so that an organization's users connect without a consent screen, see [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth)
 
 Use this page to [pick an authentication type](#supported-authentication-types), [register Claude as an OAuth client](#register-claude-as-an-oauth-client), [make discovery and redirects work](#oauth-discovery-and-redirect-uris), and [meet the token endpoint requirements](#token-endpoint-requirements).
 
@@ -14244,10 +14246,10 @@ For the OAuth types, Claude needs a client identity at your authorization server
 If your authorization server doesn't support DCR, meaning it exposes no `registration_endpoint`, you have these options:
 
 * Expose a `registration_endpoint`
-* Support CIMD instead. Claude selects CIMD only when your authorization server metadata advertises both `"client_id_metadata_document_supported": true` and `"none"` in `token_endpoint_auth_methods_supported`. The second is required because Claude's CIMD client authenticates as a public client at your token endpoint. If either is missing, Claude falls back to DCR. See [lazy authentication](/docs/connectors/building/lazy-authentication#identify-claude-with-a-client-id-metadata-document) for a worked CIMD example
+* Support CIMD instead. Claude normally selects CIMD only when your authorization server metadata advertises both `"client_id_metadata_document_supported": true` and `"none"` in `token_endpoint_auth_methods_supported`, and otherwise falls back to DCR. The second value is required because Claude's CIMD client authenticates as a public client at your token endpoint in that case. If your metadata lists `private_key_jwt`, Claude can instead present a second metadata document, whose URL ends in `/confidential_client`, and authenticate with a signed client assertion. On [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth) exchanges it can do this even when `"none"` isn't listed, and on other sign-ins only for some servers. See [lazy authentication](/docs/connectors/building/lazy-authentication#identify-claude-with-a-client-id-metadata-document) for a worked CIMD example
 * Switch to `oauth_anthropic_creds`, if your listing doesn't use a URL pattern
 
-If your server URL varies per customer and DCR isn't available, CIMD is the recommended path. Every customer's authorization server must advertise both CIMD values. Otherwise Claude falls back to DCR for that customer, which needs a `registration_endpoint`.
+If your server URL varies per customer and DCR isn't available, CIMD is the recommended path. Every customer's authorization server must advertise both CIMD values. Otherwise Claude normally falls back to DCR for that customer, which needs a `registration_endpoint`.
 
 For servers expecting high traffic from the directory, prefer CIMD or `oauth_anthropic_creds` over DCR. DCR causes Claude to register a new client on every fresh connection, which can result in very large numbers of registered clients on your authorization server. CIMD and Anthropic-held credentials avoid the registration call entirely.
 
@@ -14293,6 +14295,7 @@ These cases change which client is used, or whether you can save yours:
 * **Some connections, such as older ones**: these don't use the client you entered. They use the organization's or Anthropic's client if either exists, and otherwise your server's own [DCR or CIMD](#dcr-and-cimd-details) registration. If there's no such client and your server supports neither, sign-in fails for those connections
 * **A client Anthropic already holds**: if Anthropic holds a client for any of your listing's URLs, you can't save your client secret or request header values on a published listing. You can save them once Anthropic removes its client or checks your listing again. On a listing that isn't published yet, you can save them, but the listing can't go live until Anthropic checks it. In either case, email `directory@anthropic.com` with your listing's name and its exact server URLs, and don't put the secret in the email
 * **Custom connectors**: a custom connector that someone adds with your server's URL never uses the client secret you entered in the portal
+* **Enterprise Managed Auth sign-ins**: these don't use the client you entered in the developer portal. For how to register Claude for those sign-ins, see [Enterprise Managed Auth prerequisites](/docs/connectors/building/enterprise-managed-auth#prerequisites)
 
 For each request header on your listing, select the **Anthropic holds one shared value** checkbox in the developer portal to enter one value yourself that every organization uses. Leave it unchecked so each person who adds your connector enters their own value. You can't select the checkbox on a listing with a [URL pattern](#servers-with-per-customer-urls). Header values come only from you or from the people who add your connector, never from Anthropic.
 
@@ -14384,7 +14387,7 @@ Your token endpoint handles Claude's initial code exchange and every later refre
 Claude refreshes tokens reactively on a `401` response, and proactively up to five minutes before the stored expiry. To avoid refresh failures:
 
 * Return RFC 6749-compliant error codes when a refresh token is no longer valid: `invalid_grant`, not `invalid_request` or a custom code
-* Rotate refresh tokens for public-client connections. DCR and CIMD register Claude as a public client, and the [MCP authorization spec](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#token-theft) adopts OAuth 2.1's requirement to rotate or sender-constrain refresh tokens for public clients. If you rotate, return the new refresh token in the same response that invalidates the old one
+* Rotate refresh tokens for public-client connections. DCR registers Claude as a public client, and CIMD normally does too. The [MCP authorization spec](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#token-theft) adopts OAuth 2.1's requirement to rotate or sender-constrain refresh tokens for public clients. If you rotate, return the new refresh token in the same response that invalidates the old one
 
 Your `/token` endpoint must accept `Content-Type: application/x-www-form-urlencoded` per [RFC 6749 section 4.1.3](https://www.rfc-editor.org/rfc/rfc6749#section-4.1.3). Claude sends both the initial token exchange and refresh requests with this content type. Some web frameworks default to JSON-only body parsing, so if your endpoint returns `415 Unsupported Media Type`, register a form-urlencoded body parser. Dynamic client registration at `/register` uses `application/json` per [RFC 7591 section 3.1](https://www.rfc-editor.org/rfc/rfc7591#section-3.1), so don't assume the same parser works for both.
 
@@ -14396,13 +14399,13 @@ If your token endpoint depends on slow downstream calls, return the HTTP respons
 
 ## Enterprise and custom connector authentication
 
-You don't need a separate OAuth application for each enterprise customer, but a customer's organization can supply its own OAuth client or connect its users through SSO without a consent screen.
+You don't need a separate OAuth application for each enterprise customer, but a customer's organization can supply its own OAuth client or connect its users without a consent screen.
 
 ### Enterprise authentication
 
 Unless your listing asks for credentials at connection time, enterprise customers connect through the same OAuth application as everyone else. Scope what each user can reach with your service's own per-user permissions rather than with a per-tenant OAuth app. These cases work differently:
 
-* **SSO without a consent screen**: organizations using SSO can connect their users with an identity assertion signed by their identity provider instead of an interactive OAuth consent step. See [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth) for what your authorization server needs to support
+* **Auto-connect**: an organization can connect its users with an identity assertion signed by its identity provider or by Claude instead of an interactive OAuth consent step. See [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth) for what your authorization server needs to support
 * **Customer-supplied OAuth client**: a listing that asks for [credentials entered at connection time](#credentials-entered-at-connection-time) has each customer supply its own OAuth client, and an administrator who adds your server as a [custom connector](#custom-connectors) can enter one too
 
 ### Custom connectors
@@ -14420,7 +14423,7 @@ Anthropic's outbound traffic to your server originates from `160.79.104.0/21`. S
 ## Next steps
 
 * [Lazy authentication](/docs/connectors/building/lazy-authentication): let people use the tools that don't need their account right away, and ask them to sign in only when Claude reaches one that does
-* [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth): accept identity assertions from enterprise SSO instead of an interactive consent step
+* [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth): support auto-connect by accepting identity assertions from a customer's identity provider or from Claude instead of an interactive consent step
 * [Test your connector](/docs/connectors/building/testing): add your server as a custom connector and exercise the auth flow
 * [Troubleshoot your connector](/docs/connectors/building/troubleshooting): diagnose "Couldn't reach the MCP server" and "Authorization with the MCP server failed"
 
@@ -14534,7 +14537,7 @@ If your server URL varies per tenant, such as `{tenant}.mcp.example.com`, submit
 # Enterprise Managed Auth for connectors
 Source: https://claude.com/docs/connectors/building/enterprise-managed-auth
 
-Accept identity assertions from a customer's identity provider or Claude so users connect to your MCP server without an OAuth consent step.
+Support auto-connect in Claude by accepting identity assertions from a customer's identity provider or from Claude, so users skip the OAuth consent step.
 
 > [!NOTE]
 >
@@ -14542,7 +14545,9 @@ Accept identity assertions from a customer's identity provider or Claude so user
 
 Enterprise Managed Auth (EMA) lets organizations connect their users to your MCP server without sending each user through an OAuth consent screen. Claude presents your authorization server with an identity assertion instead: a signed JSON Web Token (JWT) issued by [the customer's identity provider or by Claude](#who-issues-the-identity-assertion). Your authorization server validates the assertion and returns an access token.
 
-As a connector developer, you [make your authorization server accept and validate the assertion](#authorization-server-requirements), [test your implementation](#test-your-implementation), and [give customer administrators the settings and documentation they need](#support-customer-administrators).
+Claude calls this feature auto-connect, for identity provider-issued and Claude-issued assertions alike. The connector directory labels listings marked as supporting it **Auto-connect**.
+
+To support auto-connect, you [make your authorization server accept and validate the assertion](#authorization-server-requirements), [test your implementation](#test-your-implementation), and [give customer administrators the settings and documentation they need](#support-customer-administrators).
 
 ## Understand how Enterprise Managed Auth works
 
@@ -14566,7 +14571,7 @@ The token format and the exchange at your token endpoint are the same in both ca
 Before adding Enterprise Managed Auth, make sure the following are already in place:
 
 * Your MCP server implements [MCP authorization](https://modelcontextprotocol.io/specification/draft/basic/authorization), including Protected Resource Metadata (PRM) discovery. See the [authentication guide](/docs/connectors/building/authentication) for Claude-specific requirements
-* Your authorization server registers Claude using either [Anthropic-held client credentials](/docs/connectors/building/authentication#anthropic-held-client-credentials) or a [Client ID Metadata Document](/docs/connectors/building/authentication#dcr-and-cimd-details)
+* Your authorization server registers Claude using either a client that Anthropic set up for your server's URL, as [Which credentials Claude uses when several are set](/docs/connectors/building/authentication#which-credentials-claude-uses-when-several-are-set) describes, or a [Client ID Metadata Document](/docs/connectors/building/authentication#dcr-and-cimd-details). Enterprise Managed Auth sign-ins don't use a client ID and secret that you entered in the developer portal. If that is how Claude is registered with you, email `mcp-review@anthropic.com` with your listing's name and its exact server URLs before you ask to have your listing marked as supporting Enterprise Managed Auth, and don't put the secret in the email
 
 Enterprise Managed Auth works with [lazy authentication](/docs/connectors/building/lazy-authentication). When your MCP server answers a tool call with `401 Unauthorized` and the user's organization has Enterprise Managed Auth configured for your connector, Claude runs the exchange and retries the call instead of showing the **Connect** card.
 
@@ -14629,7 +14634,17 @@ grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer
 &resource=https://mcp.example.com
 ```
 
-Client authentication is left out of this example. The `client_id` is the value Claude is registered under at your authorization server, which for a Client ID Metadata Document is the document's URL. If that client has a secret or key, require it on this request. Answer at the `token_endpoint` URL itself, because Claude doesn't follow redirects on this request.
+Client authentication is left out of this example. Answer at the `token_endpoint` URL itself, because Claude doesn't follow redirects on this request. The `client_id` is the value Claude is registered under at your authorization server, which for a Client ID Metadata Document is the document's URL. If that client has a secret or key, require it on this request:
+
+* **Client secret**: Claude sends the secret in the request body, so accept `client_secret_post` for this client
+* **Signed client assertion**: if Claude is registered with you through its Client ID Metadata Document and your authorization server metadata lists `private_key_jwt` in `token_endpoint_auth_methods_supported`, Claude can send this request as a second client, `https://claude.ai/oauth/mcp-oauth-client-metadata/confidential_client`, with a signed client assertion. Accept that `client_id` as well as the public document's URL, and verify the client assertion with the keys at the `jwks_uri` in the `confidential_client` document
+
+The **Client** check in [Validate the identity assertion](#validate-the-identity-assertion) compares the assertion's `client_id` claim with this request's `client_id`:
+
+* **Claude-issued**: the claim names the client that sends this request
+* **Identity provider-issued**: the claim is the client ID that the customer's administrator registered for your connector in their identity provider. Claude's managed authorization setup gives the identity provider's setup the client ID that Claude presents on this request, so the two values should match when the administrator registers your connector through it. An administrator who registers your connector another way must enter the client ID that Claude presents on this request, so name it in your setup documentation
+
+Adding or removing `private_key_jwt` in `token_endpoint_auth_methods_supported` changes which client Claude presents through its metadata document. After customers are set up, that change can make their identity provider-issued sign-ins fail the **Client** check until each administrator runs Claude's managed authorization setup again or enters the new client ID in their identity provider. Tell administrators before you make it.
 
 A Claude-issued request always carries the `resource` parameter ([Resource Indicators, RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)), set to the `resource` in your Protected Resource Metadata when that is your MCP server's URL or a parent of it, and otherwise to your MCP server's URL. An identity provider-issued request carries it whenever the customer's identity provider supports forwarding it. Accept the request whether or not `resource` is present, and use it for audience binding when it is.
 
@@ -14750,7 +14765,7 @@ Check each of these cases before you launch:
 
 ## Support customer administrators
 
-A customer's administrator turns on Enterprise Managed Auth for their organization.
+A customer's administrator turns on Enterprise Managed Auth for their organization. For a connector added from the directory, an Owner or Primary Owner clicks **Set up auto-connect** on its row in [**Organization settings > Connectors**](https://claude.ai/admin-settings/connectors), which opens the managed authorization setup. Claude's guide for administrators is [Auto-connect your organization's apps to Claude](https://support.claude.com/en/articles/15537633-auto-connect-your-organization-s-apps-to-claude).
 
 ### Admin settings in your product
 
@@ -14832,7 +14847,7 @@ If you use OAuth, check these parts of your setup against Claude's client:
 If you need one of these related flows, follow its page:
 
 * **[Lazy authentication](/docs/connectors/building/lazy-authentication)**: if some of your tools work without the user's account, people can use those right away and sign in only when Claude reaches a tool that needs it
-* **[Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth)**: lets enterprise users connect through their organization's SSO without a consent screen
+* **[Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth)**: support auto-connect, so an organization can connect its users without a consent screen
 
 ### Decide what the server exposes
 
@@ -15102,7 +15117,7 @@ function authorizationServerMetadata() {
 
 > [!NOTE]
 >
-> Claude selects CIMD only when the authorization-server metadata advertises both `client_id_metadata_document_supported: true` and `"none"` in `token_endpoint_auth_methods_supported`. The second is required because Claude's CIMD client authenticates as a public client with `token_endpoint_auth_method: "none"`, so the token endpoint must accept [PKCE](https://datatracker.ietf.org/doc/html/rfc7636)-only requests without a client secret. If either property is missing, Claude falls back to looking for a `registration_endpoint`.
+> Claude normally selects CIMD only when the authorization-server metadata advertises both `client_id_metadata_document_supported: true` and `"none"` in `token_endpoint_auth_methods_supported`, and otherwise looks for a `registration_endpoint`. The second property is required because Claude's CIMD client authenticates as a public client with `token_endpoint_auth_method: "none"` in that case, so the token endpoint must accept [PKCE](https://datatracker.ietf.org/doc/html/rfc7636)-only requests without a client secret. If the metadata lists `private_key_jwt`, Claude can present a second, confidential metadata document instead, as [DCR and CIMD details](/docs/connectors/building/authentication#dcr-and-cimd-details) describes.
 
 If you move to a real issuer, keep `client_id_metadata_document_supported: true` in that issuer's metadata if you want registration-free onboarding for Claude clients.
 
@@ -15211,7 +15226,7 @@ See [Test a local server](/docs/connectors/building/testing#test-a-local-server)
 ## Next steps
 
 * [Authentication for connectors](/docs/connectors/building/authentication): check the OAuth requirements your authorization server must meet, including redirect URIs and token refresh
-* [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth): let organizations with SSO answer the same `401` with a silent token exchange
+* [Enterprise Managed Auth](/docs/connectors/building/enterprise-managed-auth): let Claude answer the same `401` with a silent token exchange for organizations that set up auto-connect for your connector
 * [Test your connector](/docs/connectors/building/testing): expose the server through a tunnel and add it as a custom connector
 * [Troubleshoot your connector](/docs/connectors/building/troubleshooting): diagnose discovery and authorization failures
 
@@ -25144,51 +25159,51 @@ Change one visible Claude Code setting on the [Config](/docs/government/config/s
 # Connect Claude Desktop to Claude for Government
 Source: https://claude.com/docs/government/deploy-desktop/configure
 
-Choose between single-machine setup and fleet deployment, understand the administrator requirements for each, and connect Claude Desktop to Claude for Government.
+Connect Claude Desktop to Claude for Government: the bootstrap URL, device profiles for macOS, Windows, and Linux, network hosts, updates, and troubleshooting.
 
 > **Who this is for:** IT administrators who install Claude Desktop on agency devices and connect it to Claude for Government.
 
-A fresh install of Claude Desktop connects to claude.ai. To connect it to Claude for Government instead, each device needs one managed setting that tells the app where to reach Claude for Government. Once that setting is in place, everything else that governs the app (which products and features are available, model access, [connectors](/docs/government/connectors/overview), usage limits, the Claude Desktop banner) is controlled through the [tenant](/docs/government/tenant-admin/configuration) and [organization](/docs/government/org-admin/configuration) configuration pages in this portal and delivered to each user when they sign in.
+A fresh install of Claude Desktop connects to claude.ai. To connect it to Claude for Government instead, each device needs a setting that tells the app where to reach Claude for Government, and on managed devices the configuration profile also hides the claude.ai sign-in option. Once that setting is in place, everything else that governs the app (which products and features are available, model access, [connectors](/docs/government/connectors/overview), usage limits, a banner message) is controlled through the [tenant](/docs/government/tenant-admin/configuration) and [organization](/docs/government/org-admin/configuration) configuration pages in this portal and delivered to each user when they sign in.
 
 ## Choose how to deploy
 
-There are two ways to get Claude Desktop installed and connected to Claude for Government. They differ in who runs the installer, what rights that requires, and how the setting reaches the app.
-
-| | Configure a single machine | Deploy to your fleet |
-| - | - | - |
-| Best for | Confirming the app works on a representative device before a wider rollout, or setting up a small group of devices by hand | Production rollout across your agency |
-| Who installs the app | A person at the device | Your device management system (for example Intune, Configuration Manager, or Jamf) |
-| Administrator rights to install | Needed by the person doing each install | Not needed by end users; the management system installs with elevated rights |
-| How the address is set | Entered in the app's built-in configuration window | Pushed as a configuration profile alongside the app |
-
-For a production rollout, use your device management system so end users never need administrator rights. The single-machine path is for testing first or for a small group of devices, with an administrator doing each install. That path can also export a profile for your management system, so it is a useful starting point even when the fleet path is your destination.
+* **[Configure a single machine](#configure-a-single-machine)** to confirm the app works on a representative device before a wider rollout, or to set up a small group of devices. An administrator installs the app on each device and enters the [bootstrap address](#the-bootstrap-address) in the app's built-in configuration window. On a device set up this way, the user can still sign in to claude.ai.
+* **[Deploy to your fleet](#deploy-to-your-fleet)** for a production rollout. Your device management system (for example Intune, Configuration Manager, or Jamf) installs the app with elevated rights and pushes the address as a configuration profile, so end users need no administrator rights to install it.
 
 ## Before you begin
 
 Confirm each of the following before you start either path.
 
 * **User accounts exist.** Claude Desktop signs users in to the same accounts as this portal. For each user, including your own test account, check with your tenant administrators that the user can sign in (a [routing rule](/docs/government/tenant-admin/identity-and-access) covers them) and has a [seat tier](/docs/government/org-admin/seat-tiers) with at least one model enabled.
-* **Devices can reach Claude for Government.** Claude Desktop on every device must reach the Claude for Government host over HTTPS on port 443. That one host carries the app's configuration and chat traffic.
-* **Browsers can reach sign-in.** Sign-in happens in the user's default web browser, not in the app. Browsers on each device must reach the Claude for Government host, its sign-in service (a separate host that your Anthropic representative provides), and your agency's identity provider.
-* **The device meets Claude Desktop's requirements.** See the Claude Desktop [system requirements](/docs/third-party/claude-desktop/installation#system-requirements) for macOS and Windows device requirements. For a Windows fleet, work through the [Windows fleet checklist](/docs/government/deploy-desktop/windows-checklist), which covers the Virtual Machine Platform feature that Cowork needs along with the installer, policy, and network prerequisites.
-* **Windows devices used for Code have Git for Windows.** On Windows, only the Code part of Claude Desktop needs Git for Windows. Chat and Cowork work without it. Install Git on the devices whose users will work in Code, or turn **Code in Claude Desktop** off under [Product availability](/docs/government/config/settings#product-availability) so that users are not prompted to install Git.
-* **Devices used for Code have the software your users' work needs.** Code runs its commands with the software installed on the device. Cowork and Advanced file analysis in Chat run theirs in the app's own virtual machine, which includes Python.
-* **You can install the app.** Installing by hand needs administrator rights on each device; see [Configure a single machine](#configure-a-single-machine) for what that means on each platform. Installing through your device management system does not, because the management system installs with elevated rights. The [macOS deployment guide](https://support.claude.com/en/articles/12611117-deploy-claude-desktop-for-macos) and the [Windows deployment guide](https://support.claude.com/en/articles/12622703-deploy-claude-desktop-for-windows) cover where to download the installer and how to distribute it.
+* **Devices and browsers can reach the hosts they need.** Allow the hosts under [Network access](#network-access).
+* **The device meets Claude Desktop's requirements.** See the Claude Desktop [system requirements](/docs/third-party/claude-desktop/installation#system-requirements) for macOS and Windows device requirements. For a Windows fleet, work through the [Windows fleet checklist](/docs/government/deploy-desktop/windows-checklist).
+* **Devices used for Code have the software your users' work needs.** Code runs its commands with the software installed on the device. Cowork and Advanced file analysis in Chat run theirs in the app's own virtual machine, which includes Python. For Git on Windows, see [Installer and packaging](/docs/government/deploy-desktop/windows-checklist#installer-and-packaging).
+* **You have the installer.** The [macOS deployment guide](https://support.claude.com/en/articles/12611117-deploy-claude-desktop-for-macos) and the [Windows deployment guide](https://support.claude.com/en/articles/12622703-deploy-claude-desktop-for-windows) cover where to download the installer and how to distribute it.
 * **The app is current.** Deploy Claude Desktop 1.46388.1 or later.
 
-## The managed setting
+### Network access
 
-The setting is called `bootstrapUrl`, and its value is the Claude for Government host followed by the fixed path `/gateway-api/user/bootstrap`.
+Connections to the Claude for Government host and its sign-in service use HTTPS on port 443. Claude for Government does not publish IP addresses for its host or its sign-in service, so allowlist both by hostname.
+
+* **App traffic.** Allow Claude Desktop on every device to reach the Claude for Government host, which carries the app's configuration and model inference.
+* **Browser sign-in traffic.** Allow the browser on every device to reach the Claude for Government host, the Claude for Government sign-in service (a separate host that your Anthropic representative provides), and your agency's identity provider. Sign-in happens in each user's default browser, not in the app.
+* **`downloads.claude.ai`.** From this host the app downloads the agent helper described under [Endpoint security software](/docs/third-party/claude-desktop/installation#endpoint-security-software), which Chat, Cowork, and Code all need, and the Cowork workspace, which Cowork tasks and Advanced file analysis in Chat need. The app downloads each one whenever the device does not already have the version that the app needs. The [offline installer](/docs/third-party/claude-desktop/installation#offline-installation) for macOS and Windows includes them.
+* **Hosts for icons, previews, and widgets.** For connector icons, the artifact preview frame, and the interactive widgets that some connectors display, the app reaches the hosts listed under Non-essential services in [Required egress paths](/docs/third-party/claude-desktop/telemetry#required-egress-paths), including `www.claudeusercontent.com` and `www.google.com`. If traffic is blocked, the app will run without icons, previews, and widgets.
+* **Update hosts.** On macOS and Windows, while [automatic updates](#automatic-updates) are on, also allow the hosts listed under Auto-updates in [Required egress paths](/docs/third-party/claude-desktop/telemetry#required-egress-paths). The telemetry rows there never apply, because Claude for Government does not send telemetry to Anthropic.
+* **Hosts your tools and connectors use.** Allow the hosts you add to [Allowed network hosts](/docs/government/config/settings#allowed-network-hosts) (such as package registries), the addresses of any connectors you configure on the Config page (including Microsoft 365 if you set up that connector), and your telemetry collector if you set one.
+* **Proxies.** The app supports routing its traffic through your network's proxy server, as the [Security and data handling](/docs/government/security/security-and-data-handling#network-egress-required-domains-and-proxies) page describes. If your proxy inspects TLS, validate sign-in, sending a message, and a shell command that Claude runs on a pilot device before rollout. See also [Network proxy](/docs/third-party/claude-desktop/network-proxy) in the Claude Desktop documentation.
+
+## The bootstrap address
+
+The setting that holds the address is called `bootstrapUrl`, and its value is the Claude for Government host followed by the fixed path `/gateway-api/user/bootstrap`.
 
 ```text theme={null}
 https://<claude-for-government-host>/gateway-api/user/bootstrap
 ```
 
-The Claude for Government host is the same domain name you use to access Claude for Government. If you are unsure of it, ask your Anthropic representative. The app uses the address exactly as entered; it fetches each user's configuration from it and starts sign-in from it, so include the full path.
+The Claude for Government host is the same domain name you use to access Claude for Government. If you are unsure of it, ask your Anthropic representative. The app uses the address exactly as entered, so include the full path.
 
 Use the host exactly as it was provided to your agency. An alias that your agency sets up on its own, such as a DNS record, redirect, or reverse proxy under your own domain that forwards to Claude for Government, does not work as the bootstrap address. The app accepts sign-in addresses only on the host in `bootstrapUrl`, and Claude for Government answers sign-in only on the host provided to your agency, so the app cannot sign in through such an alias.
-
-With any alias of this kind, the app still offers **Sign in with your organization**, but sign-in fails as soon as the user chooses it; see [Troubleshooting](#troubleshooting). The app supports routing its traffic through your network's proxy server, as the [Security and data handling](/docs/government/security/security-and-data-handling#network-egress-required-domains-and-proxies) page describes.
 
 ### How the app uses the bootstrap address
 
@@ -25196,22 +25211,9 @@ The address is the same for every device and user in your agency and carries no 
 
 When a user chooses **Sign in with your organization**, the app asks the Claude for Government host to start a sign-in, shows the pairing code it receives, and opens the host's sign-in page in the user's default browser. That page asks for the user's agency email address, then sends the browser to the sign-in service and on to your agency's identity provider. After signing in, the user acknowledges the system-use notification, confirms that the code shown in the browser matches the one in the app, and approves.
 
-Claude for Government then issues the app a session for that user, which the app stores encrypted on the device. The app presents that session, and nothing from the profile, when it downloads the user's configuration from this address and when it sends chat traffic to the same host. It re-checks the configuration about every 10 minutes (about every 30 minutes on Claude Desktop versions earlier than 1.46388.1) and at each launch.
+Claude for Government then issues the app a session for that user, which the app stores encrypted on the device. The app presents that session, and nothing from the profile, when it downloads the user's configuration from this address and for model inference on the same host.
 
-A session lasts until the user has gone without using Claude for longer than the [Session idle timeout](/docs/government/config/settings#session-idle-timeout) your tenant administrators set, which is 24 hours unless they change it, or until it reaches the [Maximum session length](/docs/government/config/settings#maximum-session-length) if one is set. Using Claude extends the session, but leaving the app open on an idle, locked, or sleeping device does not. When a session has ended, the app keeps the user's configuration and asks them to sign in again, with a message and a **Sign in again** button while the app is open, or with the sign-in screen the next time it starts, and it reloads the configuration once they sign in. Claude Desktop 1.34493.0 or later shows these prompts. Earlier versions can report an ended session as a **Configuration sync issue**, so update them.
-
-The configuration that the app downloads for a user includes the following settings, all of which you manage in this portal.
-
-| What the app receives | Where it is set |
-| - | - |
-| Which of Chat, Cowork, and Code the user can open, and whether Advanced file analysis is on in Chat | [Product availability](/docs/government/config/settings#product-availability) on the Config page |
-| The models the user can choose | The user's [seat tier](/docs/government/org-admin/seat-tiers) |
-| Connectors, plugins, and the settings for the built-in tools | The [tool and connector cards](/docs/government/config/settings#tool-and-connector-cards) on the Config page |
-| The hosts that tools may reach | [Allowed network hosts](/docs/government/config/settings#allowed-network-hosts) |
-| The folders a user can choose as a workspace | [Allowed workspace folders](/docs/government/config/settings#allowed-workspace-folders) |
-| The banner shown across the top of the app | [Claude Desktop banner](/docs/government/config/settings#claude-desktop-banner) |
-| Where the app sends your agency's own telemetry, if you have set a collector | [Telemetry endpoint](/docs/government/config/settings#telemetry-endpoint) |
-| Whether automatic updates are blocked, and the restart deadlines for a downloaded update and for a configuration change | [Block automatic updates](/docs/government/config/settings#block-automatic-updates), [Restart deadline for updates](/docs/government/config/settings#restart-deadline-for-updates), and [Restart deadline for configuration changes](/docs/government/config/settings#restart-deadline-for-configuration-changes) on the Config page |
+The configuration that the app downloads for a user includes [product availability](/docs/government/config/settings#product-availability), [tools, connectors, and plugins](/docs/government/config/settings#integrations), [network and folder limits](/docs/government/config/settings#sessions-and-access), [a banner message](/docs/government/config/settings#appearance), and [telemetry, update, and restart settings](/docs/government/config/settings#compliance-and-telemetry), all of which you manage in this portal. The models the user can choose come from the user's [seat tier](/docs/government/org-admin/seat-tiers).
 
 ## Configure a single machine
 
@@ -25219,33 +25221,13 @@ The configuration that the app downloads for a user includes the following setti
 
 Video: Pilot Claude Desktop on one machine (1 min 34 s). Narrated with an AI-generated voice, with on-screen captions.
 
-> [accordion] Transcript
->
-> A fresh install connects to claude.ai. One setting, the bootstrap address on your Claude for Government host, points it at Claude for Government. Everything else arrives at sign-in.
->
-> First confirm your test account has a seat tier, the device and browser can reach your host and identity provider, and you have administrator rights.
->
-> Open the app and stay on the sign-in screen. Enable Developer Mode from Help, Troubleshooting, then open Developer, Configure Third-Party Inference.
->
-> The window opens on Connection. Change nothing there. In Source, enter the bootstrap address, leave Trust bootstrap-delivered settings off, and select Apply Changes.
->
-> After the relaunch, choose Sign in with your organization. The app shows a pairing code, and you finish sign-in in your browser.
->
-> Then a small window, Apply settings from your organization, lists a Gateway base URL. Confirm it is on your host and select Allow.
->
-> For your fleet, turn on Disable Claude.ai sign-in under Workspace, keep the trust switch off, and use Export for the macOS, Jamf, Intune, or Group Policy files.
->
-> One end-to-end check is a short Claude Desktop banner on the Config page. If it appears in the app after sign-in, per-user delivery works.
+[Transcript](/docs/government/video-walkthroughs#pilot-claude-desktop-on-one-machine)
 
-> [!NOTE]
->
-> Installing by hand needs administrator rights on the device. On Windows, the installer registers a Windows system service, so it must run as a local administrator. On macOS, installing to the shared Applications folder requires an administrator. On Linux, installing the package requires root.
-
-Claude Desktop has a built-in configuration window that is hidden until you enable developer mode. These steps use it to set the address on one machine without any management tooling.
+Claude Desktop has a built-in configuration window that is hidden until you enable developer mode. These steps use it to set the address on one machine.
 
 **1. Launch the app without signing in**
 
-Install Claude Desktop on the test machine and open it. On Windows, run the installer while signed in as a local administrator. The claude.ai sign-in screen appears; this is expected before the app is configured. Stay on this screen.
+Install Claude Desktop on the test machine and open it. On Windows, the installer registers a Windows system service, so it must run as a local administrator. The claude.ai sign-in screen appears; this is expected before the app is configured. Stay on this screen.
 
 **2. Enable developer mode**
 
@@ -25253,31 +25235,27 @@ From the **Help** menu, choose **Troubleshooting**, then **Enable Developer Mode
 
 **3. Open the configuration window**
 
-From the **Developer** menu, choose **Configure Third-Party Inference**. This is the correct option for Claude for Government despite the name. The window opens on its **Connection** section.
+From the **Developer** menu, choose **Configure Third-Party Inference**. This is the correct option for Claude for Government despite the name.
 
 **4. Enter the bootstrap address**
 
-In the window's left sidebar, click **Source**, which on an unconfigured machine appears last in the list and is dimmed but is still clickable. Enter the full address from the section above in the **Bootstrap config URL** field. You do not need to change any other field, because Claude for Government supplies the provider, credentials, and model list after sign-in. A **Trust bootstrap-delivered settings** switch appears once the field has a value. Leave it off; the **Allow the gateway address** step below explains what it does.
+In the window's left sidebar, click **Source**, which on an unconfigured machine appears last in the list and is dimmed but is still clickable. Enter the full address from [The bootstrap address](#the-bootstrap-address) in the **Bootstrap config URL** field. You do not need to change any other field, because Claude for Government supplies the provider, credentials, and model list after sign-in. A **Trust bootstrap-delivered settings** switch (the `trustBootstrapDelivery` key) appears once the field has a value. Leave it off. With the switch on, the app trusts everything your Claude for Government host delivers without asking, including connectors and helper scripts that run on the device. That is the same trust the app extends when the bootstrap address comes from machine-wide device management. If you do turn it on, first confirm that the bootstrap address is on your Claude for Government host.
 
 **5. Apply and sign in**
 
-Click **Apply Changes**, then click **Save & Restart** and let the app relaunch. The sign-in screen now offers **Sign in with your organization** alongside the claude.ai option. Choose it. The app shows a pairing code and opens the sign-in page in your browser. Sign in with your agency credentials, confirm that the code in the browser matches the one in the app, and approve. The app picks up the session.
+Click **Apply Changes**, then click **Save & Restart** and let the app relaunch. The sign-in screen now offers **Sign in with your organization** alongside the claude.ai option. Choose it. The app shows a pairing code and opens the sign-in page in your browser. Sign in with your agency credentials, confirm that the code in the browser matches the one in the app, and approve.
 
 **6. Allow the gateway address**
 
-After sign-in, the app opens a small **Apply settings from your organization?** window that lists a **Gateway base URL**. The window opens without taking keyboard focus, so if your browser is still in front, switch back to Claude to find it. Expand **Gateway base URL** and confirm that the address is on your Claude for Government host, then click **Allow**. The app applies your organization's settings and connects, and it does not ask again unless the gateway address later changes.
+After sign-in, the app opens a small **Apply settings from your organization?** window that lists a **Gateway base URL**, the address that Claude for Government sends the app to use for model inference. If your browser is still in front, switch back to Claude to find it. Expand **Gateway base URL** and confirm that the address is on your Claude for Government host, then click **Allow**. The app applies none of your organization's settings until you click **Allow**.
 
-The app asks because you entered the bootstrap address by hand rather than through device management, and it applies none of your organization's settings until you click **Allow**. Choosing **Quit**, pressing Esc, or closing the window quits the app, and it asks again the next time it opens. If the address is not on your host, do not click **Allow**. Leave the window open, reopen the configuration window from the **Developer** menu, correct the **Bootstrap config URL** in its **Source** section, click **Apply Changes**, and then click **Save & Restart** so that the app relaunches with the corrected address.
-
-The **Trust bootstrap-delivered settings** switch in the **Source** section turns this prompt off. With the switch on, the app trusts everything your Claude for Government host delivers without asking, including connectors and helper scripts that run on the device. That is the same trust the app extends when the bootstrap address comes from machine-wide device management.
-
-Most single-machine tests do not need the switch, because the app asks only once. If you do turn it on, first confirm that the bootstrap address is on your Claude for Government host. For the other settings this prompt can cover, see [Keys that require user consent](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent).
+If the address is not on your host, do not click **Allow**. Reopen the configuration window from the **Developer** menu, correct the **Bootstrap config URL** in its **Source** section, click **Apply Changes**, and then click **Save & Restart** so that the app relaunches with the corrected address. If the app has no **Developer** menu, repeat the **Enable developer mode** step. Choosing **Quit**, pressing Esc, or closing the window quits the app, and it asks again the next time it opens. For why the app asks and the other settings this prompt can cover, see [Keys that require user consent](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent).
 
 **7. Run the verification checklist**
 
-Work through [Confirm it worked](#confirm-it-worked) below.
+Work through [Confirm it worked](#confirm-it-worked).
 
-After the test, the same configuration window has an **Export** menu that produces files for your management system: a `.mobileconfig` profile for macOS, a `.reg` file for Windows, an ADMX template for Intune or Group Policy, and a Profile Manifest for Jamf. Before exporting, make sure **Trust bootstrap-delivered settings** in the **Source** section is off so the exported files do not carry it. Before you deploy a profile made from these files, check that it sets `disableDeploymentModeChooser`, the key that hides the claude.ai sign-in option, to true, as the profiles under [Deploy to your fleet](#deploy-to-your-fleet) do. If `disableDeploymentModeChooser` is missing or false, set it to true.
+After the test, the same configuration window has an **Export** menu that produces files for your management system, listed under [Export the profile](/docs/third-party/claude-desktop/mdm#2-export-the-profile). If the app has no **Developer** menu, repeat the **Enable developer mode** step. Before exporting, make sure **Trust bootstrap-delivered settings** in the **Source** section is off so the exported files do not carry it. Before you deploy a profile made from these files, make sure it sets the keys listed under [Deploy to your fleet](#deploy-to-your-fleet).
 
 ## Deploy to your fleet
 
@@ -25285,38 +25263,29 @@ After the test, the same configuration window has an **Export** menu that produc
 
 Video: Deploy to your fleet (1 min 31 s). Narrated with an AI-generated voice, with on-screen captions.
 
-> [accordion] Transcript
->
-> Push two values as device policy, the bootstrap address and the setting that hides the claude.ai sign-in option. On macOS they live in a configuration profile, on Windows in machine policy. Deliver them before the app, and note they carry no secrets.
->
-> On Windows, deploy the MSIX package machine-wide. Anthropic publishes Intune install and detection scripts, and an offline installer for networks that cannot reach downloads.claude.ai.
->
-> Cowork needs the Virtual Machine Platform feature, enabled with a restart before rollout. Run the Cowork readiness check on one device per hardware model.
->
-> Allow the app to reach your host, and browsers to reach the host, its sign-in service, and your identity provider. Cowork and Code also download components from downloads.claude.ai.
->
-> Decide on updates. If your agency distributes app updates itself, turn on Block automatic updates on the Config page, lock it, and add the disableAutoUpdates value to the profile. Otherwise, leave updates on.
->
-> With the configuration delivered first, users land directly on the organization sign-in screen, and the configuration window becomes read-only. After a profile change, fully quit and reopen the app.
+[Transcript](/docs/government/video-walkthroughs#deploy-to-your-fleet)
 
-When your device management system deploys Claude Desktop, end users receive the app without running an installer themselves. The management system installs the package with the system or root account on each platform, so end users need no administrator rights and see no elevation prompt. Push both the app installer and the configuration profile below through the same system.
+Push both the app installer and the configuration profile through your device management system.
 
-The recommended profile contains two keys. In the macOS and Windows profiles below, write every value as a string exactly as shown, including booleans as the strings `"true"` or `"false"`; the Linux file uses native JSON types, as shown.
+The profile needs these keys. In the macOS and Windows profiles, write every value as a string exactly as shown, including booleans as the strings `"true"` or `"false"`; the Linux file uses native JSON types, as shown.
 
 | Key | Value | Purpose |
 | - | - | - |
 | `bootstrapUrl` | `https://<claude-for-government-host>/gateway-api/user/bootstrap` | Required. Points the app at Claude for Government. |
-| `disableDeploymentModeChooser` | `"true"` | Required. Hides the claude.ai sign-in option, so the sign-in screen offers only Claude for Government. Claude for Government also sends this setting, but the profile must set it too (see [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser) in the Claude Desktop configuration reference). Like any recognized key other than the automatic update settings, it also marks the device as managed (see [Order of deployment](#order-of-deployment)). |
+| `disableDeploymentModeChooser` | `"true"` | Required. Hides the claude.ai sign-in option. Claude for Government also sends this setting, but the profile must set it too (see [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser) in the Claude Desktop configuration reference). |
+| `deploymentMode` | `"3p"` | Required on Claude Desktop 4.16336.0 or later. Keeps the app on Claude for Government. Earlier versions read `disableDeploymentModeChooser`, so set both. |
 
-No other keys are needed to connect the app; Claude for Government supplies everything else per user after sign-in. If your agency distributes Claude Desktop updates itself, [Automatic updates](#automatic-updates) below describes one more key to add. The profile contains no secrets, only a host.
+No other keys are needed to connect the app; Claude for Government [supplies everything else](/docs/third-party/claude-desktop/bootstrap) per user after sign-in. If your agency distributes Claude Desktop updates itself, [Automatic updates](#automatic-updates) describes one more key to add.
 
-Keys documented for other Claude plans, such as `forceLoginOrgUUID` or `loginSsoOrgDomain`, apply only to claude.ai workspaces and are not used here. Keys for a separate sign-in provider, such as `bootstrapOidc` and `inferenceGatewayOidc` in the Claude Desktop [configuration reference](/docs/third-party/claude-desktop/configuration), do not work with Claude for Government either. Leave them unset, because you cannot connect the app directly to your identity provider.
+Leave these keys unset:
 
-With Claude for Government, the name the app shows for the connection in the lower-left corner of its window and at the top of its account menu is not controlled through device management. Leave the `deploymentDisplayName` and `deploymentDisplaySubtitle` keys unset, because the app discards them once it downloads the user's configuration after sign-in.
+* Keys for a separate sign-in provider, such as **`bootstrapOidc`** and **`inferenceGatewayOidc`**, do not work with Claude for Government, because you cannot connect the app directly to your identity provider
+* **`deploymentDisplayName` and `deploymentDisplaySubtitle`**, which name the connection in the app's window, are discarded once the app downloads the user's configuration after sign-in
+* **`desktopHome`**, because the app's home comes from [Product availability](/docs/government/config/settings#product-availability) on the Config page
 
 ### macOS
 
-Claude Desktop reads managed preferences in the `com.anthropic.claudefordesktop` domain. Deploy a configuration profile that sets the two keys in that domain as strings.
+Claude Desktop reads managed preferences in the `com.anthropic.claudefordesktop` domain. Deploy a configuration profile that sets the keys in that domain as strings.
 
 ```xml theme={null}
 <key>bootstrapUrl</key>
@@ -25324,13 +25293,15 @@ Claude Desktop reads managed preferences in the `com.anthropic.claudefordesktop`
 <string>https://<claude-for-government-host>/gateway-api/user/bootstrap</string>
 <key>disableDeploymentModeChooser</key>
 <string>true</string>
+<key>deploymentMode</key>
+<string>3p</string>
 ```
 
-Most device management consoles, including Jamf and Intune, build the profile around these keys for you. For a `.mobileconfig` to start from, use the Export menu described under [Configure a single machine](#configure-a-single-machine), and check it as that section says before you upload it.
+For a `.mobileconfig` to start from, use the Export menu described under [Configure a single machine](#configure-a-single-machine), and check it as that section says before you upload it.
 
 ### Windows
 
-Claude Desktop reads string (`REG_SZ`) values by name under `HKLM\SOFTWARE\Policies\Claude`. Deliver them with Intune, Group Policy, or any tool that writes machine policy. The ADMX template from the Export menu makes both keys available in the policy editor. As a `.reg` file:
+Claude Desktop reads string (`REG_SZ`) values by name under `HKLM\SOFTWARE\Policies\Claude`. Deliver them with Intune, Group Policy, or any tool that writes machine policy. As a `.reg` file:
 
 ```text theme={null}
 Windows Registry Editor Version 5.00
@@ -25339,23 +25310,18 @@ Windows Registry Editor Version 5.00
 ; substitute the Claude for Government host
 "bootstrapUrl"="https://<claude-for-government-host>/gateway-api/user/bootstrap"
 "disableDeploymentModeChooser"="true"
+"deploymentMode"="3p"
 ```
 
-For fleet deployment, deliver the values under `HKEY_LOCAL_MACHINE` as shown here. If the `.reg` file from the **Export** menu has `HKEY_CURRENT_USER` in the line in square brackets, change it to `HKEY_LOCAL_MACHINE` before you deploy the file.
+Before you deploy a `.reg` file from the **Export** menu, check that the line in square brackets names `HKEY_LOCAL_MACHINE`, and change it if it does not. Under `HKEY_CURRENT_USER`, the app asks each user to allow the gateway address after sign-in, as in the **Allow the gateway address** step under [Configure a single machine](#configure-a-single-machine).
 
-After a user signs in, Claude for Government sends the app the address to use for chat traffic, which the app shows as **Gateway base URL**. When the registry values are under `HKEY_LOCAL_MACHINE`, the app accepts that address without asking the user. When they are under `HKEY_CURRENT_USER`, the app asks each user once to allow it, as described under [Keys that require user consent](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent). Have each user confirm that the address is on your Claude for Government host before they click **Allow**.
+Keep every value in the same hive as `bootstrapUrl`, because once any value exists under `HKLM\SOFTWARE\Policies\Claude` the app ignores `HKEY_CURRENT_USER` entirely.
 
-To approve the address in advance on a test device configured under `HKEY_CURRENT_USER`, first confirm that the `bootstrapUrl` value is on your Claude for Government host, then add `"trustBootstrapDelivery"="true"` next to it under the same key. That value tells the app to trust everything your Claude for Government host delivers without asking, including connectors and helper scripts that run on the device, which is the same trust the app extends when `bootstrapUrl` is under `HKEY_LOCAL_MACHINE`.
-
-If you later move a test device's values to `HKEY_LOCAL_MACHINE`, move all of them, because once any value exists under `HKLM\SOFTWARE\Policies\Claude` the app ignores `HKEY_CURRENT_USER` entirely.
-
-> [!NOTE]
->
-> Cowork, the agentic workspace in Claude Desktop, requires the **Virtual Machine Platform** Windows optional feature. Enable that feature through your device management system before rollout. On a device where the feature is not enabled, Cowork is unavailable until someone turns the feature on, which requires administrator rights that a standard user does not have. Chat works without this feature, except for Advanced file analysis. The [Windows fleet checklist](/docs/government/deploy-desktop/windows-checklist) lists the remaining Windows prerequisites and explains what to do [if some devices are not ready for Cowork](/docs/government/deploy-desktop/windows-checklist#if-some-devices-are-not-ready-for-cowork).
+Cowork, the agentic workspace in Claude Desktop, requires the **Virtual Machine Platform** Windows optional feature. The [Windows fleet checklist](/docs/government/deploy-desktop/windows-checklist) covers [that feature](/docs/government/deploy-desktop/windows-checklist#cowork-virtualization) and the remaining Windows prerequisites, and explains what to do [if some devices are not ready for Cowork](/docs/government/deploy-desktop/windows-checklist#if-some-devices-are-not-ready-for-cowork).
 
 ### Linux
 
-Place a JSON file at `/etc/claude-desktop/managed-settings.json` containing the same keys at the top level.
+Place a JSON file at `/etc/claude-desktop/managed-settings.json` containing these keys at the top level.
 
 ```json theme={null}
 {
@@ -25364,30 +25330,30 @@ Place a JSON file at `/etc/claude-desktop/managed-settings.json` containing the 
 }
 ```
 
-The file must be a regular file (not a symlink), and the file and its directory must be owned by root and must not be group- or world-writable. If the permissions are wrong, the app rejects the file, logs the reason to `main.log`, and treats the device as managed but unreadable, so local settings are also disabled until the permissions are corrected and the app is relaunched.
+Once the device runs Claude Desktop 4.16336.0 or later, add `"deploymentMode": "3p"`. Earlier versions treat a key they don't recognize in this file as an error.
+
+The file must be a regular file (not a symlink), and the file and its directory must be owned by root and must not be group- or world-writable. [The Linux configuration file](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file) in the Claude Desktop documentation describes what the app does when the permissions are wrong.
 
 ### Order of deployment
 
-Deploy the configuration before the app wherever you can. A user whose device already has the profile opens Claude Desktop for the first time and lands directly on the Claude for Government sign-in screen, with no opportunity to sign in to claude.ai by mistake.
+Deploy the configuration before the app wherever you can. A user whose device already has the profile opens Claude Desktop for the first time and lands directly on the Claude for Government sign-in screen, with no opportunity to sign in to claude.ai by mistake. The app reads managed configuration at launch. After you change the profile on a device where the app is already running, have the user fully quit it, including from the menu bar or system tray, and reopen it.
 
-> [!NOTE]
->
-> Once `bootstrapUrl`, `disableDeploymentModeChooser`, or any other recognized key except the automatic update settings is present in the profile, the device is managed. The in-app configuration window becomes read-only, and locally authored settings, including a single-machine test configuration, are ignored in favor of the profile. A managed device uses only the connection in the profile: users cannot add, import, or switch to other configurations in that window. Users on a managed device can still turn on developer mode from the **Help** menu by choosing **Troubleshooting**, then **Enable Developer Mode**. The configuration window it reveals stays read-only, so they can view the connection there but not change it. If a group of users needs a different connection, scope a different profile to their devices or users in your management system, or leave those devices without a profile and set them up as described under [Configure a single machine](#configure-a-single-machine). Removing the profile returns the device to local control.
+Once the profile sets `bootstrapUrl`, `disableDeploymentModeChooser`, or any other key except [the few that Claude Desktop exempts](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence), the device is managed. The in-app configuration window becomes read-only, and the app ignores any configuration saved in that window.
 
-The app reads managed configuration at launch. After you change the profile on a device where the app is already running, have the user fully quit and reopen it.
+Turning on developer mode does not change this: the configuration window stays read-only, so users can view the connection there but not change it. If a group of users needs a different connection, scope a different profile to their devices in your management system, or leave those devices without a profile and set them up as described under [Configure a single machine](#configure-a-single-machine). Removing the profile returns the device to local control.
 
 ### Automatic updates
 
-On macOS and Windows, Claude Desktop downloads and installs its own updates by default. If your agency distributes Claude Desktop updates itself, turn automatic updates off in both of the following places so that devices never update themselves.
+On macOS and Windows, Claude Desktop downloads and installs its own updates by default. On a Mac with the app in `/Applications`, macOS asks a user who is not an administrator for an administrator's name and password before an update installs. Until someone enters them, the update does not install. If your agency distributes Claude Desktop updates itself, turn automatic updates off in both of the following places so that devices never update themselves.
 
-* **On the Config page.** Have a tenant administrator or organization owner turn on [Block automatic updates](/docs/government/config/settings#block-automatic-updates) and [lock](/docs/government/config/overview#locks) it, so that no level below theirs can turn updates back on. Claude Desktop applies this setting once a user has signed in and the app has loaded their configuration from Claude for Government. With that configuration loaded, the app follows this setting alone, whether it is on or off, and ignores the profile value.
-* **In the profile.** Add `disableAutoUpdates` with the value `"true"` to the [macOS](#macos) and [Windows](#windows) profiles above. The app applies the profile value only when it starts without a signed-in user, for example on a newly deployed device or when a user opens the app and has to sign in again because their session expired. Without the Config page setting, the profile value does not stop signed-in devices from updating.
+* **On the Config page.** Have a tenant administrator turn on [Block automatic updates](/docs/government/config/settings#block-automatic-updates) and [lock](/docs/government/config/overview#locks) it, so that no level below theirs can turn updates back on. An organization owner can turn it on for their own organization, whose Config page offers no lock. Claude Desktop applies this setting once a user has signed in and the app has loaded their configuration from Claude for Government. With that configuration loaded, the app follows this setting alone, whether it is on or off, and ignores the profile value.
+* **In the profile.** Add `disableAutoUpdates` with the value `"true"` beside [`bootstrapUrl`](#the-bootstrap-address) in your [macOS](#macos) and [Windows](#windows) profiles. The app applies the profile value only when it starts without a signed-in user, for example on a newly deployed device or when a user opens the app and has to sign in again because their session expired. Without the Config page setting, the profile value does not stop signed-in devices from updating.
 
-Claude Desktop reads its update settings when it starts. If the app is already running on a device when you change the Config page setting or the profile, the change applies the next time the app starts. If you leave automatic updates on, [Restart deadline for updates](/docs/government/config/settings#restart-deadline-for-updates) on the Config page sets how long a user can put off the restart that installs a downloaded update.
+Claude Desktop reads its update settings when it starts. If the app is already running on a device when you change the Config page setting or the profile, the change applies the next time the app starts. If you leave automatic updates on, see [Restart deadline for updates](/docs/government/config/settings#restart-deadline-for-updates).
 
-On Linux, apt installs Claude Desktop updates, and the app does not download or install its own. By default, installing the `claude-desktop` package adds Anthropic's apt repository, so `apt upgrade` installs new versions from `downloads.claude.ai`, and so do unattended upgrades on devices that have them turned on. The **Block automatic updates** setting and the `disableAutoUpdates` key do not change these updates.
+On Claude Desktop versions earlier than 1.25927.0, the Config page setting alone does not reliably stop updates. On those versions, a profile that sets `disableAutoUpdates` to `"true"` stops automatic updates for signed-in users too, until you remove the key.
 
-To keep Linux devices on the versions your agency distributes, add the line `CLAUDE_DESKTOP_ADD_REPO=false` to `/etc/default/claude-desktop`, and create that file if it does not exist. The package then does not add the repository when it installs or upgrades. On a device that already has the package, also delete `/etc/apt/sources.list.d/claude-desktop.list`.
+On Linux, apt installs Claude Desktop updates, and the app does not download or install its own. The **Block automatic updates** setting and the `disableAutoUpdates` key do not change these updates. To stop the app's own check of Anthropic's [update hosts](/docs/third-party/claude-desktop/telemetry#required-egress-paths) for a new version, use both, with the key in the [Linux file](#linux). To keep Linux devices on the versions your agency distributes, follow [Auto-updates](/docs/third-party/claude-desktop/telemetry#auto-updates) in the Claude Desktop documentation.
 
 ## Confirm it worked
 
@@ -25395,94 +25361,82 @@ To keep Linux devices on the versions your agency distributes, add the line `CLA
 
 Video: Verify a managed device and spot common failures (1 min 40 s). Narrated with an AI-generated voice, with on-screen captions.
 
-> [accordion] Transcript
->
-> On a managed device, the sign-in screen offers only Sign in with your organization, and the configuration window is read-only. Under Help, Troubleshooting, Generate Diagnostic Report saves a report that shows what the app read.
->
-> Sign in as a test user with a seat tier. Chat should work, the picker should list that user's models, and your Config page banner should appear in the app.
->
-> If the picker is empty, nothing is wrong with the device. Most often the user has no seat tier, and an organization owner assigns one on the Users page.
->
-> Only the claude.ai sign-in means the configuration did not reach the app. Check delivery and the diagnostic report, then quit and reopen.
->
-> A prompt to apply settings at every launch means the address was set per user. Have the user check the address and select Allow, and deliver it machine-wide to stop the prompt.
->
-> A Microsoft page saying you cannot access this right now comes from a Conditional Access policy, which your identity team resolves. Nothing in the app changes it.
->
-> On current app versions, Your session has expired with Sign in again is expected after the idle timeout your tenant sets, 24 hours by default. Signing in again reconnects the app. Older versions may call it a configuration sync issue, so update them.
+[Transcript](/docs/government/video-walkthroughs#verify-a-managed-device-and-spot-common-failures)
 
 Run through these checks on a configured machine from either path.
 
 **1. Check the sign-in screen**
 
-Launch the app. The sign-in screen offers **Sign in with your organization**. On a managed device with `disableDeploymentModeChooser` set, it is the only option. If only the claude.ai sign-in appears, the configuration did not reach the app.
+Launch the app. The sign-in screen offers **Sign in with your organization**. If the profile sets `disableDeploymentModeChooser` to true, the claude.ai sign-in option is hidden. If only the claude.ai sign-in appears, the configuration did not reach the app.
 
 **2. Check that the device is managed**
 
-On a device that received the profile through your management system, open the configuration window (the first three steps of the single-machine path). It should be read-only with a banner noting that your organization manages the configuration. If it is still editable, no recognized key reached the app, even if your management console reports the profile as delivered. The diagnostic report's Configuration section (next step) shows exactly what the app read.
+On a device that received the profile through your management system, open the configuration window (the second and third steps of the single-machine path). It should be read-only with a banner noting that your organization manages the configuration. If it is still editable, no recognized key reached the app, even if your management console reports the profile as delivered. The diagnostic report (next step) shows what the app read.
 
 **3. Generate a diagnostic report**
 
-From **Help**, choose **Troubleshooting**, then **Generate Diagnostic Report**. The report's Configuration section lists which keys the app read, where each came from, and any values that failed to parse. Secret values are redacted, so the report is safe to attach to a help-desk ticket.
+From **Help**, choose **Troubleshooting**, then **Generate Diagnostic Report**, and click **Export to file**. In the saved `.zip` file, `managed-config.txt` shows where the configuration was read from and each key's configured or default value, and lists anything it could not parse under `Parse errors`. Secret values are redacted. If the report has no such file, no configuration reached the app.
 
 **4. Sign in and send a message**
 
-Sign in as a provisioned test user. If the app asks **Apply settings from your organization?**, expand the **Gateway base URL** it lists and confirm that the address is on your Claude for Government host, then click **Allow**. Chat works and the model picker lists the models you expect for that user's seat tier.
+Sign in as a provisioned test user. If the app asks **Apply settings from your organization?**, answer it as in the **Allow the gateway address** step under [Configure a single machine](#configure-a-single-machine). Claude replies, and the model picker lists the models you expect for that user's seat tier.
 
 **5. Confirm per-user settings arrived**
 
-After sign-in, what the app offers matches that user's [product availability](/docs/government/config/settings#product-availability) settings (with everything on, the sidebar shows **Home** and **Code**), and any organization-managed connectors appear in the app. One end-to-end test is to set a short message in the **Claude Desktop banner** setting on the tenant [Config](/docs/government/tenant-admin/configuration) page during rollout; if the message appears across the top of the app after sign-in, per-user delivery is working. If sign-in succeeds but none of these settings arrive, re-check the configured address.
+After sign-in, what the app offers matches that user's [product availability](/docs/government/config/settings#product-availability) settings, and any organization-managed connectors appear in the app. One end-to-end test is to set a short [banner message](/docs/government/config/settings#appearance) on the tenant [Config](/docs/government/tenant-admin/configuration) page during rollout; if the message appears across the top of the app after sign-in, per-user delivery is working. If sign-in succeeds but none of these settings arrive, re-check the configured address.
 
 ## Troubleshooting
 
 | What you see | Likely cause | What to do |
 | - | - | - |
-| Only the claude.ai sign-in screen; no organization option | The configuration never reached the app: the profile was not delivered, a key name is misspelled, the value is in the wrong location or registry type, or the app was not relaunched after the change. A profile that sets any `otlp*` telemetry key but no `bootstrapUrl` also produces this screen, even on a device that was set up in the app's configuration window | Verify delivery in your management console, generate a diagnostic report and check its Configuration section, then fully quit and reopen the app. If the profile sets telemetry keys but no `bootstrapUrl`, add `bootstrapUrl` to the profile or remove the profile, then fully quit and reopen the app |
-| Sign-in times out, or the browser says the code expired | The app stops waiting after about five minutes | Cancel and start sign-in again; a fresh code is issued |
-| Sign-in fails as soon as the user chooses **Sign in with your organization**, and the error on the sign-in screen or in `main.log` says that an address "must be same-origin" as the configured host | `bootstrapUrl` points at an alias that your agency operates, such as a DNS record or reverse proxy under your own domain, rather than the host provided to your agency | Use the host provided to your agency in `bootstrapUrl`, exactly as provided, redeploy the profile, then fully quit and reopen the app |
-| The diagnostic report or `main.log` shows "Managed configuration is invalid; local settings are disabled until it is fixed" | The app detected a managed profile but could not read any of its values | Correct the profile and redeploy; the report's Configuration section names each key that failed |
-| Signed in, but the model picker is empty, or the app shows a **Configuration can't be used** banner whose **Details** or **Copy report for IT** text says the provider returned no usable models | The user has no seat tier, or none of the tier's models is available in Claude for Government, so the app received an empty model list. Nothing is wrong with the device's configuration | Have an organization owner check the user's seat tier on the [Users](/docs/government/org-admin/users) page and the tier's models on the [Seat tiers](/docs/government/org-admin/seat-tiers) page |
-| An **Apply settings from your organization?** window appears after sign-in or at every launch, or the app quits when the user dismisses that window | The bootstrap address was entered in the app or set per user (for example under `HKEY_CURRENT_USER`), so the app asks each user to allow the gateway address that Claude for Government sends before it applies any of the organization's settings, and the user has not yet clicked **Allow**. Choosing **Quit**, pressing Esc, or closing the window quits the app, and it asks again on the next launch. | Have the user expand **Gateway base URL** in that window, confirm that the address is on your Claude for Government host, and click **Allow**. The window does not take focus when it opens, so have the user switch to the Claude app to find it. If the address is not on your host, check the bootstrap address configured on that device. To stop the prompt across a fleet, deliver the bootstrap address through machine-wide device management, as described under [Deploy to your fleet](#deploy-to-your-fleet). Versions earlier than 1.32352.0 that ask for this approval also show a **Configuration sync issue** banner that says "bootstrap response is missing required field(s): inferenceGatewayBaseUrl" for the same cause. Update the app to the latest version, then answer the prompt. |
-| The browser shows a connection error instead of Claude for Government or its sign-in page: "Secure Connection Failed" with `PR_CONNECT_RESET_ERROR` in Firefox, or `ERR_CONNECTION_RESET` in Chrome | A web filter, firewall, or proxy reset the connection, either on your agency's network or on the Claude for Government side. | If the address opens in another browser on the same computer, check the first browser's proxy and DNS settings. Otherwise, open the address from outside your agency's network, for example on a phone using cellular data. If the phone shows a web page, not a connection error, have your network team allow the host in that address and the hosts described under [Before you begin](#before-you-begin). If the phone also fails, or the team finds no block, contact your Anthropic representative with the address, the time and time zone of the error, and your network's public IP addresses. |
-| During sign-in, the browser shows a Microsoft page titled "You cannot access this right now", sometimes in one browser but not in another | Microsoft Entra ID shows this page when one of your agency's Conditional Access policies blocks the sign-in, for example a policy that limits which browsers, devices, or locations can sign in. The refusal happens before the sign-in reaches Claude for Government, so nothing in the app or in this portal changes it. | Ask your identity team to find the failed sign-in in the identity provider's sign-in logs. In the Microsoft Entra admin center, the sign-in event's **Conditional Access** tab names the policy that blocked it and the condition that was not met. Adjust the policy, or have the user sign in from a browser or device the policy allows (Claude Desktop opens sign-in in the computer's default browser). |
-| The app shows **Your session has expired** or **You've been signed out** with a **Sign in again** button, or a device that was already set up opens to the sign-in screen | The user's Claude for Government session ended, most often because they had not used Claude for longer than your tenant's [Session idle timeout](/docs/government/config/settings#session-idle-timeout). A device left idle, locked, or asleep does not keep a session alive. A session also ends at the Maximum session length, or when the user or an administrator signs it out. A user can have at most six active Claude Desktop sessions. When they sign in to Claude Desktop again while six are active, Claude for Government ends the Claude Desktop session that is closest to expiring. | Have the user sign in again. The app keeps its configuration and reconnects. If the session limit is the cause, the user can go to their [Sessions](/docs/government/account/sessions) page and sign out of sessions they no longer use. If people are asked to sign in more often than you intend, ask a tenant administrator to review **Session idle timeout** and **Maximum session length** on the [Config](/docs/government/tenant-admin/configuration) page. On Claude Desktop versions earlier than 1.34493.0 the same situation can appear as a **Configuration sync issue** banner instead, so update the app. |
-| On a Windows device, Cowork tasks fail, the app shows **Failed to start Claude's workspace** with a message under it about a Windows update, or Claude can't read some attached files in Chat, such as Word, Excel, or PowerPoint files | The device has installed the Windows update released September 8, 2026, but not Microsoft's later update that fixes the problem. The September 8 update stops Claude's workspace from reaching files on the device. Cowork tasks and Advanced file analysis in Chat need the workspace. | Install the latest Windows update on the device and restart it. On Windows 11 24H2 and 25H2, the fix is KB5129195. No Claude Desktop update is needed. See [Resolved: Cowork on Windows](/docs/cowork/changelog#resolved-cowork-on-windows) in the Claude Desktop changelog. |
-| Web search is on for your organization, but a user does not have it, and under **Customize**, then **Connectors**, **Web Search** shows as not connected and **Connect** fails, while chat works | A firewall or secure web gateway on that user's network path filters traffic by application. Claude Desktop connects to web search on your Claude for Government host over HTTPS, and such equipment can classify that connection as Model Context Protocol (MCP) traffic and block it even when the host itself is allowed. | Ask your network team to allow this traffic to your Claude for Government host for the affected users. The user's `main.log` records each failed attempt, including any block page the network returned. Then have the user select **Connect** next to **Web Search**, or restart the app. |
-| The app shows **Failed to start Claude's workspace** with a download error under it, or Chat conversations and Cowork tasks fail to start with "Host Claude Code binary not available. Check that the download completed." | Claude Desktop could not download a complete, verified copy of the Cowork workspace or the [agent helper](/docs/third-party/claude-desktop/installation#endpoint-security-software) from `downloads.claude.ai`. This usually means a proxy or web filter on the device's network path is blocking or altering the download. | Follow [Cowork workspace or Claude CLI fails to download](/docs/third-party/claude-desktop/installation#cowork-workspace-or-claude-cli-fails-to-download) in the Claude Desktop documentation. |
-| On a Windows device, the app shows **A Windows security policy is blocking Claude's workspace**, and the shell commands that Claude runs in Cowork tasks fail | A Group Policy or MDM policy applied to the device assigns the **Log on as a service** right without the `NT VIRTUAL MACHINE\Virtual Machines` group, or lists that group under **Deny log on as a service** | Follow [Windows security policy blocks the Cowork workspace](/docs/third-party/claude-desktop/installation#windows-security-policy-blocks-the-cowork-workspace) in the Claude Desktop documentation. |
+| Only the claude.ai sign-in screen; no organization option | The configuration never reached the app: the profile was not delivered, a key name is misspelled, the value is in the wrong location or registry type, or the app was not relaunched after the change. A profile that sets a key such as `desktopHome` or an `otlp*` telemetry key but no `bootstrapUrl` also produces this screen, even on a device that was set up in the app's configuration window | Verify delivery in your management console, check a [diagnostic report](#confirm-it-worked), then fully quit and reopen the app. If the profile has no `bootstrapUrl`, add `bootstrapUrl` to the profile or remove the profile, then fully quit and reopen the app |
+| Sign-in times out, or the browser says the code expired | The app stops waiting after about five minutes | Start sign-in again; a fresh code is issued |
+| Sign-in fails as soon as the user chooses **Sign in with your organization**, and the error on the sign-in screen or in `main.log` says that an address "must be same-origin" as the configured host | `bootstrapUrl` points at an alias that your agency operates, rather than the host provided to your agency (see [The bootstrap address](#the-bootstrap-address)) | Use the host provided to your agency in `bootstrapUrl`, exactly as provided, redeploy the profile, then fully quit and reopen the app |
+| The diagnostic report or `main.log` shows "Managed configuration is invalid; local settings are disabled until it is fixed" | The app detected a managed profile but could not read any of its values | Correct the profile and redeploy. The [diagnostic report](#confirm-it-worked) lists what the app could not parse |
+| Signed in, but the model picker is empty, or the app shows a **Configuration can't be used** banner whose **Details** or **Copy report for IT** text says the provider returned no usable models | The user has no seat tier, or none of the tier's models is available in Claude for Government. Nothing is wrong with the device's configuration | Have an organization owner check the user's seat tier on the [Users](/docs/government/org-admin/users) page and the tier's models on the [Seat tiers](/docs/government/org-admin/seat-tiers) page |
+| An **Apply settings from your organization?** window appears after sign-in or at every launch, or the app quits when the user dismisses that window | The bootstrap address was entered in the app or set per user (for example under `HKEY_CURRENT_USER`), and the user has not yet clicked **Allow** | Have the user answer it as in the **Allow the gateway address** step under [Configure a single machine](#configure-a-single-machine). If the address is not on your host, check the bootstrap address configured on that device. To stop the prompt across a fleet, deliver the bootstrap address through machine-wide device management, as described under [Deploy to your fleet](#deploy-to-your-fleet) |
+| The browser shows a connection error instead of Claude for Government or its sign-in page: "Secure Connection Failed" with `PR_CONNECT_RESET_ERROR` in Firefox, or `ERR_CONNECTION_RESET` in Chrome | A web filter, firewall, or proxy reset the connection, either on your agency's network or on the Claude for Government side. | If the address opens in another browser on the same computer, check the first browser's proxy and DNS settings. Otherwise, open the address from outside your agency's network, for example on a phone using cellular data. If the phone shows a web page, not a connection error, have your network team allow the host in that address and the hosts described under [Network access](#network-access). If the phone also fails, or the team finds no block, contact your Anthropic representative with the address, the time and time zone of the error, and your network's public IP addresses. |
+| During sign-in, the browser shows a Microsoft page titled "You cannot access this right now", sometimes in one browser but not in another | Microsoft Entra ID shows this page when one of your agency's Conditional Access policies blocks the sign-in, for example a policy that limits which browsers, devices, or locations can sign in. The refusal happens before the sign-in reaches Claude for Government, so nothing in the app or in this portal changes it. | Ask your identity team to find the failed sign-in in the identity provider's sign-in logs. Adjust the policy, or have the user sign in from a browser or device the policy allows (Claude Desktop opens sign-in in the computer's default browser). |
+| The app shows **Your session has expired** or **Couldn't verify your sign-in** with a **Sign in again** button, or a device that was already set up opens to the sign-in screen | The user's Claude for Government session ended. A session ends once the user has gone without using Claude for longer than the [Session idle timeout](/docs/government/config/settings#session-idle-timeout) your tenant administrators set, which is 24 hours unless they change it, or when it reaches the [Maximum session length](/docs/government/config/settings#maximum-session-length) if one is set. A session also ends when the user or an administrator signs it out. A device left idle, locked, or asleep does not keep a session alive. [How long sessions last](/docs/government/account/sessions#how-long-sessions-last) lists other ways a session ends | Have the user sign in again. When a session has ended, the app keeps the user's configuration and asks them to sign in again, with a message and a **Sign in again** button while the app is open, or with the sign-in screen the next time it starts, and it reloads the configuration once they sign in. If people are asked to sign in more often than you intend, ask a tenant administrator or organization owner to review **Session idle timeout** and **Maximum session length** on the [Config](/docs/government/tenant-admin/configuration) page |
+| A **Configuration sync issue** banner on a Claude Desktop version earlier than 1.34493.0 | On these versions, an ended session can appear as this banner. Versions earlier than 1.32352.0 that ask for the **Apply settings from your organization?** approval also show it, with "bootstrap response is missing required field(s): inferenceGatewayBaseUrl" | Update the app to the latest version, then sign in again or answer the prompt |
+| On a Windows device, Cowork tasks fail, the app shows an error about starting Claude's workspace that mentions a Windows update, or, with [Advanced file analysis in Chat](/docs/government/config/settings#advanced-file-analysis-in-chat) on, Claude can't read some attached files in Chat, such as Word, Excel, or PowerPoint files | The device has installed the Windows update released September 8, 2026, but not Microsoft's later update that fixes the problem. Cowork tasks and Advanced file analysis in Chat need the workspace. | Install the latest Windows update on the device and restart it. On Windows 11 24H2 and 25H2, the fix is KB5129195. No Claude Desktop update is needed. See [Resolved: Cowork on Windows](/docs/cowork/changelog#resolved-cowork-on-windows) in the Claude Desktop changelog. |
+| [Web search](/docs/government/config/settings#web-search) is on for your organization, but a user does not have it, and under **Customize**, then **Connectors**, **Web Search** shows as not connected and **Connect** fails, while chat works | A firewall or secure web gateway on that user's network path filters traffic by application. Claude Desktop connects to web search on your Claude for Government host over HTTPS, and such equipment can classify that connection as Model Context Protocol (MCP) traffic and block it even when the host itself is allowed. | Ask your network team to allow this traffic to your Claude for Government host for the affected users. The user's `main.log` records each failed attempt, including any block page the network returned. Then have the user select **Connect** next to **Web Search**, or restart the app. |
+| The app shows **Couldn't download Claude's workspace**, or **Failed to start Claude's workspace** with a download error under it, or Chat conversations and Cowork tasks fail to start with "Host Claude Code binary not available. Check that the download completed." | Claude Desktop could not download a complete, verified copy of the Cowork workspace or the [agent helper](/docs/third-party/claude-desktop/installation#endpoint-security-software) from `downloads.claude.ai`. | Follow [Cowork workspace or Claude CLI fails to download](/docs/third-party/claude-desktop/installation#cowork-workspace-or-claude-cli-fails-to-download) in the Claude Desktop documentation. |
+| Chat conversations, Cowork tasks, or Code sessions fail to start with **Claude Code crashed** or **Managed settings kept Claude Code from starting**, and `main.log` says that Claude Code "is newer than the maximum version allowed by your organization" | The device's [Claude Code managed settings](/docs/government/deploy-claude-code/configure#deploy-the-settings) set a maximum version below the Claude Code in Claude Desktop's [agent helper](/docs/third-party/claude-desktop/installation#endpoint-security-software), which runs Chat, Cowork, and Code. An app update can bring a newer Claude Code | Raise or remove [`requiredMaximumVersion`](https://code.claude.com/docs/en/settings-reference#requiredmaximumversion) in those settings on the device |
+| On a Windows device, the app shows **A Windows security policy is blocking Claude's workspace** | A Group Policy or MDM policy applied to the device assigns the **Log on as a service** right without the `NT VIRTUAL MACHINE\Virtual Machines` group, or lists that group under **Deny log on as a service** | Follow [Windows security policy blocks the Cowork workspace](/docs/third-party/claude-desktop/installation#windows-security-policy-blocks-the-cowork-workspace) in the Claude Desktop documentation. |
 
-For anything else, the app writes its log to `~/Library/Logs/Claude-3p/main.log` on macOS, `%LOCALAPPDATA%\Claude-3p\logs\main.log` on Windows, and `~/.config/Claude-3p/logs/main.log` on Linux. The log records which configuration keys were read or dropped and why. The diagnostic report from the verification checklist produces a bundle, without conversation content, that you can send to your Anthropic representative.
+For anything else, the app writes its log to `~/Library/Logs/Claude-3p/main.log` on macOS, `%LOCALAPPDATA%\Claude-3p\logs\main.log` on Windows, and `~/.config/Claude-3p/logs/main.log` on Linux (`~/.config/Claude/logs/main.log` until the app is configured). The diagnostic report from the verification checklist produces a bundle that you can send to your Anthropic representative. [Review it first](/docs/third-party/claude-desktop/installation#troubleshooting).
 
 ## Things to know
 
-* Configuration changes made in this portal do not need to be pushed to devices. The app re-checks Claude for Government for changes about every 10 minutes (about every 30 minutes on Claude Desktop versions earlier than 1.46388.1) and at each launch, and prompts users to relaunch when a change needs a restart.
+* Configuration changes made in this portal do not need to be pushed to devices. The app re-checks Claude for Government for changes about every 10 minutes (about every 30 minutes on Claude Desktop versions earlier than 1.46388.1) and at each launch. See [When changes take effect](/docs/government/config/overview#when-changes-take-effect).
 * New and retired models appear in the model picker without any profile change; model access is controlled through [seat tiers](/docs/government/org-admin/seat-tiers). [Models in Claude Desktop](/docs/government/desktop/models) covers a model that needs a newer version of Claude Desktop.
-* The sign-in flow and what a user sees on the [Sessions](/docs/government/account/sessions) page after pairing a device are covered on that page.
 
 
 # Windows fleet checklist
 Source: https://claude.com/docs/government/deploy-desktop/windows-checklist
 
-Device, installer, virtualization, policy, network, and account prerequisites to confirm before deploying Claude Desktop across a Windows fleet for Claude for Government.
+Windows device, MSIX installer, application control, and virtualization checks to make before you deploy Claude Desktop for Claude for Government.
 
 > **Who this is for:** IT administrators and desktop engineering teams who are preparing a Windows fleet for Claude Desktop connected to Claude for Government.
 
-Use this checklist to confirm what your devices, policies, network, and user accounts need before you push Claude Desktop to a Windows fleet. Several items concern the virtual machine that Claude Desktop runs on each device for Cowork, the agentic workspace in Claude Desktop, and for Advanced file analysis in Chat. When every item is in place, follow [Connect Claude Desktop to Claude for Government](/docs/government/deploy-desktop/configure) to deliver the managed setting and the app.
+Use this checklist to confirm what your devices and policies need before you push Claude Desktop to a Windows fleet. Several items concern the virtual machine that Claude Desktop runs on each device for Cowork, the agentic workspace in Claude Desktop, and for Advanced file analysis in Chat. When every item is in place, follow [Connect Claude Desktop to Claude for Government](/docs/government/deploy-desktop/configure) to deliver the managed settings and the app.
 
 ## Device requirements
 
-* **Windows version and architecture.** Devices need Windows 10 version 2004 (build 19041) or later, including Windows 11, on x64 or Arm64 hardware. See the Claude Desktop [system requirements](/docs/third-party/claude-desktop/installation#system-requirements). Devices in Windows S mode cannot run Cowork.
-* **Memory and disk.** Plan for at least 8 GB of memory and about 20 GB of free space on the drive that holds `%LOCALAPPDATA%`. Cowork keeps its workspace there after downloading it the first time a user starts a task. Cowork still starts on a device with less memory, but tasks run slowly.
+* **Windows version and architecture.** See the Claude Desktop [system requirements](/docs/third-party/claude-desktop/installation#system-requirements). Devices in Windows S mode cannot run Claude Desktop.
+* **Memory and disk.** Plan for at least 8 GB of memory and about 20 GB of free space on the drive that holds `%LOCALAPPDATA%`. Cowork keeps its workspace there. Cowork still starts on a device with less memory, but tasks run slowly.
 
 ## Installer and packaging
 
 * **Use the `.msix` package.** Cowork is available only when Claude Desktop is installed from the `.msix` package. The legacy `.exe` installer gives you Claude Desktop without Cowork. See [Install the app](/docs/third-party/claude-desktop/installation#install-the-app).
-* **Install machine-wide.** Have your management system (for example Intune or Configuration Manager) provision the package for all users from the system account, or provision it from an elevated PowerShell session with `Add-AppxProvisionedPackage` or the equivalent DISM command. The package registers a Windows service that Cowork uses, so an install run by a standard user fails, and installing by hand requires a local administrator. The [Windows deployment guide](https://support.claude.com/en/articles/12622703-deploy-claude-desktop-for-windows) covers downloading and distributing the package.
+* **Install machine-wide.** Have your management system (for example Intune or Configuration Manager) provision the package for all users from the system account, or provision it from an elevated PowerShell session with `Add-AppxProvisionedPackage` or the equivalent DISM command. The package registers a Windows service that Cowork uses, so an install run by a standard user fails, and installing it yourself requires a local administrator. The [Windows deployment guide](https://support.claude.com/en/articles/12622703-deploy-claude-desktop-for-windows) covers downloading and distributing the package.
 * **Allow trusted app installation.** Make sure Windows policy allows trusted app packages to install from outside the Microsoft Store. If your security baseline configures **Allow all trusted apps to install** (the `ApplicationManagement/AllowAllTrustedApps` policy), set it to enabled. Windows Developer Mode is not required.
 * **Intune scripts.** For Intune, Anthropic publishes [install and detection scripts](https://downloads.claude.ai/releases/enterprise/intune/Claude-Intune-README.md) that deploy the `.msix` as a Win32 app, so that Intune keeps reporting the app as installed after the app updates itself.
-* **Offline installer.** For networks that cannot reach `downloads.claude.ai`, deploy the [offline installer](/docs/third-party/claude-desktop/installation#offline-installation), which includes the components that the app otherwise downloads from that host, as listed under [Network access](#network-access).
-* **Nothing else to pre-install.** The `.msix` package is self-contained, with no separate runtimes or frameworks to install first. Git for Windows is needed only on devices whose users will work in Code; see [Before you begin](/docs/government/deploy-desktop/configure#before-you-begin).
-* **Software intake.** The package is MSIX rather than MSI or EXE, and Intune, Configuration Manager, and PowerShell deploy MSIX natively. If your software intake process names MSI or EXE packages specifically, confirm that it accepts MSIX. An MSIX package installs without prompts when your management system deploys it and takes no vendor-specific switches.
+* **Offline installer.** For networks that cannot reach `downloads.claude.ai`, deploy the [offline installer](/docs/third-party/claude-desktop/installation#offline-installation), which includes the components that the app otherwise downloads from that host, as listed under [Network access](/docs/government/deploy-desktop/configure#network-access). To keep those devices from updating themselves, see [Automatic updates](/docs/government/deploy-desktop/configure#automatic-updates).
+* **Nothing else to pre-install.** The `.msix` package is self-contained, with no separate runtimes or frameworks to install first.
+* **Software intake.** The package is MSIX rather than MSI or EXE. If your software intake process names MSI or EXE packages specifically, confirm that it accepts MSIX. An MSIX package installs without prompts when your management system deploys it and takes no vendor-specific switches.
+* **Git for Windows.** Code sessions that use a Git worktree need it, and so do [hooks written for Bash](/docs/third-party/claude-desktop/extensions#hooks-on-windows-devices-without-git-for-windows). Claude Desktop versions earlier than 2.9939.2 need it for every Code session. On those versions, install Git on the devices whose users will work in Code, or turn **Code in Claude Desktop** off under [Product availability](/docs/government/config/settings#product-availability) so that users are not prompted to install Git.
 
 ## Application control rules
 
@@ -25496,44 +25450,25 @@ If you enforce application control with AppLocker or App Control for Business (f
 
 These values identify the `.msix` package from the download site and the offline installer, and they do not change between versions or architectures.
 
-Claude Desktop runs Chat conversations, Cowork tasks, and Code sessions through an agent helper named `claude.exe`, a separate executable signed by Anthropic. With the standard installer, the app downloads the helper and places it under each user's profile rather than inside the package. The helper runs during conversations, tasks, and Code sessions and connects to your Claude for Government host. If AppLocker executable rules or endpoint security software with path-based rules apply on your devices, allow the helper by publisher too, as described under [Endpoint security software](/docs/third-party/claude-desktop/installation#endpoint-security-software).
+Claude Desktop runs Chat conversations, Cowork tasks, and Code sessions through an agent helper named `claude.exe`, a separate executable signed by Anthropic. With the standard installer, the app downloads the helper and places it under each user's profile rather than inside the package. The helper runs during conversations, tasks, and Code sessions and connects to your Claude for Government host. If AppLocker executable rules, App Control for Business, or endpoint security software with path-based rules apply on your devices, allow the helper by publisher too, as described under [Endpoint security software](/docs/third-party/claude-desktop/installation#endpoint-security-software).
 
 ## Cowork virtualization
 
-Cowork runs the shell commands that Claude issues inside a dedicated virtual machine that the app manages on each device, and Advanced file analysis in Chat uses the same virtual machine. Users install nothing for this, but each device must be able to start the virtual machine. The [Cowork readiness check](/docs/third-party/claude-desktop/installation#check-device-readiness) is a small program that verifies most of the requirements below on a device without installing anything or signing in. Run it on one device of each hardware model, and resolve what it reports before the broad rollout.
+Cowork runs the shell commands that Claude issues inside a dedicated virtual machine that the app manages on each device, and Advanced file analysis in Chat uses the same virtual machine. Users install nothing for this, but each device must be able to start the virtual machine. The [Cowork readiness check](/docs/third-party/claude-desktop/installation#check-device-readiness) verifies most of these requirements on a device without installing anything or signing in.
 
-* **Virtual Machine Platform.** Enable the **Virtual Machine Platform** optional Windows feature (`VirtualMachinePlatform`) on every device before rollout, for example by running `Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart` from an elevated PowerShell session, then restart the device so that the feature takes effect. Turning the feature on requires administrator rights, so a standard user cannot enable it later.
+* **Virtual Machine Platform.** Enable the **Virtual Machine Platform** optional Windows feature (`VirtualMachinePlatform`) on every device before rollout, for example by running `Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart` from an elevated PowerShell session, then restart the device so that the feature takes effect. Without the feature, users who have Cowork or Advanced file analysis in Chat see an **Additional setup needed** card. Its **Enable** button asks Windows to run PowerShell as an administrator, which a standard user cannot approve.
 * **Hardware virtualization.** Turn on hardware virtualization in each device's firmware (Intel VT-x or AMD-V on x64 devices).
-* **Service logon right.** The virtual machine runs under an account in the built-in `NT VIRTUAL MACHINE\Virtual Machines` group (SID `S-1-5-83-0`), the same group that Hyper-V and WSL 2 use, so a fleet where either of those works already meets this requirement. You only need to act if your security baseline manages the **Log on as a service** right through Group Policy or MDM. In that case, include this group, and keep it out of **Deny log on as a service**. To check a device and change the policy, follow [Windows security policy blocks the Cowork workspace](/docs/third-party/claude-desktop/installation#windows-security-policy-blocks-the-cowork-workspace) in the Claude Desktop documentation.
-* **Uncompressed application data.** Leave `%LOCALAPPDATA%\Claude-3p` out of NTFS compression and Encrypting File System (EFS) policies, because the virtual machine's disk cannot start from a compressed or EFS-encrypted folder.
-* **Virtual desktops.** On virtual desktop infrastructure, the Windows desktops themselves run as virtual machines, so Cowork can start only where the hosting platform exposes nested virtualization to them. Run the readiness check on one desktop in each pool, and make Cowork available to virtual desktop users only where it passes.
-
-On a device that does not meet these requirements, Chat still works apart from Advanced file analysis, and Cowork reports that it is unavailable. If a device meets them and Cowork still fails to start, check whether endpoint security software is blocking the agent helper, as described under [Application control rules](#application-control-rules).
+* **Service logon right.** If your security baseline manages the **Log on as a service** right through Group Policy or MDM, include the built-in `NT VIRTUAL MACHINE\Virtual Machines` group (SID `S-1-5-83-0`), and keep it out of **Deny log on as a service**. To check a device and change the policy, follow [Windows security policy blocks the Cowork workspace](/docs/third-party/claude-desktop/installation#windows-security-policy-blocks-the-cowork-workspace) in the Claude Desktop documentation.
+* **Uncompressed application data.** Leave `%LOCALAPPDATA%\Claude-3p` out of NTFS compression and Encrypting File System (EFS) policies, which can keep the virtual machine from starting.
+* **Virtual desktops.** On virtual desktop infrastructure, the Windows desktops themselves run as virtual machines, so the app's virtual machine can start only where the hosting platform exposes nested virtualization to them. Run the readiness check on one desktop in each pool, and make Cowork and Advanced file analysis in Chat available to virtual desktop users only where the check passes.
 
 ### If some devices are not ready for Cowork
 
-You can deploy Claude Desktop to devices that do not yet meet the [Cowork virtualization](#cowork-virtualization) requirements. Before you deploy to those devices, have a tenant administrator or organization owner turn off the **Cowork in Claude Desktop** and **Advanced file analysis in Chat** switches under [Product availability](/docs/government/config/settings#product-availability) for the devices' users, for example through a [directory group](/docs/government/config/overview#group-specific-settings) that contains them. With both switches off, those users keep Chat and Code, and the app does not download or start the virtual machine on their devices. Turn both switches back on once those devices meet the requirements.
+You can deploy Claude Desktop to devices that do not yet meet the [Cowork virtualization](#cowork-virtualization) requirements. First, have a tenant administrator or organization owner set **Claude Desktop home** to **Chat only** under [Product availability](/docs/government/config/settings#product-availability) for the devices' users, for example through a [directory group](/docs/government/config/overview#group-specific-settings). With **Chat only** in effect, those users keep Chat (without Advanced file analysis), Code is unaffected, and the app does not download or start the virtual machine. Claude Desktop 2.2553.0 or later also does not show them the **Additional setup needed** card. Claude Desktop versions earlier than 1.30096.1 can still show Cowork and download and try to start the virtual machine, but do not run Cowork tasks. Reset **Claude Desktop home** once those devices meet the requirements.
 
-## Configuration values
+## Configuration, network, and accounts
 
-* **Two registry values.** Push the two values described under [Windows](/docs/government/deploy-desktop/configure#windows) as machine policy under `HKLM\SOFTWARE\Policies\Claude`: `bootstrapUrl` and `disableDeploymentModeChooser`, both required. No other values are needed to connect the app, because everything else reaches each user from Claude for Government at sign-in. If your agency distributes Claude Desktop updates itself, also add the value described under [Automatic updates](/docs/government/deploy-desktop/configure#automatic-updates).
-* **Delivery order.** Deliver the values before the app wherever you can, so that users land directly on the Claude for Government sign-in screen, as [Order of deployment](/docs/government/deploy-desktop/configure#order-of-deployment) explains.
-
-## Network access
-
-Claude Desktop's own traffic and the browser's traffic to the Claude for Government sign-in service use HTTPS on port 443. Claude for Government does not publish IP addresses for its host or its sign-in service, so allowlist both by hostname. The [Security and data handling](/docs/government/security/security-and-data-handling#network-egress-required-domains-and-proxies) page explains what each connection carries.
-
-* **App traffic.** Allow Claude Desktop on every device to reach the Claude for Government host, which carries the app's configuration and chat traffic.
-* **Browser sign-in traffic.** Allow the browser on every device to reach the Claude for Government host, the Claude for Government sign-in service (a separate host that your Anthropic representative provides), and your agency's identity provider. Sign-in happens in each user's default browser, not in the app.
-* **`downloads.claude.ai`.** The app downloads two components from this host: the agent helper described under [Application control rules](#application-control-rules), which Chat, Cowork, and Code all need, and the Cowork workspace, which Cowork tasks and Advanced file analysis in Chat need. The app downloads each one whenever the device does not already have the version that the app needs, typically after an install or an app update. The offline installer includes both, so devices installed with it need this host only for application updates while automatic updates are on.
-* **Hosts for icons, previews, and widgets.** For connector icons, the artifact preview frame, and the interactive widgets that some connectors display, the app reaches the hosts listed under Non-essential services in [Required egress paths](/docs/third-party/claude-desktop/telemetry#required-egress-paths), including `www.claudeusercontent.com` and `www.google.com`. If traffic is blocked, the app will run without icons, previews, and widgets.
-* **Update hosts.** While [automatic updates](/docs/government/deploy-desktop/configure#automatic-updates) are on, also allow the hosts listed under Auto-updates in [Required egress paths](/docs/third-party/claude-desktop/telemetry#required-egress-paths). The telemetry rows there never apply, because Claude for Government does not send telemetry to Anthropic.
-* **Hosts your tools and connectors use.** Allow the hosts you add to [Allowed network hosts](/docs/government/config/settings#allowed-network-hosts) (such as package registries), the addresses of any connectors you configure on the Config page (including Microsoft 365 if you set up that connector), and your telemetry collector if you set one.
-* **Proxies.** The app and the Cowork workspace follow the operating system's proxy settings, including PAC files, as described under [Network proxy](/docs/third-party/claude-desktop/network-proxy). If your proxy inspects TLS, validate sign-in, a chat, and a Cowork task on a pilot device before rollout.
-
-## User accounts and seats
-
-Make sure every user in the rollout can sign in and has a seat before their device is set up. Each user needs a [routing rule](/docs/government/tenant-admin/identity-and-access) that covers them and a [seat tier](/docs/government/org-admin/seat-tiers) with at least one model enabled. A user without a seat tier can sign in but gets an empty model picker, which can look like a device problem and is covered in the [Troubleshooting](/docs/government/deploy-desktop/configure#troubleshooting) table.
+Confirm the remaining prerequisites on [Connect Claude Desktop to Claude for Government](/docs/government/deploy-desktop/configure): the registry values under [Windows](/docs/government/deploy-desktop/configure#windows), the hosts under [Network access](/docs/government/deploy-desktop/configure#network-access), and the user accounts under [Before you begin](/docs/government/deploy-desktop/configure#before-you-begin).
 
 
 # Deploy Claude for Microsoft 365 in Claude for Government
@@ -26115,8 +26050,8 @@ This page answers the questions that only come up during the move and links each
 
 ## Deployment and network
 
-* **Is this a separate government app?** No, it's the same Claude Desktop app used everywhere. One managed setting, which your IT team deploys, connects it to Claude for Government, and until a device has that setting, the app shows the regular claude.ai sign-in. See [The managed setting](/docs/government/deploy-desktop/configure#the-managed-setting) and [Order of deployment](/docs/government/deploy-desktop/configure#order-of-deployment).
-* **Which hosts must the firewall allow, and what if claude.ai is blocked?** See [Network egress, required domains, and proxies](/docs/government/security/security-and-data-handling#network-egress-required-domains-and-proxies) and [Network access](/docs/government/deploy-desktop/windows-checklist#network-access) in the Windows fleet checklist.
+* **Is this a separate government app?** No, it's the same Claude Desktop app used everywhere. Managed settings that your IT team deploys connect it to Claude for Government, and until a device has them, the app shows the regular claude.ai sign-in. See [Deploy to your fleet](/docs/government/deploy-desktop/configure#deploy-to-your-fleet) and [Order of deployment](/docs/government/deploy-desktop/configure#order-of-deployment).
+* **Which hosts must the firewall allow, and what if claude.ai is blocked?** See [Network egress, required domains, and proxies](/docs/government/security/security-and-data-handling#network-egress-required-domains-and-proxies) and [Network access](/docs/government/deploy-desktop/configure#network-access).
 * **Can Chat be rolled out first and Cowork enabled later?** Yes. See [If some devices are not ready for Cowork](/docs/government/deploy-desktop/windows-checklist#if-some-devices-are-not-ready-for-cowork).
 
 ## The Claude for Government Web import
@@ -33121,7 +33056,7 @@ The [**Requests**](https://claude.ai/admin-settings/skills?tab=requests) tab lis
 
 ### Policy
 
-The [**Policy**](https://claude.ai/admin-settings/skills?tab=policy) tab holds the switches for what members can do themselves: [create and add their own](#control-what-members-add-themselves), [share with each other](#let-members-share-plugins-with-each-other), and [publish to the organization](#review-plugins-that-members-publish). It also holds the **Skills and plugins scanning** switch, which turns on the security scan whose result the **Inventory** tab shows, and the switch that [turns plugins and skills off for everyone](#turn-plugins-and-skills-off-for-everyone).
+The [**Policy**](https://claude.ai/admin-settings/skills?tab=policy) tab holds the switches for what members can do themselves: [create and add their own](#control-what-members-add-themselves), [share with each other](#let-members-share-plugins-with-each-other), and [publish to the organization](#review-plugins-that-members-publish). It also holds the **Skill and plugin security scanning** switch, which turns on the security scan whose result the **Inventory** tab shows, and the switch that [turns plugins and skills off for everyone](#turn-plugins-and-skills-off-for-everyone).
 
 ## Review your organization's inventory
 
@@ -33131,7 +33066,7 @@ Each row has these columns. Read across a row to see where an item came from and
 
 * **Name**: the item's name, marked **Skill** or **Plugin**
 * **Source**: the marketplace or repository the item comes from, or **Member** for an item a member created
-* **Security scan**: the result of the item's security scan. You see this column when **Skills and plugins scanning** is on in the [**Policy**](https://claude.ai/admin-settings/skills?tab=policy) tab. Otherwise the column is **Version**
+* **Security scan**: the result of the item's security scan. You see this column when **Skill and plugin security scanning** is on in the [**Policy**](https://claude.ai/admin-settings/skills?tab=policy) tab. Otherwise the column is **Version**.
 * **Capabilities**: the connectors and tools the item uses
 * **Audience**: who can use the item, such as everyone or specific groups
 * **Users (30d)**: how many people in your organization used the item in the last 30 days
@@ -33342,13 +33277,7 @@ The **Publishing** setting decides whether members can publish to your organizat
 If nobody in your organization has chosen a **Publishing** value, your plan's default applies:
 
 * **Team**: **Open**
-* **Enterprise**: **Requires review**
-
-> [!NOTE]
->
-> Starting November 4, 2026, the Enterprise default changes to **Open** for organizations that have security scanning on. Published skills and plugins are then listed in the organization's library once they pass the automatic security scan, without waiting for admin approval. Members whose custom role doesn't allow publishing to the whole organization still need review.
->
-> To keep reviewing every submission, select **Requires review** before then. Your choice is saved when the label beside the setting changes from **Default** to **Set by admin**. Organizations that already chose a setting keep it.
+* **Enterprise**: **Open** if your organization has [security scanning](#policy) on, and **Requires review** otherwise. Where **Open** is the default, members whose custom role doesn't allow publishing to the whole organization still need review.
 
 #### Review a request
 
@@ -35381,6 +35310,8 @@ The app contacts `api.anthropic.com` at every launch to check the user's sign-in
 Contact your Anthropic representative to have an organization provisioned for your deployment. The Primary Owner receives an email invitation, signs in at [claude.ai](https://claude.ai), and finds an empty organization to configure.
 
 If your company already has a Claude organization that has verified your email domain, usually a Claude Enterprise organization, name that organization's Primary Owner as the Primary Owner of the new one too. The new organization then appears as an additional organization alongside your existing one and uses the existing organization's single sign-on connection, SCIM directory, and verified domains. Your existing organization is not changed. If no existing organization has verified the email domain of the person you name, the new organization starts with its own sign-in settings.
+
+You can ask for more than one organization, for example a test organization alongside your production one. To share single sign-on and verified domains across them, [verify the Primary Owner's email domain](https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso) in the first organization before you ask for the next, and name the same Primary Owner. Organizations with separate sign-in settings can't verify the same domain.
 
 ## Connect your identity provider
 
@@ -44484,7 +44415,7 @@ org-plugins/
 | - | - |
 | `.claude-plugin/plugin.json` | Plugin manifest (name, description, version). Required unless a top-level `SKILL.md` serves as the manifest; see the note below this table. A directory with neither is ignored. |
 | `version.json` | `{"version": "1.2.3"}`. When this string changes, Claude Desktop re-syncs the plugin on next launch. There's no semver ordering, so a downgrade also triggers a re-sync. If absent, the directory's modification time is used instead. |
-| `.mcp.json` | MCP servers bundled with this plugin. A JSON object keyed by server name: `{"mcpServers": {"<name>": {"type": "http", "url": "...", "oauth": true}}}`. A remote entry uses `type` (`http` or `sse`), not `transport`, and supports `url`, `headers`, and `oauth` only. `toolPolicy`, `headersHelper`, and `headersHelperTtlSec` are not read from this file. A local entry gives a `command` with optional `args` and `env` (`type` is `"stdio"` or omitted). Give `command` as a program name on `PATH` or an absolute path, using `${CLAUDE_PLUGIN_ROOT}` for the plugin's directory under `org-plugins/`. Claude Desktop starts these local servers itself, including when [`isLocalDevMcpEnabled`](/docs/third-party/claude-desktop/configuration#islocaldevmcpenabled) is `false`. Local entries require Claude Desktop 1.49585.0 or later. A local entry that references `${user_config.<key>}` is skipped, because per-user plugin settings are not available to organization plugins. The diagnostic report's **MCP servers** section lists each server, with the reason for any it skipped. |
+| `.mcp.json` | MCP servers bundled with this plugin. A JSON object keyed by server name: `{"mcpServers": {"<name>": {"type": "http", "url": "...", "oauth": true}}}`. A remote entry uses `type` (`http` or `sse`), not `transport`, and supports `url`, `headers`, and `oauth` only. `toolPolicy`, `headersHelper`, and `headersHelperTtlSec` aren't read from this file. The form `"oauth": true` is for plugins in `org-plugins/`. In a [marketplace plugin or a user-added plugin](#remote-mcp-servers-in-plugins), leave `oauth` out or make it an object, as [MCP in Claude Code](https://code.claude.com/docs/en/mcp#authenticate-with-remote-mcp-servers) shows. In such a plugin, Claude Code skips a server whose entry says `"oauth": true`. A local entry gives a `command` with optional `args` and `env` (`type` is `"stdio"` or omitted). Give `command` as a program name on `PATH` or an absolute path, using `${CLAUDE_PLUGIN_ROOT}` for the plugin's directory under `org-plugins/`. Claude Desktop starts these local servers itself, including when [`isLocalDevMcpEnabled`](/docs/third-party/claude-desktop/configuration#islocaldevmcpenabled) is `false`. Local entries require Claude Desktop 1.49585.0 or later. A local entry that references `${user_config.<key>}` is skipped, because per-user plugin settings aren't available to organization plugins. The diagnostic report's **MCP servers** section lists each server, with the reason for any it skipped. |
 | `agents/` | Sub-agent definitions. |
 | `commands/` | Slash-command definitions. |
 | `skills/` | [Skill](/docs/skills/overview) directories. |
@@ -45838,7 +45769,7 @@ Bring conversations, projects, and local Cowork and Code sessions into Claude De
 
 Import brings a copy of your claude.ai conversations and projects into Claude Desktop on third-party (3P), along with any Cowork and Claude Code sessions already on this machine from an earlier install. Everything lands in the local session store described in [User identity and local data](/docs/third-party/claude-desktop/data-storage), so you can pick up work you started on claude.ai and continue it against your organization's own inference provider.
 
-Each import is a one-time copy. New activity on claude.ai after you import does not appear in Claude Desktop unless you import again, and re-running the import does not create duplicates.
+Each import is a one-time copy. New activity on claude.ai after you import does not appear in Claude Desktop unless you import again, and importing from claude.ai again does not create duplicates.
 
 ## Automatic import of earlier third-party sessions
 
@@ -45937,13 +45868,15 @@ Click **Continue**, or **Skip this step** if you only want to bring in local ses
 
 ## Step 2: local Cowork and Code sessions
 
-The wizard scans this machine for Cowork and Claude Code sessions from an earlier Claude Desktop install and lists what it finds. Choose how far back to include, and add any other folder that holds sessions (for example, a backup or a folder copied from another machine).
+The wizard scans this machine for Cowork and Claude Code sessions from an earlier Claude Desktop install and lists what it finds. Choose how far back to include, and add any other folder that holds sessions (for example, a backup or a folder copied from another machine). On Windows, the folder has to be on a local disk. The wizard can't import one from a network share or a mapped network drive, so copy it to the computer first.
 
-![Import from Claude wizard step 2, Cowork and Code, listing 5 local sessions with a time-range selector and an option to add another location.](https://mintcdn.com/claude-ai/HpR2FaaZXZXkiUcV/images/third-party/import/import-local-sessions.png?fit=max\&auto=format\&n=HpR2FaaZXZXkiUcV\&q=85\&s=e17511922a814b0355cb540688a5c949)
+![Import from Claude wizard step 2, Cowork and Code, listing 5 local sessions with a time-range selector and an option to add another location.](https://mintcdn.com/claude-ai/RVrsc-fMoqOV1t9C/images/third-party/import/import-local-sessions.png?fit=max\&auto=format\&n=RVrsc-fMoqOV1t9C\&q=85\&s=24f96c7b665e4a82fa8f552c20c60312)
 
 Local sessions found on this machine.
 
 Sessions are copied, not moved. Your original history stays where it is.
+
+If you add the same folder again, the wizard skips the sessions it marks as already imported and copies the rest. A session that changed after you imported it is copied again as a separate session, and a project can arrive a second time with a number after its name, such as **Northwind (1)**. On Claude Desktop versions before 3.1623.0, the wizard copies every session again. To undo an import, go to **Settings → Import & export** and click **Remove** next to it under **Import history**.
 
 ## Step 3: review and import
 
@@ -45953,7 +45886,7 @@ The **Review** step summarizes what will be added. Click **Import** to copy ever
 
 The review summary before import.
 
-![Import from Claude wizard success screen showing a checkmark and the number of sessions imported, with a note that re-running import will not create duplicates.](https://mintcdn.com/claude-ai/XDpDaIQ3J0Amhn8h/images/third-party/import/import-success.png?fit=max\&auto=format\&n=XDpDaIQ3J0Amhn8h\&q=85\&s=f0a01a38e52d841b66c4215f9cda2db4)
+![Import from Claude wizard success screen showing a checkmark and the number of sessions imported.](https://mintcdn.com/claude-ai/RVrsc-fMoqOV1t9C/images/third-party/import/import-success.png?fit=max\&auto=format\&n=RVrsc-fMoqOV1t9C\&q=85\&s=4c7be49e3961f082808af10edc50eb56)
 
 Import complete. Imported chats appear in the sidebar and imported projects appear on the Projects page.
 
@@ -45965,7 +45898,7 @@ When an imported project has the same name as a project already in Claude Deskto
 
 The Duplicates step, listing imported projects that match ones you already have.
 
-* **Merge into existing** moves the imported chats and sessions into your existing project and removes the duplicate. Folders you attached to the duplicate move with them. If your existing project has no instructions of its own, the imported project's instructions are shown there for you to review and accept. Later imports from the same source land in the existing project as well.
+* **Merge into existing** moves the imported chats and sessions into your existing project and removes the duplicate. Folders you attached to the duplicate move with them. If your existing project has no instructions of its own, the imported project's instructions are shown there for you to review and accept. Later imports from the same source land in the existing project as well, except from a folder or zip you added, where the wizard asks again.
 * **Keep separate** leaves both projects in place. The imported one keeps a numbered name, such as **Northwind (1)**, and Claude Desktop stops offering to merge it.
 
 The **Projects** page offers the same two choices, in a row under the duplicate project's card and at the top of the duplicate project's own page. Decide there if your history was brought over automatically when you signed in, so you never saw the wizard, or if you closed the wizard before choosing.
@@ -46007,7 +45940,7 @@ Your administrator can also limit which folders Claude reads. See [Project folde
 
 ## Export sessions to move them to another device
 
-When your administrator also sets `exportEnabled` to `true` under `claudeAiImport`, **Settings → Import & export** offers **Export…**, which writes this computer's chats, Cowork tasks, and Code sessions (not terminal Claude Code sessions) to a zip file. On the other device, open the import wizard and select that zip with **Choose file…**; the wizard lists its sessions in the [Cowork & Code step](#step-2-local-cowork-and-code-sessions). The export is a one-time snapshot, not a sync, and the zip contains full conversation content, so handle it as sensitive data.
+When your administrator also sets `exportEnabled` to `true` under `claudeAiImport`, **Settings → Import & export** offers **Export…**, which writes this computer's chats, Cowork tasks, and Code sessions (not terminal Claude Code sessions) to a zip file. On the other device, open the import wizard and select that zip with **Choose file…**; the wizard lists its sessions in the [Cowork & Code step](#step-2-local-cowork-and-code-sessions). Importing the same zip again works as it does for [an added folder](#step-2-local-cowork-and-code-sessions): sessions marked as already imported are skipped, and the rest are copied. The export is a one-time snapshot, not a sync, and the zip contains full conversation content, so handle it as sensitive data.
 
 The zip includes sessions, project names, and each session's output files when they total 100 MB or less. It leaves out project instructions, memory, scheduled tasks, skills, plugins, and attached files. To move those, your administrator can [copy your data to the new device](/docs/third-party/claude-desktop/data-storage#move-a-user-to-a-new-device). Sign-ins and connector connections don't move either way.
 
@@ -46019,6 +45952,39 @@ The zip includes sessions, project names, and each session's output files when t
 * **Project knowledge files and conversation attachments do not.** A member's own export never includes the contents of files uploaded to a project's knowledge or attached to a conversation. This is a security policy on claude.ai, and it applies to both the **Sign in to claude.ai** and **Choose a downloaded file** paths. Imported chats keep the messages that referenced an attachment, but not the file itself. The only export that includes file contents is an organization-level export, which only a workspace owner can request.
 * **One-time copy.** Imported history does not stay in sync with claude.ai. Run the import again to pick up newer conversations; existing imports are matched and skipped, so you won't get duplicates.
 * **Download links expire.** The email link from claude.ai is valid for 24 hours. Request a new export if it lapses.
+
+## Troubleshoot the import wizard
+
+Claude Desktop runs each claude.ai import through the Claude CLI binary, the [helper program](/docs/third-party/claude-desktop/installation#endpoint-security-software) that also runs your conversations. Unless your organization deploys the [offline installer](/docs/third-party/claude-desktop/installation#offline-installation), Claude Desktop downloads the version of the binary it needs separately from the app, when you start a new conversation or task.
+
+### Importing a claude.ai export needs a newer version of this app
+
+The wizard shows this message, under **Update Claude to import from claude.ai**, when this computer has only an earlier version of the Claude CLI binary that can't import a claude.ai export. You don't need to update or reinstall Claude Desktop. To download the current version of the binary, follow these steps:
+
+**1. Start a new conversation or task**
+
+Close the wizard. Send any message in a new conversation or task, not in an existing one.
+
+**2. Wait for Claude's reply**
+
+The reply can be slow while Claude Desktop downloads the binary.
+
+**3. Open the import wizard again**
+
+Go to **Settings > Import & export** and click **Import…** to open the wizard. The **Chats** step shows its import options in place of the message.
+
+If the message is still there, ask your administrator to follow [Cowork workspace or Claude CLI fails to download](/docs/third-party/claude-desktop/installation#cowork-workspace-or-claude-cli-fails-to-download) and to leave the earlier version of the binary in place, because your conversations run on it until the download succeeds.
+
+### That doesn’t look like a claude.ai export
+
+If the message appears as soon as you choose a file, choose the `.zip` file of your [claude.ai export](#step-1-claude-ai-chats-and-projects) as you downloaded it. If the export came as more than one `.zip` file, choose all of them together.
+
+If the message appears after you click **Import** on the **Review** step, your export can still be valid. Claude Desktop 4.16336.0 and earlier shows this message for other failures too. Before you run the import again from **Settings > Import & export**, do the following:
+
+* **Check the export files**: if you imported with **Choose file…**, use each `.zip` file as you downloaded it, not renamed or compressed again. On Windows, keep its full path under 260 characters, for example by moving it to your Downloads folder.
+* **Start a new conversation or task**: close the wizard, send any message, and wait for the reply, so the import can run on the current version of the Claude CLI binary.
+
+If the import still fails, go to **Help > Troubleshooting > Generate Diagnostic Report** before you quit Claude Desktop, and click **Export to file**. Review [what the report contains](/docs/third-party/claude-desktop/installation#troubleshooting), then send the report's `.zip` file to your administrator, who can pass it to your Anthropic representative.
 
 
 # In-app configuration
@@ -46113,6 +46079,20 @@ Download the installer for your platform from [claude.com/download](https://clau
 | Windows | `.msix` | Supports per-machine provisioning for enterprise deployment |
 
 For fleet rollouts, distribute the installer through your standard software-distribution mechanism. On the MDM and bootstrap paths, distribute it after the configuration reaches devices; [Choose a configuration delivery model](#choose-a-configuration-delivery-model) covers how the configuration gets there.
+
+On Windows, installing the `.msix` package requires administrator rights. Provision the package for all users of each device:
+
+* **Intune, with auto-update enabled**: deploy the package as a Win32 app with Anthropic's [install and detection scripts](https://downloads.claude.ai/releases/enterprise/intune/Claude-Intune-README.md), and set the app's **Install behavior** to **System**.
+* **Intune, with auto-update disabled** ([`disableAutoUpdates`](/docs/third-party/claude-desktop/configuration#disableautoupdates)): deploy the package as a line-of-business app in device context, assigned to a device group.
+* **Other software-distribution tools**: from the system account or an elevated PowerShell session, run `Add-AppxProvisionedPackage -Online -PackagePath <path to .msix> -SkipLicense`.
+
+Users, including standard users, get the app after they next sign in to Windows.
+
+Provisioning leaves an existing legacy `.exe` install in place, and users who open it don't get Cowork. Remove it as each affected user:
+
+1. Quit Claude Desktop.
+2. In a Command Prompt, run `"%LOCALAPPDATA%\AnthropicClaude\Update.exe" --uninstall -s`.
+3. After the command finishes, delete the `%LOCALAPPDATA%\AnthropicClaude` folder and the Start menu shortcut `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Claude.lnk`.
 
 ## Choose a configuration delivery model
 
@@ -46829,6 +46809,8 @@ In your MDM, scope each exported profile to the corresponding device or user gro
 > [!NOTE]
 >
 > On Windows, check which registry hive your assignment rules write to. If your assignment rules deliver a profile in user context, it lands in user policy (`HKCU`), and the app ignores user policy entirely when machine policy is present; see [Deploy the configuration](#4-deploy-the-configuration). To vary configuration per user group on Windows, deliver every profile through user policy and keep `HKLM\SOFTWARE\Policies\Claude` empty, or serve per-user configuration from a [bootstrap server](/docs/third-party/claude-desktop/bootstrap).
+>
+> Before you deliver an exported `.reg` file through user policy, make sure the registry path in the file starts with `HKEY_CURRENT_USER`, not `HKEY_LOCAL_MACHINE`.
 
 ## 3. Allow required network egress
 
@@ -47164,7 +47146,7 @@ Claude Desktop on 3P works behind a corporate HTTP proxy without extra configura
 
 Three parts of the product make network connections, and they do not all resolve the proxy the same way:
 
-* **The app**: the Claude Desktop window itself, including sign-in, the connection test, Web Fetch in Chat and Cowork sessions, managed MCP servers the app connects to, and sync of the plugin marketplaces you configure.
+* **The app**: the Claude Desktop window itself, including sign-in, the connection test, Web Fetch in Chat and Cowork sessions, remote managed MCP servers, and sync of the plugin marketplaces you configure.
 * **The agent**: the Claude Code engine the app runs for every Chat, Cowork, and Code session. It sends inference requests and makes its own remote MCP connections, for example to [a server that a marketplace plugin or a user-added plugin bundles](/docs/third-party/claude-desktop/extensions#remote-mcp-servers-in-plugins). In Code sessions, it also makes its own web fetches and plugin installs.
 * **Cowork's sandboxed shell**: the isolated environment where commands the agent runs in a Cowork session (`curl`, `pip`, `npm`, and so on) execute.
 
@@ -47236,9 +47218,10 @@ The table summarizes which proxy source each kind of traffic follows. "App proxy
 | - | - |
 | App window, in-app sign-in, connection test, model list | App proxy |
 | Inference requests from Chat, Cowork, and Code sessions | The single proxy resolved for the inference endpoint (from the pinned key or the OS), or Claude Code managed settings if deployed |
-| Agent web fetch, remote MCP servers, and plugin installs in Code sessions | Same single proxy as inference |
+| Agent web fetch, plugin installs, and the agent's own remote MCP connections in Code sessions | Same single proxy as inference |
 | The agent's remote MCP connections in Chat and Cowork sessions, to servers that a marketplace plugin or a user-added plugin bundles | Same single proxy as inference |
-| Web Fetch and managed MCP servers in Chat and Cowork sessions | App proxy (the app makes these connections) |
+| Web Fetch in Chat and Cowork sessions, and remote managed MCP servers | App proxy (the app makes these connections) |
+| Local (`stdio`) servers in [`managedMcpServers`](/docs/third-party/claude-desktop/configuration#managedmcpservers) | The app gives the server no proxy variables. Set `HTTPS_PROXY` in the entry's `env`, or have its `envHelper` script print it. In the admin console, use the **Environment helper script** field. |
 | Sync of the plugin marketplaces you configure, and `aws` CLI calls the app makes for Bedrock sign-in | App proxy, resolved for the specific host |
 | Cowork sandbox download from `downloads.claude.ai` | App proxy |
 | Telemetry and crash reports to Anthropic, if enabled | App proxy |
