@@ -2203,7 +2203,7 @@
     <loc>https://claude.com/de/resources/perspectives</loc>
   </url>
   <url>
-    <loc>https://claude.com/de/resources/product-announcements</loc>
+    <loc>https://claude.com/de/resources/product-updates</loc>
   </url>
   <url>
     <loc>https://claude.com/de/skills</loc>
@@ -2653,7 +2653,7 @@
     <loc>https://claude.com/es/resources/perspectives</loc>
   </url>
   <url>
-    <loc>https://claude.com/es/resources/product-announcements</loc>
+    <loc>https://claude.com/es/resources/product-updates</loc>
   </url>
   <url>
     <loc>https://claude.com/es/skills</loc>
@@ -3541,7 +3541,7 @@
     <loc>https://claude.com/fr/resources/perspectives</loc>
   </url>
   <url>
-    <loc>https://claude.com/fr/resources/product-announcements</loc>
+    <loc>https://claude.com/fr/resources/product-updates</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/skills</loc>
@@ -3988,7 +3988,7 @@
     <loc>https://claude.com/it/resources/perspectives</loc>
   </url>
   <url>
-    <loc>https://claude.com/it/resources/product-announcements</loc>
+    <loc>https://claude.com/it/resources/product-updates</loc>
   </url>
   <url>
     <loc>https://claude.com/it/skills</loc>
@@ -4873,7 +4873,7 @@
     <loc>https://claude.com/ja/resources/perspectives</loc>
   </url>
   <url>
-    <loc>https://claude.com/ja/resources/product-announcements</loc>
+    <loc>https://claude.com/ja/resources/product-updates</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/skills</loc>
@@ -5905,7 +5905,7 @@
     <loc>https://claude.com/ko/resources/perspectives</loc>
   </url>
   <url>
-    <loc>https://claude.com/ko/resources/product-announcements</loc>
+    <loc>https://claude.com/ko/resources/product-updates</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/skills</loc>
@@ -5986,6 +5986,9 @@
     <loc>https://claude.com/marketplace/agents-products/base44</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/agents-products/blackline</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/agents-products/chainguard</loc>
   </url>
   <url>
@@ -6056,6 +6059,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/agents-products/webflow</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/agents-products/zocks</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/agents-products/zoom</loc>
@@ -6437,6 +6443,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/blueconic</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/bluefish</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/boardwise</loc>
@@ -7219,6 +7228,9 @@
     <loc>https://claude.com/marketplace/connectors/glean</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/gleanmark</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/glg</loc>
   </url>
   <url>
@@ -7505,6 +7517,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/jentic</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/jetpost</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/jobber</loc>
@@ -7897,9 +7912,6 @@
     <loc>https://claude.com/marketplace/connectors/miro</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/connectors/mittwald</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/connectors/mixpanel</loc>
   </url>
   <url>
@@ -8212,6 +8224,9 @@
     <loc>https://claude.com/marketplace/connectors/picpay</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/picsart-media-studio</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/pigment</loc>
   </url>
   <url>
@@ -8320,7 +8335,13 @@
     <loc>https://claude.com/marketplace/connectors/public-holdings</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/pubmatic</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/pubmed</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/pursuit</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pushwoosh-manymoney</loc>
@@ -8492,6 +8513,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/roboflow</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/robutler</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/rocketlawyer</loc>
@@ -8755,6 +8779,9 @@
     <loc>https://claude.com/marketplace/connectors/steadybit</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/stewdio</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/strand-ai</loc>
   </url>
   <url>
@@ -8957,6 +8984,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/tripadvisor</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/triple-whale</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/trivago</loc>
@@ -9749,6 +9779,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/datahub-skills</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/dataiku-headless</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/dataproc</loc>
@@ -11149,6 +11182,9 @@
     <loc>https://claude.com/resources/articles/claude-enterprise-inference-hooks</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/claude-enterprise-security-updates</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/claude-excel-powerpoint-updates</loc>
   </url>
   <url>
@@ -11527,6 +11563,9 @@
     <loc>https://claude.com/resources/articles/introducing-dynamic-workflows-in-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/introducing-personal-finance-in-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/introducing-routines-in-claude-code</loc>
   </url>
   <url>
@@ -11774,6 +11813,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/best-practices</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/enterprise-announcements</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/guides</loc>
@@ -12220,7 +12262,7 @@
     <loc>https://claude.com/resources/perspectives</loc>
   </url>
   <url>
-    <loc>https://claude.com/resources/product-announcements</loc>
+    <loc>https://claude.com/resources/product-updates</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/videos</loc>
