@@ -6091,6 +6091,9 @@
     <loc>https://claude.com/marketplace/connectors/actively</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/adaption</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/addepar</loc>
   </url>
   <url>
@@ -6149,6 +6152,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/agentmail</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/agentphone</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/agility-cms</loc>
@@ -6227,6 +6233,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/angellist</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/anrok</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/anythingmcp</loc>
@@ -6518,6 +6527,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/calendly</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/campaign-monitor</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/campfire</loc>
@@ -7207,6 +7219,9 @@
     <loc>https://claude.com/marketplace/connectors/gamma</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/geekbot</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/gem</loc>
   </url>
   <url>
@@ -7280,6 +7295,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/granted</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/graphify</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/graphos-tools</loc>
@@ -8377,6 +8395,9 @@
     <loc>https://claude.com/marketplace/connectors/quinbook</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/quizlet</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/quo</loc>
   </url>
   <url>
@@ -8599,6 +8620,9 @@
     <loc>https://claude.com/marketplace/connectors/scite</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/scriptivox</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/seamless</loc>
   </url>
   <url>
@@ -8734,6 +8758,9 @@
     <loc>https://claude.com/marketplace/connectors/sparxx-io</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/speeda</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/speko</loc>
   </url>
   <url>
@@ -8822,6 +8849,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/superhuman-mail</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/superlawyer</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/supermetrics</loc>
@@ -8966,6 +8996,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/topcounsel</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/tracy-at-qode</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/travexp</loc>
@@ -12407,6 +12440,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/claude-for-life-sciences</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/webinars/claude-for-manufacturing-put-your-plants-know-how-to-work</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/claude-for-marketing-ops-and-analytics</loc>
