@@ -1,31 +1,31 @@
 ---
-対象期間: 2026年11月02日 〜 2026年11月06日
-作成日: 2026-11-06
+対象期間: 2026年11月06日 〜 2026年11月07日
+作成日: 2026-11-07
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間には取り込みが 5 回あり、MCP に差分が出たのは最後の 1 回だけで、`llms-full.txt` の 4 ページが変わりました。新規ページはなく、Build an MCP client と Build an MCP server の 2 ページが大幅更新です。中心は、クライアントのチュートリアルの 4 言語がツール呼び出しのループに書き直されたことと、サーバーのチュートリアルの Rust 版が rmcp 3.4 と構造化された結果に対応したことです。
+今回の対象期間の取り込みは 1 回で、MCP では `llms-full.txt` の 3 ページが変わりました。差分のほとんどは 2026-07-28 版の認可チュートリアル Understanding Authorization in MCP の書き直し（追加 536 行・削除 872 行）で、残る 2 ページは ext-skills の仕様へのリンク先が変わっただけです。
 
 主要なものを以下に挙げます。
 
-1. Build an MCP client の Python・TypeScript・Kotlin・Ruby のタブが、最大 `MAX_TOOL_TURNS`（`10`）回のツール呼び出しのループになり、`max_tokens` の上限も 1,000 前後から `10000` に上がった
-2. Build an MCP server の Rust のタブが rmcp `3.4` に合わせて書き直され、ツールがテキストと一緒に `outputSchema` に沿った構造化された結果を返すようになった（`get_alerts` は根が配列）
-3. Build an MCP client の TypeScript のタブが `versionNegotiation: { mode: "auto" }` で接続するようになり、Kotlin のタブには、使うプロトコルの版は `2025-11-25` で `2026-07-28` しか受け付けないサーバーにはつながらないという注記が加わった
-4. Schema Reference の `Tool` に、`inputSchema` で composition keyword を使うときの注意と、`find_resource`・`list_users` の 2 つの例が加わった
+1. Understanding Authorization in MCP の実装例が、Keycloak を構築する手順から、どの認可サーバーにも使える JWT 検証の例（TypeScript は SDK v2、C# は .NET 10）に書き直された
+2. 同じページの認可フローの説明にシーケンス図が加わり、`issuer`・`iss`・`state` の検証、`code_challenge_methods_supported` の確認、`403` の `insufficient_scope` と step-up authorization が書き込まれた
+3. 新しい Client Registration Approaches の節が、事前登録・Client ID Metadata Documents（CIMD）・Dynamic Client Registration（DCR）の 3 方式と試す順序を示し、DCR を非推奨とした
+4. 認可サーバーの選び方、不透明トークン、localhost 以外への配置の節が加わり、テストの節は MCP Inspector の CLI を使う手順とよくある問題 8 件に替わった
 ```
 
 ## ハイライト
 
-1. [**Build an MCP client の 4 言語がツール呼び出しのループになった**](./latest-detail.md#1-build-an-mcp-client-の-4-言語がツール呼び出しのループになった):  
-  Python・TypeScript・Kotlin・Ruby のタブの `process_query` が、Claude がツールを呼ばずに答えるまで、最大 `MAX_TOOL_TURNS`（`10`）回繰り返す形になった。これまでは 1 回ツールを実行して応答を受け取ったら終わりだった。TypeScript と Kotlin は、ツールの結果を `tool_use` に対応する `tool_result` のブロックで返す形に改まり、上限に達すると `[Stopped after 10 tool-use turns]` を出す。
-2. [**Build an MCP server の Rust 版が rmcp 3.4 と構造化された結果に対応した**](./latest-detail.md#2-build-an-mcp-server-の-rust-版が-rmcp-34-と構造化された結果に対応した):  
-  Rust のタブの rmcp が `0.3` から `3.4` になり、必要な Rust の版も 1.70 から 1.88 に上がった。2 つのツールは文字列の代わりに `Result<CallToolResult, ErrorData>` を返し、`output_schema` を宣言して、テキストと構造化された結果の両方を返す。`get_alerts` の結果は根が配列で、コメントはこれを 2026-07-28 のリビジョンで初めて許されたものと説明している。
-3. [**TypeScript と Kotlin のクライアントにプロトコルの版の扱いが加わった**](./latest-detail.md#3-typescript-と-kotlin-のクライアントにプロトコルの版の扱いが加わった):  
-  TypeScript のタブは `Client` に `versionNegotiation: { mode: "auto" }` を渡すようになった。`server/discover` を試し、`2025-11-25` のハンドシェイクにフォールバックする設定で、SDK の既定は `legacy` だと説明している。Kotlin のタブには、最新の安定版の Kotlin SDK が対応する `2025-11-25` を使うので `2026-07-28` しか受け付けないサーバーにはつながらない、という NOTE が加わり、`mcpVersion` も `0.16.0` になった。
-4. [**Schema Reference の Tool に composition keyword の注意と例が加わった**](./latest-detail.md#4-schema-reference-の-tool-に-composition-keyword-の注意と例が加わった):  
-  `Tool` の `inputSchema` の説明に、composition keyword を使うときは `properties` をスキーマの根に宣言し、分岐は `required` のような存在の検査に留めるよう求める文が加わった。`Tool` の例も、`oneOf` を使う `find_resource` と、配列の `outputSchema` を持つ `list_users` の 2 つが増えた。
+1. [**Authorization チュートリアルの実装例が特定の認可サーバーに依存しない形になった**](./latest-detail.md#1-authorization-チュートリアルの実装例が特定の認可サーバーに依存しない形になった):  
+  Keycloak を Docker で動かして管理画面で設定する手順がなくなり、`ISSUER` と `METADATA_URL` を自分の認可サーバーに合わせて書き換える、`add` ツール 1 つのサーバーの例になった。TypeScript と Python はトークンイントロスペクションから JWT の検証（`jose`・PyJWT）に替わり、TypeScript は SDK v2 のパッケージ、C# は .NET 10 に上がった。
+2. [**認可フローの説明が仕様の要件に沿って詳しくなった**](./latest-detail.md#2-認可フローの説明が仕様の要件に沿って詳しくなった):  
+  3 者の役割の説明とシーケンス図が加わり、6 つの手順に、`401` の `scope`、`issuer` の一致と `code_challenge_methods_supported` の確認、`iss`（RFC 9207）と `state` の検証、`resource` パラメーター、`403` の `insufficient_scope` と step-up authorization が書き込まれた。
+3. [**クライアント登録の 3 つの方式を整理する節が加わった**](./latest-detail.md#3-クライアント登録の-3-つの方式を整理する節が加わった):  
+  新しい Client Registration Approaches の節が、事前登録・CIMD・DCR の 3 方式と試す順序を表で示し、CIMD を最も一般的な方式、DCR を非推奨としている。事前登録と DCR の資格情報は、発行した認可サーバーの `issuer` ごとに保存して使い分けるよう求めている。
+4. [**認可サーバーの選定や本番への配置などを扱う節が加わった**](./latest-detail.md#4-認可サーバーの選定や本番への配置などを扱う節が加わった):  
+  Choosing an Authorization Server（確かめる 8 項目）、Opaque Tokens、Deploying Beyond Localhost の 3 つの節が加わった。Testing the Server（旧 Testing the MCP Server）は、VS Code の画面を示す説明から、`curl` と MCP Inspector の CLI で確かめる手順と、よくある問題 8 件の一覧に替わった。
 
 ## 新規追加されたページ
 
@@ -33,28 +33,26 @@
 
 ## 大幅に更新されたページ
 
-- [**Build an MCP client**](./latest-detail.md#1-build-an-mcp-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)):  
-  Python・TypeScript・Kotlin・Ruby のタブを、最大 `MAX_TOOL_TURNS` 回のツール呼び出しのループに書き直し、TypeScript に版の自動交渉と Ctrl-D・Ctrl-C の処理を、Kotlin に版の注記を加えた（追加 314 行・削除 157 行。詳細はハイライト 1・3 参照）。
-- [**Build an MCP server**](./latest-detail.md#2-build-an-mcp-server) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-the-weather-server-and-tools)):  
-  Rust のタブを rmcp `3.4` に合わせて書き直し、ツールがテキストと `outputSchema` に沿った構造化された結果を返す形にした（追加 174 行・削除 72 行。詳細はハイライト 2 参照）。
+- [**Understanding Authorization in MCP**](./latest-detail.md#1-understanding-authorization-in-mcp) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#implementation-example)):  
+  2026-07-28 版の認可チュートリアルをほぼ全面的に書き直した。Keycloak を前提にした実装例を認可サーバーに依存しない JWT 検証の例に替え、認可フローの説明を詳しくし、クライアント登録の方式・認可サーバーの選び方・不透明トークン・localhost 以外への配置の節を加えた（追加 536 行・削除 872 行。詳細はハイライト 1〜4 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは `llms-full.txt` の 1 件で、差分のあった 4 ページのうち、大幅更新の 2 ページのほかに、次の 2 ページで内容が変わりました。
+今回差分が出たファイルは `llms-full.txt` の 1 件で、差分のあった 3 ページのうち、大幅更新の 1 ページのほかに、次の 2 ページでリンク先が変わりました。
 
-**機能改善**
+**その他**
 
-- Schema Reference の `Tool` で、`inputSchema` の説明に composition keyword を使うときの注意を追加し、`find_resource`（`oneOf` の入力スキーマ）と `list_users`（配列の出力スキーマ）の例を追加（詳細はハイライト 4 参照） — [Schema Reference](https://modelcontextprotocol.io/specification/2026-07-28/schema#tool)
-- SEP Guidelines の Step-by-Step Process の手順 3 に、PR のタイトルを `sep: propose task cancellation` のようにすることを追加し、`CONTRIBUTING.md` の PR タイトルの指針へのリンクを追加 — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
-- 同じ節の手順 4 に、PR の番号が決まったら PR のタイトルを `sep(SEP-1850): describe the proposal` のように改めることを追加。追加のコミットで足り、amend や force-push は要らない。この SEP に関する後続の PR は `SEP-1850` をスコープとして残し、説明欄で元の SEP にリンクする — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
+- Skills の Security Considerations の節で、ext-skills リポジトリの仕様のセキュリティの節へのリンク先が `specification/stable/skills.mdx` から `specification/beta/skills.mdx` に変わった（リンクの文言は同じ） — [Skills](https://modelcontextprotocol.io/extensions/skills/overview#security-considerations)
+- 同じページの Specification の節で、仕様の全文へのリンク先が同じく `specification/stable/skills.mdx` から `specification/beta/skills.mdx` に変わった（ページ冒頭の「SEP-2640 is Final」は変わらず） — [Skills](https://modelcontextprotocol.io/extensions/skills/overview#specification)
+- Skills Over MCP Charter の Completed Milestones の節で、公式の仕様へのリンク先が `specification/stable/skills.mdx` から `specification/beta/skills.mdx` に変わった — [Skills Over MCP Charter](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#completed-milestones)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-02.md](./archives/latest/2026-11-02.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-02.md](./archives/latest-detail/2026-11-02.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-06.md](./archives/latest/2026-11-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-06.md](./archives/latest-detail/2026-11-06.md)
 
 <!--
-base_commit: acb459e04e57acda73f439e58d2759ea5599cdf6
-head_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
-generated_at_full: 2026-11-07T15:21:16+09:00
+base_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
+head_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
+generated_at_full: 2026-11-08T15:17:09+09:00
 -->

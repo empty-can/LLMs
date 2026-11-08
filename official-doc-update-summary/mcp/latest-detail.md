@@ -1,97 +1,106 @@
 ---
-対象期間: 2026年11月02日 〜 2026年11月06日
-作成日: 2026-11-06
+対象期間: 2026年11月06日 〜 2026年11月07日
+作成日: 2026-11-07
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間には取り込みが 5 回あり、MCP に差分が出たのは最後の 1 回だけで、`llms-full.txt` の 4 ページが変わりました。新規ページはなく、Build an MCP client と Build an MCP server の 2 ページが大幅更新です。中心は、クライアントのチュートリアルの 4 言語がツール呼び出しのループに書き直されたことと、サーバーのチュートリアルの Rust 版が rmcp 3.4 と構造化された結果に対応したことです。
+今回の対象期間の取り込みは 1 回で、MCP では `llms-full.txt` の 3 ページが変わりました。差分のほとんどは 2026-07-28 版の認可チュートリアル Understanding Authorization in MCP の書き直し（追加 536 行・削除 872 行）で、残る 2 ページは ext-skills の仕様へのリンク先が変わっただけです。
 
 主要なものを以下に挙げます。
 
-1. Build an MCP client の Python・TypeScript・Kotlin・Ruby のタブが、最大 `MAX_TOOL_TURNS`（`10`）回のツール呼び出しのループになり、`max_tokens` の上限も 1,000 前後から `10000` に上がった
-2. Build an MCP server の Rust のタブが rmcp `3.4` に合わせて書き直され、ツールがテキストと一緒に `outputSchema` に沿った構造化された結果を返すようになった（`get_alerts` は根が配列）
-3. Build an MCP client の TypeScript のタブが `versionNegotiation: { mode: "auto" }` で接続するようになり、Kotlin のタブには、使うプロトコルの版は `2025-11-25` で `2026-07-28` しか受け付けないサーバーにはつながらないという注記が加わった
-4. Schema Reference の `Tool` に、`inputSchema` で composition keyword を使うときの注意と、`find_resource`・`list_users` の 2 つの例が加わった
+1. Understanding Authorization in MCP の実装例が、Keycloak を構築する手順から、どの認可サーバーにも使える JWT 検証の例（TypeScript は SDK v2、C# は .NET 10）に書き直された
+2. 同じページの認可フローの説明にシーケンス図が加わり、`issuer`・`iss`・`state` の検証、`code_challenge_methods_supported` の確認、`403` の `insufficient_scope` と step-up authorization が書き込まれた
+3. 新しい Client Registration Approaches の節が、事前登録・Client ID Metadata Documents（CIMD）・Dynamic Client Registration（DCR）の 3 方式と試す順序を示し、DCR を非推奨とした
+4. 認可サーバーの選び方、不透明トークン、localhost 以外への配置の節が加わり、テストの節は MCP Inspector の CLI を使う手順とよくある問題 8 件に替わった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Build an MCP client の 4 言語がツール呼び出しのループになった**](#1-build-an-mcp-client-の-4-言語がツール呼び出しのループになった):  
-  Python・TypeScript・Kotlin・Ruby のタブの `process_query` が、Claude がツールを呼ばずに答えるまで、最大 `MAX_TOOL_TURNS`（`10`）回繰り返す形になった。これまでは 1 回ツールを実行して応答を受け取ったら終わりだった。TypeScript と Kotlin は、ツールの結果を `tool_use` に対応する `tool_result` のブロックで返す形に改まり、上限に達すると `[Stopped after 10 tool-use turns]` を出す。
-2. [**Build an MCP server の Rust 版が rmcp 3.4 と構造化された結果に対応した**](#2-build-an-mcp-server-の-rust-版が-rmcp-34-と構造化された結果に対応した):  
-  Rust のタブの rmcp が `0.3` から `3.4` になり、必要な Rust の版も 1.70 から 1.88 に上がった。2 つのツールは文字列の代わりに `Result<CallToolResult, ErrorData>` を返し、`output_schema` を宣言して、テキストと構造化された結果の両方を返す。`get_alerts` の結果は根が配列で、コメントはこれを 2026-07-28 のリビジョンで初めて許されたものと説明している。
-3. [**TypeScript と Kotlin のクライアントにプロトコルの版の扱いが加わった**](#3-typescript-と-kotlin-のクライアントにプロトコルの版の扱いが加わった):  
-  TypeScript のタブは `Client` に `versionNegotiation: { mode: "auto" }` を渡すようになった。`server/discover` を試し、`2025-11-25` のハンドシェイクにフォールバックする設定で、SDK の既定は `legacy` だと説明している。Kotlin のタブには、最新の安定版の Kotlin SDK が対応する `2025-11-25` を使うので `2026-07-28` しか受け付けないサーバーにはつながらない、という NOTE が加わり、`mcpVersion` も `0.16.0` になった。
-4. [**Schema Reference の Tool に composition keyword の注意と例が加わった**](#4-schema-reference-の-tool-に-composition-keyword-の注意と例が加わった):  
-  `Tool` の `inputSchema` の説明に、composition keyword を使うときは `properties` をスキーマの根に宣言し、分岐は `required` のような存在の検査に留めるよう求める文が加わった。`Tool` の例も、`oneOf` を使う `find_resource` と、配列の `outputSchema` を持つ `list_users` の 2 つが増えた。
+1. [**Authorization チュートリアルの実装例が特定の認可サーバーに依存しない形になった**](#1-authorization-チュートリアルの実装例が特定の認可サーバーに依存しない形になった):  
+  Keycloak を Docker で動かして管理画面で設定する手順がなくなり、`ISSUER` と `METADATA_URL` を自分の認可サーバーに合わせて書き換える、`add` ツール 1 つのサーバーの例になった。TypeScript と Python はトークンイントロスペクションから JWT の検証（`jose`・PyJWT）に替わり、TypeScript は SDK v2 のパッケージ、C# は .NET 10 に上がった。
+2. [**認可フローの説明が仕様の要件に沿って詳しくなった**](#2-認可フローの説明が仕様の要件に沿って詳しくなった):  
+  3 者の役割の説明とシーケンス図が加わり、6 つの手順に、`401` の `scope`、`issuer` の一致と `code_challenge_methods_supported` の確認、`iss`（RFC 9207）と `state` の検証、`resource` パラメーター、`403` の `insufficient_scope` と step-up authorization が書き込まれた。
+3. [**クライアント登録の 3 つの方式を整理する節が加わった**](#3-クライアント登録の-3-つの方式を整理する節が加わった):  
+  新しい Client Registration Approaches の節が、事前登録・CIMD・DCR の 3 方式と試す順序を表で示し、CIMD を最も一般的な方式、DCR を非推奨としている。事前登録と DCR の資格情報は、発行した認可サーバーの `issuer` ごとに保存して使い分けるよう求めている。
+4. [**認可サーバーの選定や本番への配置などを扱う節が加わった**](#4-認可サーバーの選定や本番への配置などを扱う節が加わった):  
+  Choosing an Authorization Server（確かめる 8 項目）、Opaque Tokens、Deploying Beyond Localhost の 3 つの節が加わった。Testing the Server（旧 Testing the MCP Server）は、VS Code の画面を示す説明から、`curl` と MCP Inspector の CLI で確かめる手順と、よくある問題 8 件の一覧に替わった。
 <!-- light:highlight-list:end -->
 
-## 1. Build an MCP client の 4 言語がツール呼び出しのループになった
+## 1. Authorization チュートリアルの実装例が特定の認可サーバーに依存しない形になった
 
-今回の対象期間の取り込みは 5 回（2026年11月03日の追加 11 URL の初回取り込みと、11月04日〜07日の定期取り込み 4 回）で、MCP の入力ファイルに差分が出たのは最後の 11月07日の 1 回だけです。差分は本文 `llms-full.txt` の追加 495 行・削除 233 行で、索引 `llms.txt` は変わらず（エントリ数は 364 件のまま）、`llms-full.txt` の総行数は 46,112 行から 46,374 行になり、収録ページ数は 159 件（`examples` が 2 回収録されているため、URL としては 158 件）で変わっていません。差分のあったページは 4 件で、Build an MCP client（追加 314 行・削除 157 行）、Build an MCP server（追加 174 行・削除 72 行）、Schema Reference（追加 5 行・削除 2 行）、SEP Guidelines（追加 2 行・削除 2 行）です。ページごとの行数は、`git diff` のハンクを head 側の `Source:` の行と `[tab]` の行でページとタブに振り分けたもので、合計は上の追加 495 行・削除 233 行に一致します。4 ページとも見出しの増減はありません。
+今回の対象期間の取り込みは 1 回で、MCP の入力ファイルのうち差分が出たのは本文 `llms-full.txt` だけです（追加 539 行・削除 875 行）。索引 `llms.txt` は変わらず（エントリ数は 364 件のまま）、`llms-full.txt` の総行数は 46,374 行から 46,038 行になり、収録ページ数は 159 件（`examples` が 2 回収録されているため、URL としては 158 件）で変わっていません。差分のあったページは 3 件で、Understanding Authorization in MCP（追加 536 行・削除 872 行）、Skills（追加 2 行・削除 2 行）、Skills Over MCP Charter（追加 1 行・削除 1 行）です。ページごとの行数は、`git diff` のハンクを head 側の `Source:` の行でページに振り分けたもので、合計は上の追加 539 行・削除 875 行に一致します。
 
-Build an MCP client では、Python・TypeScript・Kotlin・Ruby の 4 つのタブの `process_query` が、同じ考え方で書き直されました。2026年10月31日版のサマリで取り上げた Rust のタブは、すでにこの形になっています。
+Understanding Authorization in MCP は 2026-07-28 版のチュートリアルで、ほぼ全体が書き直されました。ページの行数（`# ` のタイトルの行から次のページの直前まで）は 1,140 行から 804 行に減り、見出し（h2・h3。コードフェンスの外で数えた値）は 8 個から 13 個に増えています。索引 `llms.txt` にはほかの版（`2025-11-25`・`draft` など）のこのページもありますが、本文 `llms-full.txt` に収録されているのは 2026-07-28 版だけなので、ほかの版が変わったかどうかはわかりません。
 
-**ツール呼び出しがループになりました。** これまでの 4 言語は、最初の応答で求められたツールを実行し、次の応答のテキストを集めて終わっていました。新しいコードは、応答の中の `tool_use` をすべて集めて実行し、結果を送って Claude を呼び直すことを、Claude がツールを呼ばずに答えるか、`MAX_TOOL_TURNS`（`10`）に達するまで繰り返します。上限に達すると、最後の応答のテキストを残し、まだツールを求めていれば `[Stopped after 10 tool-use turns]` を加えます。
+**Keycloak を構築する手順がなくなりました。** これまでの実装例は、Keycloak を Docker で起動し、管理画面でスコープ `mcp:tools`、audience のマッパー、動的なクライアント登録を許す Trusted Hosts、イントロスペクションに使う MCP サーバー用のクライアントを設定する手順を、画面の画像 5 枚と発行されるトークンの例とともに説明していました。新しい実装例はどの認可サーバーにも使える形で、`http://localhost:3000/mcp` で動き、`mcp:tools` のスコープを求め、RS256 で署名された JWT のアクセストークンを受け付ける、`add` ツール 1 つのサーバーです（これまでの例は `http://localhost:3000` で動き、足し算と掛け算の 2 つのツールを持っていました）。動かす前に書き換える値として、`ISSUER`（認可サーバーのメタデータの `issuer` そのまま）、`METADATA_URL`、署名アルゴリズム、スコープ、期待する audience の 5 つを挙げています。Keycloak は、新しい節 Choosing an Authorization Server の TIP「Testing Locally」で、CIMD と resource indicators を実験的にサポートする例として触れられるだけになりました（`--features=cimd,resource-indicators` で起動する）。
 
-**どのリクエストにも `tools` を付けるようになりました。** TypeScript・Kotlin・Ruby はこれまで、ツールの結果を送る 2 回目のリクエストに `tools` を付けていませんでした（Python は付けていた）。今回から 4 言語とも毎回付けるので、Claude は結果を読んだ後もツールを呼び続けられます。Ruby の `chat` ヘルパーは `tools` が任意の引数から必須の引数に変わりました。
+**トークンの検証が JWT の検証に揃いました。** これまで TypeScript と Python の例は Keycloak のイントロスペクションのエンドポイントにトークンを問い合わせ、C# の例だけが JWT を検証していました。新しい例は 3 言語ともライブラリで JWT を検証します（TypeScript は `jose` の `jwtVerify`、Python は PyJWT の `jwt.decode`、C# は ASP.NET Core の JWT bearer 認証）。署名・issuer・audience・有効期限を確かめ、時計のずれは 30 秒まで許します。TypeScript と Python は起動時に認可サーバーのメタデータを取得して `issuer` を照合し、`jwks_uri` から鍵を取ります。鍵を取得できない障害のときは、トークンが不正なときの `401` ではなく `5xx` で応じます（C# は、一度も鍵を取得できていない間だけ `500` を返す）。不透明トークンの場合のイントロスペクションは、新しい節 Opaque Tokens が文章で説明しています。
 
-**TypeScript と Kotlin は `tool_result` のブロックで結果を返すようになりました。** この 2 言語はこれまで、ツールの結果を `tool_use` と対応付けず、`role: "user"` のメッセージの地の文として 1 件ずつ送っていました。今回から、アシスタントのターンをそのまま送り返した上で、`tool_use` ごとの `tool_result` を 1 つの user メッセージにまとめます。Python の説明は、この 2 つが揃っていない会話を Messages API が拒否することと、thinking block を含めてアシスタントのメッセージをそのまま送り返すことを加えました。
+**SDK と依存の版が上がりました。** TypeScript は、これまでの単一のパッケージ `@modelcontextprotocol/sdk` から、SDK v2 の `@modelcontextprotocol/server@^2.3.0`・`@modelcontextprotocol/express@^2.0.2`・`@modelcontextprotocol/node` に替わり、Zod 4 を使います。セッションごとに `StreamableHTTPServerTransport` を保持するコードはなくなり、`createMcpHandler` で応答します。Python は `mcp>=2.0.0rc1` から `mcp>=2.2` になり、`config.py`・`server.py`・`token_verifier.py`・`pyproject.toml` に分かれていた例が `server.py` 1 つにまとまりました。C# は .NET 9（`net9.0`）・`ModelContextProtocol.AspNetCore` 2.0.0 から .NET 10（`net10.0`）・2.4.0 になり、`Tools` フォルダーの `MathTools.cs` も `Program.cs` にまとまりました。サンプルリポジトリへのリンクは 3 言語ともなくなっています。
 
-**失敗したツールの扱いが揃いました。** TypeScript は `isError` を `is_error` に、Kotlin は `isError` を `ToolResultBlockParam` の `isError(true)` に、Ruby は `result.dig("result", "isError")` を `is_error` に渡すようになり、Claude が失敗を読んで別の手を試せます（Python はもともと渡していた）。TypeScript の Best practices の「ツールの呼び出しを try-catch で囲む」は、「失敗したツールが例外を投げると期待せず `result.isError` を確かめる」に替わりました。
+**SDK がしないことを補うコードと説明が加わりました。** 各タブのコードの後に、SDK が何をして何をしないかの説明が付きました。TypeScript の `expectedResource` と Python の `validate_token_resource` はトークンの中身を見ないので、JWT の検証の audience を外さないよう求めています。Python の SDK はチャレンジに `scope` を入れないため、`403` の後に、すでに持っているスコープだけを要求し直すクライアントでは足りないスコープを得られないことがある、と注意しています。C# の SDK の `401` のチャレンジには `scope` が無く、`403` のチャレンジは送らず、`Origin` ヘッダーも検証しないので、例は `OnChallenge`・`OnForbidden` のイベントとミドルウェアでこれを補っています。
 
-**`max_tokens` の上限が上がりました。** Python・TypeScript・Ruby の `1000`、Kotlin の `1024` が、定数 `MAX_TOKENS` の `10000`（Kotlin は `10_000L`）になりました。コメントは、モデルは指定が無ければ適応的に考え、`max_tokens` は thinking と応答の合計の上限なので、両方の余地を残す、と説明しています。C# のタブの変更は、対応する `MaxOutputTokens` が `1000` から `10000` になった 1 行だけです。
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#implementation-example)
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#opaque-tokens)
 
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic-2)
+## 2. 認可フローの説明が仕様の要件に沿って詳しくなった
 
-## 2. Build an MCP server の Rust 版が rmcp 3.4 と構造化された結果に対応した
+The Authorization Flow: Step by Step の冒頭に、3 者の役割の説明が加わりました。MCP サーバーはアクセストークンを検証するだけで発行はしない OAuth のリソースサーバー、MCP クライアントはユーザーの代わりに動く OAuth クライアント、認可サーバーはユーザーを認証して MCP サーバー向けのトークンを発行するもので、MCP サーバーと同じところで動かしてもよい、という説明です。続いて、ブラウザー・クライアント・MCP サーバー・認可サーバーのやり取りを示す mermaid のシーケンス図が加わりました。6 つの手順は順序を保ったまま（1 つ目は Initial Handshake から Initial Request に改称）、次の点が書き込まれています。
 
-Build an MCP server の変更（追加 174 行・削除 72 行）はすべて Rust のタブで、ほかの 7 つのタブは変わっていません。
+- **1. Initial Request**: `401` の `WWW-Authenticate` の例が、`realm="mcp"` を外し、`resource_metadata` にエンドポイントのパスを付けた `/.well-known/oauth-protected-resource/mcp` と、`scope="mcp:tools"` を示す形になった。クライアントが要求するスコープは、チャレンジの `scope`、それが無ければ PRM の `scopes_supported` のすべて、それも無ければ `scope` を付けない、の順で決める。サーバーは `resource_metadata` を付けるか PRM を well-known の URI で提供しなければならず、付けない場合にクライアントが試す URL の順序（エンドポイントのパスを付けた URL、次にパス無しの URL）も示した
+- **2. Protected Resource Metadata Discovery**: `authorization_servers` には 1 件以上が要る。`resource` はクライアントが接続する URL そのものにし、一致しない文書をクライアントは使ってはならない（RFC 9728 の 3.3 節）。例の `scopes_supported` から `mcp:resources` が外れた
+- **3. Authorization Server Discovery**: クライアントは RFC 8414 と OpenID Connect Discovery の両方に対応し、仕様の定める順序で URL を試す。メタデータの例に `jwks_uri`・`code_challenge_methods_supported`・`client_id_metadata_document_supported`・`authorization_response_iss_parameter_supported` などが加わり（`registration_endpoint` は外れた）、クライアントが確かめる 2 点として、`issuer` がメタデータの URL を作るのに使った issuer と一致すること、`code_challenge_methods_supported` があること（無ければ認可サーバーが PKCE に対応していないので先へ進まない）を挙げた
+- **4. Client Registration**: 事前登録と DCR の説明は、新しい節 Client Registration Approaches へ移った（ハイライト 3）
+- **5. User Authorization**: PKCE の `code_challenge` と `resource` パラメーター（RFC 8707）を含む認可リクエストの例が加わった。認可サーバーが RFC 9207 に対応していれば応答に `iss` が付く。クライアントはブラウザーを開く前に検証済みのメタデータの `issuer` を記録し、コードを交換する前に、どちらも正規化せずに `iss` と照合する。`iss` への対応を宣言している認可サーバーの応答に `iss` が無ければ拒否する。エラーの応答も同じで、照合に失敗したらエラーを処理も表示もしない。`state` が無いか送った値と違う応答は捨てる。トークンの応答の例から `refresh_token` が外れて `scope` が加わり、リフレッシュトークンは認可サーバーが返すこともある、という書き方になった
+- **6. Making Authenticated Requests**: トークンは**すべての** HTTP リクエストの `Authorization` ヘッダーで送り、URL には載せない。リクエストの例は `GET /mcp` から、`MCP-Protocol-Version: 2026-07-28`・`Mcp-Method: tools/list` のヘッダーと、`_meta` にプロトコルの版・クライアントの情報・capabilities を入れた JSON-RPC の本文を持つ `POST /mcp` になった。トークンが無効か期限切れなら `401`、有効でもスコープが足りなければ `insufficient_scope` の `403` を返す。クライアントはチャレンジのスコープを以前要求したスコープと合わせて step-up authorization を行い、再試行の回数を抑える
 
-**依存が上がりました。** `Cargo.toml` の rmcp は `0.3` から `3.4`、`tokio` は `1.46` から `1.53`、`reqwest` は `0.12` から `0.13` になり、`tracing`・`tracing-subscriber` は依存から外れました。System requirements の Rust は 1.70 以上から 1.88 以上になり、これは `rmcp` クレートが宣言する最小の版だと書かれています。
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#the-authorization-flow-step-by-step)
 
-**ツールはテキストと構造化された結果の両方を返すようになりました。** これまでの `get_alerts`・`get_forecast` は `String` を返していました。今回から `Result<CallToolResult, ErrorData>` を返し、`#[tool]` の属性に `output_schema = schema_for_output::<…>()` を宣言します。結果の型として `Alert`・`Forecast`・`Period` が加わり、`JsonSchema` を derive することで形が出力スキーマとして公開され、doc コメントがスキーマのプロパティの説明になります。新しいヘルパー `dual_channel_result` は、`content` に人が読むテキストを、`structured_content` にスキーマに沿った JSON を入れた `CallToolResult` を作ります。
+## 3. クライアント登録の 3 つの方式を整理する節が加わった
 
-**`get_alerts` の結果は根が配列です。** `get_alerts` は `Vec<Alert>` を出力スキーマとするので、`structuredContent` はオブジェクトで包まない最上位の JSON 配列になり、コメントはこれを 2026-07-28 のリビジョンで初めて許されたものと説明しています。`get_forecast` の `Forecast` はオブジェクトの場合の例です。
+新しい節 Client Registration Approaches は、3 つの方式と使う場面を表にまとめています。
 
-**失敗はツールの失敗として返すようになりました。** 天気のサービスへのリクエストが失敗すると `CallToolResult::error` を返し、クライアントはこれをツールの失敗として受け取ります。これまではエラーの文も通常の文字列として返していました。警報が無いときは、エラーではなく空の配列を返します。メッセージも変わり、`get_alerts` の失敗は `Unable to fetch alerts for {state}.`、`get_forecast` の 2 回目のリクエストの失敗は `Unable to fetch detailed forecast.` になりました。
+| 方式 | 使う場面 |
+|---|---|
+| Pre-registration（事前登録） | クライアントがこの認可サーバーの資格情報をすでに持っている |
+| Client ID Metadata Documents | クライアントとサーバーに事前の関係が無い（最も一般的） |
+| Dynamic Client Registration | 非推奨。Client ID Metadata Documents に対応していない認可サーバー向け |
 
-**サーバーの名前と版を自分で示すようになりました。** `get_info` の戻り値は `ServerInfo` から `ServerConfig` になり、`server_info` に `Implementation::new("weather", "1.0.0")` を入れます。コメントは、これが無いと rmcp 自身のクレート名と版を報告すると説明しています。節ごとの変更は「大幅に更新されたページ」の表を参照してください。
+3 つすべてに対応するクライアントはこの順で試し、どれも使えなければユーザーにクライアントの情報を入力してもらう、としています。これまでのページは手順 4 の中で事前登録と DCR の 2 つだけを説明し、どちらも使えない場合の入力を TIP で補っていました。配下の 3 つの節の内容は次のとおりです。
 
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-the-weather-server-and-tools)
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#system-requirements-7)
+- **Client ID Metadata Documents**: クライアントは HTTPS の URL を `client_id` とし、その URL に JSON の文書を置く。認可サーバーは認可リクエストを受けたときに文書を取得して検証する。URL は `https` でパスを含み、文書には少なくとも `client_id`・`client_name`・`redirect_uris` が要り、文書の `client_id` は URL と完全に一致しなければならない。CIMD に対応する認可サーバーなら同じクライアント ID を使え、MCP サーバーが認可サーバーを替えても登録し直す必要はない
+- **Pre-registration**: クライアント ID（必要なら資格情報も）を事前に用意し、クライアントに組み込むか、ユーザーが入力する
+- **Dynamic Client Registration**: DCR は非推奨で、新しい実装は CIMD を使うべき、という WARNING が付いた。DCR のリクエストには適切な `application_type` を含める（例は `native`）。事前登録と DCR の資格情報は発行した認可サーバーに属し、`issuer` ごとに保存して、別の認可サーバーには使わない
 
-## 3. TypeScript と Kotlin のクライアントにプロトコルの版の扱いが加わった
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#client-registration-approaches)
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#dynamic-client-registration)
 
-**TypeScript のタブは版を自動で交渉するようになりました。** Basic Client Structure の `Client` の生成が、`new Client({ name: "mcp-client-cli", version: "1.0.0" })` から、第 2 引数に `{ versionNegotiation: { mode: "auto" } }` を渡す形になりました。コメントによると、`auto` は `server/discover` を試し、`2025-11-25` のハンドシェイクにフォールバックします。SDK の既定は `legacy` です。
+## 4. 認可サーバーの選定や本番への配置などを扱う節が加わった
 
-**Kotlin のタブに版の注記が加わりました。** タブの冒頭に NOTE が加わりました。このクライアントは、最新の安定版の Kotlin SDK が対応する MCP プロトコルの版 `2025-11-25` を使い、その版を受け付けるサーバーには接続できるが、`2026-07-28` しか受け付けないサーバーには接続できない、という内容で、仕様の versioning の backward compatibility の節へ案内しています。2026年10月31日版のサマリで取り上げた、Build an MCP client の Java のタブと Build an MCP server の Java・Kotlin のタブの注記と同じ趣旨です。
+**Choosing an Authorization Server**: 既存の ID プロバイダーや認可サーバーの製品を使うよう勧め、クライアントの登録はクライアントと認可サーバーの間で行われるので、MCP サーバーに CIMD や DCR のコードは要らない、と説明しています。選ぶ前に確かめる 8 項目は次のとおりです。
 
-同じ Kotlin のタブの `build.gradle.kts` では、`mcpVersion` が `0.9.0` から `0.16.0` になり、`repositories { mavenCentral() }` のブロックが加わりました。
+- **Audience**: クライアントが送る `resource` をトークンの `aud` にできるか。製品が常に独自の識別子を使う場合はそれと照合し、PRM の `resource` はサーバーの URL のままにする。識別子はこの MCP サーバー専用にする
+- **Metadata**: RFC 8414 か OpenID Connect Discovery でメタデータを提供し、`code_challenge_methods_supported` を含むか。PKCE に対応していてもこの値を出さない製品があるので、実際の文書を見る
+- **CIMD**: CIMD に対応し、`client_id_metadata_document_supported` で宣言するか
+- **Token format**: 例は署名付きの JWT のアクセストークンが前提で、そうでなければイントロスペクションのエンドポイントが要る
+- **Public clients**: シークレットを持たないクライアントを受け付け、`token_endpoint_auth_methods_supported` に `none` を含むか
+- **Scopes**: `mcp:tools` のようなスコープを定義できるか。スコープの名前に接頭辞を付ける製品では、例の `mcp:tools` をその名前に置き換える
+- **Token lifetime**: アクセストークンを短命にし、公開クライアントのリフレッシュトークンをローテーションするか
+- **Issuer in responses**: 認可の応答に `iss` を返し、`authorization_response_iss_parameter_supported` を宣言するか
 
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#basic-client-structure)
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#setting-up-your-environment-4)
+**Opaque Tokens**: 不透明トークンの場合は、メタデータの `introspection_endpoint`（RFC 7662）を使います。MCP サーバー自身の資格情報が要り、権限が無いと有効なトークンでも `active` が `false` になること、`aud` の無いトークンは拒否し、`scope`・`exp` も確かめること、エンドポイントに届かないかエラーの状態（`401` でも）を返すときは障害として扱うこと、キャッシュするならトークンを暗号化し、期限までにエントリを消すことを挙げています。
 
-## 4. Schema Reference の Tool に composition keyword の注意と例が加わった
+**Deploying Beyond Localhost**: サーバーの URL を、クライアントが接続する `https` の URL そのものに変え（PRM の `resource` と期待する audience に使われる）、TLS を終端して元の `Host` ヘッダーを保つリバースプロキシの後ろに置き、受け付ける `Host` と `Origin` を言語ごとに設定する方法を説明しています。`Origin` を受け付けても CORS が有効になるわけではないこと、このプロトコルのリビジョンにはセッションが無いので `Mcp-Session-Id` は無視し、古いクライアントも受け付けるならセッション ID を呼び出し元の証明に使わないことも書かれています。
 
-2026-07-28 の Schema Reference の `Tool` に、次の変更がありました（追加 5 行・削除 2 行）。
+**Testing the Server**（旧 Testing the MCP Server）: これまでは VS Code でサーバーを追加し、同意の画面とツールの一覧を画像 3 枚で示すだけでした。新しい節は、トークン無しの `curl` で `401` と PRM を確かめ、`METADATA_URL` の文書に `code_challenge_methods_supported` があるかを見た上で、MCP Inspector の CLI（Node.js 22.19 以上が必要）で一連の流れを試す手順です。`--protocol-era modern` で 2026-07-28 のプロトコルを使い、`--client-metadata-url` で自分が置いた CIMD の文書を指定します（Inspector のリダイレクト URI は `http://127.0.0.1:6276/oauth/callback`）。続く NOTE「Common Issues」は、認可サーバーがクライアント ID を拒否する、`resource` が拒否される（`invalid_target`）、ログインに成功しても Inspector が `auth_required` を出す、すべてのトークンが `401` または `403` になる、など 8 件の症状と対処を挙げています。
 
-**`inputSchema` の説明に注意が加わりました。** composition keyword（`oneOf`・`anyOf`・`allOf`・`not`）も使えるという既存の説明の後に、使うときは `properties` をスキーマの根に宣言し、分岐は `required` のような存在の検査に留める、という文が加わりました。理由は、型のエラーで失敗するサブスキーマは適用されないサブスキーマと区別できないので、`oneOf` の分岐の中に置いた型の制約は、一致しなかった分岐については強制されないためです。
-
-**例が 2 つ加わりました。** `Tool` の例はこれまで 4 つ（既定の 2020-12 の入力スキーマ、明示した draft-07 の入力スキーマ、パラメーター無し、構造化された内容の出力スキーマ）でした。今回、次の 2 つが加わって 6 つになりました。
-
-- **With a composition input schema**: `find_resource` というツールの例。`id` と `name` を根の `properties` に宣言し、`"oneOf": [{ "required": ["id"] }, { "required": ["name"] }]` でどちらか一方を求める
-- **With an array output schema**: `list_users` というツールの例。`outputSchema` の `type` が `array` で、`items` に `id`・`name`・`email` を持つオブジェクトを宣言する
-
-同じ名前のツールの例は、SEP-2106 のページにすでにありました（`list_users` は仕様の Tools のページにも）。これらのページは今回変わっていません。
-
-- [Schema Reference - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/schema#tool)
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#choosing-an-authorization-server)
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#testing-the-server)
 
 ## 新規追加されたページ
 
@@ -102,79 +111,58 @@ Build an MCP server の変更（追加 174 行・削除 72 行）はすべて Ru
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Build an MCP client**](#1-build-an-mcp-client) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic)):  
-  Python・TypeScript・Kotlin・Ruby のタブを、最大 `MAX_TOOL_TURNS` 回のツール呼び出しのループに書き直し、TypeScript に版の自動交渉と Ctrl-D・Ctrl-C の処理を、Kotlin に版の注記を加えた（追加 314 行・削除 157 行。詳細はハイライト 1・3 参照）。
-- [**Build an MCP server**](#2-build-an-mcp-server) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-the-weather-server-and-tools)):  
-  Rust のタブを rmcp `3.4` に合わせて書き直し、ツールがテキストと `outputSchema` に沿った構造化された結果を返す形にした（追加 174 行・削除 72 行。詳細はハイライト 2 参照）。
+- [**Understanding Authorization in MCP**](#1-understanding-authorization-in-mcp) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#implementation-example)):  
+  2026-07-28 版の認可チュートリアルをほぼ全面的に書き直した。Keycloak を前提にした実装例を認可サーバーに依存しない JWT 検証の例に替え、認可フローの説明を詳しくし、クライアント登録の方式・認可サーバーの選び方・不透明トークン・localhost 以外への配置の節を加えた（追加 536 行・削除 872 行。詳細はハイライト 1〜4 参照）。
 <!-- light:updated-pages:end -->
 
-## 1. Build an MCP client
+## 1. Understanding Authorization in MCP
 
-変更（追加 314 行・削除 157 行）のタブごとの内訳は、Python が追加 37 行・削除 21 行、TypeScript が追加 94 行・削除 33 行、Kotlin が追加 96 行・削除 48 行、C# が追加 1 行・削除 1 行、Ruby が追加 86 行・削除 54 行です。Java と Rust のタブは変わっていません。ループの内容はハイライト 1 を参照してください。タブごとの変更は次のとおりです。
-
-| タブ | 節 | 変更 |
-|---|---|---|
-| Python | Imports and Setup | 定数 `MAX_TOKENS`・`MAX_TOOL_TURNS` を追加 |
-| Python | Query Processing Logic | `process_query` をループに。コードの後に、アシスタントのメッセージの送り返し方とループの説明を追加 |
-| Python | Key Components Explained の 3. Query Processing | 「メッセージの流れを管理する」を、ターンのツール呼び出しをすべて実行して 1 つのメッセージで答えることと、`MAX_TOOL_TURNS` までループすることの 2 項目に |
-| Python | Common Customization Points | `MAX_TOOL_TURNS` の調整を追加 |
-| Python | How It Works・Best practices | 手順 5 にループを追記。上限を保つ項目を追加 |
-| TypeScript | Basic Client Structure | `ContentBlockParam`・`ToolResultBlockParam`・`ToolUseBlock` の import、定数 `MODEL`・`MAX_TOKENS`・`MAX_TOOL_TURNS`、`versionNegotiation` を追加 |
-| TypeScript | Query Processing Logic | `processQuery` をループに。コードの後に説明の段落を追加 |
-| TypeScript | Interactive Chat Interface | `rl.question()` に `AbortSignal` を渡し、Ctrl-D と Ctrl-C で抜ける処理を追加。`cleanup()` まで進んで終了コード 0 で終わり、`ERR_USE_AFTER_CLOSE` で失敗しない、と説明 |
-| TypeScript | How It Works・Best practices | 手順 4〜6 を書き換え。try-catch の項目を `result.isError` の確認に |
-| Kotlin | タブの冒頭・Setting up your environment | 版の NOTE、`mcpVersion`、`repositories` のブロック（ハイライト 3） |
-| Kotlin | Basic Client Structure | 定数 `MODEL`・`MAX_TOKENS`・`MAX_TOOL_TURNS` を追加 |
-| Kotlin | Query processing logic | `processQuery` をループに。節の冒頭の説明を書き換え、コードの後に説明の段落を追加 |
-| Kotlin | How it works | シーケンス図にループのブロックを追加し、手順 4〜6 を書き換え |
-| Kotlin | Best practices・Common Error Messages | `result.isError` と `MAX_TOOL_TURNS` の項目、`[Stopped after 10 tool-use turns]` の説明を追加 |
-| C# | Query processing logic | `MaxOutputTokens` を `1000` から `10000` に |
-| Ruby | Basic Client Structure | 定数 `MAX_TOKENS`・`MAX_TOOL_TURNS` を追加 |
-| Ruby | Query Processing Logic | `process_query` をループに。節の冒頭の説明を書き換え |
-| Ruby | Interactive Chat Interface | `private` のヘルパー（`assistant_content`・`chat`・`anthropic_client`）をこの節のコードへ移した。`assistant_content` に、thinking block を `signature` ごと変えずに返さないと API が後続のリクエストを拒否する、というコメントとともに `ThinkingBlock`・`RedactedThinkingBlock` の処理を追加 |
-| Ruby | Key Components Explained の 3. Query Processing | ループ・`isError`・`assistant_content`・`chat` の説明に書き換え |
-| Ruby | How It Works・Best practices・Common Error Messages | 手順を 7 つから 8 つに。`isError` と `MAX_TOOL_TURNS` の項目、`[Stopped after 10 tool-use turns]` の説明を追加 |
-
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic-3)
-- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic-5)
-
-## 2. Build an MCP server
-
-変更（追加 174 行・削除 72 行）はすべて Rust のタブです。節ごとの変更は次のとおりです（内容はハイライト 2）。
+変更（追加 536 行・削除 872 行）はページのほぼ全体に及び、行数は 1,140 行から 804 行に、h2・h3 の見出しは 8 個から 13 個になりました。ページにあった画像 8 枚（Keycloak Setup の節の 5 枚と、テストの節の 3 枚）はすべてなくなっています。節ごとの変更は次のとおりです（節の名前は新しいページのもの）。
 
 | 節 | 変更 |
 |---|---|
-| System requirements | Rust を 1.70 以上から 1.88 以上に |
-| Set up your environment | `Cargo.toml` の rmcp・`tokio`・`reqwest` の版を上げ、`tracing`・`tracing-subscriber` を削除 |
-| Importing packages and constants | `ErrorData`・`schema_for_output`・`JsonSchema`・`stdio`・`Serialize` を追加し、`Parameters` の import 元を `tool` から `wrapper` に。`Parameters`・`schema_for_output`・`stdio` の役割の説明を追加 |
-| Data structures | `Alert`・`Forecast`・`Period` を追加。リクエストの型（`MCPForecastRequest`・`MCPAlertRequest`）は後ろの節へ移した |
-| Helper functions | `format_alert`・`format_period` の引数を新しい型に変え、`dual_channel_result` を追加 |
-| Implementing the Weather server and tools | リクエストの型をここで定義し、各フィールドに doc コメントを追加。`Weather` に `#[derive(Clone)]`、`#[tool_router(router = tool_router)]`。2 つのツールを `output_schema` 付きで `Result<CallToolResult, ErrorData>` を返す形に |
-| Implementing the ServerHandler | `#[tool_handler(router = self.tool_router)]`。`get_info` が `ServerConfig` を返し `server_info` を設定する |
-| Running the server | `(tokio::io::stdin(), tokio::io::stdout())` の組の代わりに `Weather::new().serve(stdio())` |
+| 冒頭 | 文言を整理し、仕様へのリンクを `/specification/latest/...` から `/specification/2026-07-28/...` に |
+| When Should You Use Authorization? | 文言を整理。ローカルのサーバーの TIP を、stdio のサーバーは資格情報を環境から取る、という短い説明に |
+| The Authorization Flow: Step by Step | 3 者の役割の説明とシーケンス図を追加。手順 1 を Initial Request に改称し、6 つの手順を書き直した（ハイライト 2） |
+| Client Registration Approaches（新設）と配下の Client ID Metadata Documents・Pre-registration・Dynamic Client Registration | 3 方式の表と試す順序、CIMD の要件、DCR の非推奨、資格情報を `issuer` ごとに保存すること（ハイライト 3） |
+| Choosing an Authorization Server（新設） | 確かめる 8 項目と、Keycloak でローカルに試す TIP（ハイライト 4） |
+| Implementation Example | 配下の Keycloak Setup と MCP Server Setup の節をなくし、書き換える値の一覧と TypeScript・Python・C# のタブに（ハイライト 1。タブごとの変更は下の表） |
+| Opaque Tokens（新設） | イントロスペクションを使う場合の注意（ハイライト 4） |
+| Deploying Beyond Localhost（新設） | `https` の URL、リバースプロキシ、`Host`・`Origin` の設定、CORS、セッション ID（ハイライト 4） |
+| Testing the Server（旧 Testing the MCP Server） | VS Code の画面の説明を、`curl` と MCP Inspector の CLI による確認と Common Issues の 8 件に（ハイライト 4） |
+| Common Pitfalls and How to Avoid Them | 14 項目の一覧を、ほかのページへ案内する 4 つの場面（ほかの API を呼ぶ、1 つの静的なクライアント ID で OAuth を中継する、ツールが状態のハンドルを返す、クライアントを作る）と 9 項目に再編。ID トークンを受け付けない、障害時は `5xx` を返す、などが加わり、チャレンジには `realm` ではなく `scope` を含めるよう改めた。Security Best Practices へのリンク先を `/specification/2026-07-28/basic/security_best_practices` から `/docs/2026-07-28/tutorials/security/security_best_practices` に |
+| Related Standards and Documentation | 5 つの規格に、OpenID Connect Discovery 1.0・RFC 9207・OAuth Client ID Metadata Document・RFC 6750 を加えて 9 つに。Authorization Extensions へのリンクを追加 |
 
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#data-structures)
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-the-serverhandler)
+Implementation Example のタブごとの変更は次のとおりです。
+
+| タブ | これまで | 今回 |
+|---|---|---|
+| TypeScript | `@modelcontextprotocol/sdk`。Keycloak のイントロスペクションで検証。セッションごとの transport。`requiredScopes: []`。`/` で待ち受け | `@modelcontextprotocol/server@^2.3.0`・`@modelcontextprotocol/express@^2.0.2`・`@modelcontextprotocol/node`。`jose` で JWT を検証。`createMcpHandler`。`requiredScopes: ["mcp:tools"]` と `expectedResource`。`/mcp` で待ち受け |
+| Python | `config.py`・`server.py`・`token_verifier.py`・`pyproject.toml`。Keycloak のイントロスペクションで検証。`mcp>=2.0.0rc1` | `server.py` 1 つ。PyJWT で JWT を検証。`AuthSettings.model_validate` と `validate_token_resource`。`mcp>=2.2` |
+| C# | `net9.0`、`ModelContextProtocol`・`ModelContextProtocol.AspNetCore` 2.0.0。`Authority` と、末尾のスラッシュと大文字小文字を無視する独自の audience の検証 | `net10.0`、`ModelContextProtocol.AspNetCore` 2.4.0。`MetadataAddress`、issuer と audience の厳密な照合、`mcp:tools` のポリシー、`OnChallenge`・`OnForbidden`、`Origin` を検証するミドルウェア |
+
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#deploying-beyond-localhost)
+- [Understanding Authorization in MCP - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/authorization#common-pitfalls-and-how-to-avoid-them)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms-full.txt` の 1 件で、差分のあった 4 ページのうち、大幅更新の 2 ページのほかに、次の 2 ページで内容が変わりました。
+今回差分が出たファイルは `llms-full.txt` の 1 件で、差分のあった 3 ページのうち、大幅更新の 1 ページのほかに、次の 2 ページでリンク先が変わりました。
 
-**機能改善**
+**その他**
 
-- Schema Reference の `Tool` で、`inputSchema` の説明に composition keyword を使うときの注意を追加し、`find_resource`（`oneOf` の入力スキーマ）と `list_users`（配列の出力スキーマ）の例を追加（詳細はハイライト 4 参照） — [Schema Reference](https://modelcontextprotocol.io/specification/2026-07-28/schema#tool)
-- SEP Guidelines の Step-by-Step Process の手順 3 に、PR のタイトルを `sep: propose task cancellation` のようにすることを追加し、`CONTRIBUTING.md` の PR タイトルの指針へのリンクを追加 — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
-- 同じ節の手順 4 に、PR の番号が決まったら PR のタイトルを `sep(SEP-1850): describe the proposal` のように改めることを追加。追加のコミットで足り、amend や force-push は要らない。この SEP に関する後続の PR は `SEP-1850` をスコープとして残し、説明欄で元の SEP にリンクする — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#step-by-step-process)
+- Skills の Security Considerations の節で、ext-skills リポジトリの仕様のセキュリティの節へのリンク先が `specification/stable/skills.mdx` から `specification/beta/skills.mdx` に変わった（リンクの文言は同じ） — [Skills](https://modelcontextprotocol.io/extensions/skills/overview#security-considerations)
+- 同じページの Specification の節で、仕様の全文へのリンク先が同じく `specification/stable/skills.mdx` から `specification/beta/skills.mdx` に変わった（ページ冒頭の「SEP-2640 is Final」は変わらず） — [Skills](https://modelcontextprotocol.io/extensions/skills/overview#specification)
+- Skills Over MCP Charter の Completed Milestones の節で、公式の仕様へのリンク先が `specification/stable/skills.mdx` から `specification/beta/skills.mdx` に変わった — [Skills Over MCP Charter](https://modelcontextprotocol.io/community/working-groups/skills-over-mcp#completed-milestones)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-02.md](./archives/latest/2026-11-02.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-02.md](./archives/latest-detail/2026-11-02.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-06.md](./archives/latest/2026-11-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-06.md](./archives/latest-detail/2026-11-06.md)
 
 <!--
-base_commit: acb459e04e57acda73f439e58d2759ea5599cdf6
-head_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
-generated_at_full: 2026-11-07T15:21:16+09:00
+base_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
+head_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
+generated_at_full: 2026-11-08T15:17:09+09:00
 -->

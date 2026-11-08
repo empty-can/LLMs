@@ -1,34 +1,25 @@
 ---
-対象期間: 2026年11月05日 〜 2026年11月06日
-作成日: 2026-11-06
+対象期間: 2026年11月06日 〜 2026年11月07日
+作成日: 2026-11-07
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-**今回は changelog に v2.1.319（2026年11月06日）の 1 リリースが積まれ、通常のページには、保留したツールが再開時に使えないときの扱い、割り込みの後の `PostToolUse` フック、管理するコンピューターで Desktop の機能をオフに保つ方法、`claude mcp add` のロック待ち、auto モードの確認のためにゲートウェイに求める条件が載りました**。新しいページはなく、228 ページ中 25 ページ（changelog を含む）が変わり、changelog を除く変更はページ単位で 193 行（追加 135・削除 58）です。changelog を除いて 50 行以上変わったページはないので、大幅更新はありません。見出しマップに加わった 7 つの見出しは、すべて `llms-full.txt` にも入っています。総行数は 127,747 行から 127,986 行に増えました。
+**今回は通常のページ 3 つに小さな変更があり、`hooks-guide` で `ExitPlanMode` を自動承認するフックの例が `updatedInput` を返す形に直り、`mcp` には MCP タスクの答えで省ける項目が載りました**。新しいページはなく、228 ページ中 3 ページが変わり、変更はページ単位で 28 行（追加 10・削除 18）です。50 行以上変わったページはないので、大幅更新はありません。changelog・`llms.txt`・見出しマップは変わっていません。総行数は 127,986 行から 127,978 行に減りました。取り上げる項目が 2 つなので、ハイライトも 2 件です。
 
 主要なものを以下に挙げます。
 
-1. `hooks` に h5「Resume when a deferred tool is unavailable」ができ、保留したツールが再開時に使えないと、送ったプロンプトは Claude に届かずコード 1 で終わること、`CLAUDE_CODE_DROP_UNAVAILABLE_DEFERRED_TOOL` で呼び出しを捨てられることが載った
-2. `hooks` に h4「PostToolUse after an interrupt」ができ、`Ctrl+Enter`・`Enter`・`Esc` のどれを押したかで `PostToolUse` フックの動きが違うこと、`Ctrl+Enter` の後のフックには 10 秒の上限があることが載った
-3. `desktop` に h4「Keep sessions off your other devices」ができ、最上位の MDM ポリシーか managed settings ファイルでオフにした設定は、server-managed settings が許していてもオフのままだと載った
-4. `errors` の「MCP server was not saved or removed」が、ほかのプロセスのロックの場合を含む説明になり、待ち時間を延ばす `CLAUDE_CODE_CONFIG_LOCK_WAIT_MS` が載った
-5. `auto-mode-classifier-billing` の「Make the session eligible」が、ゲートウェイに求める要求と応答の条件を挙げる形になり、changelog の v2.1.319 にはテレメトリーがオフのときなどの auto モードの変更が載った
+1. `hooks-guide` の「Auto-approve specific permission prompts」に、`ExitPlanMode` のようにユーザーの操作を要するツールでは `"allow"` に `updatedInput` も要り、なければ許可は無視されプロンプトが出る、と載り、例のコマンドが `jq` で `tool_input` を返す形になった（`hooks` の表にも同じ注記が加わった）
+2. `mcp` の「Answer the call with a task」に、`createdAt`・`lastUpdatedAt`・`ttlMs` を省いた答えや `pollIntervalMs` が `null` の答えも Claude Code が受け付け、v2.1.317 より前は失敗していた、と載った
 ```
 
 ## ハイライト
 
-1. [**保留したツールが再開時に使えないときの扱いが変わった**](./latest-detail.md#1-保留したツールが再開時に使えないときの扱いが変わった):  
-  `hooks` の「Defer a tool call for later」の下に h5「Resume when a deferred tool is unavailable」ができました。呼び出しが保留の間は、送ったプロンプトは Claude に届かず、実行はコード 1 で終わります。ツールを使えるようにして再開するか、`CLAUDE_CODE_DROP_UNAVAILABLE_DEFERRED_TOOL` を `1` にして呼び出しを捨てます。v2.1.319 より前は、ツールの結果なしでプロンプトに答え、呼び出しを捨てていました
-2. [**割り込みの後の PostToolUse フックの動きが節になった**](./latest-detail.md#2-割り込みの後の-posttooluse-フックの動きが節になった):  
-  `hooks` に h4「PostToolUse after an interrupt」ができました。`Ctrl+Enter` でターンが終わってもツールが終われば `PostToolUse` フックは動き、10 秒以内に終える必要があります。`Enter` はターンを中断せず、`Esc` はフックをすぐ取り消します。changelog の v2.1.319 の変更に対応します
-3. [**管理するコンピューターで Desktop の機能をオフに保つ説明が載った**](./latest-detail.md#3-管理するコンピューターで-desktop-の機能をオフに保つ説明が載った):  
-  `desktop` に h4「Keep sessions off your other devices」ができ、最上位の MDM ポリシーか managed settings ファイルで `remoteControlAtStartup` を `false` にすると、server-managed settings でキーが `true` でもセッションは自動で接続しない、と載りました。`browserExternalPageTools` などの 3 つのキーも同じです（Claude Desktop v4.4212.0 以降）
-4. [**claude mcp add のロック待ちの説明が載った**](./latest-detail.md#4-claude-mcp-add-のロック待ちの説明が載った):  
-  `errors` の「MCP server was not saved or removed」は、ほかの Claude Code のプロセスが `~/.claude.json` をロックしていた場合を含む説明になりました。コマンドはロックを約 10〜20 秒待って諦めるので、`CLAUDE_CODE_CONFIG_LOCK_WAIT_MS` で待ち時間を延ばします。`env-vars` にも行が加わっています
-5. [**auto モードの確認のためにゲートウェイに求める条件が書き直された**](./latest-detail.md#5-auto-モードの確認のためにゲートウェイに求める条件が書き直された):  
-  `auto-mode-classifier-billing` の「Make the session eligible」は、要求では `anthropic-beta` ヘッダーと `safeguards` の本文フィールドを対で転送し、応答では `safeguard_results` フィールドを残す、という条件を挙げる形になりました。changelog の v2.1.319 には、テレメトリーか機能フラグがオフのとき組み込みの分類器へフォールバックしなくなる変更が載っています
+1. [**ExitPlanMode の自動承認の例が updatedInput を返す形に直った**](./latest-detail.md#1-exitplanmode-の自動承認の例が-updatedinput-を返す形に直った):  
+  `hooks-guide` の「Auto-approve specific permission prompts」に、`ExitPlanMode` のようにユーザーの操作を要するツールでは `"allow"` に `updatedInput` も要り、なければ Claude Code は許可を無視してプロンプトを出す、という文が加わりました。例のコマンドは、`echo` で決まった JSON を書く形から、`jq -c` で入力の `tool_input` を `updatedInput` として返す形になっています。`hooks` の「PermissionRequest decision control」の表の `updatedInput` の行にも、`AskUserQuestion` と `ExitPlanMode` にはこのフィールドが要る、と加わりました
+2. [**MCP タスクの答えに createdAt などがなくても通るようになった**](./latest-detail.md#2-mcp-タスクの答えに-createdat-などがなくても通るようになった):  
+  `mcp` の「Answer the call with a task」で、タスクの答えの中身が原因で呼び出しが `Unsupported result type 'task' for tools/call` のエラーになるのは、答えに `taskId` がないか有効な `status` がないとき、に改められました。`createdAt`・`lastUpdatedAt`・`ttlMs` を省いた答えや、`pollIntervalMs` を `null` にした答えも、Claude Code は受け付けます。ページは、v2.1.317 より前はこうした答えが `Unsupported result type` のエラーで失敗したとし、その版でも動かすには 3 つのフィールドを送り、`pollIntervalMs` は数値で送るか送らないよう勧めています
 
 ## 新規追加されたページ
 
@@ -36,196 +27,18 @@
 
 ## 大幅に更新されたページ
 
-（今回の対象期間に、changelog を除いて 50 行以上変わったページはありません。最も多いのは `hooks` の 47 行です）
+（今回の対象期間に、50 行以上変わったページはありません。最も多いのは `hooks-guide` の 18 行です）
 
 ## 軽微な更新
 
-今回の差分は **2 ファイル**（`llms-full.txt` と見出しマップ）で、`llms.txt` は変わっていません。`llms-full.txt` の生の差分は追加 297 行・削除 58 行で、ページの並びは変わっていません。228 ページ中 **25 ページ**が変わり、changelog が 162 行（追加のみ）、ほかの 24 ページが 193 行（追加 135・削除 58）で、ページ単位の合計は生の差分と一致します（2 回展開されている 3 ページはどれも変わっていません）。大幅更新はないので、**24 ページ**すべてと、changelog に加わった **v2.1.319（2026年11月06日）** を以下にまとめます。
+今回の差分は **`llms-full.txt` の 1 ファイル**で、`llms.txt` と見出しマップは変わっていません。`llms-full.txt` の生の差分は追加 10 行・削除 18 行で、ページの並びは変わっていません。228 ページ中 **3 ページ**（`hooks-guide`・`mcp`・`hooks`）が変わり、ページ単位の合計は 28 行（追加 10・削除 18）で生の差分と一致します（2 回展開されている 3 ページはどれも変わっていません）。changelog は変わっておらず、収録リリースは 437 のまま、最新は前回と同じ v2.1.319（2026年11月06日）です。大幅更新はないので、**3 ページ**すべてを以下にまとめます。
 
-`llms-full.txt` の総行数は **127,747 行から 127,986 行へ 239 行増え**ました（生の差分の差し引き 297 − 58 と一致）。`Source:` の行は 231、固有のページは 228 のままで、2 回展開されている 3 ページ（`plugins/create`・`plugins/install`・`plugins/mods/overview`）も前回と同じです。コードフェンスの外の見出しは、引用の中の見出しも数えると 6,063 から 6,070 へ、行頭が `#` の見出しだけを数えると 6,052 から 6,059 へ、どちらも 7 増えました（外れた見出しも、改称された見出しもありません）。changelog の収録リリースは 436 から 437 になりました。v2.1.319 は 146 項目（追加 18・変更 22・改善 16・バグ修正 90）で、単一のリリースなので各項目への版の併記は省いています。v2.1.319 の項目で今回の通常のページの変更に対応するのは、保留のツールの呼び出し（ハイライト 1）と `PostToolUse` フック（ハイライト 2）で、多くは changelog だけで確認できる変更です。
-
-**新機能**
-
-- 保留の呼び出しを捨てる `CLAUDE_CODE_DROP_UNAVAILABLE_DEFERRED_TOOL`（`hooks`・`env-vars`。詳細はハイライト 1 参照）
-- 管理するコンピューターで Desktop の機能をオフに保つ項目と段落（`desktop`。詳細はハイライト 3 参照）
-- ロックの待ち時間を延ばす `CLAUDE_CODE_CONFIG_LOCK_WAIT_MS`（`errors`・`env-vars`。詳細はハイライト 4 参照）
-- **クラウドのセッションのツールの数の読み方が載った**（`mcp` の h5「Tool counts in a cloud session」）。クラウドのセッションの `3 of 13 tools available` のような数は、Claude が残りの 10 を使えないことを表します。原因には、リポジトリの `.claude/settings.json` の deny ルールがツールかサーバー全体を名指している（セッションがそのファイルを読むならルールを外す）、ツールの完全な名前が 128 文字を超えている、サーバーがツールを自分のインターフェース向けに載せ Claude 向けには載せていない（サーバーを保守しているならツールの `_meta.ui.visibility` に `model` を足す。そうでなければ直すものはない）、などがあります。続く段落には h5「Tools from a server that is still connecting」の見出しが付きました。changelog の v2.1.318 の、クラウドのセッションの `/mcp` のツールの数の修正に対応します — [日本語](https://code.claude.com/docs/ja/mcp#tool-counts-in-a-cloud-session) / [English](https://code.claude.com/docs/en/mcp#tool-counts-in-a-cloud-session)
-- **iOS Simulator のペインを最小化するか閉じる節ができた**（`desktop-ios-simulator` の h3「Minimize or close the simulator pane」）。どちらにしても Claude はデバイスを使えます。最小化すると、デバイスは小さなサイズで見えたままです。フルサイズか最小化したペインを閉じても、デバイスはアタッチされ動いたままで、セッションのタイトルバーの **iOS Simulator** を押すとまた表示されます。「Run your app in the simulator」からは、Claude がシミュレーターでアプリを起動するとセッションのどの時点でもペインが開く、という文と、アプリを起動し直すとペインが開き直す、という文が外れました — [日本語](https://code.claude.com/docs/ja/desktop-ios-simulator#minimize-or-close-the-simulator-pane) / [English](https://code.claude.com/docs/en/desktop-ios-simulator#minimize-or-close-the-simulator-pane)、[日本語](https://code.claude.com/docs/ja/desktop-ios-simulator#run-your-app-in-the-simulator) / [English](https://code.claude.com/docs/en/desktop-ios-simulator#run-your-app-in-the-simulator)
-- **マニフェストのファイルを検証するときの判定が載った**（`plugins/cli-reference` の h4「Validate a manifest file」・`plugins/marketplace-reference` の「Validation messages」）。ファイルの名前が `plugin.json` でも `marketplace.json` でもなく、`.claude-plugin` ディレクトリにもないとき、Claude Code はフィールドで判断します。`plugins` が配列のとき、`plugins` と `owner` がどちらもあるとき、`owner` のように `marketplace.json` だけが定めるフィールドがあり `author` のように `plugin.json` だけが定めるフィールドがないときはマーケットプレイスとして、それ以外はプラグインのマニフェストとして検証します。検査を自分で選ぶには、ファイルを `plugin.json` か `marketplace.json` と名付けます。`.claude-plugin` ディレクトリのそれ以外のファイルは、プラグインのマニフェストとして検証します。`plugins/marketplace-reference` にも、マーケットプレイスとして検証させるには `marketplace.json` と名付ける、という文が入り、エラーと警告を出す、という文は外れました — [日本語](https://code.claude.com/docs/ja/plugins/cli-reference#validate-a-manifest-file) / [English](https://code.claude.com/docs/en/plugins/cli-reference#validate-a-manifest-file)、[日本語](https://code.claude.com/docs/ja/plugins/marketplace-reference#validation-messages) / [English](https://code.claude.com/docs/en/plugins/marketplace-reference#validation-messages)
-- ターミナルで MCP タスクに対応。MCP サーバーがツールの呼び出しをタスクとして動かすと、Claude Code はすぐバックグラウンドへ移し、終わったら結果を Claude に伝えます
-- `CLAUDE_CODE_DISABLE_MCP_TASK_BACKGROUND` 環境変数を追加。MCP タスクをすぐバックグラウンドへ移さず、ツールの呼び出しの中で待ちます
-- `permissions.denyInsteadOfPrompting` の設定を追加。権限の確認を待つはずのツールの呼び出しを拒み、ターンを続けます。ターミナルのセッション・サブエージェント・teammate で効きます
-- `/claude-api latency-optimize` を追加。Claude API のコードが人を待たせる箇所を見つけ、自分の評価に対して速い設定を試します
-- `CLAUDE_CODE_DISABLE_FEATURE_FLAGS` 環境変数を追加。テレメトリーをオフにせず機能フラグの取得を止めます。すべてのフラグは組み込みの既定を使います
-- 支出の上限のない、Claude apps gateway の後ろの開発者向けに、`/usage` に今日・今週・今月の支出を追加（ゲートウェイがこの版以降を動かしているとき）
-- Claude apps gateway に `admin.pooled_conflict_rule` と `admin.pooled_priority_order` を追加。複数のグループに属する開発者について、どのプールしたグループの予算が先に払うかを決めます
-- Claude apps gateway に任意の `login_notice` の設定を追加。運用者が決めたメッセージを、ゲートウェイのブラウザーの確認ページと Claude Code のサインイン画面に出します
-- Claude apps gateway に `CLAUDE_GATEWAY_LOG_FORMAT=json` を追加。運用のログの行が `severity`・`time`・`message` を持つ JSON になります。フィールドからレベルを読むログコレクター向けです
-- あるポリシーが名前で挙げたカスタムモデルの id を別のポリシーの `availableModels` も許す場合の、Claude apps gateway の起動時の警告を追加
-- Claude Desktop の 11月10日の変更に先立ち、`desktopHome` がなく `coworkTabEnabled: false` か `chatSessionRetentionDays` に頼るポリシーについて、Claude apps gateway の起動時の警告を追加
-- claude.ai のログインが切れ、Claude Code が `ant auth login` のサインインで続けるときの警告を追加。使用量は Claude Console の組織に請求されます
-- Claude Code が `ant auth login` のサインインを使う場合に、請求先の Claude Console の組織を名指す起動時の 1 行を追加
-- `/tasks` に「Earlier in this session」の行を追加。終わったサブエージェントを一覧し、一覧から外れた後や再起動の後でも開き直してメッセージを送れます
-- クラウドのセッションの `/loop` の確認に、タイマーはコンテナとともに止まるという注記と、生き残るループの提案を追加
-- Gateway: AWS GovCloud とほかの上流を混ぜる上流と、ゲートウェイの環境のベース URL の変数についての起動時の警告を追加
-- Gateway: managed settings がヘッダーで Amazon Bedrock のガードレールを名指し（ゲートウェイはこのヘッダーを転送しません）、`guardrail` を設定する `bedrock` の上流がないときの、起動時のログの警告を追加
-- [Claude Tag] Claude Tag を接続した Enterprise の組織の Models の管理ページに Claude Tag の行を追加。モデルの既定を管理する場所へのリンクです
+`llms-full.txt` の総行数は **127,986 行から 127,978 行へ 8 行減り**ました（生の差分の差し引き 10 − 18 と一致）。`Source:` の行は 231、固有のページは 228 のままで、2 回展開されている 3 ページ（`plugins/create`・`plugins/install`・`plugins/mods/overview`）も前回と同じです。コードフェンスの外の見出しは、引用の中の見出しも数えると 6,070、行頭が `#` の見出しだけを数えると 6,059 で、どちらも変わっていません（加わった見出しも、外れた見出しも、改称された見出しもありません）。
 
 **機能改善**
 
-- 保留のツールの呼び出しの扱い（`hooks`。詳細はハイライト 1 参照）
-- 割り込みの後の `PostToolUse` フック（`hooks`。詳細はハイライト 2 参照）
-- Remote Control の起動時の接続の説明（`desktop`。詳細はハイライト 3 参照）
-- `claude mcp add` のエラーの説明（`errors`。詳細はハイライト 4 参照）
-- ゲートウェイに求める条件（`auto-mode-classifier-billing`。詳細はハイライト 5 参照）
-- **クラウドのセッションに GitHub のアカウントが要る条件が改められた**（`web-quickstart`・`sandbox-environments`）。GitHub のリポジトリで作業するときに要る、という説明に替わりました。`web-quickstart` では冒頭の、始めるには GitHub のリポジトリが要る、という文が外れ、「Compare ways to run Claude Code」の **Requires GitHub** の行は、GitHub のリポジトリなら要るが `--cloud` がローカルのリポジトリをバンドルするなら要らない、に、「The page only shows a GitHub login button」は、GitHub のリポジトリで作業するにはアカウントを接続する、に替わりました。`sandbox-environments` の比較の表と「Choose an approach」の表も同じ言い方になり、「Cloud sessions」の要件は **Subscription** と **GitHub** の項目に分かれています — [日本語](https://code.claude.com/docs/ja/web-quickstart#compare-ways-to-run-claude-code) / [English](https://code.claude.com/docs/en/web-quickstart#compare-ways-to-run-claude-code)、[日本語](https://code.claude.com/docs/ja/web-quickstart#the-page-only-shows-a-github-login-button) / [English](https://code.claude.com/docs/en/web-quickstart#the-page-only-shows-a-github-login-button)、[日本語](https://code.claude.com/docs/ja/sandbox-environments#compare-sandboxing-approaches) / [English](https://code.claude.com/docs/en/sandbox-environments#compare-sandboxing-approaches)、[日本語](https://code.claude.com/docs/ja/sandbox-environments#choose-an-approach) / [English](https://code.claude.com/docs/en/sandbox-environments#choose-an-approach)、[日本語](https://code.claude.com/docs/ja/sandbox-environments#cloud-sessions) / [English](https://code.claude.com/docs/en/sandbox-environments#cloud-sessions)
-- **プッシュ通知の説明がクラウドのセッションを含むようになった**（`tools-reference`・`settings-reference`・`remote-control`・`mobile`）。`PushNotification` の説明は、ローカルのセッションからデスクトップ通知を送り、Remote Control かクラウドのセッションで電話のプッシュを送る、に替わりました。`settings-reference` の `agentPushNotifEnabled` と `inputNeededNotifEnabled` は、Remote Control の接続が要るのはローカルのセッションのとき、と限定され、`inputNeededNotifEnabled` からは `true` と `false` の項目が外れています。`remote-control` の「Mobile push notifications」は、Claude がいつ送るかを決める、という文が外れ、長いタスクが終わるか Claude が判断を要するときに届くことがある、に改められました。`mobile` の「Get push notifications」からも「typically」が外れています — [日本語](https://code.claude.com/docs/ja/tools-reference) / [English](https://code.claude.com/docs/en/tools-reference)、[日本語](https://code.claude.com/docs/ja/settings-reference#agentpushnotifenabled) / [English](https://code.claude.com/docs/en/settings-reference#agentpushnotifenabled)、[日本語](https://code.claude.com/docs/ja/settings-reference#inputneedednotifenabled) / [English](https://code.claude.com/docs/en/settings-reference#inputneedednotifenabled)、[日本語](https://code.claude.com/docs/ja/remote-control#mobile-push-notifications) / [English](https://code.claude.com/docs/en/remote-control#mobile-push-notifications)、[日本語](https://code.claude.com/docs/ja/mobile#get-push-notifications) / [English](https://code.claude.com/docs/en/mobile#get-push-notifications)
-- **マニフェストの署名の確かめ方が改められた**（`setup` の「Verify the manifest signature」）。コマンドが `gpg --with-fingerprint --verify manifest.json.sig manifest.json` になりました。Anthropic の鍵が署名したことは、出力の最後の `Primary key fingerprint` の行を手順 1 のフィンガープリントと比べて確かめます。一致して `BAD signature` がなければ手順 4 へ進み、そうでなければそのマニフェストを使いません。`WARNING: This key is not certified with a trusted signature!` は、既定の設定で新しくインポートした鍵に出る、と改められました — [日本語](https://code.claude.com/docs/ja/setup#verify-the-manifest-signature) / [English](https://code.claude.com/docs/en/setup#verify-the-manifest-signature)
-- **`MCP_PROTOCOL_NEGOTIATION` の説明が改められた**（`mcp` の「MCP client runtimes」・`env-vars`）。変数が未設定なら、Claude Code は、たとえばサーバーが尋ねられて終了した後、stdio サーバーへの問い合わせを 7 日間飛ばすことがあります。更新したサーバーに早く尋ねるには `auto` を設定します。`env-vars` の行は短くなり、`legacy` はすべてのサーバーを前のハンドシェイクに留め、`auto` は対応する種類のサーバーにプローブし、未設定ならプローブするものの一部のサーバーを飛ばすことがある、となりました。changelog の v2.1.318 の、バージョンの確認で終了する stdio の MCP サーバーの修正に対応します — [日本語](https://code.claude.com/docs/ja/mcp#mcp-client-runtimes) / [English](https://code.claude.com/docs/en/mcp#mcp-client-runtimes)、[日本語](https://code.claude.com/docs/ja/env-vars#variables) / [English](https://code.claude.com/docs/en/env-vars#variables)
-- **`NODE_EXTRA_CA_CERTS` のファイルを全部読めないときの警告が載った**（`network-config` の「Custom CA certificates」）。`Claude Code used only the certificates that it could read in full from the NODE_EXTRA_CA_CERTS file` か `Claude Code ignored all of the NODE_EXTRA_CA_CERTS file: it holds no certificate that Claude Code can read` が出たら、Claude Code はファイル全体を読み込めておらず、飛ばした証明書の要る接続が失敗することがあります。警告の全文が直し方を述べます。飛ばした証明書が CA 証明書ストアにもあれば、それは使えます。changelog の v2.1.318 の、`NODE_EXTRA_CA_CERTS` のファイルの修正に対応します — [日本語](https://code.claude.com/docs/ja/network-config#custom-ca-certificates) / [English](https://code.claude.com/docs/en/network-config#custom-ca-certificates)
-- **`apiKeyHelper` を実行し直す場合が増えた**（`settings-reference`）。LLM ゲートウェイを通る要求が `401`（`403` は除く）で失敗し、Google Cloud の Agent Platform の `CLAUDE_CODE_SKIP_VERTEX_AUTH`、Claude Platform on AWS の `CLAUDE_CODE_SKIP_ANTHROPIC_AWS_AUTH`、Amazon Bedrock Mantle の `CLAUDE_CODE_SKIP_MANTLE_AUTH` を設定しているときも、Claude Code はコマンドを実行し直します（Claude Code v2.1.318 以降が要ります）。ヘルパーの出力が送る資格情報で `ANTHROPIC_AUTH_TOKEN` がないときに限る場合は、「最後の 2 つ」から「最後の 3 つ」になりました — [日本語](https://code.claude.com/docs/ja/settings-reference#apikeyhelper) / [English](https://code.claude.com/docs/en/settings-reference#apikeyhelper)
-- **`forceLoginOrgUUID` の Scope の説明が改められた**（`settings-reference`）。managed source でない設定ファイルでは、Claude Code はログインがどの組織のものかを確かめず、単一の UUID はログインのときに組織を事前選択します。「Settings index」の行も、強制するのは「managed source だけ」から「managed settings だけ」に替わりました — [日本語](https://code.claude.com/docs/ja/settings-reference#forceloginorguuid) / [English](https://code.claude.com/docs/en/settings-reference#forceloginorguuid)
-- **分類器のモデルの確かめ方が具体的になった**（`permission-modes` の「Check which model the classifier used」）。`curl https://example.com` を Claude に実行させてから、ログで `classifier_request_started` を探します。`/status` の `Auto mode server` が `Disabled` なら、このチェックはまだモデルを試していないので、権限モードが auto で `curl` に一致する権限ルールがないことを確かめ、サンドボックスをオフにしてやり直します。「Permission modes with the HIPAA configuration」からは、Claude Code v2.1.285 以降が要る、という行が外れました — [日本語](https://code.claude.com/docs/ja/permission-modes#check-which-model-the-classifier-used) / [English](https://code.claude.com/docs/en/permission-modes#check-which-model-the-classifier-used)、[日本語](https://code.claude.com/docs/ja/permission-modes#permission-modes-with-the-hipaa-configuration) / [English](https://code.claude.com/docs/en/permission-modes#permission-modes-with-the-hipaa-configuration)
-- **Agent SDK の `display` の説明が改められた**（`agent-sdk/python`・`agent-sdk/typescript` の `ThinkingConfig`）。Amazon Bedrock や Google Cloud の Agent Platform のようなプロバイダーでは、Claude Code は認識する以前のモデル（Opus 4.6・Sonnet 4.6・Haiku 4.5 とそれ以前）に `display` を渡さず、それらのモデルは既定を使う、となりました。それらのプロバイダーの Opus 4.7 以降は `display` を `"summarized"` にしても空の出力を返す、という文は外れています — [日本語](https://code.claude.com/docs/ja/agent-sdk/python#thinkingconfig) / [English](https://code.claude.com/docs/en/agent-sdk/python#thinkingconfig)、[日本語](https://code.claude.com/docs/ja/agent-sdk/typescript#thinkingconfig) / [English](https://code.claude.com/docs/en/agent-sdk/typescript#thinkingconfig)
-- **サンドボックスの外で動くものに mod が加わった**（`sandboxing` の「What runs outside the sandbox」）。mod は Claude Code の中で自分のコードを動かすので、そのファイルへのアクセス、ネットワークの要求、`$.process` で始めたプログラムはサンドボックスに入りません — [日本語](https://code.claude.com/docs/ja/sandboxing#what-runs-outside-the-sandbox) / [English](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)
-- **キャッシュした `allowedProviders` で拒む前の確認が載った**（`server-managed-settings` の「Fetch and caching behavior」）。セッションのプロバイダーがキャッシュした `allowedProviders` の一覧にないとき、Claude Code は拒む前に取得を待って確かめ直すことがあります。取得が失敗すると、セッションは拒まれます — [日本語](https://code.claude.com/docs/ja/server-managed-settings#fetch-and-caching-behavior) / [English](https://code.claude.com/docs/en/server-managed-settings#fetch-and-caching-behavior)
-- **spawn-runner のフックの環境の表に `CLAUDE_RUNNER_SPAWN_REASON` が加わった**（`self-hosted-environments-configuration` の「The spawn-runner hook」）。Anthropic が spawn の要求を送った理由（`runner_lost`・`resumed` など）です。要求に形式の正しい理由がなければ未設定なので、`"${CLAUDE_RUNNER_SPAWN_REASON:-}"` で読みます。オーケストレーターに Claude Code v2.1.318 以降が要ります — [日本語](https://code.claude.com/docs/ja/self-hosted-environments-configuration#the-spawn-runner-hook) / [English](https://code.claude.com/docs/en/self-hosted-environments-configuration#the-spawn-runner-hook)
-- **`Remote Control isn't connected.` のダイアログの説明が加わった**（`remote-control` の「Check connection status」）。`/remote-control` がこのダイアログを開いたら、`/login` の実行や、**Continue** を選んでのやり直しなど、ダイアログが示す手順に従います — [日本語](https://code.claude.com/docs/ja/remote-control#check-connection-status) / [English](https://code.claude.com/docs/en/remote-control#check-connection-status)
-- テレメトリーか機能フラグがオフの auto モードが、組み込みの分類器へフォールバックしないよう変更（詳細はハイライト 5 参照）
-- LLM ゲートウェイの後ろで `CLAUDE_CODE_AUTO_MODE_SERVER=1` がサーバー側の確認をオンにするよう変更（詳細はハイライト 5 参照）
-- ターミナルの MCP タスクが機能フラグの取得なしで動くよう変更（Bedrock・Vertex・Foundry・LLM ゲートウェイ・`DISABLE_TELEMETRY`）。オフにするには `CLAUDE_CODE_DISABLE_MCP_TASKS=1` を設定します
-- サーバー側の確認をプロジェクトの外でオフにした後は、プロジェクトの設定ファイルかプラグインがオンに戻せないよう auto モードを変更
-- Monitor の WebSocket の監視が、すべての Bash コマンドに当たるルールに従うよう変更。deny は拒み、ask ルールの下では、Monitor の allow・bypass モード・auto モードでも確認を飛ばしません
-- `CLAUDE_CODE_PROXY_RESOLVES_HOSTS` を変更。ホストがネットワークを管理する環境では設定ファイルから設定できなくなり、プロセスの環境で設定します
-- コマンドをより広い deny ルールが覆うとき、セッションの Bash か PowerShell の完全一致の ask ルールは、尋ねず拒むよう変更
-- Bash のツールが、検索・表示の範囲の外のフラグ付きの `which` を実行する前に権限を尋ねるよう変更
-- `--add-dir` のディレクトリが、そのディレクトリ自身の信頼のダイアログを受け入れた後にだけプラグインのマーケットプレイスを登録するよう変更
-- 入れ子のスキルの読み込みを変更。Bash のサンドボックスがオンなら、開始フォルダーより下の `.claude/skills` のスキルは、そこで Claude Code を始めるか `/cd` したときだけ読み込みます
-- 自分のペースの `/loop` が、再スケジュールせずターンが終わると、フォールバックのウェイクアップを予約せず終わるよう変更。前の動きにするには `CLAUDE_CODE_LOOP_KEEPALIVE=1` を設定します
-- 新しいメッセージがターンを中断した後に終わるツールの呼び出しでも、`PostToolUse` フックが最大 10 秒動くよう変更（詳細はハイライト 2 参照）
-- セーフガードがサブエージェントを止めた後に Claude に伝える内容を変更。自分で作業するのではなく、狭いプロンプトで再試行するか利用者に伝えます
-- 新しいワーカーへの移動で deny と ask のルールをすべて保てないとき、クラウドのセッションがセッションスコープの allow ルールを落とすよう変更。また尋ねられることがあります
-- TLS を検査するプロキシの後ろの証明書の自動修復を変更。`ALL_PROXY` だけが設定されたプロキシの変数なら動きません。代わりに `HTTPS_PROXY` にプロキシの http:// の URL を設定します
-- ほかの人が書いたかもしれない行のアーティファクトのデータベースの保存を変更。各ファイルに隠しのマーカーファイルが付き、マーカーのない既存のファイル（前の版のエクスポートを含む）はそのまま残して報告します
-- `/claude-api managed-agents-onboard` のテンプレートを Claude Console に合わせて更新。Performance tuner を外し、2 つを改称し、プロンプトが使わない 5 つで Web の検索と取得をオフにしました
-- 組み込みの Claude in Chrome のツールから、拡張機能に保存したショートカットを一覧・開始する `shortcuts_list` と `shortcuts_execute` を削除
-- Self-hosted runner: `CLAUDE_RUNNER_CHECKOUT_PATH` を変更。セッションの各リポジトリが自分のフォルダーを持ち、セッションですでに使われたフォルダーの名前には末尾に `-2`・`-3`… が付きます
-- Self-hosted runner: セッションの終わりの debug ログのアップロードを削除。失敗したセッションのログは、`--remove-session-state` がなければランナーのホストに残ります
-- [VSCode] Claude の返答の、Claude のサインイン・コネクター・API のアドレスを指すリンクが、ブラウザーで開かずアドレス付きのテキストで出るよう変更
-- [Code Review] GitHub の組織のリンクを外すと、Code Review の All repositories の設定もオフになるよう変更。リンクし直しても、オンに戻すまでオフのままです
-- Windows の設定の保存を改善。ほかのプログラムが開いているファイルを長く待つので、保存中の強制終了で `~/.claude.json` が空になりにくくなります
-- 短い切断の後の Claude in Chrome を改善。ほかを選ぶ前に、セッションのブラウザーが戻るのを最大 6 秒待ちます
-- Claude in Chrome を改善。`javascript_tool` の 60,000 文字までの結果はファイルに保存されず会話に残ります
-- `claude purge` と古いセッションの片付けが、完全に消せなかったフォルダーを再試行し、残ったらエラーと報告するよう改善
-- macOS と Windows で作業ディレクトリの外のパスを拒むメッセージを改善。大文字小文字だけが中のパスと違うときは、その綴りを示します
-- ヒント、`/stats`・`/model`・`/sandbox` の詳細、拒まれた操作のメッセージのような薄い灰色の補助テキストのコントラストを改善
-- 更新の対象の文書がないときと、繰り返し拒まれた書き込みをサービスが一時停止するときの、アーティファクトのデータベースのエラーを改善
-- Claude apps gateway の上流の呼び出しの失敗の警告を改善。プロバイダーだけでなく上流を名指します
-- Claude apps gateway の支出の上限のエラーを改善。「spend limit reached · resets Dec 1」と読み、`admin.blocked_message` があれば続けて出します
-- `/model` のピッカーを改善。古いモデルは今のモデルの後に並ばず、「More models」の行の下にまとまります
-- ターミナルの `/context` を改善し、Claude が読む表を短く保ちます。各一覧は最大の 10 行を保ち、必要なときに読み込む MCP のツールは呼び出されるまでサーバーごとに 1 行を共有します
-- クラウドのセッションの `/usage` を改善。プランの上限を示せない場合に、claude.ai の Settings → Usage へリンクします
-- [VSCode] プラグインのマーケットプレイスの削除の確認を改善。その時点でどのプラグインがインストールされているかを確かめます
-- [VSCode] Claude apps gateway の後ろの「not signed in」のメッセージを改善。エラーらしく見え、Sign in のリンクが付きます
-- [VSCode] 大きなワークスペース向けにチャットのパネルの診断ツールを改善。問題のないファイルを除き、コンパクトな JSON を返し、任意の最小の重大度を受け付けます
-- [Cloud sessions] セルフホストの環境のセットアップが止まったときの警告を改善。リンクが組織の既定か動いているランナーのある環境を優先し、それを名指します
-
-**バグ修正**
-
-- 古いハンドシェイクの MCP サーバーが、新しいサーバーにしか使わない拡張を Claude Code が宣言するために、接続に失敗するか空の結果を返す問題を修正
-- claude.ai のコネクターの長く動く MCP のツールの呼び出しが、`--resume` の後に結果を報告しないことがある問題を修正
-- Claude Code が動くフォルダーに `HEAD` という名前のファイルかフォルダーがあると、claude.ai とモバイルアプリでセッションの差分を読み込めない問題を修正
-- git リポジトリのトップに `HEAD` という名前のファイルかフォルダーがあると、`/diff` が「Diff unavailable」と示す問題を修正
-- 64 以上のターンがファイルを編集したセッションで、`/diff` のペインが空で開く問題を修正
-- 先頭のスペース・タブ・改行の後に打ったスラッシュコマンドが、実行されず平文として Claude に送られる問題を修正
-- 401 で失敗し続ける要求が再試行のたびにログインを更新し、ほかのセッションの 401 を引き起こす問題を修正
-- `/context` が以後のターンごとに全部の視覚的なグリッドを Claude に送る問題を修正。Claude は表だけを読みます
-- 安全性の確認がなくて操作が拒まれたとき、auto モードの `claude -p` がコード 0 で終わる問題を修正。テキストと JSON の出力は 1 で終わります
-- ネットワークファイルシステム（NFS・SMB・Lustre など）のプロジェクトで、Linux の Claude Code が開始時にプロジェクトのすべてのファイルを一覧する場合がある問題を修正
-- クライアントがモデルの変更と auto モードの要求を続けて送ると、auto モードが誤って拒まれる場合がある問題を修正
-- LLM ゲートウェイがサーバー側のレビューを落とすなどセッションに届かないときに、`/status` が「Auto mode server: Enabled」と示す問題を修正
-- サーバーが組織のフィードバックを拒んだ後も、Claude が下書きしたフィードバック・アンケート・`/feedback` が出続ける問題を修正
-- 送れないサードパーティのゲートウェイで Claude がフィードバックを下書きする問題を修正
-- 権限ルールか `autoMode` の設定がとても大きいとき、auto モードが理由を言わず操作を拒む問題を修正。説明し、`autoMode` の deny ルールがなければターミナルで尋ねます
-- 引用符で囲んだ語で書かれたコマンドを Bash の deny と ask のルールが見逃す場合がある問題を修正
-- 詳細モードの外で展開すると、サブエージェントの引き渡しのレポートが内部のマーカーと出所の注記を示す問題を修正
-- MCP サーバーがないとき、プロンプト付きの `claude -p --resume` が保留のツールの呼び出しを失う問題を修正（詳細はハイライト 1 参照）
-- SDK のクライアントに送る情報のメッセージからテキストが落ちる場合がある問題を修正
-- ディスクがいっぱいのとき、Agent SDK のホストが失敗した実行自身のエラーメッセージではなく、一般の終了コードのエラーを受け取る場合がある問題を修正
-- plan モードで中断したターンのセッションが別の権限モードで再開するとき、`CLAUDE_CODE_RESUME_INTERRUPTED_TURN` がそのターンを再実行する問題を修正
-- Claude Code がファイルを書いてから数秒以内の設定ファイルの編集が無視される問題を修正
-- 古い名前のまま残った設定ファイルが警告なしに設定を隠す問題を修正。ホームに 2 つの設定ファイルがあると stderr で伝え、どちらを使うかを述べます
-- 読み取り専用のフォルダーやバインドマウントしたファイルへの保存中にディスクがいっぱいになると、`~/.claude.json`・設定・編集したファイルが空か途中で切れる問題を修正（一度に 1 つのセッションが保存する場合）
-- 上書きするファイルを読めないとき、Write がターンを拒否として終える問題を修正
-- すぐ終わるバックグラウンドの Bash コマンドが、完了と報告されつつ出力を失う問題を修正
-- コマンドが終わる直前に書いたファイルを、Bash のツールの変更ファイルの差分が見逃す問題を修正
-- `opus-5-5` のようなモデルの名前の打ち間違いで、意図したモデルを提案せず Claude Code の更新を勧める問題を修正
-- 権限の確認が開いている間にノートブックが変わると、`NotebookEdit` が違うセルを変える場合がある問題を修正
-- `/login` の成功の画面で Enter を押した後の約 0.5 秒の停止を修正。ダイアログはすぐ閉じ、ログイン後の更新はバックグラウンドで動きます
-- スクリーンリーダーのモードで、質問への「Other」の答えを打っている間に Ctrl+G で外部エディターが開かない問題を修正
-- `CLAUDE_CODE_PROXY_RESOLVES_HOSTS` を設定し、マシン自身の DNS がないとき、プロキシの後ろで Monitor の WebSocket の監視が「could not resolve」で失敗する問題を修正
-- `claude plugin eval` の警告が、呼び出してはいけないツールに決して通らない `max: 0` を勧める問題を修正
-- バックグラウンドのプラグインの自動更新が、更新後のプラグインの版が足した依存関係をインストールしない問題を修正
-- agents view から開いたセッションで、tmux 越しの Ghostty の Cmd+クリックがリンクを開かない問題を修正
-- `.claude/skills` の mod のホットリロードが、現れた直後に削除されたファイルとその再出現を見逃す問題を修正
-- `/branch` より前のチェックポイントへコードを戻すとき、`/rewind` が「No files were restored」で失敗する問題を修正
-- `/claude-api` のスキルが、Console の Web の設定は Managed Agents のセッションに当たらないと述べる問題を修正し、資格情報と権限の例を厳密にしました
-- `timeout 30 rg foo` のように素の `timeout DURATION` で包んだ読み取り専用のコマンドに、不要な権限の確認が出る問題を修正
-- WebFetch が claude.ai の共有チャットのリンクを空のページと説明する問題を修正。共有チャットは読めないので会話を貼り付けるよう伝えます
-- データベースのないアーティファクトに Artifact のデータベースの呼び出しを送り直す問題を修正。エラーは再公開が役立つかを述べます
-- フォルダーへ保存するアーティファクトのデータベースの読み取り（`out_dir`）が拒まれる場合がある問題を修正
-- 詳細なベータのトレースが、クライアント証明書を要するコレクターに `CLAUDE_CODE_CLIENT_CERT` を示さない問題を修正
-- OpenTelemetry の `claude_code.session.count` メトリクスが、引き取られなかった Agent SDK の `prewarm()` のプロセスを数える問題を修正。事前に始めたプロセスは、引き取られたときに 1 回だけ数えます
-- `/clear` が、動き続けるバックグラウンドのエージェント・teammate・ワークフローの動いているコマンドと、バックグラウンドのエージェントと teammate のフォアグラウンドのサブエージェントを止める問題を修正
-- Claude apps gateway のサインインが切れたターミナルが、ゲートウェイが拒んで `invalid_token` と記録するテレメトリーと managed settings の要求を送る問題を修正
-- agents view が権限の確認を待つバックグラウンドのセッションに返事を送ったように見える問題を修正。返事は欄に残り、セッションを開いて答えるヒントが出ます
-- 終了するとき、agent view が同じディレクトリの別の agent view の下書きを削除する問題を修正
-- 更新で再起動した agent view が、別の agent view の入力テキストを持って戻る場合がある問題を修正
-- agents view のプレビューが長いコマンド・結果・ステータスの行を省略記号なしで切り、承認待ちのコマンドから `**`・バッククォート・タグを落とす問題を修正
-- 動作の途中で接続が切れたとき、Claude in Chrome が拡張機能を未接続と報告する問題を修正。Claude は実行されたかもしれない操作を繰り返す前にページを確かめます
-- セッションの外で使用量の上限が解除された後も、Remote Control のセッションがほかのデバイスで「Limit reached」と示す問題を修正
-- Claude が 1 つのファイルを送ったとき、Claude の iOS アプリでファイルのカードが欠けることがある問題を修正
-- サーバーがモデルのアクセスの更新を拒み続けると、セルフホストのランナーのセッションが説明なしに失敗する問題を修正。ランナーは早く再試行し、セッションに警告を出します
-- クラウドのセッションの `/permissions` が使えないとしか答えない問題を修正。セッションのルールの場所と変え方を述べます
-- セッションが新しいワーカーへ移ると、クラウドのセッションがセッションスコープの deny と ask のルール（PermissionRequest フックが足すものなど）を失う問題を修正
-- クラウドのセッションで mod の質問に答えず 3 つのメッセージを打つと、セッションの mod のホットリロードがオフになる問題を修正
-- `/clear` の後も動くバックグラウンドのタスクが、Claude Code on the web で別のタスクが始まるか終わるまでタスクの一覧から消える問題を修正
-- モバイルと Web のクラウドのセッションのスラッシュコマンドのメニューに隠しコマンドが出る問題を修正
-- `/rewind` がディレクトリのシンボリックリンク越しにファイルを復元か削除できる場合がある問題を修正
-- `sed` コマンドが accept-edits と auto モードで権限の確認を飛ばせる場合がある問題を修正
-- ゲートウェイの URL が managed settings にしかなく、server-managed settings を取得できないとき、LLM ゲートウェイの後ろで managed settings の `CLAUDE_CODE_AUTO_MODE_SERVER=1` が無視される場合がある問題を修正
-- 細工した環境のプレフィックスがコマンドの一部を権限の確認から隠せる、Bash の権限のバイパスを修正
-- claude.ai のコネクターのターミナルでの名前（`mcp__claude_ai_Slack`）で書いた deny と ask のルール・フックのマッチャー・`disallowedTools` の項目が Claude Desktop で無視される場合がある問題を修正（Claude Desktop がこの版を含むと効きます）
-- ワークツリーの作成時のサンドボックスの脱出を修正
-- セルフホストのランナーを修正。`--trust-workspace false` は、リポジトリの設定ファイルとスキルのフックの実行も止めます
-- シェルで export した LLM ゲートウェイで始めたアイドルのバックグラウンドのセッションが、更新の後にゲートウェイから外れる場合がある問題を修正
-- `/status` と auto モードの請求の通知のヘルプのリンクが、折り返すとアドレスの一部しか開かない問題を修正
-- `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` を設定すると、TLS を検査するプロキシの後ろで証明書のエラーが続く場合がある問題を修正。設定していると、Claude Code は証明書の失敗の後、設定した API のホストと TLS のハンドシェイクをします（http:// のプロキシがあれば経由します）。API の要求は送りません
-- 初回の質問に答えがないとき（スクリプト・サービス・バッチジョブ・Ctrl+C）、`claude remote-control` が黙ってステータス 0 で終わる問題を修正。理由を述べて 1 で終わります
-- 初回の質問で、改行のないパイプの `y` を `claude remote-control` が無視する問題を修正。yes と数えます
-- 新しい名前をセッションのトランスクリプトに保存できなかったとき、`/rename` が単に成功と報告する問題を修正。新しい名前が続かないかもしれないと警告します
-- プラグインが渡す `subagentStatusLine` のコマンドで `${CLAUDE_PLUGIN_ROOT}` が置換されない問題を修正。プラグイン自身のスクリプトを参照できます
-- `claude plugin update` と `/plugin` の「Update now」が、新しいプラグインの版が足した依存関係をインストールしない問題を修正
-- サブエージェントが compaction の後、自分が始めても引き継いでもいないバックグラウンドのエージェントの完了の通知を待つよう伝えられる問題を修正
-- バックグラウンドのエージェントの後のレポートが黙って失われる場合がある問題を修正。通知は拒まれたことと、求め方を述べます
-- Gateway: すべての上流が Amazon Bedrock のとき、Claude Desktop が必ず失敗する Web の検索のツールを提示する問題を修正
-- Self-hosted runner: `--use-anthropic-git-proxy` か `--configure-git` で始めたランナーが、起動時の確認の失敗で終わる前に登録する問題を修正。先に終わります
-- [VSCode] 50,000 文字を超えるプロンプトが黙って切られる問題を修正。プロンプトは通知とともにチャットの欄に残り、上限を超える貼り付けは通知とともに拒まれます
-- [VSCode] アンケートか「Report a problem」のボタンを押すと、書きかけのプロンプトが送られる問題を修正
-- [VSCode] 拡張機能の Web タブから開いたクラウドのセッションが、`/clear` か打ったプロンプトの Retry・Edit が消したターンを戻す問題を修正
-- [VSCode] 削除したセッションのファイルが、拡張機能でそのセッションの名前を変えると戻る問題を修正
-- [VSCode] ウィンドウの再読み込みの後、Claude が承認していない計画を実行する問題を修正。plan モードで中断したステップは、セッションが別の権限モードで戻ると通知とともに止まります
-- [VSCode] ドロップした項目のパスに「/」がとても長く続くと、チャットのパネルが止まることがある問題を修正
-- [VSCode] `claude-vscode.toggleDictation` のコマンドが開いているすべての Claude のビューで一度に音声入力を始める問題を修正。使っているビューだけで動き、もう一度押すと止まります
-- [VSCode] 閉じていない `$$` の数式のフェンスが多く、それぞれ前より短い返答のストリーミング中に、チャットのパネルが遅くなる問題を修正
-- [Cloud sessions] スケジュールしたタスクが memory という名前のコネクターを黙って落とす問題を修正。実行はそのコネクターを保ち、その名前に短い接尾辞を付けてマウントします
-- [Cloud sessions] クラウドのセッションの待機中のメッセージの Send now が、動いているバックグラウンドのエージェントを終わらせる問題を修正。動き続けます
-- [Claude Tag] チャンネルの一覧を全部読み込めないとき、Claude Tag のセットアップが起動を止める問題を修正。管理者はチャンネルを選ばず起動できます
-- [Claude Tag] Claude Tag の管理の設定で auto モードの allow ルールを保存すると、別の管理者の変更を上書きする問題を修正。保存はメッセージとともに拒まれます
-
-**その他**
-
-- **gpg のフィンガープリントの文が替わった**（`desktop-linux` の「Install」・`setup` の「Install with Linux package managers」）。gpg が出すフィンガープリントは `31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE` だけのはず、という言い方になり、失敗のときの文はコロンでつながず 2 文に分かれました — [日本語](https://code.claude.com/docs/ja/desktop-linux#install) / [English](https://code.claude.com/docs/en/desktop-linux#install)、[日本語](https://code.claude.com/docs/ja/setup#install-with-linux-package-managers) / [English](https://code.claude.com/docs/en/setup#install-with-linux-package-managers)
+- `ExitPlanMode` を自動承認するフックの例と、PermissionRequest の `updatedInput` の行の注記（`hooks-guide`・`hooks`。詳細はハイライト 1 参照）
+- MCP タスクの答えで省ける項目（`mcp`。詳細はハイライト 2 参照）
 
 ## 新着情報
 
@@ -233,11 +46,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-05.md](./archives/latest/2026-11-05.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-05.md](./archives/latest-detail/2026-11-05.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-06.md](./archives/latest/2026-11-06.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-06.md](./archives/latest-detail/2026-11-06.md)
 
 <!--
-base_commit: eeed443cb82c4c74a7a5581909f72f58ace3b41c
-head_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
-generated_at_full: 2026-11-07T15:07:52+09:00
+base_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
+head_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
+generated_at_full: 2026-11-08T15:06:50+09:00
 -->
