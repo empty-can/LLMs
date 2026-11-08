@@ -6778,6 +6778,9 @@
     <loc>https://claude.com/marketplace/connectors/conviso-mcp-server</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/cora</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/coralogix</loc>
   </url>
   <url>
@@ -8023,6 +8026,9 @@
     <loc>https://claude.com/marketplace/connectors/nevis</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/newrelic</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/nimble</loc>
   </url>
   <url>
@@ -8210,6 +8216,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pending-brand24</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/pending-check</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pending-komoot</loc>
