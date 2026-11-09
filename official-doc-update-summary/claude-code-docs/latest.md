@@ -1,25 +1,25 @@
 ---
-対象期間: 2026年11月06日 〜 2026年11月07日
-作成日: 2026-11-07
+対象期間: 2026年11月07日 〜 2026年11月08日
+作成日: 2026-11-08
 ---
 
 # Claude Code 公式ドキュメント更新サマリ
 
 ```markdown
-**今回は通常のページ 3 つに小さな変更があり、`hooks-guide` で `ExitPlanMode` を自動承認するフックの例が `updatedInput` を返す形に直り、`mcp` には MCP タスクの答えで省ける項目が載りました**。新しいページはなく、228 ページ中 3 ページが変わり、変更はページ単位で 28 行（追加 10・削除 18）です。50 行以上変わったページはないので、大幅更新はありません。changelog・`llms.txt`・見出しマップは変わっていません。総行数は 127,986 行から 127,978 行に減りました。取り上げる項目が 2 つなので、ハイライトも 2 件です。
+**今回は通常のページ 2 つに小さな変更があり、`desktop` に SSH と WSL のセッションで HTML ファイルをプレビューする節と、組織がそのプレビューのスクリプトを止める節が加わり、`settings-reference` の `disableBrowserExternalNavigation` にも同じことが載りました**。新しいページはなく、228 ページ中 2 ページが変わり、変更はページ単位で 37 行（追加 33・削除 4）です。50 行以上変わったページはないので、大幅更新はありません。changelog と `llms.txt` は変わっておらず、見出しマップには `desktop` の見出しが 2 つ加わりました。総行数は 127,978 行から 128,007 行に増えました。取り上げる項目が 2 つなので、ハイライトも 2 件です。
 
 主要なものを以下に挙げます。
 
-1. `hooks-guide` の「Auto-approve specific permission prompts」に、`ExitPlanMode` のようにユーザーの操作を要するツールでは `"allow"` に `updatedInput` も要り、なければ許可は無視されプロンプトが出る、と載り、例のコマンドが `jq` で `tool_input` を返す形になった（`hooks` の表にも同じ注記が加わった）
-2. `mcp` の「Answer the call with a task」に、`createdAt`・`lastUpdatedAt`・`ttlMs` を省いた答えや `pollIntervalMs` が `null` の答えも Claude Code が受け付け、v2.1.317 より前は失敗していた、と載った
+1. `desktop` に h4「Preview HTML files in SSH and WSL sessions」が加わり、SSH か WSL のセッションでは、チャットの HTML ファイルのパスをクリックすると Browser ペインでプレビューでき、グラフや表が空のままなら上に出る通知が理由を示す、と載った（Claude Desktop v4.23118.0 より前は、このプレビューでスクリプトが動かなかった）
+2. `desktop` に h4「Turn off scripts in SSH and WSL previews for your organization」が加わり、managed setting の `disableBrowserExternalNavigation` を `true` にすると SSH と WSL の HTML プレビューでもスクリプトが動かなくなる、と載った（managed settings をまだ受け取っていないコンピューターでは `parentSettingsBehavior` も `"merge"` にする、という警告つき。`settings-reference` の同じキーにも加わった）
 ```
 
 ## ハイライト
 
-1. [**ExitPlanMode の自動承認の例が updatedInput を返す形に直った**](./latest-detail.md#1-exitplanmode-の自動承認の例が-updatedinput-を返す形に直った):  
-  `hooks-guide` の「Auto-approve specific permission prompts」に、`ExitPlanMode` のようにユーザーの操作を要するツールでは `"allow"` に `updatedInput` も要り、なければ Claude Code は許可を無視してプロンプトを出す、という文が加わりました。例のコマンドは、`echo` で決まった JSON を書く形から、`jq -c` で入力の `tool_input` を `updatedInput` として返す形になっています。`hooks` の「PermissionRequest decision control」の表の `updatedInput` の行にも、`AskUserQuestion` と `ExitPlanMode` にはこのフィールドが要る、と加わりました
-2. [**MCP タスクの答えに createdAt などがなくても通るようになった**](./latest-detail.md#2-mcp-タスクの答えに-createdat-などがなくても通るようになった):  
-  `mcp` の「Answer the call with a task」で、タスクの答えの中身が原因で呼び出しが `Unsupported result type 'task' for tools/call` のエラーになるのは、答えに `taskId` がないか有効な `status` がないとき、に改められました。`createdAt`・`lastUpdatedAt`・`ttlMs` を省いた答えや、`pollIntervalMs` を `null` にした答えも、Claude Code は受け付けます。ページは、v2.1.317 より前はこうした答えが `Unsupported result type` のエラーで失敗したとし、その版でも動かすには 3 つのフィールドを送り、`pollIntervalMs` は数値で送るか送らないよう勧めています
+1. [**SSH と WSL のセッションで HTML ファイルをプレビューする節が加わった**](./latest-detail.md#1-ssh-と-wsl-のセッションで-html-ファイルをプレビューする節が加わった):  
+  `desktop` の「Preview your app」に h4「Preview HTML files in SSH and WSL sessions」が加わりました。SSH か WSL のセッションでは、チャットに出た HTML ファイルのパスをクリックすると、そのファイルを Browser ペインでプレビューできます。グラフや表が空のままなら、プレビューの上に出る通知が理由を示します。`This preview doesn't load anything from the web` はスクリプトは動くがウェブからは何も読み込まないこと、`This preview doesn't run scripts or load anything from the web` はスクリプトも動かないことを示し、後者は Claude Desktop v4.23118.0 より前はこのプレビューでスクリプトが動かなかったので、Desktop を更新して開き直すよう案内しています
+2. [**disableBrowserExternalNavigation で SSH と WSL のプレビューのスクリプトも止まる**](./latest-detail.md#2-disablebrowserexternalnavigation-で-ssh-と-wsl-のプレビューのスクリプトも止まる):  
+  `desktop` に h4「Turn off scripts in SSH and WSL previews for your organization」が加わり、SSH と WSL のセッションの HTML プレビューでスクリプトを動かさないようにするには、managed setting の `disableBrowserExternalNavigation` を `true` にする、と載りました。設定はサーバー管理の設定か、Desktop を動かすコンピューターの MDM ポリシーや managed settings ファイルに置き（リモートのマシンや WSL のディストリビューションからは読まれない）、Claude Code の managed settings をまだ受け取っていないコンピューターでは `parentSettingsBehavior` も `"merge"` にする、という警告がついています。同じページの「Restrict external browsing for your organization」と「Managed settings」の表、`settings-reference` の `disableBrowserExternalNavigation` にも、SSH と WSL の HTML プレビューではスクリプトが動かない、と加わりました
 
 ## 新規追加されたページ
 
@@ -27,18 +27,21 @@
 
 ## 大幅に更新されたページ
 
-（今回の対象期間に、50 行以上変わったページはありません。最も多いのは `hooks-guide` の 18 行です）
+（今回の対象期間に、50 行以上変わったページはありません。最も多いのは `desktop` の 33 行です）
 
 ## 軽微な更新
 
-今回の差分は **`llms-full.txt` の 1 ファイル**で、`llms.txt` と見出しマップは変わっていません。`llms-full.txt` の生の差分は追加 10 行・削除 18 行で、ページの並びは変わっていません。228 ページ中 **3 ページ**（`hooks-guide`・`mcp`・`hooks`）が変わり、ページ単位の合計は 28 行（追加 10・削除 18）で生の差分と一致します（2 回展開されている 3 ページはどれも変わっていません）。changelog は変わっておらず、収録リリースは 437 のまま、最新は前回と同じ v2.1.319（2026年11月06日）です。大幅更新はないので、**3 ページ**すべてを以下にまとめます。
+今回の差分は **`llms-full.txt` と見出しマップの 2 ファイル**で、`llms.txt` は変わっていません。`llms-full.txt` の生の差分は追加 33 行・削除 4 行で、ページの並びは変わっていません。228 ページ中 **2 ページ**（`desktop`・`settings-reference`）が変わり、ページ単位の合計は 37 行（追加 33・削除 4）で生の差分と一致します（2 回展開されている 3 ページはどれも変わっていません）。changelog は変わっておらず、収録リリースは 437 のまま、最新は前回と同じ v2.1.319（2026年11月06日）です。大幅更新はないので、**2 ページ**すべてを以下にまとめます。
 
-`llms-full.txt` の総行数は **127,986 行から 127,978 行へ 8 行減り**ました（生の差分の差し引き 10 − 18 と一致）。`Source:` の行は 231、固有のページは 228 のままで、2 回展開されている 3 ページ（`plugins/create`・`plugins/install`・`plugins/mods/overview`）も前回と同じです。コードフェンスの外の見出しは、引用の中の見出しも数えると 6,070、行頭が `#` の見出しだけを数えると 6,059 で、どちらも変わっていません（加わった見出しも、外れた見出しも、改称された見出しもありません）。
+`llms-full.txt` の総行数は **127,978 行から 128,007 行へ 29 行増え**ました（生の差分の差し引き 33 − 4 と一致）。`Source:` の行は 231、固有のページは 228 のままで、2 回展開されている 3 ページ（`plugins/create`・`plugins/install`・`plugins/mods/overview`）も前回と同じです。コードフェンスの外の見出しは、引用の中の見出しも数えると 6,070 から 6,072 へ、行頭が `#` の見出しだけを数えると 6,059 から 6,061 へ、どちらも 2 つ増えました。加わったのは `desktop` の h4「Preview HTML files in SSH and WSL sessions」と「Turn off scripts in SSH and WSL previews for your organization」で、外れた見出しや改称された見出しはありません。
+
+**新機能**
+
+- SSH と WSL のセッションで HTML ファイルをプレビューする節（`desktop`。詳細はハイライト 1 参照）
 
 **機能改善**
 
-- `ExitPlanMode` を自動承認するフックの例と、PermissionRequest の `updatedInput` の行の注記（`hooks-guide`・`hooks`。詳細はハイライト 1 参照）
-- MCP タスクの答えで省ける項目（`mcp`。詳細はハイライト 2 参照）
+- `disableBrowserExternalNavigation` で SSH と WSL のプレビューのスクリプトも止まること（`desktop`・`settings-reference`。詳細はハイライト 2 参照）
 
 ## 新着情報
 
@@ -46,11 +49,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-06.md](./archives/latest/2026-11-06.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-06.md](./archives/latest-detail/2026-11-06.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-07.md](./archives/latest/2026-11-07.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-07.md](./archives/latest-detail/2026-11-07.md)
 
 <!--
-base_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
-head_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
-generated_at_full: 2026-11-08T15:06:50+09:00
+base_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
+head_commit: f31cb8e4e9faf9cb1bbe213ad567b17f36459a04
+generated_at_full: 2026-11-09T15:06:25+09:00
 -->

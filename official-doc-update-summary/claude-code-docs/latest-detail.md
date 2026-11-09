@@ -1,62 +1,66 @@
 ---
-対象期間: 2026年11月06日 〜 2026年11月07日
-作成日: 2026-11-07
+対象期間: 2026年11月07日 〜 2026年11月08日
+作成日: 2026-11-08
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-**今回は通常のページ 3 つに小さな変更があり、`hooks-guide` で `ExitPlanMode` を自動承認するフックの例が `updatedInput` を返す形に直り、`mcp` には MCP タスクの答えで省ける項目が載りました**。新しいページはなく、228 ページ中 3 ページが変わり、変更はページ単位で 28 行（追加 10・削除 18）です。50 行以上変わったページはないので、大幅更新はありません。changelog・`llms.txt`・見出しマップは変わっていません。総行数は 127,986 行から 127,978 行に減りました。取り上げる項目が 2 つなので、ハイライトも 2 件です。
+**今回は通常のページ 2 つに小さな変更があり、`desktop` に SSH と WSL のセッションで HTML ファイルをプレビューする節と、組織がそのプレビューのスクリプトを止める節が加わり、`settings-reference` の `disableBrowserExternalNavigation` にも同じことが載りました**。新しいページはなく、228 ページ中 2 ページが変わり、変更はページ単位で 37 行（追加 33・削除 4）です。50 行以上変わったページはないので、大幅更新はありません。changelog と `llms.txt` は変わっておらず、見出しマップには `desktop` の見出しが 2 つ加わりました。総行数は 127,978 行から 128,007 行に増えました。取り上げる項目が 2 つなので、ハイライトも 2 件です。
 
 主要なものを以下に挙げます。
 
-1. `hooks-guide` の「Auto-approve specific permission prompts」に、`ExitPlanMode` のようにユーザーの操作を要するツールでは `"allow"` に `updatedInput` も要り、なければ許可は無視されプロンプトが出る、と載り、例のコマンドが `jq` で `tool_input` を返す形になった（`hooks` の表にも同じ注記が加わった）
-2. `mcp` の「Answer the call with a task」に、`createdAt`・`lastUpdatedAt`・`ttlMs` を省いた答えや `pollIntervalMs` が `null` の答えも Claude Code が受け付け、v2.1.317 より前は失敗していた、と載った
+1. `desktop` に h4「Preview HTML files in SSH and WSL sessions」が加わり、SSH か WSL のセッションでは、チャットの HTML ファイルのパスをクリックすると Browser ペインでプレビューでき、グラフや表が空のままなら上に出る通知が理由を示す、と載った（Claude Desktop v4.23118.0 より前は、このプレビューでスクリプトが動かなかった）
+2. `desktop` に h4「Turn off scripts in SSH and WSL previews for your organization」が加わり、managed setting の `disableBrowserExternalNavigation` を `true` にすると SSH と WSL の HTML プレビューでもスクリプトが動かなくなる、と載った（managed settings をまだ受け取っていないコンピューターでは `parentSettingsBehavior` も `"merge"` にする、という警告つき。`settings-reference` の同じキーにも加わった）
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**ExitPlanMode の自動承認の例が updatedInput を返す形に直った**](#1-exitplanmode-の自動承認の例が-updatedinput-を返す形に直った):  
-  `hooks-guide` の「Auto-approve specific permission prompts」に、`ExitPlanMode` のようにユーザーの操作を要するツールでは `"allow"` に `updatedInput` も要り、なければ Claude Code は許可を無視してプロンプトを出す、という文が加わりました。例のコマンドは、`echo` で決まった JSON を書く形から、`jq -c` で入力の `tool_input` を `updatedInput` として返す形になっています。`hooks` の「PermissionRequest decision control」の表の `updatedInput` の行にも、`AskUserQuestion` と `ExitPlanMode` にはこのフィールドが要る、と加わりました
-2. [**MCP タスクの答えに createdAt などがなくても通るようになった**](#2-mcp-タスクの答えに-createdat-などがなくても通るようになった):  
-  `mcp` の「Answer the call with a task」で、タスクの答えの中身が原因で呼び出しが `Unsupported result type 'task' for tools/call` のエラーになるのは、答えに `taskId` がないか有効な `status` がないとき、に改められました。`createdAt`・`lastUpdatedAt`・`ttlMs` を省いた答えや、`pollIntervalMs` を `null` にした答えも、Claude Code は受け付けます。ページは、v2.1.317 より前はこうした答えが `Unsupported result type` のエラーで失敗したとし、その版でも動かすには 3 つのフィールドを送り、`pollIntervalMs` は数値で送るか送らないよう勧めています
+1. [**SSH と WSL のセッションで HTML ファイルをプレビューする節が加わった**](#1-ssh-と-wsl-のセッションで-html-ファイルをプレビューする節が加わった):  
+  `desktop` の「Preview your app」に h4「Preview HTML files in SSH and WSL sessions」が加わりました。SSH か WSL のセッションでは、チャットに出た HTML ファイルのパスをクリックすると、そのファイルを Browser ペインでプレビューできます。グラフや表が空のままなら、プレビューの上に出る通知が理由を示します。`This preview doesn't load anything from the web` はスクリプトは動くがウェブからは何も読み込まないこと、`This preview doesn't run scripts or load anything from the web` はスクリプトも動かないことを示し、後者は Claude Desktop v4.23118.0 より前はこのプレビューでスクリプトが動かなかったので、Desktop を更新して開き直すよう案内しています
+2. [**disableBrowserExternalNavigation で SSH と WSL のプレビューのスクリプトも止まる**](#2-disablebrowserexternalnavigation-で-ssh-と-wsl-のプレビューのスクリプトも止まる):  
+  `desktop` に h4「Turn off scripts in SSH and WSL previews for your organization」が加わり、SSH と WSL のセッションの HTML プレビューでスクリプトを動かさないようにするには、managed setting の `disableBrowserExternalNavigation` を `true` にする、と載りました。設定はサーバー管理の設定か、Desktop を動かすコンピューターの MDM ポリシーや managed settings ファイルに置き（リモートのマシンや WSL のディストリビューションからは読まれない）、Claude Code の managed settings をまだ受け取っていないコンピューターでは `parentSettingsBehavior` も `"merge"` にする、という警告がついています。同じページの「Restrict external browsing for your organization」と「Managed settings」の表、`settings-reference` の `disableBrowserExternalNavigation` にも、SSH と WSL の HTML プレビューではスクリプトが動かない、と加わりました
 <!-- light:highlight-list:end -->
 
-## 1. ExitPlanMode の自動承認の例が updatedInput を返す形に直った
+## 1. SSH と WSL のセッションで HTML ファイルをプレビューする節が加わった
 
-**`hooks-guide` の「Auto-approve specific permission prompts」の例が、`hooks` の「Tools that require user interaction」の決まりに合うよう直されました。** この節は、Claude が計画を示し終えて進めてよいかを尋ねるときに呼ぶ `ExitPlanMode` を、`PermissionRequest` フックで毎回自動承認する例です。説明の段落に、`ExitPlanMode` のようにユーザーの操作を要するツールでは `"allow"` に `updatedInput` も要り、なければ Claude Code は許可を無視して、プロンプトをそのまま出す、という文が加わりました。
+**`desktop` の「Preview your app」に、h4「Preview HTML files in SSH and WSL sessions」が加わりました。** 「Preview your app」は、Claude が開発サーバーを起動して Browser ペインで開き、自分の変更を確かめる、という節です。その冒頭の段落は、これまでローカルのセッションについて、チャットに出た HTML・PDF・動画のパスをクリックすると Browser ペインで開く、とだけ述べていました。今回、SSH か WSL のセッションでは HTML ファイルをプレビューできる、という文と、新しい h4 へのリンクが加わっています。
 
-例は 2 つとも書き換わっています。
+新しい h4 によると、SSH か WSL のセッションでは、チャットに出た HTML ファイルのパスをクリックすると、そのファイルを Browser ペインでプレビューできます。プレビューのグラフや表が空のままなら、プレビューの上に出る通知が理由を示します。通知は 2 種類です。
 
-- **`ExitPlanMode` を承認する例**: `command` が、`echo` で `{"hookSpecificOutput": {"hookEventName": "PermissionRequest", "decision": {"behavior": "allow"}}}` を書く形から、`jq -c '{hookSpecificOutput: {hookEventName: "PermissionRequest", decision: {behavior: "allow", updatedInput: .tool_input}}}'` になりました。`jq` が読むフックの入力の `tool_input`（ツールの入力）を、そのまま `updatedInput` として返します
-- **セッションを `acceptEdits` に切り替える例**: これまでは、`updatedPermissions` に `setMode` の項目を持つ JSON をフックが標準出力に書く、という 11 行の JSON の例でした。今回は、そのフックの `command` の行をこの 1 行に置き換える、という形になり、`jq -c` の出力は `updatedInput: .tool_input` と `updatedPermissions: [{type: "setMode", mode: "acceptEdits", destination: "session"}]` をどちらも持ちます
+- **`This preview doesn't load anything from the web`**: ファイルに書かれたスクリプトは動くが、ライブラリをウェブから読み込むグラフは空のままになる。通知に **Export** ボタンがあれば、それを選び、保存したファイルを自分のブラウザで開くと、ウェブからの内容も読み込まれる
+- **`This preview doesn't run scripts or load anything from the web`**: Claude Desktop v4.23118.0 より前は、このプレビューでスクリプトが動かなかったので、Desktop を更新してファイルを開き直す。Desktop が最新でも通知が消えなければ Desktop を再起動し、それでも消えなければ、組織でスクリプトがオフになっている可能性があるので管理者に尋ねる（オフにする方法はハイライト 2）
 
-**`hooks` の表にも同じ注記が加わりました。** 「PermissionRequest decision control」の表の `updatedInput` の行（`"allow"` のときだけ、実行前にツールの入力を変える。入力のオブジェクト全体を置き換え、変えた入力は deny と ask のルールで評価し直す）の末尾に、`AskUserQuestion` と `ExitPlanMode` にはこのフィールドが要る、という文と、「Tools that require user interaction」へのリンクが加わりました。その節は今回変わっておらず、`PreToolUse` フックがこの 2 つのツールの要件を満たすには、`permissionDecision: "allow"` を、答えを入れた `updatedInput` とともに返す必要があり、`"allow"` だけでは足りない、と述べています。
+通知を閉じてしまった場合は、ファイルを開き直すと通知がまた出ます。ページは、このプレビューがいつから使えるかは述べておらず、v4.23118.0 より前はスクリプトが動かなかった、とだけ述べています。同じ節の既存の注記（SSH セッションでは Claude が Browser ペインのツールを使えず、アプリをペインで開くことも変更を自動で確かめることもできない）は変わっていません。
 
 今回の変更に対応する changelog の項目はありません（changelog 自体も今回は変わっていません）。
 
-- [フックでアクションを自動化する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/hooks-guide#auto-approve-specific-permission-prompts)
-- [Automate actions with hooks - Claude Code Docs (English)](https://code.claude.com/docs/en/hooks-guide#auto-approve-specific-permission-prompts)
-- [フックリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/hooks#permissionrequest-decision-control)
-- [Hooks reference - Claude Code Docs (English)](https://code.claude.com/docs/en/hooks#permissionrequest-decision-control)
+- [デスクトップアプリケーション - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/desktop#preview-html-files-in-ssh-and-wsl-sessions)
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#preview-html-files-in-ssh-and-wsl-sessions)
 
-## 2. MCP タスクの答えに createdAt などがなくても通るようになった
+## 2. disableBrowserExternalNavigation で SSH と WSL のプレビューのスクリプトも止まる
 
-**`mcp` の「MCP tasks for server authors」の h4「Answer the call with a task」で、Claude Code がタスクの答えに求めるものが改められました。** MCP サーバーが長く動く `tools/call` にタスクで答えるときの節です。要求が拡張を持たないのにタスクで答えると、呼び出しはツールのエラー `Unsupported result type 'task' for tools/call` で失敗する、という点は変わりません。
+**`desktop` に、h4「Turn off scripts in SSH and WSL previews for your organization」が加わりました。** 置き場所は同じ「Preview your app」の中で、ハイライト 1 の h4 の直後です。SSH と WSL のセッションの HTML プレビューでスクリプトを動かさないようにするには、managed setting の `disableBrowserExternalNavigation` を `true` にします。この設定では、ユーザーは Browser ペインで外部のサイトを閲覧することもできなくなります。
 
-- **同じエラーになる条件**: `taskId`・`status`・`createdAt`・`lastUpdatedAt`・`ttlMs` のどれかが欠けたとき、から、答えに `taskId` がないか有効な `status` がないとき、に狭まりました。言い方も「Claude がツールのエラーを受け取る」から「呼び出しが失敗する」に替わっています
-- **`createdAt`・`lastUpdatedAt`・`ttlMs` の行**: 「必須（Required）」が「tasks 拡張が必須とする（Required by the tasks extension）」に替わりました。`ttlMs` が `null` でもよいこと、`ttlMs` が過ぎても Claude Code がタスクを捨てないことは同じです
-- **`pollIntervalMs` の行**: 「任意だが `null` は不可」の「`null` は不可」が外れ、フィールドがないときだけでなく `null` のときも 2000 を使う、になりました。値をミリ秒で 250〜30000 の範囲に収めることと、`tasks/get` の応答ごとに読み直すことは同じです
+- **どこに設定するか**: サーバー管理の設定（server-managed settings）か、Desktop を動かすコンピューターの Claude Code の MDM ポリシーか managed settings ファイルに置く。Desktop は、リモートのマシンや WSL のディストリビューションからはこの設定を読まない。サードパーティのプロバイダを使う場合は、MDM ポリシーかファイルを使う
+- **警告（WARNING）**: Desktop を動かすコンピューターが Claude Code の managed settings をまだ受け取っていない場合は、作る managed settings で `parentSettingsBehavior` も `"merge"` にする。Desktop は自分のポリシーを Claude Code に渡すが、`"merge"` がないと、コンピューターに managed settings ができた時点で Claude Code はそのポリシーを無視する。Windows で managed settings ファイルを作ると、許可するまでユーザーは WSL セッションも使えなくなる。すでに managed settings を受け取っているコンピューターでは、そこに設定を加え、`parentSettingsBehavior` はそのままにする。MDM ポリシーや managed settings ファイルが複数あるコンピューターでは、最も順位の高いものを使う
+- **設定した後**: ユーザーに Desktop を再起動してもらい、設定が確実に効くようにしたうえで、次のことを伝える。開くファイルはプレビューでスクリプトが動かず、スクリプトが描くグラフや表は空のままになる。スクリプトが動いているプレビューは、再起動の前に Desktop が設定を読み込むと閉じ、`This preview closed because scripts are turned off for previews. Open the file again to view it without scripts.` と表示される。ファイルをエクスポートしてブラウザで開くと、この設定の有無にかかわらず、そこではスクリプトが動く
 
-**表の後に段落が加わりました。** Claude Code は、`createdAt`・`lastUpdatedAt`・`ttlMs` を省いた答えや、`pollIntervalMs` を `null` にした答えを受け付けます。v2.1.317 より前は、こうした答えは `Unsupported result type` のエラーで失敗していました。その版でも動かすには、tasks 拡張が必須とする 3 つのフィールドを送り、`pollIntervalMs` は数値で送るか送らないようにします。
+**同じキーを述べるほかの 3 か所にも、この点が加わりました。**
 
-「v2.1.317 より前」はページ本文の記述で、changelog の v2.1.317（2026年11月03日）に、この変更に対応する項目はありません。
+- **`desktop` の「Restrict external browsing for your organization」**: `disableBrowserExternalNavigation` の段落で、localhost の開発サーバーとファイルのプレビューは動き続ける、という文に、ただし SSH と WSL のセッションの HTML プレビューではスクリプトが動かない、が加わった。ほかの内容は同じ
+- **`desktop` の「Managed settings」の表**: `disableBrowserExternalNavigation` の行に、SSH と WSL のセッションの HTML プレビューではスクリプトが動かない、という文と新しい h4 へのリンクが加わった
+- **`settings-reference` の `disableBrowserExternalNavigation`**: 冒頭の段落に、SSH と WSL のセッションの HTML プレビューは開くがスクリプトは動かない、が加わった。末尾にも段落が 1 つ加わり、デスクトップアプリを動かすコンピューターがほかに Claude Code の managed settings を受け取っていなければ、作る managed settings で `parentSettingsBehavior` も `"merge"` にすること、Windows で managed settings ファイルを作ると許可するまでユーザーが WSL セッションを使えなくなることを述べ、理由は `desktop` の新しい h4 を見るよう案内している。値の型（JSON の真偽値 `true` だけが効く）と既定値（未設定で、外部の閲覧はオン）は変わっていない
 
-- [MCP を使用して Claude Code をツールに接続する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/mcp#answer-the-call-with-a-task)
-- [Connect Claude Code to tools via MCP - Claude Code Docs (English)](https://code.claude.com/docs/en/mcp#answer-the-call-with-a-task)
+今回の変更に対応する changelog の項目はありません。
+
+- [デスクトップアプリケーション - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/desktop#turn-off-scripts-in-ssh-and-wsl-previews-for-your-organization)
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#turn-off-scripts-in-ssh-and-wsl-previews-for-your-organization)
+- [すべての設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/settings-reference#disablebrowserexternalnavigation)
+- [All settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings-reference#disablebrowserexternalnavigation)
 
 ## 新規追加されたページ
 
@@ -67,27 +71,30 @@
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-（今回の対象期間に、50 行以上変わったページはありません。最も多いのは `hooks-guide` の 18 行です）
+（今回の対象期間に、50 行以上変わったページはありません。最も多いのは `desktop` の 33 行です）
 <!-- light:updated-pages:end -->
 
-**行数の数え方**: `llms-full.txt` の生の差分（追加 10 行・削除 18 行）のハンクを、head 側の `Source:` 行でページに振り分けた値です（ページの並びは変わっておらず、ページ本文どうしの比較で変わった 3 ページと一致し、ページ単位の合計は生の差分と一致します）。base と head は同じ書式なので、正規化はしていません。`hooks-guide` の 18 行（追加 4・削除 14）、`mcp` の 8 行（追加 5・削除 3）、`hooks` の 2 行（追加 1・削除 1）です。`hooks-guide` の削除 14 行のうち 11 行は、`acceptEdits` に切り替える例の JSON が 1 行の `command` にまとまった分で、説明が減ったわけではありません。
+**行数の数え方**: `llms-full.txt` の生の差分（追加 33 行・削除 4 行）のハンクを、head 側の `Source:` 行でページに振り分けた値です（ページの並びは変わっておらず、ページ単位の合計は生の差分と一致します）。base と head は同じ書式なので、正規化はしていません。`desktop` の 33 行（追加 30・削除 3）、`settings-reference` の 4 行（追加 3・削除 1）です。`desktop` の追加 30 行のうち 27 行は、新しい 2 つの h4 の節がまとまって加わった分です。
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の差分は **`llms-full.txt` の 1 ファイル**で、`llms.txt` と見出しマップは変わっていません。`llms-full.txt` の生の差分は追加 10 行・削除 18 行で、ページの並びは変わっていません。228 ページ中 **3 ページ**（`hooks-guide`・`mcp`・`hooks`）が変わり、ページ単位の合計は 28 行（追加 10・削除 18）で生の差分と一致します（2 回展開されている 3 ページはどれも変わっていません）。changelog は変わっておらず、収録リリースは 437 のまま、最新は前回と同じ v2.1.319（2026年11月06日）です。大幅更新はないので、**3 ページ**すべてを以下にまとめます。
+今回の差分は **`llms-full.txt` と見出しマップの 2 ファイル**で、`llms.txt` は変わっていません。`llms-full.txt` の生の差分は追加 33 行・削除 4 行で、ページの並びは変わっていません。228 ページ中 **2 ページ**（`desktop`・`settings-reference`）が変わり、ページ単位の合計は 37 行（追加 33・削除 4）で生の差分と一致します（2 回展開されている 3 ページはどれも変わっていません）。changelog は変わっておらず、収録リリースは 437 のまま、最新は前回と同じ v2.1.319（2026年11月06日）です。大幅更新はないので、**2 ページ**すべてを以下にまとめます。
 
-`llms-full.txt` の総行数は **127,986 行から 127,978 行へ 8 行減り**ました（生の差分の差し引き 10 − 18 と一致）。`Source:` の行は 231、固有のページは 228 のままで、2 回展開されている 3 ページ（`plugins/create`・`plugins/install`・`plugins/mods/overview`）も前回と同じです。コードフェンスの外の見出しは、引用の中の見出しも数えると 6,070、行頭が `#` の見出しだけを数えると 6,059 で、どちらも変わっていません（加わった見出しも、外れた見出しも、改称された見出しもありません）。
+`llms-full.txt` の総行数は **127,978 行から 128,007 行へ 29 行増え**ました（生の差分の差し引き 33 − 4 と一致）。`Source:` の行は 231、固有のページは 228 のままで、2 回展開されている 3 ページ（`plugins/create`・`plugins/install`・`plugins/mods/overview`）も前回と同じです。コードフェンスの外の見出しは、引用の中の見出しも数えると 6,070 から 6,072 へ、行頭が `#` の見出しだけを数えると 6,059 から 6,061 へ、どちらも 2 つ増えました。加わったのは `desktop` の h4「Preview HTML files in SSH and WSL sessions」と「Turn off scripts in SSH and WSL previews for your organization」で、外れた見出しや改称された見出しはありません。
+
+**新機能**
+
+- SSH と WSL のセッションで HTML ファイルをプレビューする節（`desktop`。詳細はハイライト 1 参照）
 
 **機能改善**
 
-- `ExitPlanMode` を自動承認するフックの例と、PermissionRequest の `updatedInput` の行の注記（`hooks-guide`・`hooks`。詳細はハイライト 1 参照）
-- MCP タスクの答えで省ける項目（`mcp`。詳細はハイライト 2 参照）
+- `disableBrowserExternalNavigation` で SSH と WSL のプレビューのスクリプトも止まること（`desktop`・`settings-reference`。詳細はハイライト 2 参照）
 <!-- light:minor-updates:end -->
 
-見出しマップ（`en/claude_code_docs_map.md`）は今回変わっていません。`llms-full.txt` の見出しも増減がないので、見出しマップにだけ先に載った見出しはありません。
+見出しマップ（`en/claude_code_docs_map.md`）は、更新時刻が 2026年11月07日 04:01:42 UTC から 2026年11月08日 18:48:14 UTC に替わり、`desktop` の「Preview your app」の下に、`llms-full.txt` に加わったのと同じ 2 つの見出しが加わりました。見出しマップにだけ先に載った見出しはありません。
 
-**参考リンクについて**: 日本語版は、変更のあった 3 ページすべてを取得し、該当する節があるかと今回の内容になっているかを確かめました。3 ページとも日本語版がすでに今回の内容になっていたので、リンクはすべて日本語版を併記しています（`hooks` と `mcp` は長いページで、取得ツールが本文の後半を要約で返したため、要約が引く今回の文面で確かめました）。アンカーは、`hooks` の「PermissionRequest decision control」がページ間のリンクが使っている id で、`hooks-guide` の「Auto-approve specific permission prompts」と `mcp` の「Answer the call with a task」は、リンクの裏付けがないので見出しから作った id です。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
+**参考リンクについて**: 日本語版は、変更のあった 2 ページを取得し、該当する節があるかと今回の内容になっているかを確かめました。2 ページとも日本語版がすでに今回の内容になっていたので、リンクはすべて日本語版を併記しています（`desktop` は、新しい 2 つの h4、「Preview your app」の冒頭の段落、「Restrict external browsing for your organization」の段落を本文で確かめました。`desktop` の「Managed settings」の表の行と、`settings-reference` の `disableBrowserExternalNavigation` の節は、長いページで取得ツールが本文を要約で返したため、要約が引く今回の文面で確かめました）。アンカーは 3 つとも、ページ内やページ間のリンクが使っている id です。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
 
 ## 新着情報
 
@@ -97,11 +104,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-06.md](./archives/latest/2026-11-06.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-06.md](./archives/latest-detail/2026-11-06.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-07.md](./archives/latest/2026-11-07.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-07.md](./archives/latest-detail/2026-11-07.md)
 
 <!--
-base_commit: b3f45341023a7453d8b8e8e11e025447ef991a24
-head_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
-generated_at_full: 2026-11-08T15:06:50+09:00
+base_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
+head_commit: f31cb8e4e9faf9cb1bbe213ad567b17f36459a04
+generated_at_full: 2026-11-09T15:06:25+09:00
 -->
