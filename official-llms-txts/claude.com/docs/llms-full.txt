@@ -14748,9 +14748,9 @@ To test both kinds of assertion in one organization, test **Claude-issued** firs
 
 Add your MCP server as a custom connector for the test organization, as [Add the connector for the organization](/docs/connectors/custom/add-unlisted#add-the-connector-for-the-organization) describes.
 
-If your MCP server is already in the [Connectors Directory](/docs/connectors/directory), add it as a custom connector at your listing's URL rather than from the directory. A connector added from the directory shows **Managed authorization** only after your listing is marked as supporting Enterprise Managed Auth. The custom connector opens on your listing's page, where the **Authentication** section is on the **Configuration** tab.
+If your MCP server is already in the [Connectors Directory](/docs/connectors/directory), add the custom connector at a different URL from your listing's, such as a staging deployment of the same server. A connector at your listing's URL, whether you add it from the directory or by URL, shows **Managed authorization** once your listing is marked as supporting Enterprise Managed Auth. The **Authentication** section is on the connector's **Configuration** tab.
 
-An organization can have one connector at a URL, so if yours already has your connector from the directory, test in a Team organization that you create for testing.
+To test at your listing's production URL before your listing is marked, email `mcp-review@anthropic.com` and ask to have Enterprise Managed Auth enabled for your connector in your test organization. Include your listing's name and the **Organization ID**, which you copy from [**Organization settings > Organization and access**](https://claude.ai/admin-settings/organization).
 
 **2. Open the managed authorization setup**
 
@@ -20157,6 +20157,34 @@ Source: https://claude.com/docs/cowork/changelog
 
 Release notes for Claude Desktop
 
+**v4.23118.1**
+
+2026-11-09
+
+Bundled Claude Code version: 2.1.321.
+
+**General**
+
+* Changed how Claude Code finds the programs it starts itself on Windows, such as git: it no longer finds them through network (UNC) or relative PATH entries, or behind a link to a network share. Where Git is found only that way, sessions use PowerShell instead of Git Bash.
+* Changed the certificate that signs Claude Code on macOS to a newer Developer ID certificate of the same Anthropic team (Team ID Q6L2SF6YDW). Rules that match the Team ID are unaffected; rules that pin the certificate itself need the new certificate added beside the old one.
+* Fixed replies stopping with "API Error: EPROTO: The TLS handshake failed" when the connection broke partway through a reply. Claude now keeps what arrived and continues.
+
+**Code**
+
+* Changed skills in a subfolder's `.claude/skills` folder to no longer load during a session when Claude Code's sandbox is on. To use them, start the session in that subfolder.
+* Fixed Bash commands sometimes running in the wrong folder when Claude sent several at once and an earlier one changed folders.
+* Fixed the project's skills, commands and agents that a worktree lacks, such as files git does not track, disappearing from the menu after Claude entered that worktree. While there, the main project folder's copies are listed and run.
+
+**Cowork**
+
+* Fixed a task or chat showing "Claude Code crashed" at the next message when its saved state file was cut short.
+
+**3P**
+
+* Changed `fable` in `inferenceModels` to request the newest Fable model, unless your gateway's `/v1/models` has an ID `fable` or a model tagged Fable. Requests can fail if that model isn't served. To pick one, keep `fable` and add an entry with its exact ID and `anthropicFamilyTier` set to `fable`.
+* Changed tool calls made by a plugin's own code (a mod), rather than by Claude, to never show an approval card. They now run where only the user's approval or Auto mode would have stopped them, including connector tools with no `toolPolicy` entry. Such calls to a tool set to `ask` are refused.
+* Fixed Cowork's Progress panel not ticking steps that a subagent marked done.
+
 **v4.23118.0**
 
 2026-11-05
@@ -23444,25 +23472,30 @@ See [Retrieve session transcripts](https://platform.claude.com/docs/en/manage-cl
 
 ## Setup
 
-Configure monitoring from the Cowork admin settings:
+Configure monitoring from **Organization settings > Data and privacy**:
 
-1. Navigate to **Admin settings > Cowork**
+1. Go to **Organization settings > Data and privacy**
 
-2. Configure the following fields:
+2. Under **Monitoring**, find the **Cowork and Cowork in the cloud** item
+
+3. Configure the following fields:
 
    | Field | Description | Example |
    | - | - | - |
    | **OTLP endpoint** | Your OpenTelemetry collector URL | `http://collector.example.com:4318` |
    | **OTLP protocol** | Transport protocol | `http/json` or `http/protobuf` |
    | **OTLP headers** | Authentication headers for your collector | `Authorization=Bearer your-token` |
+   | **Resource attributes** | OTel resource attributes attached to exported events | `deployment.environment=prod,team=platform` |
 
-3. Save your settings
+4. Save your settings
 
-4. Start a new Cowork session — settings are loaded at session start, so existing sessions won't pick up the new configuration
+5. Start a new Cowork session — settings are loaded at session start, so existing sessions won't pick up the new configuration
 
 > [!NOTE]
 >
-> The OTel exporter runs inside the Cowork VM, so it is subject to the session's egress rules. If your organization restricts network egress, Cowork automatically adds your collector's hostname to the session's egress allowlist. You don't need to add it at **Admin settings > Capabilities > Network egress**.
+> By default, Cowork runs the OTel exporter on the user's device and sends events over that device's network connection. Make sure your collector is reachable from users' devices.
+>
+> You don't need to add your collector to the **Additional allowed domains** field in **Organization settings > Capabilities**. If sessions run in the Cowork VM and your organization restricts network egress, Cowork adds your collector's hostname to the session's allowlist for you.
 
 ## Events
 
@@ -24788,11 +24821,11 @@ The tool and connector cards and related settings cover connectors, plugins, and
 | **Shell commands** | Lets Claude run shell commands during tasks. Turning this off also turns off **Advanced file analysis in Chat**. | On | Claude Desktop, Claude Code |
 | **Require approval for each command** | In Claude Desktop, asks the member before Claude uses its shell tool. When this is off, commands [can run without asking](/docs/government/security/security-and-data-handling#approvals-and-auto-mode). | Off | Claude Desktop, Claude Code |
 | **Terminal panel tools** | Lets Claude run commands in the Code tab's Terminal panel in Claude Desktop. These commands [run as the user outside of Claude's sandbox](/docs/government/security/security-and-data-handling#code-in-claude-desktop). Turning off **Shell commands** turns these tools off as well. On macOS and Linux, Claude Desktop 4.23118.0 or later lets Claude only read the panel in local sessions wherever **Allowed network hosts** or **Allowed workspace folders** restricts access. | On | Claude Desktop |
-| **Bypass-permissions mode** | Whether members can use the mode that skips permission prompts: bypass-permissions mode in Claude Code, **Skip all permissions** in Claude for Microsoft 365. | **Blocked** | Claude Code, Claude Desktop 1.46388.1 or later, Claude for Microsoft 365 |
+| **Bypass-permissions mode** | Whether members can use the mode that skips permission prompts: bypass-permissions mode in Claude Code, **Skip all permissions** in Claude for Microsoft 365. | **Blocked** | Claude Code where your agency has its [section](#claude-code), Claude Desktop 1.46388.1 or later, Claude for Microsoft 365 where it has the [**Microsoft 365 features**](#microsoft-365-features) card |
 | **Auto mode** | Whether members can switch to [Auto mode](https://code.claude.com/docs/en/permission-modes). [Approvals and Auto mode](/docs/government/security/security-and-data-handling#approvals-and-auto-mode) says which sessions start in it. | **Blocked** | Claude Code, Claude Desktop |
 
 * **Member-added connectors**: in Claude Desktop it also governs connectors delivered inside plugins. A plugin's connector can connect only under **Any connector** or when listed under **Only these**, by server URL in Chat and Cowork.
-* **Member-added connectors**, **Bypass-permissions mode**, and **Auto mode**: these take effect once your agency has the [**Claude Code**](#claude-code) section. In Claude for Microsoft 365, **Bypass-permissions mode** instead takes effect once your agency has the [**Microsoft 365 features**](#microsoft-365-features) card.
+* **Member-added connectors** and **Auto mode** take effect once your agency has the [**Claude Code**](#claude-code) section.
 
 ## Compliance and telemetry
 
@@ -24818,6 +24851,8 @@ These settings cover usage telemetry export to your own collector and Claude Des
 ### Telemetry endpoint
 
 Once a member has signed in and the app has loaded their configuration from Claude for Government, it takes its telemetry settings from that configuration alone and ignores any set on the device itself. Claude Desktop keeps working when the collector refuses requests or cannot be reached, and members see no error. For what the collector must accept, and how to confirm that telemetry is arriving, see [Collector endpoint and headers](/docs/third-party/claude-desktop/telemetry#collector-endpoint-and-headers). For Claude for Microsoft 365, the collector must also accept [cross-origin requests from your Claude for Government host](/docs/government/deploy-microsoft-365/configure#before-you-begin).
+
+To send a credential to your collector, enter it in [**Telemetry headers**](#telemetry-headers). Claude for Government does not deliver `otlpHeadersHelper` or `otlpAuthMode`, the keys that [Collector endpoint and headers](/docs/third-party/claude-desktop/telemetry#collector-endpoint-and-headers) lists for a credential.
 
 Each record [identifies the member](/docs/third-party/claude-desktop/telemetry#user-attribution). See what [Claude Desktop](/docs/cowork/monitoring#events), [Claude for Microsoft 365](/docs/office-agents/opentelemetry#what-the-collector-receives), and [Claude Code](https://code.claude.com/docs/en/monitoring-usage) send.
 
@@ -36288,7 +36323,7 @@ Chat conversations run against your configured inference provider, and their his
 | Project memory | For a conversation inside a project, that project's [memory](/docs/third-party/claude-desktop/data-storage#memory): Claude can read, add to, and update the notes that Chat conversations and Cowork sessions in that project share. Not used if memory was paused when the conversation started, or for conversations outside a project. |
 | Project folders | For a conversation inside a project, read-only access to folders added to the project in Claude Desktop. Claude can list and read files in them. See [Project folders in Chat](#project-folders-in-chat). |
 | Scratch directory | A per-conversation working directory where Claude can create and edit files (documents, data files, HTML artifacts) and offer them to the user for download or preview. |
-| Managed MCP servers | The servers you provision via [`managedMcpServers`](/docs/third-party/claude-desktop/configuration#managedmcpservers) are available in Chat with the same approval model as Cowork sessions: a tool's `toolPolicy` of `"allow"` pre-approves it, `"blocked"` blocks it, and `"ask"` requires user approval on every call. A tool with no policy asks the user, who can allow it once or grant standing approval, as in Cowork. |
+| Managed MCP servers | The servers you provision via [`managedMcpServers`](/docs/third-party/claude-desktop/configuration#managedmcpservers) are available in Chat with the same approval model as Cowork sessions: a tool's `toolPolicy` of `"allow"` pre-approves it, `"blocked"` blocks it, and `"ask"` requires user approval on every call. When Claude calls a tool with no policy, the app asks the user, who can allow it once or grant standing approval, as in Cowork. A plugin's [mod](/docs/third-party/claude-desktop/code#what-a-mod-can-do-without-approval) can call such a tool with no prompt. |
 | Remote MCP servers in plugins | In a conversation that loads the plugin, Claude can use a remote MCP server that a marketplace plugin or a user-added plugin bundles. If the server requires OAuth sign-in, the user signs in first. See [Remote MCP servers in plugins](/docs/third-party/claude-desktop/extensions#remote-mcp-servers-in-plugins). |
 | Clarifying questions | Claude can present multiple-choice questions to the user (the `AskUserQuestion` tool). |
 | Plugin skills and hooks | Skills from the plugins you provision through [organization plugins](/docs/third-party/claude-desktop/extensions#organization-plugins-admin) or [plugin marketplaces](/docs/third-party/claude-desktop/extensions#plugin-marketplaces-admin) are available in Chat, including as slash commands. Hooks from those plugins also run in Chat conversations as they do in Cowork sessions, as described under [Plugin hooks](/docs/third-party/claude-desktop/extensions#plugin-hooks). Plugin sub-agents do not run in Chat, and a skill that runs scripts needs [advanced file analysis](#advanced-file-analysis). Plugin skills require Claude Desktop 1.44121.4 or later, and plugin hooks run in Chat on Claude Desktop 1.52386.0 or later. |
@@ -36570,7 +36605,7 @@ On a device that has the Claude Code CLI, run `claude auto-mode config` in a ter
 
 ### Run vetted connector tools without classifier review
 
-In Cowork's [**Automatically approve**](/docs/third-party/claude-desktop/configuration#automodeenabled), the safety classifier reviews calls to a connector tool whose [`toolPolicy`](/docs/third-party/claude-desktop/configuration#tool-permissions-for-managed-mcp-servers) in `managedMcpServers` is `"allow"`, and can block them. To run a tool without that review, add a `permissions.allow` rule for it to your Claude Code managed settings, beside any `autoMode` block:
+In Cowork's [**Automatically approve**](/docs/third-party/claude-desktop/configuration#automodeenabled), the safety classifier reviews Claude's calls to a connector tool whose [`toolPolicy`](/docs/third-party/claude-desktop/configuration#tool-permissions-for-managed-mcp-servers) in `managedMcpServers` is `"allow"`, and can block them. To run a tool without that review, add a `permissions.allow` rule for it to your Claude Code managed settings, beside any `autoMode` block:
 
 ```json managed-settings.json theme={null}
 {
@@ -36591,7 +36626,26 @@ Write the rule as [`mcp__<server>__<tool>`](https://code.claude.com/docs/en/perm
 
 ## Claude Code mods
 
-Code sessions support Claude Code [mods](https://code.claude.com/docs/en/plugins/mods/overview), code that a plugin runs inside Claude Code, and users can load their own. Cowork sessions and [Chat](/docs/third-party/claude-desktop/chat) conversations load mods from plugins users add themselves and [plugins from your marketplaces](/docs/third-party/claude-desktop/extensions#plugin-marketplaces-admin). To stop users' own mods from loading in local Code sessions, Cowork sessions, and Chat conversations, deploy this Claude Code managed-settings file on each device:
+Code sessions support Claude Code [mods](https://code.claude.com/docs/en/plugins/mods/overview), code that a plugin runs inside Claude Code, and users can load their own. Cowork sessions and [Chat](/docs/third-party/claude-desktop/chat) conversations load mods from plugins users add themselves and [plugins from your marketplaces](/docs/third-party/claude-desktop/extensions#plugin-marketplaces-admin).
+
+### What a mod can do without approval
+
+A [mod](https://code.claude.com/docs/en/plugins/mods/overview) is code that a plugin runs inside Claude Code. That code runs as the user, [outside the sandbox](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox). It can read and write files, run programs, and make network requests itself, and your tool policies don't apply to those actions. For example, in a Code session it can reach hosts that aren't in [`coworkEgressAllowedHosts`](/docs/third-party/claude-desktop/configuration#coworkegressallowedhosts).
+
+A mod can also call the session's tools, such as the shell tool (`Bash`) or a connector tool. Claude Code doesn't ask the user to approve a call that a mod makes, and treats the call according to your policy for the tool:
+
+* **No policy**: the mod's call can run with no prompt
+* **`"allow"`** in [`toolPolicy`](/docs/third-party/claude-desktop/configuration#tool-permissions-for-managed-mcp-servers): the mod's call can run with no prompt, even in Code sessions, where `"allow"` doesn't pre-approve Claude's own calls
+* **`"ask"`** in `toolPolicy`: under the `permissions.ask` rule that [Claude Desktop supplies](#applied-as-managed-policy), Claude Code refuses the mod's call, and the user sees no prompt. In a Code session, the same holds for a built-in tool set to `"ask"` in [`builtinToolPolicy`](/docs/third-party/claude-desktop/configuration#builtintoolpolicy). Claude's own calls to the tool still prompt the user each time.
+* **Blocked**, by `"blocked"` in `toolPolicy` or by the tool's name in [`disabledBuiltinTools`](/docs/third-party/claude-desktop/configuration#disabledbuiltintools): a mod can't call the tool
+
+Claude Code's own managed settings can [replace the policy](#interaction-with-claude-code%E2%80%99s-own-managed-settings) that holds the `permissions.ask` rule. For a tool that a mod must never call, block the tool, which removes it from the session.
+
+In **Auto mode** and in Cowork's **Automatically approve**, the safety classifier doesn't review a mod's calls, so your [`autoMode` rules](#tune-the-auto-mode-classifier) don't apply to them.
+
+### Stop user-installed mods from loading
+
+To stop users' own mods from loading in local Code sessions, Cowork sessions, and Chat conversations, deploy this Claude Code managed-settings file on each device:
 
 ```json managed-settings.json theme={null}
 {
@@ -36608,6 +36662,7 @@ Code sessions support Claude Code [mods](https://code.claude.com/docs/en/plugins
 
 In Cowork sessions and Chat conversations, this file also stops mods in plugins from your marketplaces.
 
+* **Deploy it to [Claude Code's policy locations](https://code.claude.com/docs/en/managed-settings#where-each-mechanism-stores-the-policy)**, not to [Claude Desktop's configuration locations](/docs/third-party/claude-desktop/configuration-format#where-claude-desktop-reads-configuration-on-a-device). If the device already has Claude Code managed settings, such as an [`autoMode` block](#tune-the-auto-mode-classifier), add these keys to them and leave their `parentSettingsBehavior` as it is.
 * **Keep `parentSettingsBehavior`.** Without it, Claude Code ignores the sandbox and the other [managed policy](#applied-as-managed-policy) values that Claude Desktop supplies, except [in a Code session that gets `code` settings from a Claude apps gateway](#interaction-with-claude-code%E2%80%99s-own-managed-settings). In Cowork sessions, without it, Claude doesn't ask for approval before a tool call that matches an argument-scoped [`builtinToolPolicy`](/docs/third-party/claude-desktop/configuration#builtintoolpolicy) rule such as `Read(//**/.env)` set to `"ask"`.
 * **Leave out `disableSideloadFlags`**, which a longer sample in the Claude Code docs includes. With it, Code sessions start without the skills, organization plugins, and uploaded plugins that Claude Desktop delivers.
 * **Optionally, remove the `/plugin-authoring` command**, which has Claude write a mod. Add `"enabledPlugins": { "cc-plugin-plugin-authoring@builtin": false }` to the file.
@@ -37773,7 +37828,7 @@ object\[]Since 1.2581.0
 >
 > Each entry is a model ID string or an object:
 >
-> ```json theme={null}
+> ```json theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null} theme={null}
 > [
 >   {"name": "claude-sonnet-5",
 >    "supports1m": true},
@@ -40621,7 +40676,11 @@ Each [`managedMcpServers`](#managedmcpservers) entry can carry a `toolPolicy` th
 
 In Cowork's [**Automatically approve**](#automodeenabled), a safety classifier still reviews calls to a tool set to `"allow"`, and can block them. See [Run vetted connector tools without classifier review](/docs/third-party/claude-desktop/code#run-vetted-connector-tools-without-classifier-review).
 
-Tools with no policy entry stay user-controlled (built-in connectors apply default policies to some tools): the user is prompted and can approve once, approve for the rest of the task (offered for tools that can modify data), or grant a standing approval unless [`mcpPersistentAlwaysAllowEnabled`](#mcppersistentalwaysallowenabled) is `false`. The app reads a `toolPolicy` value other than `"allow"`, `"ask"`, or `"blocked"`, such as `"ask-session"`, as `"blocked"` for that tool and reports a configuration error, so write `"ask"` in place of `"ask-session"`. Managed policies take precedence over user grants, and enforcement happens in the desktop host process, not only in the prompt UI. A deny-by-default posture, `"*": "blocked"` plus exact `"allow"` entries for approved tools, is supported, including in Code sessions. See the [`managedMcpServers` reference](#managedmcpservers) for wildcard matching, precedence rules, and built-in connector defaults.
+Claude's calls to a tool with no policy entry stay under the user's control (built-in connectors apply default policies to some tools): outside [**Auto mode**](#automodeenabled) and bypass permissions mode, the user is prompted and can approve once, approve for the rest of the task (offered for tools that can modify data), or grant a standing approval unless [`mcpPersistentAlwaysAllowEnabled`](#mcppersistentalwaysallowenabled) is `false`. The app reads a `toolPolicy` value other than `"allow"`, `"ask"`, or `"blocked"`, such as `"ask-session"`, as `"blocked"` for that tool and reports a configuration error, so write `"ask"` in place of `"ask-session"`. Managed policies take precedence over user grants, and enforcement happens in the desktop host process, not only in the prompt UI. A deny-by-default posture, `"*": "blocked"` plus exact `"allow"` entries for approved tools, is supported, including in Code sessions. See the [`managedMcpServers` reference](#managedmcpservers) for wildcard matching, precedence rules, and built-in connector defaults.
+
+> [!WARNING]
+>
+> Approval prompts, and the safety classifier's review in **Auto mode**, cover calls that Claude makes. Claude Code gives neither to a call from a [mod](/docs/third-party/claude-desktop/code#what-a-mod-can-do-without-approval), which is code that a plugin runs inside Claude Code. A mod's call to a tool with no policy entry, or to one set to `"allow"`, can run without the user's approval. To stop mods from calling a tool, set it to `"blocked"`.
 
 On a scheduled Cowork task, the prompt can also offer an **Allow for all scheduled runs** option. See [Tool approvals on scheduled tasks](#tool-approvals-on-scheduled-tasks).
 
@@ -40652,6 +40711,12 @@ Source: https://claude.com/docs/third-party/claude-desktop/configuration-changel
 Managed configuration keys by the Claude Desktop release they first shipped in
 
 Configuration keys by Claude Desktop release. Each section lists keys added in that release, with the MDM key name (for plist/registry deployment) and the equivalent JSON shape (for local-file or bootstrap remote configuration).
+
+**v4.23118.1**
+
+2026-11-09
+
+No configuration changes in this release.
 
 **v4.23118.0**
 
@@ -42842,6 +42907,8 @@ In addition to the [base egress hosts](/docs/third-party/claude-desktop/telemetr
 | `login.microsoftonline.com` | Microsoft Entra sign-in |
 | `microsoft365.mcp.claude.com` | The connector service (substitute your deployment's hostname) |
 
+If your firewall or secure web gateway filters traffic by application, also allow Model Context Protocol (MCP) traffic to the connector service's host. Such equipment can classify the connection as MCP traffic and block it even when the host is allowed.
+
 ### Control write actions on the remote connector
 
 Claude can take a write action for a user through the remote connector once the matching write scope is approved for that user on the Anthropic connector app. The Entra admin center lists that app under **Enterprise applications** as **M365 MCP Server for Claude**.
@@ -42928,10 +42995,11 @@ A block doesn't change the scopes approved in Microsoft Entra. On a device witho
 
 ### Troubleshoot sign-in errors
 
-The errors below are the ones most commonly seen during setup. Each maps to a specific step that was missed or misconfigured.
+These errors can appear during setup.
 
 | Error | Cause | Fix |
 | - | - | - |
+| `Connection to server failed. You can try again.` with no Microsoft sign-in page, and the user's [`main.log`](/docs/third-party/claude-desktop/data-storage#where-data-lives) shows an HTML block page from your network, starting at the `[error]` line that contains the entry's `name` (`m365` unless you changed it) and the word `failed` | A firewall or secure web gateway blocked the request to the connector service before sign-in started | Send the block page to your network team and ask them to [allow MCP traffic to the connector service's host](#allow-the-required-network-hosts) |
 | `AADSTS50011` redirect mismatch | Redirect URI is not exactly `http://127.0.0.1/callback`, or was registered under *Web* instead of *Mobile and desktop applications* | Re-check step 2.1 |
 | `AADSTS50194` multi-tenant required | Tenant ID is missing from the configuration | Add Tenant ID in step 4 |
 | `AADSTS65001` admin consent required | Step 1 was not completed, or step 2.4 was skipped | Complete admin consent |
@@ -43334,7 +43402,7 @@ The OpenTelemetry export to your own collector is the exception: it identifies t
 
 ## Where data lives
 
-Claude Desktop on 3P stores everything under a dedicated directory, separate from standard Claude Desktop, so the two modes can coexist on one machine without interfering.
+Claude Desktop on 3P keeps its application data and logs in directories of its own, separate from those of standard Claude Desktop. A few locations in the user's home directory are outside these directories, and [standard Claude Desktop uses them too](#data-shared-with-standard-claude-desktop).
 
 | Platform | Application data | Logs |
 | - | - | - |
@@ -43344,7 +43412,11 @@ Claude Desktop on 3P stores everything under a dedicated directory, separate fro
 
 > [!NOTE]
 >
-> On Windows, earlier Claude Desktop releases stored this data under `%APPDATA%\Claude-3p\` (the Roaming profile). On first launch after upgrading, the app moves the existing directory to `%LOCALAPPDATA%` automatically; if Roaming is redirected to a network share, conversation history and configuration are copied and large regenerable caches are re-downloaded. Update any external tooling, backup jobs, or endpoint policies that reference the old path. macOS paths are unchanged.
+> With the MSIX installer on Windows versions before Windows 11 (build 22000), for example on Windows 10, this directory can be at `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Local\Claude-3p\`, so check there too. On a device that used Claude Desktop on Windows 10 before it was upgraded in place to Windows 11, data from before the upgrade can still be at that `Packages` path.
+>
+> On Windows, Claude Desktop versions earlier than 1.5186.0 stored this data under `%APPDATA%\Claude-3p\` (the Roaming profile). On first launch after an update from one of those versions, the app moves the existing directory to `%LOCALAPPDATA%` automatically, unless `%LOCALAPPDATA%\Claude-3p\` already exists. If Roaming is redirected to a network share, conversation history and configuration are copied and large regenerable caches are re-downloaded. Update any external tooling, backup jobs, or endpoint policies that reference `%APPDATA%\Claude-3p\`. With the MSIX installer, data from those versions can still be at `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude-3p\`. macOS paths are unchanged.
+>
+> An uninstall or a reset of the MSIX package can delete the data at a `Packages` path.
 
 Within the application-data directory:
 
@@ -43371,6 +43443,23 @@ The app doesn't encrypt conversations, settings, or the locally applied configur
 The logs directory contains `main.log` (application and configuration-validation events), `ssh.log` (SSH connection events), `cowork_vm_node.log` (sandbox VM activity), `claude.ai-web.log` (renderer events), and `mcp.log` / `mcp-server-<name>.log` (MCP connection events).
 
 Separately from the application-data directory, Claude Desktop writes user-visible outputs (Artifacts and scheduled-task results) to `~/Claude/` in your home directory, or `~/Documents/Claude/` on legacy installs. This folder is intended for you to browse directly and is not removed when you delete the application-data directory. To back up a user's data, copy every location listed under [Copy the data to the new device](#copy-the-data-to-the-new-device).
+
+### Data shared with standard Claude Desktop
+
+Unless you [restrict a device to one deployment mode](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode), a user can switch, in the same OS user account, between Claude Desktop on 3P and standard Claude Desktop, where users sign in to claude.ai. On a device where you haven't turned on the [migration to Claude Enterprise](/docs/third-party/claude-desktop/move-to-claude-enterprise), the two modes handle the user's data as follows:
+
+* **Chats, Cowork tasks, projects, and memory**: standard Claude Desktop doesn't show, import, or upload those stored in the 3P [application-data directory](#where-data-lives). It reads and writes some settings files in that directory, such as the user's choice of mode. It also reads the Code session records in `claude-code-sessions/`, so that it doesn't list those sessions or delete their folders.
+* **Code sessions**: each mode lists only its own, but **Code** in both modes and Claude Code in the terminal keep their transcripts in the same folder, `~/.claude/`. Each mode reads the transcripts there to count usage, and the figures that standard Claude Desktop shows for `/stats` in **Code** include sessions from both modes and the terminal. Claude Code in the terminal can resume a session from either mode, and then sends the earlier conversation to the provider that the terminal uses.
+* **Claude Code setup**: `~/.claude/` and `~/.claude.json` also hold Claude Code's setup, such as skills, plugins, hooks, permission rules, trusted folders, and MCP servers, shared by **Code** in both modes and Claude Code in the terminal. Sign-ins to MCP servers made in **Code** are in [Claude Code's own credential store](https://code.claude.com/docs/en/authentication#credential-management), which they share too.
+* **Connectors**: standard Claude Desktop doesn't load the connectors, plugins, or extensions that users added outside **Code**. From your [`managedMcpServers`](/docs/third-party/claude-desktop/configuration#managedmcpservers) entries, it loads only a built-in Microsoft 365 connector set in the device's managed profile.
+* **Connector sign-ins**: on a device configured by MDM, a local file, or a bootstrap server, switching modes leaves [connector sign-ins](#credentials) made outside **Code** in place and doesn't revoke them. Standard Claude Desktop doesn't use them, and Claude Desktop on 3P uses them again when the user switches back.
+* **Files in `~/Claude/`**: by default, both modes write Artifacts, scheduled tasks, and project files here, and each lists only its own. To give Claude Desktop on 3P a folder of its own, have the user go to **Settings > Cowork** and click **Change** next to **Cowork files**. The app copies everything in the current folder, the other mode's files included, to the new location and leaves the old folder in place.
+
+With the migration on, standard Claude Desktop also copies what [What is migrated](/docs/third-party/claude-desktop/move-to-claude-enterprise#what-is-migrated) lists, and `~/.claude/`, `~/.claude.json`, and `~/Claude/` are still shared.
+
+No configuration key moves these three locations. They are in the user's home directory, so each OS user account has its own.
+
+A [diagnostic report](/docs/third-party/claude-desktop/installation#troubleshooting), or the `.zip` file from **Help > Troubleshooting > Show Logs in Finder** (**Show Logs in File Explorer** on Windows), includes app log lines from both modes, whichever mode the user creates it in.
 
 ### Session audit log
 
@@ -43613,6 +43702,11 @@ After a copy, ask the user to:
 
 ### Requirements for the new device
 
+On Windows with the MSIX installer, contact your Anthropic representative before you copy the data to the new device if at least one of these is true:
+
+* The Windows build of one or both devices is below 22000 (for example, Windows 10)
+* On the old device, the user's `C:\Users\<user>\AppData\Local\Packages\Claude_pzs8sxrjxfjjc\LocalCache` folder has a `Local\Claude-3p` or `Roaming\Claude-3p` folder
+
 For a copy, the new device needs:
 
 * The same platform (macOS, Windows, or Linux) and CPU architecture as the old device
@@ -43624,6 +43718,8 @@ For a copy, the new device needs:
 * The same Claude Desktop version, or a newer one
 
 ### Copy the data to the new device
+
+Before you start, check that both devices meet the [requirements](#requirements-for-the-new-device).
 
 > [!WARNING]
 >
@@ -43658,6 +43754,8 @@ For a copy, the new device needs:
 ## Removing data
 
 To fully reset a device's Claude Desktop on 3P state, delete the application-data directory above and the `~/Claude/` user-files folder. Code session transcripts are in Claude Code's store at `~/.claude/projects/`, which Claude Code in the terminal also uses, so delete them there separately if you need to remove them. For [SSH remote sessions](/docs/third-party/claude-desktop/ssh-remote-sessions#host-requirements), transcripts are in `~/.claude/projects/` and attached files in `~/.claude/uploads/` in the SSH user's home directory on the remote host. Claude Desktop also copies those transcripts to the device, into folders in `~/.claude/projects/` whose names start with `ssh-`, so delete them in both places.
+
+On a device that also runs standard Claude Desktop, `~/Claude/` and `~/.claude/` hold that mode's files too, so deleting them deletes those as well. See [Data shared with standard Claude Desktop](#data-shared-with-standard-claude-desktop).
 
 > [!NOTE]
 >
@@ -44220,13 +44318,57 @@ The lists and the sign-ins have these limits:
 
 With [Unified Claude](/docs/third-party/claude-desktop/unified-claude) on, a Cowork session started from the home screen runs the same hooks as any other Cowork session.
 
-A `UserPromptSubmit` hook that blocks a prompt stops that turn and shows the hook's reason to the user. When a conversation or session is created, Claude Desktop also sends its first message to your inference provider in a separate request, without tools, to generate the title shown in the sidebar. That request does not pass through plugin hooks, so a first message that a hook blocks still reaches your provider for titling.
+A `UserPromptSubmit` hook that blocks a prompt stops that turn and shows the hook's reason to the user. When a conversation or session is created, Claude Desktop also sends its first message to your inference provider in a separate request, without tools, to generate the title shown in the sidebar. That request does not pass through hooks, so a first message that a hook blocks still reaches your provider for titling.
 
-Claude Code [managed settings](/docs/third-party/claude-desktop/code#interaction-with-claude-code%E2%80%99s-own-managed-settings) deployed on the device govern these hooks as they do in the Claude Code CLI: `disableAllHooks` turns them off, and `allowManagedHooksOnly` keeps only the hooks those managed settings define.
+Claude Code [managed settings](/docs/third-party/claude-desktop/code#interaction-with-claude-code%E2%80%99s-own-managed-settings) deployed on the device govern these hooks as they do in the Claude Code CLI: `disableAllHooks` turns them off, and `allowManagedHooksOnly` keeps only the hooks that those managed settings define and the hooks of plugins that they install and turn on. See [Turn off user hooks](#turn-off-user-hooks).
 
 > [!NOTE]
 >
-> To stop users' own [mods](https://code.claude.com/docs/en/plugins/mods/overview) from loading, see [Claude Code mods](/docs/third-party/claude-desktop/code#claude-code-mods).
+> For what a plugin's [mod](https://code.claude.com/docs/en/plugins/mods/overview) can do without the user's approval, and how to stop users' own mods from loading, see [Claude Code mods](/docs/third-party/claude-desktop/code#claude-code-mods).
+
+### Run a hook for every user
+
+You can deliver a hook that has to run for every user, such as one that logs each prompt, in a plugin or in Claude Code managed settings:
+
+* **In a plugin**: add the plugin's marketplace to [`allowedPluginMarketplaces`](#configure-the-marketplace) with `installationPreference` set to [`"required"`](#marketplace-installation-preferences). Once Claude Desktop has fetched the marketplace, the plugin's hooks run from the first message of each Cowork session, Chat conversation, and local Code session. In a local Code session, a user can turn them off with [`disableAllHooks`](https://code.claude.com/docs/en/settings-reference#disableallhooks) in their own or a project's Claude Code settings.
+* **In Claude Code managed settings**: write the hooks under the [`hooks`](https://code.claude.com/docs/en/settings-reference#hooks) key of the Claude Code [managed settings](/docs/third-party/claude-desktop/code#interaction-with-claude-code%E2%80%99s-own-managed-settings) on each device, and put any script that they call on the device too, where users can't change it. These hooks run in Cowork sessions, Chat conversations, and local Code sessions with no plugin to install, and a user's `disableAllHooks` doesn't stop them. If these are the device's first Claude Code managed settings, also set `parentSettingsBehavior` to `"merge"` in them, or Claude Code ignores the [managed policy](/docs/third-party/claude-desktop/code#applied-as-managed-policy) values that Claude Desktop supplies.
+
+Neither way reaches an [SSH remote session](/docs/third-party/claude-desktop/ssh-remote-sessions#managed-configuration-on-the-remote-host). To run hooks there, deploy Claude Code managed settings [on the host](https://code.claude.com/docs/en/managed-settings#where-each-mechanism-stores-the-policy) in the same way. To turn off users' own hooks there too, deploy the example under [Turn off user hooks](#turn-off-user-hooks).
+
+### Turn off user hooks
+
+To stop users' own hooks, set [`allowManagedHooksOnly`](https://code.claude.com/docs/en/settings-reference#what-runs-under-allowmanagedhooksonly) to `true` in the Claude Code [managed settings](/docs/third-party/claude-desktop/code#interaction-with-claude-code%E2%80%99s-own-managed-settings) on each device. The setting also stops the hooks of the plugins that Claude Desktop delivers, including plugins from a `"required"` marketplace. Hooks under the managed settings' own `hooks` key keep running, and so do the hooks of a plugin that the same managed settings install and turn on, as this file does:
+
+```json managed-settings.json theme={null}
+{
+  "parentSettingsBehavior": "merge",
+  "allowManagedHooksOnly": true,
+  "extraKnownMarketplaces": {
+    "acme-internal": {
+      "source": { "source": "git", "url": "https://git.acme.example.com/claude-plugins.git" }
+    }
+  },
+  "enabledPlugins": {
+    "prompt-guard@acme-internal": true
+  },
+  "env": {
+    "CLAUDE_CODE_SYNC_PLUGIN_INSTALL": "1"
+  }
+}
+```
+
+Replace `acme-internal` with the `name` in your marketplace's `marketplace.json`, and `prompt-guard` with the plugin's name in that file. Keep the plugin's files in the marketplace repository, under a [relative `source` path](#create-the-marketplace-repository). For other marketplace source types, and for the git credentials that a private repository needs, see [Require a marketplace and its plugins](https://code.claude.com/docs/en/plugins/org#require-a-marketplace-and-its-plugins).
+
+* **Deploy the file to [Claude Code's policy locations](https://code.claude.com/docs/en/managed-settings#where-each-mechanism-stores-the-policy)**, not to [Claude Desktop's](/docs/third-party/claude-desktop/configuration-format#where-claude-desktop-reads-configuration-on-a-device). If the device or host already has Claude Code managed settings, add the keys to them and leave their `parentSettingsBehavior` as it is.
+* **Keep `CLAUDE_CODE_SYNC_PLUGIN_INSTALL`.** It makes a session's first message wait until Claude Code has cloned the marketplace and installed the plugin. Without it, Claude Code installs from a git marketplace in the background, for a later session, and the plugin's hooks don't run in a user's first Code sessions or in any new Cowork session or Chat conversation. With it, each new Cowork session and Chat conversation clones the marketplace before its first reply, so keep the repository small.
+* **Keep `extraKnownMarketplaces` even if the marketplace is already in `allowedPluginMarketplaces`.** Claude Code [ignores the copy that Claude Desktop delivers](https://code.claude.com/docs/en/plugins/loading#name-conflicts) of a plugin named in `enabledPlugins`, so without the entry the plugin doesn't load. Claude Code's own clone follows a branch or tag, not the commit that you pinned for Claude Desktop.
+* **If [`userPluginMarketplacesEnabled`](#controlling-user-extensions) is `false`**, or the managed settings already have a `strictKnownMarketplaces` list, also add the same `source` object to [`strictKnownMarketplaces`](https://code.claude.com/docs/en/settings-reference#strictknownmarketplaces) in this file, or Claude Code refuses the marketplace. That list [replaces the one that Claude Desktop supplies](https://code.claude.com/docs/en/managed-settings#let-an-embedding-host-add-policy), which admits [skills-directory plugins](https://code.claude.com/docs/en/plugins/org#keep-skills-directory-plugins-loading).
+
+To confirm the setup, sign in to a device as a user who has never loaded the plugin. Send a first message in a new Cowork session and in a new Code session, and check that your hook ran each time.
+
+> [!WARNING]
+>
+> If Claude Code can't clone the marketplace, the session continues without the plugin and its hooks, and nothing in the conversation says so. A git server that never answers delays the first message by about two minutes, or less if you set [`CLAUDE_CODE_SYNC_PLUGIN_INSTALL_TIMEOUT_MS`](https://code.claude.com/docs/en/env-vars). Put a hook that has to run even when the clone fails, or that users must not be able to change, under the managed settings' `hooks` key.
 
 ### Hooks on Windows devices without Git for Windows
 
@@ -45923,12 +46065,15 @@ For fleet deployments, run the check on one device of each hardware model in you
 
 ## Install the app
 
-Download the installer for your platform from [claude.com/download](https://claude.com/download).
+Download the installer for your platform:
 
-| Platform | Installer | Notes |
-| - | - | - |
-| macOS | `.dmg` | Drag **Claude.app** to Applications |
-| Windows | `.msix` | Supports per-machine provisioning for enterprise deployment |
+| Platform | Installer | Download | Notes |
+| - | - | - | - |
+| macOS | `.dmg` | [claude.com/download](https://claude.com/download) | Drag **Claude.app** to Applications |
+| Windows (x64) | `.msix` | [Claude MSIX (x64)](https://claude.ai/api/desktop/win32/x64/msix/latest/redirect) | Supports per-machine provisioning for enterprise deployment |
+| Windows (Arm) | `.msix` | [Claude MSIX (arm64)](https://claude.ai/api/desktop/win32/arm64/msix/latest/redirect) | Supports per-machine provisioning for enterprise deployment |
+
+On claude.com/download, the Windows download of Claude Desktop is Claude Setup (`Claude Setup.exe`), an interactive installer for a single device. On Windows devices that you manage, deploy the `.msix` package or the [offline installer](#offline-installation), and tell users not to run Claude Setup. Without an administrator's approval, Claude Setup can offer the legacy `.exe` install, which doesn't include Cowork.
 
 For fleet rollouts, distribute the installer through your standard software-distribution mechanism. On the MDM and bootstrap paths, distribute it after the configuration reaches devices; [Choose a configuration delivery model](#choose-a-configuration-delivery-model) covers how the configuration gets there.
 
@@ -45979,7 +46124,7 @@ On the MDM and bootstrap paths, deploy the configuration before the app so users
 
 For evaluating before a fleet rollout, for pilots, or for organizations that don't use MDM, a single machine can be configured directly in the app.
 
-1. Install Claude Desktop from [claude.com/download](https://claude.com/download).
+1. Install Claude Desktop from [claude.com/download](https://claude.com/download). Don't install it on a device where your organization has already deployed Claude Desktop. On Windows, approve the administrator prompt, or have an administrator approve it. Without that approval, the install doesn't include Cowork.
 2. Launch the app. **Do not sign in or create an Anthropic account.** From the macOS menu bar (or on Windows, the application menu ☰ in the top-left of the login screen), go to **Help → Troubleshooting → Enable Developer Mode**, then **Developer → Configure Third-Party Inference…** to open the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration).
 3. Enter the provider, endpoint, and credential values supplied by your administrator.
 4. Click **Apply Changes**, then click **Save & Restart**. The app relaunches and the sign-in screen now offers the option to start in Claude Desktop on 3P using the configuration you entered.
@@ -46122,10 +46267,25 @@ Get-AppxPackage -AllUsers -Name Claude
 Get-AppxProvisionedPackage -Online | Where-Object DisplayName -eq 'Claude'
 ```
 
-* **One installed package, provisioned, an older `Version` than your offline package**: remove nothing. Have each signed-in user select **☰ > File > Exit** in Claude Desktop. Then run `Add-AppxProvisionedPackage -Online -PackagePath <path to offline .msix> -SkipLicense`. Users get the new version after they next sign in to Windows.
+* **One installed package, provisioned, an older `Version` than your offline package**: remove nothing. Have each signed-in user select **☰ > File > Exit** in Claude Desktop. [Back up each user's data](#back-up-user-data-before-a-package-change). Then run `Add-AppxProvisionedPackage -Online -PackagePath <path to offline .msix> -SkipLicense`. Users get the new version after they next sign in to Windows.
 * **One installed package, the same `Version`**: follow [Replace a package when the versions match](#replace-a-package-when-the-versions-match). `Add-AppxProvisionedPackage` alone fails with error `0x80073CFB` ("The provided package is already installed") and removes the standard package's provisioning. If the package is provisioned, Anthropic's [`Install-Claude.ps1`](https://downloads.claude.ai/releases/enterprise/intune/Claude-Intune-README.md) prints "Nothing to do.", exits with code 0, and leaves the standard package in place.
 * **More than one installed package**: have each user sign out of Windows, sign in, start Claude Desktop, and select **☰ > File > Exit**. Then list again.
 * **Anything else, or still more than one**: remove nothing and contact your Anthropic representative.
+
+#### Back up user data before a package change
+
+As a precaution before you change the package, back up these folders, where they exist, for every user of the device. They can hold the user's [conversations and settings](/docs/third-party/claude-desktop/data-storage#where-data-lives). Before you copy, run `Get-Process -Name claude -ErrorAction SilentlyContinue` in an elevated Windows PowerShell session, and go on only when it lists nothing.
+
+* `C:\Users\<user>\AppData\Local\Claude-3p`
+* `C:\Users\<user>\AppData\Local\Packages\Claude_pzs8sxrjxfjjc\LocalCache`
+
+For the backup:
+
+* **Tool**: use a copy tool that supports paths longer than 260 characters, and check that it copied every file
+* **Size**: each folder can be 10 GB or more
+* **Profiles you can't reach**: a profile in a container that isn't attached, for example, isn't in the backup
+* **Protection**: the backup holds full conversations and sign-ins. Encrypt it, restrict access to it, and delete it when you no longer need it.
+* **Restore**: contact your Anthropic representative
 
 #### Replace a package when the versions match
 
@@ -46133,12 +46293,22 @@ Copy the offline `.msix` to each device. Complete these steps on one device firs
 
 > [!WARNING]
 >
-> Once you remove the standard package, no user has Claude Desktop until you provision the offline package. In that time, Windows can delete each user's `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc` folder, for example when the user signs in. Make sure nobody signs in to Windows, signs out, or restarts the device until provisioning succeeds.
->
-> * **Windows 11**: Windows leaves the [conversations and settings](/docs/third-party/claude-desktop/data-storage#where-data-lives) of Claude Desktop on 3P in `%LOCALAPPDATA%\Claude-3p`. The `Claude_pzs8sxrjxfjjc` folder can hold data from Claude Desktop used outside 3P.
-> * **Before Windows 11 (builds below 22000)**: the `Claude_pzs8sxrjxfjjc` folder can also hold the 3P conversations and settings. Contact your Anthropic representative before you start.
+> Once you remove the standard package, no user has Claude Desktop until you provision the offline package. In that time, Windows can delete each user's `C:\Users\<user>\AppData\Local\Packages\Claude_pzs8sxrjxfjjc` folder, for example when the user signs in. Make sure nobody signs in to Windows, signs out, or restarts the device until provisioning succeeds.
 
-**1. Quit Claude Desktop**
+**1. Check where each user's data is**
+
+Do this on each device, before you remove its package. From the system account or an elevated session, look in every user's profile, including users who aren't signed in, for these folders:
+
+* `C:\Users\<user>\AppData\Local\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Local\Claude-3p`
+* `C:\Users\<user>\AppData\Local\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude-3p`
+
+Find the first case that fits the device:
+
+* **At least one user has one of these folders, or the device's Windows build is below 22000 (for example, Windows 10)**: don't remove the package, and contact your Anthropic representative. The `Claude_pzs8sxrjxfjjc` folder can hold [conversations and settings](/docs/third-party/claude-desktop/data-storage#where-data-lives) of Claude Desktop on 3P.
+* **You can't look in a user's profile, for example because the user's profile container isn't attached or access is denied**: don't remove the package, and contact your Anthropic representative.
+* **Any other device**: go on to the next step. The conversations and settings of Claude Desktop on 3P stay in `C:\Users\<user>\AppData\Local\Claude-3p`, outside the folder that Windows can delete. The `Claude_pzs8sxrjxfjjc` folder can hold data from Claude Desktop used outside 3P. The [backup](#back-up-user-data-before-a-package-change) in a later step covers its `LocalCache` folder.
+
+**2. Quit Claude Desktop**
 
 Have each signed-in user select **☰ > File > Exit**. The removal doesn't close an open app, and the provisioning then fails.
 
@@ -46150,7 +46320,13 @@ Get-Process -Name claude -ErrorAction SilentlyContinue
 
 Go on only when it lists nothing.
 
-**2. Remove the standard package**
+**3. Back up each user's data**
+
+Follow [Back up user data before a package change](#back-up-user-data-before-a-package-change).
+
+**4. Remove the standard package**
+
+Run `Get-Process -Name claude -ErrorAction SilentlyContinue` again, and go on only when it lists nothing.
 
 From the system account, run [`Uninstall-Claude.ps1`](https://downloads.claude.ai/releases/enterprise/intune/Claude-Intune-README.md). Otherwise, run these commands with the `PackageFullName` that `Get-AppxPackage` listed:
 
@@ -46161,7 +46337,7 @@ Remove-AppxPackage -Package <PackageFullName> -AllUsers
 
 Run `Get-AppxPackage -AllUsers -Name Claude` again. If it still lists a package, don't provision, don't have users sign out, and contact your Anthropic representative.
 
-**3. Provision the offline package**
+**5. Provision the offline package**
 
 Right after the removal, run `Install-Claude.ps1 -MsixPath <path to offline .msix>` from the system account, or this command from an elevated session:
 
@@ -46171,7 +46347,7 @@ Add-AppxProvisionedPackage -Online -PackagePath <path to offline .msix> -SkipLic
 
 If the command fails with error `0x80070005` ("Access is denied"), or the script prints "ERROR: Access is denied." and exits with code 1, have each signed-in user select **☰ > File > Exit**. Then run it again right away. If it fails again or with another error, don't restart or have users sign out, and contact your Anthropic representative.
 
-**4. Check the result**
+**6. Check the result**
 
 Users get the app after they next sign in to Windows. Have a user without administrator rights who has used Claude Desktop sign in and confirm that a conversation and a Cowork task start and that earlier conversations are listed. If they don't, contact your Anthropic representative.
 
@@ -46640,6 +46816,7 @@ These messages appear in Claude Desktop, or in `main.log` in the [logs directory
 
 | What the user sees or `main.log` records | Cause | Fix |
 | - | - | - |
+| "Connection to server failed. You can try again." with no sign-in window, and `main.log` shows an HTML block page from your network, starting at the `[error]` line that contains the server's name and the word `failed` | A firewall or secure web gateway blocked the request to the MCP server before sign-in started. Such equipment can classify the connection as Model Context Protocol (MCP) traffic and block it even when the server's host is allowed | Send the block page to your network team and ask them to allow MCP traffic to the server's host. Then have the user click **Connect** again |
 | "Couldn't connect to \{server} because it doesn't support automatic client registration" (Claude Desktop 2.110.0 or later), or `main.log` records that the authorization server does not support dynamic client registration | **OAuth** is **Auto-register** but the identity provider requires a client that you register | Register a public client with redirect URI `http://127.0.0.1:53280/callback`, set **OAuth** to **Bring your own client**, and fill in **Client ID** |
 | The browser step succeeds, then the connection fails and `main.log` records the token endpoint's error, for example `client_secret is missing` | The entry has a **Client ID** but the identity provider also requires the secret | Add the secret and **Authorization server** as described under [Where the client secret goes](#where-the-client-secret-goes) |
 | `main.log` names a rejected referrer host during sign-in | The identity provider completes sign-in from a host other than the one in its authorization URL | Add that hostname to **Additional redirect referrer hosts** |
@@ -46791,7 +46968,7 @@ Claude Desktop on 3P runs on the inference provider or bootstrap server in your 
 
 * **`3p`**: the app uses the connection that the managed source sets, such as an inference provider or bootstrap keys. The sign-in screen doesn't offer **Or sign in with Claude.ai**. With nothing to connect to in the same managed source, the app opens standard Claude Desktop, so set a connection there to keep users from signing in to claude.ai.
 * **`1p`**: the app always runs as standard Claude Desktop and ignores inference provider and bootstrap keys.
-* **`any`**: the same as leaving the key unset.
+* **`any`**: the same as leaving the key unset. Where users can switch, the two modes [share some data on the device](/docs/third-party/claude-desktop/data-storage#data-shared-with-standard-claude-desktop).
 
 With `3p` or `1p`, a user can't [move the device to an Enterprise Admin Console organization](/docs/third-party/claude-desktop/admin-console#keep-a-device-on-its-managed-profile), and the app doesn't offer or accept the [Claude API account sign-in](/docs/third-party/claude-desktop/claude-api#which-devices-offer-the-claude-api-account-sign-in). To allow the move only to your organization, set [`forceLoginOrgUUID`](/docs/third-party/claude-desktop/admin-console#keep-a-device-on-its-managed-profile) instead. The app ignores `deploymentMode` in a bootstrap response. It treats a misspelled value as `3p`.
 
@@ -46943,7 +47120,7 @@ Move Claude Desktop from your cloud provider, where the app is named Claude (thi
 
 ## What is migrated
 
-The migration never changes or deletes the Claude (third-party) data.
+The migration never changes or deletes the Claude (third-party) data. Nothing migrates until you turn the migration on, as described under [Migrate your fleet](#migrate-your-fleet).
 
 **Migrated automatically:**
 
@@ -46982,7 +47159,7 @@ Special cases:
 
 * If Cowork runs only in its VM sandbox in your organization (for example, because [`requireCoworkFullVmSandbox`](/docs/third-party/claude-desktop/configuration#requirecoworkfullvmsandbox) is enforced), nothing is migrated. Ask your Anthropic account team.
 * If your organization needs HIPAA, make it HIPAA-ready before users first sign in. A HIPAA-ready organization migrates no skills, local MCP servers, extensions, plugins, plugin marketplaces, instructions, or Cowork memory.
-* With the MSIX install on Windows 10 Enterprise LTSC 2021, or Windows 10 older than 21H1, update Claude in place. Uninstalling or resetting it deletes the Claude (third-party) data.
+* With the MSIX install on Windows versions before Windows 11 (build 22000), for example on Windows 10, update Claude in place. Uninstalling or resetting it can delete the [Claude (third-party) data](/docs/third-party/claude-desktop/data-storage#where-data-lives).
 
 ## What changes for your security controls
 
@@ -47003,7 +47180,7 @@ Make one change to the policy or profile that carries your Claude settings: an `
 Choose one option for the keys that connect Claude to your cloud provider, such as keys that start with `inference` or `bootstrap`:
 
 * **To move everyone to Claude Enterprise**, remove those keys. Also remove [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser), [`deploymentMode`](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode), and [`deploymentOrganizationUuid`](/docs/third-party/claude-desktop/configuration#deploymentorganizationuuid). If your settings come from a [bootstrap server](/docs/third-party/claude-desktop/bootstrap), copy the keys you want to keep into the policy or profile itself.
-* **To let each user switch between your cloud provider and Claude Enterprise**, keep those keys and `deploymentOrganizationUuid`. They must be in the same `HKEY_LOCAL_MACHINE` policy or configuration profile as `importThirdPartyHistoryIntoOrgUUID`, because on Windows Claude [reads one policy location](/docs/third-party/claude-desktop/mdm#4-deploy-the-configuration). Make sure [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser) isn't set in the policy or profile, or by your bootstrap server, and that [`deploymentMode`](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode) is unset or `any`. Claude's welcome screen then offers **Or sign in with Claude.ai**. Your cloud provider settings still apply while a user works with your cloud provider.
+* **To let each user switch between your cloud provider and Claude Enterprise**, keep those keys and `deploymentOrganizationUuid`. They must be in the same `HKEY_LOCAL_MACHINE` policy or configuration profile as `importThirdPartyHistoryIntoOrgUUID`, because on Windows Claude [reads one policy location](/docs/third-party/claude-desktop/mdm#4-deploy-the-configuration). Make sure [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser) isn't set in the policy or profile, or by your bootstrap server, and that [`deploymentMode`](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode) is unset or `any`. Claude's welcome screen then offers **Or sign in with Claude.ai**. Your cloud provider settings still apply while a user works with your cloud provider. With your cloud provider and with Claude Enterprise, Claude uses some of the same folders on the computer, as described under [Data shared with standard Claude Desktop](/docs/third-party/claude-desktop/data-storage#data-shared-with-standard-claude-desktop).
 
 Leave other keys in place. In Claude Enterprise, the desktop extensions feature is on unless [`isDesktopExtensionEnabled`](/docs/third-party/claude-desktop/configuration#isdesktopextensionenabled) is set to `false`.
 
@@ -47622,7 +47799,7 @@ Most of the policy that Claude Desktop applies to a local Code session applies o
 * [`blockReadsOutsideWorkingDirectories`](/docs/third-party/claude-desktop/configuration#blockreadsoutsideworkingdirectories), evaluated on the host, so the working directories and the home directory it hides from shell commands are the SSH user's there. Hiding files from shell commands needs the host's sandbox dependencies (next item); on a host without them, or a Windows host, shell reads outside the working directories ask for approval instead, and the file-tool restriction applies regardless. Files a user attaches to a remote session stay readable, except on a Windows host, where the session's plugin files and attachments stay outside the file tools' reach under this key.
 * `coworkEgressAllowedHosts`, as Claude Code managed settings. The network and filesystem sandbox it produces with `allowedWorkspaceFolders` depends on the host having Claude Code's sandbox dependencies installed (see [Claude Code sandboxing](https://code.claude.com/docs/en/sandboxing)). Without them, commands run unsandboxed. See [Sandbox status on the remote host](#sandbox-status-on-the-remote-host) for the message the session shows.
 * `managedMcpServers`, as the Claude Code managed setting that keeps the session from loading MCP servers that users define in Claude Code's own configuration on the host. The managed servers themselves are reached from the device (see [Where MCP servers run in a remote session](#where-mcp-servers-run-in-a-remote-session)).
-* Plugins from your [allowed marketplaces](/docs/third-party/claude-desktop/extensions), copied to the host. A plugin's `hooks` directory is not copied, so its hooks do not run in a remote session, and a plugin whose manifest declares hooks elsewhere is not copied at all.
+* Plugins from your [allowed marketplaces](/docs/third-party/claude-desktop/extensions), copied to the host. A plugin's `hooks` directory is not copied, so its hooks do not run in a remote session, and a plugin whose manifest declares hooks elsewhere is not copied at all. To run your organization's hooks on the host, see [Run a hook for every user](/docs/third-party/claude-desktop/extensions#run-a-hook-for-every-user).
 
 If the host has its own Claude Code managed settings, those take precedence over the policy Claude Desktop supplies, as described under [Interaction with Claude Code's own managed settings](/docs/third-party/claude-desktop/code#interaction-with-claude-code%E2%80%99s-own-managed-settings) for local sessions.
 

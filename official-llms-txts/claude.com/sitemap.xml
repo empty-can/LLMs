@@ -1687,10 +1687,16 @@
     <loc>https://claude.com/de/customers/micro1</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/customers/mid-ohio-food-collective</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/customers/mintlify</loc>
   </url>
   <url>
     <loc>https://claude.com/de/customers/money-forward</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/customers/montgomery-county-food-bank</loc>
   </url>
   <url>
     <loc>https://claude.com/de/customers/n26</loc>
@@ -2197,6 +2203,9 @@
     <loc>https://claude.com/de/resources/best-practices</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/enterprise-announcements</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/insights</loc>
   </url>
   <url>
@@ -2324,6 +2333,12 @@
   </url>
   <url>
     <loc>https://claude.com/es/customers/loreal</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/customers/mid-ohio-food-collective</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/customers/montgomery-county-food-bank</loc>
   </url>
   <url>
     <loc>https://claude.com/es/customers/n26</loc>
@@ -2645,6 +2660,9 @@
   </url>
   <url>
     <loc>https://claude.com/es/resources/best-practices</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/enterprise-announcements</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/insights</loc>
@@ -3025,10 +3043,16 @@
     <loc>https://claude.com/fr/customers/micro1</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/customers/mid-ohio-food-collective</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/customers/mintlify</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/customers/money-forward</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/customers/montgomery-county-food-bank</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/customers/n26</loc>
@@ -3535,6 +3559,9 @@
     <loc>https://claude.com/fr/resources/best-practices</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/enterprise-announcements</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/insights</loc>
   </url>
   <url>
@@ -3668,6 +3695,12 @@
   </url>
   <url>
     <loc>https://claude.com/it/customers/loreal</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/customers/mid-ohio-food-collective</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/customers/montgomery-county-food-bank</loc>
   </url>
   <url>
     <loc>https://claude.com/it/customers/n26</loc>
@@ -3980,6 +4013,9 @@
   </url>
   <url>
     <loc>https://claude.com/it/resources/best-practices</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/enterprise-announcements</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/insights</loc>
@@ -4354,10 +4390,16 @@
     <loc>https://claude.com/ja/customers/micro1</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/mid-ohio-food-collective</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/mintlify</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/money-forward</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/montgomery-county-food-bank</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/n26</loc>
@@ -4867,6 +4909,9 @@
     <loc>https://claude.com/ja/resources/best-practices</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/resources/enterprise-announcements</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/resources/insights</loc>
   </url>
   <url>
@@ -5296,10 +5341,16 @@
     <loc>https://claude.com/ko/customers/micro1</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/customers/mid-ohio-food-collective</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/customers/mintlify</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/customers/money-forward</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ko/customers/montgomery-county-food-bank</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/customers/n26</loc>
@@ -5897,6 +5948,9 @@
   </url>
   <url>
     <loc>https://claude.com/ko/resources/best-practices</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ko/resources/enterprise-announcements</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/resources/insights</loc>
@@ -7066,6 +7120,9 @@
     <loc>https://claude.com/marketplace/connectors/evernote</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/ex-parte</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/exa</loc>
   </url>
   <url>
@@ -7475,6 +7532,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/intercom</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/intralinks-dealcentre-ai</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/introhive</loc>
@@ -8353,6 +8413,9 @@
     <loc>https://claude.com/marketplace/connectors/process-street</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/productboard</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/productised</loc>
   </url>
   <url>
@@ -8489,6 +8552,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/replit</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/reply-io-mcp-for-claude</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/resend</loc>
@@ -8842,6 +8908,9 @@
     <loc>https://claude.com/marketplace/connectors/stytch</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/subframe</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/subtext</loc>
   </url>
   <url>
@@ -9065,6 +9134,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/twilio</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/twinkle-hub</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/twinmind-app</loc>
@@ -9428,6 +9500,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/altimate-code</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/amadeus-travel-builder</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/amazon-location-service</loc>
@@ -11623,6 +11698,9 @@
     <loc>https://claude.com/resources/articles/introduction-to-agentic-coding</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/jpmorganchase-expands-claude-code</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/key-benefits-transitioning-agentic-coding</loc>
   </url>
   <url>
@@ -12587,6 +12665,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/how-legal-teams-put-claude-to-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/webinars/how-the-claude-code-team-does-code-review</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/how-to-control-costs-and-show-roi-for-claude-code-on-google-cloud</loc>
