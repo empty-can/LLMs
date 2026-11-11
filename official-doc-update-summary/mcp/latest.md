@@ -1,90 +1,64 @@
 ---
-対象期間: 2026年11月07日 〜 2026年11月09日
-作成日: 2026-11-09
+対象期間: 2026年11月09日 〜 2026年11月10日
+作成日: 2026-11-10
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の取り込みは 2 回で、MCP で差分が出たのは 2 回目だけでした。変わったのはほぼコミュニティ文書（`community/` 配下）で、8 ページで 50 行以上が書き換わり、2 ページが加わり、1 ページがなくなりました（`llms-full.txt` は追加 618 行・削除 1,647 行）。
+今回の対象期間の取り込みは 1 回で、差分はコミュニティ文書（`community/` 配下）の 9 ページと、索引 `llms.txt` の 1 行だけでした。新規ページも 50 行以上の更新もなく、削除された 1 ページを除けば、どのページも追加・削除とも 10 行未満です（`llms-full.txt` は追加 21 行・削除 105 行）。
 
 主要なものを以下に挙げます。
 
-1. コミュニティ文書の 13 ページが変わり、書き直したページは冒頭でそのページを定めた SEP を示す形にそろい、4 ページが改称された
-2. Contributing to MCP が 568 行から 118 行になり、仕様リポジトリへの変更は、書き込み権限が無ければメンテナーに PR を開いてもらう手順に書き直された
-3. 新しい Project Policies のページが行動規範・ライセンス・AI 支援の開示・脆弱性の報告などの方針をまとめ、Security Policy のページがなくなった
-4. SEP Guidelines が書き直され、sponsor の定義に WG Lead が加わり、collaborator でない作者の進め方や `npm run generate:seps` などが書き込まれた
-5. Working Groups and Interest Groups に現行のグループの一覧と会議の要件が加わり、Group Charter Template に憲章の提出手順ができ、MCP Apps Working Group の憲章が収録された
+1. 仕様リポジトリに PR を開けるのは `modelcontextprotocol` の GitHub 組織のメンバーだけだと明記され、メンバーでない人の手順と Contributor Ladder の権限の記述がそれに合わせて書き直された
+2. Enterprise-Managed Authorization IG の憲章ページが索引と本文からなくなり、interest group の憲章は 8 件から 7 件になった
+3. 4 つの憲章で、Auth WG・Security WG・Transport WG・Primitive Grouping IG というほかのグループへの言及が、現行のグループ名に直った
 ```
 
 ## ハイライト
 
-1. [**コミュニティ文書が大きく再編された**](./latest-detail.md#1-コミュニティ文書が大きく再編された):  
-  差分のあった 14 ページのうち 13 ページがコミュニティ文書で、8 ページで 50 行以上が書き換わり、2 ページが加わり、1 ページがなくなった。書き直したページは冒頭でそのページを定めた SEP を示し、変更には Process SEP が要ると述べる形にそろい、4 ページが改称された。
-2. [**Contributing to MCP が短くなり変更を出す手順が書き直された**](./latest-detail.md#2-contributing-to-mcp-が短くなり変更を出す手順が書き直された):  
-  568 行から 118 行になり、環境構築やトラブルシューティングの説明がなくなった。仕様リポジトリに PR を開くには書き込み権限が要り、権限が無ければブランチを push してメンテナーに PR を開いてもらう。Inspector とリファレンスサーバーは issue だけを受け付ける。
-3. [**Project Policies のページが加わり Security Policy のページがなくなった**](./latest-detail.md#3-project-policies-のページが加わり-security-policy-のページがなくなった):  
-  行動規範・独占禁止・ライセンス・AI 支援の開示・脆弱性の報告・コミュニケーションの 6 つの方針をまとめたページが加わった。AI 支援はその程度とともに開示し、AI が書いたレビューへの返答やコメントも対象になる。Security Policy のページは索引と本文からなくなった。
-4. [**SEP Guidelines の手順と sponsor の定義が詳しくなった**](./latest-detail.md#4-sep-guidelines-の手順と-sponsor-の定義が詳しくなった):  
-  手順が 9 段階に組み直され、collaborator でない作者は sponsor に PR を開いてもらうこと、番号付け後の `npm run generate:seps`、`proposal` ラベル、差し戻しや `superseded` への遷移が書き込まれた。sponsor の定義に WG Lead が加わり、sponsor が付かないまま dormant になるまでの期間は 180 日と書かれた。
-5. [**グループの運営ルールと憲章の手順が整理された**](./latest-detail.md#5-グループの運営ルールと憲章の手順が整理された):  
-  Working Groups and Interest Groups に現行の working group 14 件と interest group 8 件の一覧が加わり、会議はアジェンダから Project Policies にリンクすることになった。Group Charter Template に憲章の提出手順の節ができ、MCP Apps Working Group の憲章ページが収録された。
+1. [**仕様リポジトリに PR を開けるのは組織のメンバーだけだと明記された**](./latest-detail.md#1-仕様リポジトリに-pr-を開けるのは組織のメンバーだけだと明記された):  
+  Contributing to MCP の Change the specification or docs が、PR を開ける条件を「書き込み権限」から「`modelcontextprotocol` の GitHub 組織のメンバー」に改めた。メンバーは CONTRIBUTING.md に従い、それ以外の人は issue かチャンネルで変更を持ち出して、メンバーかメンテナーに PR を開いてもらう。誤字やリンク切れのような小さな修正は最初の段階だけでよい。Contributor Ladder も、Contributor のアクセスを「PR はリポジトリによる」とし、Member の権限に仕様リポジトリで PR を開けることを書いた。
+2. [**Enterprise-Managed Authorization IG の憲章ページがなくなった**](./latest-detail.md#2-enterprise-managed-authorization-ig-の憲章ページがなくなった):  
+  2026年08月17日に Authorization IG へ統合され、参照用に残されていた憲章ページ（77 行）が、索引と本文、Working Groups and Interest Groups の Current groups の一覧からなくなった。拡張の解説ページ Enterprise-Managed Authorization は残っている。Authorization IG の憲章は、なくなったページへのリンクを残している。
+3. [**憲章でのほかのグループへの言及が現行の名前に直った**](./latest-detail.md#3-憲章でのほかのグループへの言及が現行の名前に直った):  
+  Enterprise IG・File Uploads WG・Inspector V2 WG・Scientific Computing IG の憲章で、Auth WG は Authorization IG に、Security WG は Security IG に、Transport WG は Transports WG に、Primitive Grouping IG は Progressive Disclosure WG に替わった。Related Groups で書き換わった項目は、相手の憲章へのリンクになった。
 
 ## 新規追加されたページ
 
-- [**Project Policies**](./latest-detail.md#1-project-policies) ([MCP Docs](https://modelcontextprotocol.io/community/policies#reporting-a-vulnerability)):  
-  MCP の参加者全員に適用される方針（行動規範・独占禁止・ライセンス・AI 支援の開示・脆弱性の報告・コミュニケーション）を 1 ページにまとめ、それぞれの正本へ案内するページ（詳細はハイライト 3 参照）。
-- [**MCP Apps Working Group Charter**](./latest-detail.md#2-mcp-apps-working-group-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/apps#mission-statement)):  
-  MCP Apps の拡張を担う working group の憲章。範囲、Lead 3 人と WG Member 3 人、決定権限、会議、7 件の作業項目、2025年11月21日からの経緯を記している。
+*(新規追加されたページはありません)*
 
 ## 大幅に更新されたページ
 
-- [**Contributing to MCP**](./latest-detail.md#1-contributing-to-mcp) ([MCP Docs](https://modelcontextprotocol.io/community/contributing#change-the-specification-or-docs)):  
-  568 行から 118 行になり、8 つの節で入口を案内する形になった。仕様リポジトリへの変更は、書き込み権限が無ければメンテナーに PR を開いてもらう手順に書き直された（追加 57 行・削除 507 行。詳細はハイライト 2 参照）。
-- [**Contributor Ladder**](./latest-detail.md#2-contributor-ladder) ([MCP Docs](https://modelcontextprotocol.io/community/contributor-ladder#advancement-process)):  
-  381 行から 162 行になった。各役割を要件・sponsor と承認・務め・権限・最低期間の段落で書く形にそろえ、昇格の手順を 5 段階に、非活動・辞任・解任を 1 つの節にまとめた（追加 86 行・削除 305 行）。
-- [**Working Groups and Interest Groups**](./latest-detail.md#3-working-groups-and-interest-groups) ([MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)):  
-  旧 Working and Interest Groups。294 行から 152 行になった。現行のグループの一覧と参加の方法が加わり、運営ルールを Leadership から Amending or retiring a group までの節に組み直した（追加 97 行・削除 239 行。詳細はハイライト 5 参照）。
-- [**SEP Guidelines**](./latest-detail.md#4-sep-guidelines) ([MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#workflow)):  
-  279 行から 138 行になった。手順を 9 段階に組み直し、collaborator でない作者の進め方、`proposal` ラベル、`npm run generate:seps`、sponsor への WG Lead の追加などを書き込んだ（追加 83 行・削除 224 行。詳細はハイライト 4 参照）。
-- [**Feature Lifecycle and Deprecation**](./latest-detail.md#5-feature-lifecycle-and-deprecation) ([MCP Docs](https://modelcontextprotocol.io/community/feature-lifecycle#deprecating-a-feature)):  
-  旧 Feature Lifecycle and Deprecation Policy。非推奨化の SEP が採択されたら作者が SEP の PR で 4 つの修正を加え、sponsor が確かめてから `final` にする流れを明記し、Roles の表を 1 段落にした（追加 61 行・削除 71 行）。
-- [**Communication**](./latest-detail.md#6-communication) ([MCP Docs](https://modelcontextprotocol.io/community/communication#decision-records)):  
-  旧 Contributor Communication。112 行から 34 行になった。チャンネルの表・Discord・決定の記録の 3 節にまとめ、チャンネルの命名規則と、Discord は記録の場ではないことを明記した（追加 18 行・削除 96 行）。
-- [**SDK Tiers**](./latest-detail.md#7-sdk-tiers) ([MCP Docs](https://modelcontextprotocol.io/community/sdk-tiers#conformance-testing)):  
-  旧 SDK Tiering System。日程の NOTE と Overview の節を削った。各公式 SDK が既定のブランチで適合性テストを実行して結果を公開すること、非推奨を示さない Tier 1 の SDK の降格を書き加えた（追加 34 行・削除 71 行）。
-- [**Group Charter Template**](./latest-detail.md#8-group-charter-template) ([MCP Docs](https://modelcontextprotocol.io/community/charter-template#submitting-a-charter)):  
-  Submitting a charter の節を新設して提出手順を箇条書きにし、テンプレートのガイドのコメントを MDX の `{/* */}` 形式に替えた（追加 34 行・削除 69 行。詳細はハイライト 5 参照）。
+*(大幅に更新されたページはありません)*
 
 ## 軽微な更新
 
-差分のあった 14 ページのうち、ハイライトと新規追加・大幅更新で扱った 10 ページのほかに、次の変更がありました。
+差分のあった 9 ページは、すべて 50 行未満の変更かページの削除です。ハイライトで扱った 8 ページのほかに、Server Card の憲章で重複した節が解消されました。
 
 **機能改善**
 
-- Design Principles の冒頭に、原則の適用範囲と使い方の説明が加わった — [Design Principles](https://modelcontextprotocol.io/community/design-principles)
-  - これらの原則は SEP と拡張に適用され、サーバーとクライアントの作り方を述べる仕様の architecture の設計原則とは別のもの
-  - Core Maintainers は SEP の採否の理由にこれらの原則を挙げる
-  - 原則に反する提案は、そのことを明示して理由を述べる
-  - 2 つの原則がぶつかるときは、順位ではなく比較して判断する
-- Design Principles の Demonstration over deliberation に、SEP は採択の前に動くプロトタイプが要るという一文が加わった（SEP Guidelines の Prototype Requirements へのリンク付き） — [Design Principles](https://modelcontextprotocol.io/community/design-principles#demonstration-over-deliberation)
-- Design Principles の Stability over velocity に、削除は Feature Lifecycle and Deprecation に従うという一文が加わった。速い出荷に慣れた人には歯がゆいかもしれない、という文はなくなった — [Design Principles](https://modelcontextprotocol.io/community/design-principles#stability-over-velocity)
-- Antitrust Policy の冒頭で、NOTE が 1 文に替わった。旧 NOTE には、コードやドキュメントに取り組む個々のコントリビューターは日常の作業でこの方針を気にする必要はほぼない、という説明もあった。新しい文は、この方針が MCP の会議・working group・interest group など、競合他社が居合わせうるすべての場に適用される、と述べ、Meetings and channels へのリンクを添えている — [Antitrust Policy](https://modelcontextprotocol.io/community/antitrust)
+- Contributing to MCP の Change the specification or docs で、仕様リポジトリに PR を開けるのは GitHub 組織のメンバーだけだと明記し、メンバーでない人の 3 段階の手順を書き直した（詳細はハイライト 1 参照） — [Contributing to MCP](https://modelcontextprotocol.io/community/contributing#change-the-specification-or-docs)
+- Contributing to MCP の Where to start で、仕様リポジトリの `good first issue`・`help wanted` のラベルの案内を、open な issue を読むかグループのチャンネルで聞くという案内に替えた（詳細はハイライト 1 参照） — [Contributing to MCP](https://modelcontextprotocol.io/community/contributing#where-to-start)
+- Contributor Ladder の Roles at a glance・Contributor・Member で、PR を開ける人についての記述を Contributing to MCP に合わせた（詳細はハイライト 1 参照） — [Contributor Ladder](https://modelcontextprotocol.io/community/contributor-ladder#contributor)
 
 **その他**
 
-- Security Policy（`community/security`）のページが、索引と本文から削除された（69 行。詳細はハイライト 3 参照）
-- 索引 `llms.txt` で、コミュニティ文書の並びが変わった。4 ページの改称と 7 ページの説明文の書き換え、2 ページの追加と 1 ページの削除があった（詳細はハイライト 1 参照）
-- Design Principles で文言を整理した。Convergence over choice と Capability over compensation ではダッシュ（—）をカンマとコロンに替えた。Composability over specificity と Standardization over innovation では 2 段落を 1 段落にまとめた — [Design Principles](https://modelcontextprotocol.io/community/design-principles#composability-over-specificity)
-- The MCP Registry の The MCP Registry Ecosystem の節で、エコシステムの図の画像 URL が変わった（URL 内のハッシュのみ） — [The MCP Registry](https://modelcontextprotocol.io/registry/about#the-mcp-registry-ecosystem)
+- Enterprise-Managed Authorization Charter（`community/interest-groups/enterprise-managed-authorization`）のページが、索引と本文から削除された（77 行。詳細はハイライト 2 参照）
+- Working Groups and Interest Groups の Current groups で、interest group の一覧から Enterprise-Managed Authorization の行がなくなった（詳細はハイライト 2 参照） — [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
+- Enterprise Interest Group Charter で、Auth WG を Authorization IG に、Transport WG を Transports WG に改め、Related Groups の Authorization IG を Interest Groups の側に移した（詳細はハイライト 3 参照） — [Enterprise Interest Group Charter](https://modelcontextprotocol.io/community/interest-groups/enterprise#related-groups)
+- File Uploads Charter で、Security WG を Security IG に改めた（詳細はハイライト 3 参照） — [File Uploads Charter](https://modelcontextprotocol.io/community/working-groups/file-uploads#related-groups)
+- Inspector V2 Working Group Charter で、Auth WG を Authorization IG に改めた（詳細はハイライト 3 参照） — [Inspector V2 Working Group Charter](https://modelcontextprotocol.io/community/working-groups/inspector-v2#related-groups)
+- Scientific Computing Charter で、Primitive Grouping IG を Progressive Disclosure WG に改め、リンク先を新しい憲章にした（詳細はハイライト 3 参照） — [Scientific Computing Charter](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#related-groups)
+- Server Card Charter の Deliverables & Success Metrics で、2 つあった Active Work Items の表と、中身の無い Success Criteria の見出しが 1 つにまとまった（見出しは 17 個から 15 個）。SEP-2127 の行は、PR へのリンク付きの「SEP-2127: MCP Server Cards」、目標日「End March」、Champion はリンクの無い `@dsp-ant` という形の 1 行になり、目標日を 2026年04月03日 とした方の行はなくなった — [Server Card Charter](https://modelcontextprotocol.io/community/working-groups/server-card#active-work-items)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-07.md](./archives/latest/2026-11-07.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-07.md](./archives/latest-detail/2026-11-07.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-09.md](./archives/latest/2026-11-09.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-09.md](./archives/latest-detail/2026-11-09.md)
 
 <!--
-base_commit: 0b52aad1c2858e15e1387c14baa0116109fe73bd
-head_commit: a8f23232a803b4b46f1561458d9a33dd135a159b
-generated_at_full: 2026-11-10T15:36:37+09:00
+base_commit: a8f23232a803b4b46f1561458d9a33dd135a159b
+head_commit: 5ed60081bc6921a82747ac292a0c99583f7521e4
+generated_at_full: 2026-11-11T15:30:12+09:00
 -->
