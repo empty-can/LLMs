@@ -6310,6 +6310,9 @@
     <loc>https://claude.com/marketplace/connectors/aptus-ai-nextos</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/archera</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/articulate</loc>
   </url>
   <url>
@@ -6665,6 +6668,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/circleci</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/citellm</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/civic-iq</loc>
@@ -7319,6 +7325,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/godaddy</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/gong</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/goodnotes</loc>
@@ -8377,6 +8386,9 @@
     <loc>https://claude.com/marketplace/connectors/polar-analytics</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/polly</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/pophive</loc>
   </url>
   <url>
@@ -8818,6 +8830,9 @@
     <loc>https://claude.com/marketplace/connectors/softr</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/solstone</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/solve-intelligence</loc>
   </url>
   <url>
@@ -9023,6 +9038,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/thumbtack</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/thunderphone</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/ticket-tailor</loc>
@@ -9313,6 +9331,9 @@
     <loc>https://claude.com/marketplace/connectors/windsor-ai</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/windsor-ai-for-paid-media</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/windsor-ai-for-social-media</loc>
   </url>
   <url>
@@ -9533,9 +9554,6 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/appfollow-ai-toolkit</loc>
-  </url>
-  <url>
-    <loc>https://claude.com/marketplace/plugins/apptweak-api</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/appwrite</loc>
@@ -9838,6 +9856,9 @@
     <loc>https://claude.com/marketplace/plugins/cortellis</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/plugins/cortex-appsec-palo-alto-networks</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/plugins/couchbase</loc>
   </url>
   <url>
@@ -9944,6 +9965,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/dominodatalab</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/doubleverify</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/dropbox</loc>
@@ -11608,6 +11632,9 @@
     <loc>https://claude.com/resources/articles/how-cresta-turned-cx-expertise-into-an-agent-builder-on-the-claude-agent-sdk</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/how-datadog-built-a-universal-machine-tool-for-claude-code</loc>
   </url>
   <url>
@@ -11674,6 +11701,9 @@
     <loc>https://claude.com/resources/articles/integrations</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/interactive-connectors-full-tool</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/interactive-tools-in-claude</loc>
   </url>
   <url>
@@ -11729,6 +11759,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/articles/millennium-and-anthropic-are-building-a-digital-risk-analyst-with-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/articles/more-ways-to-work-with-claude-sheets-whiteboards-and-interactive-connectors</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/articles/multi-agent-coordination-patterns</loc>
@@ -11807,6 +11840,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/articles/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/articles/sheets-whiteboards-data</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/articles/skills</loc>
