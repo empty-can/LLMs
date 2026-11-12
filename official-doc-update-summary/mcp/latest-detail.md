@@ -1,122 +1,124 @@
 ---
-対象期間: 2026年11月09日 〜 2026年11月10日
-作成日: 2026-11-10
+対象期間: 2026年11月10日 〜 2026年11月11日
+作成日: 2026-11-11
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、差分はコミュニティ文書（`community/` 配下）の 9 ページと、索引 `llms.txt` の 1 行だけでした。新規ページも 50 行以上の更新もなく、削除された 1 ページを除けば、どのページも追加・削除とも 10 行未満です（`llms-full.txt` は追加 21 行・削除 105 行）。
+今回の対象期間の取り込みは 1 回で、新規ページが 1 件と、既存の 4 ページの小さな変更がありました（`llms-full.txt` は追加 32 行・削除 10 行、索引 `llms.txt` は追加 1 行）。50 行以上の更新はありません。
 
 主要なものを以下に挙げます。
 
-1. 仕様リポジトリに PR を開けるのは `modelcontextprotocol` の GitHub 組織のメンバーだけだと明記され、メンバーでない人の手順と Contributor Ladder の権限の記述がそれに合わせて書き直された
-2. Enterprise-Managed Authorization IG の憲章ページが索引と本文からなくなり、interest group の憲章は 8 件から 7 件になった
-3. 4 つの憲章で、Auth WG・Security WG・Transport WG・Primitive Grouping IG というほかのグループへの言及が、現行のグループ名に直った
+1. ワーキンググループ 14 件の Leads・Discord のチャンネル・Focus を 1 つの表にまとめた Working Groups Overview のページが加わった
+2. Extension Support Matrix で、MCP Inspector の行の MCP Apps 列に、リンク付きの `Partial` が入った
+3. Security IG の憲章の Discussion Topics から、SEP-2809（Attested Tool-Server Admission）の行がなくなった
+4. Transports WG の憲章が、上流リポジトリの `CHARTER.md` と `docs/` を指さなくなり、参照先が `proposals/` などに替わった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**仕様リポジトリに PR を開けるのは組織のメンバーだけだと明記された**](#1-仕様リポジトリに-pr-を開けるのは組織のメンバーだけだと明記された):  
-  Contributing to MCP の Change the specification or docs が、PR を開ける条件を「書き込み権限」から「`modelcontextprotocol` の GitHub 組織のメンバー」に改めた。メンバーは CONTRIBUTING.md に従い、それ以外の人は issue かチャンネルで変更を持ち出して、メンバーかメンテナーに PR を開いてもらう。誤字やリンク切れのような小さな修正は最初の段階だけでよい。Contributor Ladder も、Contributor のアクセスを「PR はリポジトリによる」とし、Member の権限に仕様リポジトリで PR を開けることを書いた。
-2. [**Enterprise-Managed Authorization IG の憲章ページがなくなった**](#2-enterprise-managed-authorization-ig-の憲章ページがなくなった):  
-  2026年08月17日に Authorization IG へ統合され、参照用に残されていた憲章ページ（77 行）が、索引と本文、Working Groups and Interest Groups の Current groups の一覧からなくなった。拡張の解説ページ Enterprise-Managed Authorization は残っている。Authorization IG の憲章は、なくなったページへのリンクを残している。
-3. [**憲章でのほかのグループへの言及が現行の名前に直った**](#3-憲章でのほかのグループへの言及が現行の名前に直った):  
-  Enterprise IG・File Uploads WG・Inspector V2 WG・Scientific Computing IG の憲章で、Auth WG は Authorization IG に、Security WG は Security IG に、Transport WG は Transports WG に、Primitive Grouping IG は Progressive Disclosure WG に替わった。Related Groups で書き換わった項目は、相手の憲章へのリンクになった。
+1. [**ワーキンググループを一覧するページが新設された**](#1-ワーキンググループを一覧するページが新設された):  
+  Working Groups Overview（`community/working-groups/overview`、25 行）が索引と本文に加わった。活動中のワーキンググループ 14 件を、Leads・Discord・Focus の列を持つ 1 つの表にまとめている。並んでいるグループは、Working Groups and Interest Groups の Current groups にある 14 件と同じ。
+2. [**Extension Support Matrix で MCP Inspector の MCP Apps 列に Partial が入った**](#2-extension-support-matrix-で-mcp-inspector-の-mcp-apps-列に-partial-が入った):  
+  Support matrix の MCP Inspector の行で、空だった MCP Apps 列に、Inspector リポジトリの `docs/mcp-app-review.md` へリンクした `Partial` が入った。Skills 列の `Partial` は前からある。
+3. [**Security IG の議題表から SEP-2809 の行がなくなった**](#3-security-ig-の議題表から-sep-2809-の行がなくなった):  
+  Security Charter の Discussion Topics の表から、SEP-2809「Attested Tool-Server Admission (ATSA)」（Draft）の行が消え、議題は 6 件から 5 件になった。Changelog に行は足されていない。
+4. [**Transports 憲章の上流リポジトリへの参照先が替わった**](#4-transports-憲章の上流リポジトリへの参照先が替わった):  
+  Transports Charter で、上流リポジトリ `transports-wg` の `CHARTER.md` と `docs/` へのリンクがなくなった。補助資料の置き場所は `proposals/` に、範囲の補足の参照先はリポジトリのトップの `#mission` に替わり、Resources の 2 つのリンクは「Proposals and decision records」の 1 つにまとまった。
 <!-- light:highlight-list:end -->
 
-## 1. 仕様リポジトリに PR を開けるのは組織のメンバーだけだと明記された
+## 1. ワーキンググループを一覧するページが新設された
 
-今回の対象期間の取り込みは 1 回で、MCP の索引 `llms.txt`（削除 1 行）と本文 `llms-full.txt`（追加 21 行・削除 105 行）の両方に差分がありました。`llms-full.txt` の総行数は 45,009 行から 44,925 行に、収録ページ数は 160 件から 159 件（`examples` が 2 回収録されているため、URL としては 159 件から 158 件）に、索引のエントリ数は 365 件から 364 件になっています。差分のあったページは 9 件で、すべてコミュニティ文書（`community/` 配下）です。
+今回の対象期間の取り込みは 1 回で、MCP の索引 `llms.txt`（追加 1 行）と本文 `llms-full.txt`（追加 32 行・削除 10 行）の両方に差分がありました。`llms-full.txt` の総行数は 44,925 行から 44,947 行に、収録ページ数は 159 件から 160 件（`examples` が 2 回収録されているため、URL としては 158 件から 159 件）に、索引のエントリ数は 364 件から 365 件になっています。差分のあったページは 5 件です。
 
 | ページ | 行数 | 追加 | 削除 | 扱い |
 |---|---|---|---|---|
-| Contributing to MCP | 118 → 120 | 7 | 5 | 軽微な更新（ハイライト 1） |
-| Contributor Ladder | 162 → 162 | 3 | 3 | 軽微な更新（ハイライト 1） |
-| Enterprise-Managed Authorization Charter | 77 → 削除 | 0 | 77 | ページの削除（ハイライト 2） |
-| Working Groups and Interest Groups | 152 → 151 | 0 | 1 | 軽微な更新（ハイライト 2） |
-| Enterprise Interest Group Charter | 111 → 111 | 6 | 6 | 軽微な更新（ハイライト 3） |
-| File Uploads Charter | 118 → 118 | 2 | 2 | 軽微な更新（ハイライト 3） |
-| Inspector V2 Working Group Charter | 113 → 113 | 1 | 1 | 軽微な更新（ハイライト 3） |
-| Scientific Computing Charter | 91 → 91 | 1 | 1 | 軽微な更新（ハイライト 3） |
-| Server Card Charter | 104 → 96 | 1 | 9 | 軽微な更新 |
+| Working Groups Overview | 新規 → 25 | 25 | 0 | 新規追加（ハイライト 1） |
+| Extension Support Matrix | 58 → 58 | 1 | 1 | 軽微な更新（ハイライト 2） |
+| Security Charter | 137 → 136 | 0 | 1 | 軽微な更新（ハイライト 3） |
+| Transports Charter | 153 → 151 | 5 | 7 | 軽微な更新（ハイライト 4） |
+| Governance Working Group Charter | 185 → 185 | 1 | 1 | 軽微な更新 |
 
-行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。9 ページの追加・削除の合計は、`llms-full.txt` 全体の差分（追加 21 行・削除 105 行）と一致します。
+行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。5 ページの追加・削除の合計は、`llms-full.txt` 全体の差分（追加 32 行・削除 10 行）と一致します。
 
-**Change the specification or docs の冒頭が書き直されました。** これまでは「仕様リポジトリに PR を開くには書き込み権限が要る。issue から始め、下のバグの手順に従うのが望ましい」という 2 文でした。新しい冒頭は次の内容です。
+新しいページは Working Groups Overview（`community/working-groups/overview`）で、説明文は「Current MCP working groups, their leads, channels, and focus.」です。本文はまず、ワーキンググループは SEP・拡張・コードのような具体的な成果を出すもので、それぞれが範囲・Leads・運営を定めた憲章のもとで動く、と述べます。続けて、このページは活動中のワーキンググループを一覧するものであり、グループの仕組みや参加・設立の方法は Working groups and interest groups のページに、憲章の出し方は charter template にある、と案内しています。
 
-- 仕様リポジトリに PR を開けるのは、`modelcontextprotocol` の GitHub 組織のメンバーだけ
-- メンバーには、issue や working group・interest group で活動することでなる。要件と、新しいメンバーを誰が sponsor するかは、Contributor Ladder の Member の役割に書かれている
-- メンバーは CONTRIBUTING.md（`#submitting-changes` の節）に従い、それ以外の人は下の手順を使う
-- 誤字・リンク切れ・仕様の小さなバグのような小さな修正は、最初の段階だけでよい
+本体は Working group・Leads・Discord・Focus の 4 列の表で、次の 14 件がアルファベット順に並びます。
 
-**メンバーでない人の 3 段階も書き直されました。**
+- Apps・File Uploads・Filesystems・Governance・Infrastructure・Inspector V2・Interceptors
+- Progressive Disclosure・Registry・SDK・Server Card・Skills Over MCP・Tasks and Events・Transports
 
-1. Raise the change: これまでは「バグは issue で、それ以外はグループのチャンネルか `#general` で」という書き方だった。今回は、Report a bug のフォームで issue を開いて修正の内容を書く。それ以外は関係する working group のチャンネルか `#general` で持ち出し、そこからメンバーかメンテナーが引き取れる、とした
-2. Push a branch: 変更そのものを出すときに、フォークか書き込める working group のリポジトリに push する点は同じ。仕様の修正の置き場所が `draft/` から `docs/specification/draft/` になり、版付きのガイドの修正は `docs/docs/draft/` に入れること、日付のフォルダはリリース済みの版を収めていることが書き加えられた
-3. Ask for a pull request: PR を開いてもらう相手が「メンテナー」から「メンバーかメンテナー」になった
+各列の内容は次のとおりです。
 
-Where to start の Find your group では、仕様リポジトリが最初の変更に向く issue に `good first issue` と `help wanted` のラベルを付けている、という文が、仕様リポジトリの open な issue を読むか、グループのチャンネルで何をすればよいかを聞く、という文に替わりました。Work on an SDK or tool の、組織全体で `good first issue` を探す案内は残っています。
+- **Working group**: 各グループの憲章へのリンク
+- **Leads**: GitHub のプロフィールへリンクした名前。各憲章の Leadership の節で Lead とされている人と同じで、Progressive Disclosure だけは、憲章で Facilitator とされている 2 人が挙がっている
+- **Discord**: チャンネル名。Infrastructure・Interceptors・Tasks and Events の 3 件は「Not listed yet」
+- **Focus**: 1 行の説明。たとえば Transports は「Evolving transport bindings and transport-adjacent protocol architecture」
 
-**Contributor Ladder もこれに合わせました。**
+並んでいるグループは、Working Groups and Interest Groups の Current groups にあるワーキンググループの一覧（14 件）と同じです（Current groups では Apps を「MCP Apps」と書いています）。Current groups 自体は今回変わっておらず、この新しいページへのリンクもありません。`llms-full.txt` の中でこのページを指すリンクは、まだどこにもありません。憲章の出し方を書いた Group Charter Template も、新しいグループは Current groups に 1 行を足すよう求めたままです。interest group について同じような一覧ページは、索引にありません。
 
-- **Roles at a glance**: Contributor の付与されるアクセスが「なし。issue・PR・discussion は誰にでも開かれている」から「なし。issue とグループの会議は誰にでも開かれている。PR はリポジトリによって異なる」になった。PR の部分は Contributing to MCP の Change the specification or docs へのリンク
-- **Contributor**: 仕様リポジトリの PR は Member が開き、ほかのリポジトリはそれぞれの contributing guide で独自の規則を定める、という 2 文が加わった
-- **Member**: 権限の記述が「仕様リポジトリでの PR の作成は Contributing に従う」から「Contributing に定めるとおり、仕様リポジトリで PR を開ける」になった
+索引では Group Charter Template と MCP Apps Working Group Charter の間、つまりワーキンググループの憲章の並びの先頭に入りました。本文では、パスのアルファベット順どおり Interceptors Charter と Progressive Disclosure Charter の間に収録されています。
 
-なお、同じ Contributing to MCP の Propose a protocol change の「書き込み権限が無ければ sponsor に PR を開いてもらう」と、SEP Guidelines の「リポジトリは collaborator からの PR しか受け付けない」という記述は、今回は変わっていません。
-
-- [Contributing to MCP - MCP Docs](https://modelcontextprotocol.io/community/contributing#change-the-specification-or-docs)
-- [Contributor Ladder - MCP Docs](https://modelcontextprotocol.io/community/contributor-ladder#member)
-
-## 2. Enterprise-Managed Authorization IG の憲章ページがなくなった
-
-Enterprise-Managed Authorization Charter（`community/interest-groups/enterprise-managed-authorization`、77 行）が、索引 `llms.txt` と本文 `llms-full.txt` の両方からなくなりました。Working Groups and Interest Groups の Current groups にある interest group の一覧からも外れ、索引・本文・一覧の interest group は 8 件から 7 件になっています（working group は 14 件のまま）。
-
-このページは前回の時点で、冒頭の NOTE に次のことを書いていました。
-
-- 2026年08月17日付で Authorization IG に統合された
-- EMA の相互運用と導入の進捗は、Auth IG の会議で議題の枠をとって発表し、議論は `#auth-ig` のスレッドで続ける
-- `#enterprise-managed-auth-ig` はアーカイブした
-- このページは参照用に残す
-
-今回、その参照用のページが取り除かれたことになります。旧ページは、IdP のベンダー・MCP クライアントの実装者・MCP サーバーの運用者が、Enterprise-Managed Authorization 拡張（`io.modelcontextprotocol/enterprise-managed-authorization`）の導入を調整する場としていました。扱う範囲は、相互運用の報告、適合性のシナリオ、導入のパターン、IdP の機能の不足、仕様の明確化の要望です。Facilitator は 2 人（所属は Anthropic と Okta）で、2 週ごとに 45 分の Interop Call を開くとしていました。
-
-拡張そのものを解説するページ（`extensions/auth/enterprise-managed-authorization`）は残っており、今回の差分はありません。
-
-Authorization IG の憲章（Authorization Charter）は今回変わっておらず、Consolidated channels の節で、統合を述べる文がなくなったページへのリンクを残しています。同じ節の表には `#enterprise-managed-auth-ig` の行があり、`#auth-ig` の EMA の相互運用のスレッドと導入報告の枠に引き継ぐとしています。Changelog にも、2026年08月17日の再憲章で EMA の IG を統合したと書かれています。
-
+- [Working Groups Overview - MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)
 - [Working Groups and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
-- [Authorization Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/auth#consolidated-channels)
 
-## 3. 憲章でのほかのグループへの言及が現行の名前に直った
+## 2. Extension Support Matrix で MCP Inspector の MCP Apps 列に Partial が入った
 
-4 つの憲章で、ほかのグループを指す名前が現行のグループ名に替わりました。Related Groups で書き換わった項目は、相手の憲章へのリンクになっています。
+Extension Support Matrix の Support matrix で、MCP Inspector の行が書き換わりました。MCP Apps 列は空でしたが、今回 `Partial` が入り、Inspector のリポジトリの `docs/mcp-app-review.md`（`https://github.com/modelcontextprotocol/inspector/blob/main/docs/mcp-app-review.md`）へリンクしています。Skills 列の `Partial`（CLI の README の `#skill-verification---verify` へのリンク）は前からあり、変わっていません。リンク先の文書の中身は、今回の入力からは確認できません。
 
-| 憲章 | 箇所 | これまで | 今回 |
+なお、2026年10月20日のサマリで書いたとおり、`llms-full.txt` の書式が変わってから、この表では対応を示すチェックマークが出力されていません。空のセルが非対応を意味するとは限らず、`llms-full.txt` から読み取れるのはリンク付きの `Partial` だけです。
+
+- [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+
+## 3. Security IG の議題表から SEP-2809 の行がなくなった
+
+Security Charter（Security Interest Group の憲章）の Discussion Topics の表から、次の行がなくなりました。
+
+| Item | Name | Status | Champion |
 |---|---|---|---|
-| Enterprise Interest Group Charter | In Scope の 2 項目・Out of Scope・Deliverables (Optional) の表 | Auth WG | Authorization IG |
-| Enterprise Interest Group Charter | Related Groups | Working Groups に Auth WG と Transport WG | Working Groups に Transports WG（リンク付き）、Interest Groups の先頭に Authorization IG（リンク付き） |
-| File Uploads Charter | In Scope の Cross-Cutting Concerns | Security WG | Security IG |
-| File Uploads Charter | Related Groups | Security WG | Security IG（リンク付き） |
-| Inspector V2 Working Group Charter | Related Groups | Auth WG | Authorization IG（リンク付き） |
-| Scientific Computing Charter | Related Groups | Primitive Grouping IG（`/community/interest-groups/primitive-grouping` へのリンク） | Progressive Disclosure WG（`/community/working-groups/progressive-disclosure` へのリンク） |
+| SEP-2809（PR へのリンク） | Attested Tool-Server Admission (ATSA) | Draft | `@metereconsulting` |
 
-Scientific Computing の憲章の旧リンクは、2026年10月14日のサマリで、旧ページがなくなった後も残っていると書いた箇所です。Progressive Disclosure WG の憲章の Changelog は、2026年09月21日に Primitive Grouping から改称し、Interest Group から Working Group に移ったと記録しています。
+これで表は 6 件から 5 件になり、残るのは SDK vulnerability disclosure（In progress、Champion は Facilitators）と、Open の 4 件です。Open の 4 件は、承認後の `list_changed` の意味（runtime drift）、サプライチェーンの完全性、サーバーをまたぐツールの識別、Tool Annotations IG と合同の capability declarations です。Item の列に SEP が書かれた行は、これでなくなりました。
 
-これで `llms-full.txt` から Auth WG・Security WG・Transport WG の表記はなくなり、Primitive Grouping の名前は Progressive Disclosure WG の憲章の Changelog（改称の記録）に残るだけになりました。一方、Enterprise IG の Related Groups に挙がっている Extensions WG と Gateways IG は、リンクの無い名前のまま変わっていません。どちらも Current groups の一覧に無く、索引に憲章のページもありません。
+行がなくなった理由は書かれておらず、Changelog の最新の行も 2026年08月26日（routing group への再編）のままです。SEP-2809 という番号は、`llms-full.txt` のどこにも出てこなくなりました。2026年06月16日のサマリでは、IG が新設されたときの議題の 1 つとしてこの SEP を挙げていました。
 
-- [Enterprise Interest Group Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/enterprise#related-groups)
-- [Scientific Computing Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#related-groups)
+- [Security Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/security#discussion-topics)
+
+## 4. Transports 憲章の上流リポジトリへの参照先が替わった
+
+Transports Charter で、上流のリポジトリ `modelcontextprotocol/transports-wg` を指すリンクが、次の 4 か所で書き換わりました。
+
+| 箇所 | これまで | 今回 |
+|---|---|---|
+| Mission Statement | working group repository とその upstream charter（`CHARTER.md`）が、技術的な焦点・提案の方針・補足の詳細を保つ | working group repository が保つ |
+| In Scope の Validation and Guidance | 補助資料は upstream の documentation（`tree/main/docs`）に置く | 補助資料は upstream の proposals directory（`tree/main/proposals`）に置く |
+| In Scope の直後の段落 | upstream の scope statement（`CHARTER.md#scope`）は補足の文脈であり、憲章の境界を広げられない | upstream の mission statement（リポジトリのトップの `#mission`）が同じ扱い |
+| Resources | リポジトリの下に Proposals（`proposals`）と Supporting documentation and decision records（`docs`）の 2 つ | Proposals and decision records（`proposals`）の 1 つ |
+
+これでこの憲章から、`CHARTER.md` と `docs/` へのリンクはなくなりました。上流のメンバー名簿（`GOVERNANCE.md#members`）、open な PR、`roadmaps/` と `meetings/` へのリンクは残っています。上流の側で何が変わったのかは、今回の入力からは分かりません。Changelog は 2026年08月23日の初版の行だけで、今回の変更は記録されていません。
+
+2026年08月26日のサマリは、この憲章が技術的な詳細を上流の `CHARTER.md` に任せていると書きましたが、その記述はもう当てはまりません。なお、SEP-2575: Make MCP Stateless のページには、`transports-wg` の `docs/` 配下の文書（`sessions-vs-sessionless-decision.md`）へのリンクが残っています。
+
+- [Transports Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports#scope)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-*(新規追加されたページはありません)*
+- [**Working Groups Overview**](#1-working-groups-overview) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)):  
+  活動中のワーキンググループ 14 件を、Leads・Discord のチャンネル・Focus とともに 1 つの表で一覧するページ（詳細はハイライト 1 参照）。
 <!-- light:new-pages:end -->
+
+## 1. Working Groups Overview
+
+`community/working-groups/overview` に置かれた 25 行のページで、索引の説明文は「Current MCP working groups, their leads, channels, and focus.」です。短い前書きのあと、Working group・Leads・Discord・Focus の 4 列の表に 14 件のワーキンググループが並びます。グループの仕組み・参加・設立については Working groups and interest groups のページへ、憲章の出し方については charter template へ案内しています。
+
+並んでいるのは Working Groups and Interest Groups の Current groups と同じ 14 件で、Discord が「Not listed yet」なのは Infrastructure・Interceptors・Tasks and Events の 3 件です。interest group を一覧するページはありません（詳細はハイライト 1 参照）。
+
+- [Working Groups Overview - MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)
 
 ## 大幅に更新されたページ
 
@@ -127,32 +129,26 @@ Scientific Computing の憲章の旧リンクは、2026年10月14日のサマリ
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-差分のあった 9 ページは、すべて 50 行未満の変更かページの削除です。ハイライトで扱った 8 ページのほかに、Server Card の憲章で重複した節が解消されました。
+既存のページで差分があったのは 4 件で、いずれも追加・削除とも 10 行未満です。ハイライトで扱った 3 ページのほかに、Governance WG の憲章でリンク先のアンカーが替わりました。
 
 **機能改善**
 
-- Contributing to MCP の Change the specification or docs で、仕様リポジトリに PR を開けるのは GitHub 組織のメンバーだけだと明記し、メンバーでない人の 3 段階の手順を書き直した（詳細はハイライト 1 参照） — [Contributing to MCP](https://modelcontextprotocol.io/community/contributing#change-the-specification-or-docs)
-- Contributing to MCP の Where to start で、仕様リポジトリの `good first issue`・`help wanted` のラベルの案内を、open な issue を読むかグループのチャンネルで聞くという案内に替えた（詳細はハイライト 1 参照） — [Contributing to MCP](https://modelcontextprotocol.io/community/contributing#where-to-start)
-- Contributor Ladder の Roles at a glance・Contributor・Member で、PR を開ける人についての記述を Contributing to MCP に合わせた（詳細はハイライト 1 参照） — [Contributor Ladder](https://modelcontextprotocol.io/community/contributor-ladder#contributor)
+- Extension Support Matrix の Support matrix で、MCP Inspector の MCP Apps 列に、`docs/mcp-app-review.md` へリンクした `Partial` が入った（詳細はハイライト 2 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
 
 **その他**
 
-- Enterprise-Managed Authorization Charter（`community/interest-groups/enterprise-managed-authorization`）のページが、索引と本文から削除された（77 行。詳細はハイライト 2 参照）
-- Working Groups and Interest Groups の Current groups で、interest group の一覧から Enterprise-Managed Authorization の行がなくなった（詳細はハイライト 2 参照） — [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
-- Enterprise Interest Group Charter で、Auth WG を Authorization IG に、Transport WG を Transports WG に改め、Related Groups の Authorization IG を Interest Groups の側に移した（詳細はハイライト 3 参照） — [Enterprise Interest Group Charter](https://modelcontextprotocol.io/community/interest-groups/enterprise#related-groups)
-- File Uploads Charter で、Security WG を Security IG に改めた（詳細はハイライト 3 参照） — [File Uploads Charter](https://modelcontextprotocol.io/community/working-groups/file-uploads#related-groups)
-- Inspector V2 Working Group Charter で、Auth WG を Authorization IG に改めた（詳細はハイライト 3 参照） — [Inspector V2 Working Group Charter](https://modelcontextprotocol.io/community/working-groups/inspector-v2#related-groups)
-- Scientific Computing Charter で、Primitive Grouping IG を Progressive Disclosure WG に改め、リンク先を新しい憲章にした（詳細はハイライト 3 参照） — [Scientific Computing Charter](https://modelcontextprotocol.io/community/interest-groups/scientific-computing#related-groups)
-- Server Card Charter の Deliverables & Success Metrics で、2 つあった Active Work Items の表と、中身の無い Success Criteria の見出しが 1 つにまとまった（見出しは 17 個から 15 個）。SEP-2127 の行は、PR へのリンク付きの「SEP-2127: MCP Server Cards」、目標日「End March」、Champion はリンクの無い `@dsp-ant` という形の 1 行になり、目標日を 2026年04月03日 とした方の行はなくなった — [Server Card Charter](https://modelcontextprotocol.io/community/working-groups/server-card#active-work-items)
+- Security Charter の Discussion Topics から、SEP-2809「Attested Tool-Server Admission (ATSA)」の行がなくなった（詳細はハイライト 3 参照） — [Security Charter](https://modelcontextprotocol.io/community/interest-groups/security#discussion-topics)
+- Transports Charter で、上流リポジトリの `CHARTER.md` と `docs/` へのリンクがなくなり、参照先が `proposals/` とリポジトリのトップの `#mission` に替わった。Resources の 2 つのリンクは 1 つにまとまった（詳細はハイライト 4 参照） — [Transports Charter](https://modelcontextprotocol.io/community/working-groups/transports#scope)
+- Governance Working Group Charter の Charter Updates で、改訂の手順を指すリンクの文言が「Charter Amendments」から「charter amendment」に、リンク先が `/community/working-interest-groups#charter-amendments` から `#amending-or-retiring-a-group` に替わった。リンク先は、Working Groups and Interest Groups に前回の時点からある見出し「Amending or retiring a group」 — [Governance Working Group Charter](https://modelcontextprotocol.io/community/working-groups/governance#charter-updates)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-09.md](./archives/latest/2026-11-09.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-09.md](./archives/latest-detail/2026-11-09.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-10.md](./archives/latest/2026-11-10.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-10.md](./archives/latest-detail/2026-11-10.md)
 
 <!--
-base_commit: a8f23232a803b4b46f1561458d9a33dd135a159b
-head_commit: 5ed60081bc6921a82747ac292a0c99583f7521e4
-generated_at_full: 2026-11-11T15:30:12+09:00
+base_commit: 5ed60081bc6921a82747ac292a0c99583f7521e4
+head_commit: c85f1a228a539e3f1157cb0caf9aea01e5add4d1
+generated_at_full: 2026-11-12T15:19:05+09:00
 -->
