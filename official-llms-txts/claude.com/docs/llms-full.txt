@@ -3956,16 +3956,17 @@ Claude Tag actions appear under its own service accounts in each connected tool'
 >
 > Claude Tag is in public beta. Features and behavior described here may change before general availability.
 
-Use this page to review what Claude Tag is doing across your organization: which routines are scheduled, what memory it has saved, and where to find a record of each action it took.
+Use this page to review what Claude Tag is doing across your organization: which routines are scheduled, what memory it has saved, and where to find records of its actions.
 
 The **Activity** page opens for Owners of your Claude organization. The other trails on this page are visible to anyone with access to the underlying surface.
 
-Claude Tag activity is auditable in four places:
+Claude Tag activity is auditable in these places:
 
 * **[The Activity page](#what-the-activity-page-lists)** in admin settings, with tabs for scheduled work, memory, and network events
 * **Memory files** for each workspace, and for each channel that has memory of its own (open the workspace's or channel's page from the **Channels** tab under **Claude's access**, then choose **View memory files** from its **⋯** menu, if the menu lists it), where you can review what Claude has saved
 * **[Attribution on each action](#trace-an-action-to-its-source)** Claude takes in a connected tool
 * **[The audit logs of each connected service](#trace-an-action-to-its-source)**, where its actions appear under the service account you provisioned
+* **[Session transcripts](#read-claude-tag-session-transcripts)**, which you read through the Compliance API on the Enterprise plan
 
 ## What the Activity page lists
 
@@ -3975,9 +3976,19 @@ To open the **Activity** page, go to [`claude.ai/admin-settings/claude-tag/audit
 | :- | :- |
 | **Scheduled work** | The routines set up in channels across your organization, with a **Scope** filter and a per-row **⋮** menu with actions such as **View details**, **Pause** or **Resume**, and **Delete** |
 | **Memory** | Each scope's memory files, where you can read what Claude has saved for that workspace or channel. Owners can also edit or delete entries there. |
-| **Network events** | An hourly JSON export of the outbound requests Claude made through [Agent Proxy](/docs/claude-tag/concepts/agent-identity#agent-proxy). Git and MCP traffic are not included. Select a date and hour to download. |
+| **Network events** | A best-effort hourly JSON export of the outbound requests Claude made through [Agent Proxy](/docs/claude-tag/concepts/agent-identity#agent-proxy). Some Git and MCP traffic isn't included, and [other requests can be missing](#what-the-network-events-export-can-miss). Select a date and hour to download. |
 
-Each routine on the **Scheduled work** tab shows **Created by** (the member who set it up) in its **View details** dialog. There is no per-action log of every task and who asked; for that, use the trails below.
+Each routine on the **Scheduled work** tab shows **Created by** (the member who set it up) in its **View details** dialog. There is no per-action log of every task and who asked. To follow up on one action, see [Trace an action to its source](#trace-an-action-to-its-source).
+
+### What the network events export can miss
+
+The export on the [**Activity** page's](https://claude.ai/admin-settings/claude-tag/audit) **Network events** tab is best effort. A request can go through without an entry in the export, so a missing entry doesn't show that Claude didn't make the request.
+
+To find out whether Claude made a request to a connected service, check [that service's audit log](#trace-an-action-to-its-source) as well as the export. On the Enterprise plan with the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access) enabled, also check the [session's transcript](#read-claude-tag-session-transcripts), which includes Claude's tool calls and their results.
+
+## Read Claude Tag session transcripts
+
+If your organization is on the Enterprise plan and has the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access) enabled, you can [list Claude Tag sessions and read their transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions#retrieve-remote-sessions) through the API. A transcript includes the text of prompts, Claude's responses, and tool calls with their results.
 
 ## Trace an action to its source
 
@@ -3987,7 +3998,7 @@ In channels, Claude acts as itself unless a task uses a member's [personal conne
 * **On code**, commits and pull requests show the Claude GitHub App as the author, and each one links back to the Slack thread it came from.
 * **In every other connected service**, actions appear under the service account you created for the connector.
 
-That last one is the general-purpose trail: because you provisioned the credential, the connected service's audit log shows everything Claude did there, under an account your security team already monitors.
+That last one is the general-purpose trail: because you provisioned the credential, the connected service's audit log shows Claude's actions under an account your security team already monitors.
 
 ## See what's scheduled in a channel
 
@@ -24098,6 +24109,65 @@ mobile app.
 * [Cowork overview](/docs/cowork/overview) for how Dispatch fits alongside sessions and projects
 
 
+# Network access for shell commands
+Source: https://claude.com/docs/cowork/guide/network-access
+
+Which hosts the shell commands in a Cowork task can reach, and what works on package registries and GitHub.
+
+When a Cowork task runs on your computer, Claude runs its shell commands in a virtual machine (VM). Your network settings decide which hosts those commands can reach. Some of those hosts are download-only in a task.
+
+## What a task can reach
+
+You'll find the settings in **Settings > Capabilities**. On Team and Enterprise plans, your admin sets them for the whole organization in **Organization settings > Capabilities**.
+
+| Setting | Shell commands can reach |
+| - | - |
+| **Allow network egress** is off | `anthropic.com` and `claude.com` hosts |
+| **Domain allowlist** is **None** | Those hosts, plus the domains under **Additional allowed domains** |
+| **Domain allowlist** is **Package managers only** | The same, plus common package registries and `github.com` |
+| **Domain allowlist** is **All domains** | Any host, unless your organization applied the [HIPAA configuration](/docs/cowork/hipaa-setup#limit-network-access-for-cowork-shell-commands) |
+
+## Download-only hosts
+
+If a task can reach these hosts, it can download from them, but uploads to them are blocked. This doesn't apply when **Domain allowlist** is **All domains**. To publish or push, [use a terminal on your own computer](#push-or-publish-from-your-own-computer).
+
+| Host | Works | Blocked |
+| - | - | - |
+| `registry.npmjs.org`, `registry.yarnpkg.com`, `crates.io` | Package installs and `npm audit` | Publishing, unpublishing, and account changes |
+| `github.com` | `git clone`, `git fetch`, and `git pull` over HTTPS | `git push`, other uploads, Git LFS, and SSH remotes (`git@github.com:`) |
+
+If your organization deploys Claude Desktop with its own model provider, your admin's [list of allowed hosts](/docs/third-party/claude-desktop/web-tools#web-fetch) replaces these settings. In that case, Claude Desktop doesn't block uploads to these hosts.
+
+These limits aren't a security boundary. Don't rely on them alone to keep data inside the VM.
+
+## What a blocked command shows
+
+The command fails, and its output usually says why. A `git push` prints this line:
+
+```text theme={null}
+remote: Cowork blocked this request: only git clone, git fetch and plain downloads from GitHub work here, not git push, other uploads or Git LFS. To push or upload, use a terminal on your own computer.
+```
+
+A publish command gets the message below. npm shows only its short form, `403 Package registry is download-only`.
+
+```text theme={null}
+Package registries are download-only inside Cowork: publishing, unpublishing and account changes are blocked. Run those commands in a terminal on your own computer.
+```
+
+Two errors don't say why. With an SSH remote, `git` reports a closed connection, for both fetch and push. Git LFS reports an `Authorization error`. To clone or fetch from an SSH remote, use its `https://github.com/` URL instead.
+
+## Push or publish from your own computer
+
+Ask Claude to make the changes in a folder you connected to the task. Then open a terminal on your own computer and go to that folder. Review the changes, then commit and push them or run the publish command yourself.
+
+## Related
+
+These pages cover related topics.
+
+* [Organize work with projects](/docs/cowork/guide/projects) for the folders a task can read and write
+* [Cowork overview](/docs/cowork/overview) for an introduction to Cowork
+
+
 # Install plugins
 Source: https://claude.com/docs/cowork/guide/plugins
 
@@ -24245,6 +24315,8 @@ You can attach more folders, links, or projects from Chat at any time from the p
 ## Work inside a project
 
 Select a project in the sidebar to start a new Cowork session with that project's folders mounted and instructions applied. Files Claude creates land in the project's folders; what Claude learns during the session is saved to the project's memory for next time.
+
+A project folder that is reached through a symbolic link isn't mounted if the link sits inside another of the project's folders, or inside a folder that a Cowork task on your task list uses, and leads outside that folder. The session starts without it and the app tells you. Replace it in the project with the actual folder you want.
 
 [Dispatch](/docs/cowork/guide/dispatch) can also route background tasks into a project, so long-running work picks up the same folders, instructions, and memory.
 
@@ -29587,9 +29659,12 @@ Changing connection mode is not a data loss event, because nothing is deleted,
 but it is an identity change and the history list follows the identity.
 
 One store derives identity differently from chat history. The Outlook writing
-style guide has no per-installation fallback. On Office builds where the Entra
-ID identity cannot be read, it falls back to a single shared key, so one learned
-writing style is shared by everyone using that browser profile.
+style guide has no per-installation fallback. Where there is neither a Claude
+account sign-in nor an Entra ID identity that Office can read, the add-in has no
+per-user key to mark a style guide with. There it does not learn a writing style
+from sent mail, does not offer the "Learn my writing style" button, and does not
+send a style guide an earlier version built. Text the user types into the
+Writing style field still works.
 
 ## Data retention
 
@@ -29610,6 +29685,38 @@ Users clear their own conversations from the add-in's settings. Under "Chat
 history", "Delete all" removes every saved conversation for that user in that
 Office app and starts a new chat.
 
+In Claude for Outlook, users can also delete what Claude has learned about their
+writing. Under "Writing style" in the add-in's settings, "Delete what Claude has
+learned about my writing" does the following on that device:
+
+* Deletes the user's writing style guide, scratchpad, saved edits to drafts, and
+  draft preferences from `claude-mail-style`.
+* Empties the Writing style field, including text the user typed there.
+* Removes from the Instructions field the draft preferences summary, unless its
+  marker lines or the summary's opening words have been edited, or a line has
+  been added between them, and the writing-style note that versions from
+  April 13 to 17, 2026 added, with anything else between that note's marker
+  lines.
+* Stops a read of sent mail that is in progress, or keeps it from saving
+  anything.
+* Starts a new chat, because the open one holds scratchpad text. A chat that is
+  open in another pane stays open, and can no longer save the scratchpad if it
+  had read it.
+
+It does not delete memory notes, or saved conversations, which can hold
+scratchpad text from earlier messages. It cannot delete anything already sent to
+the model endpoint.
+
+Where several users share a browser profile, data stored under another user's
+key stays. The Writing style and Instructions fields are shared by all of them,
+so both are changed for all of them. Data stored while the add-in had no
+per-user key is deleted too, because it may be this user's.
+
+If Office has not yet told the add-in which user is signed in, the add-in cannot
+tell whether data stored under an earlier Office identity is this user's. If
+that identity has data, the add-in leaves it and says that some of it could not
+be deleted. The user can close and reopen the add-in, then delete again.
+
 There is no expiry by age and no administrator-configurable retention window.
 Claude for M365 also does not inherit custom data retention settings configured
 for your organization. If your policy requires a retention limit on this data,
@@ -29625,10 +29732,11 @@ review to the paths that carry content off the endpoint.
 | - | - |
 | Conversation text, attachments, and the document content Claude is asked to work with | The model endpoint your deployment is configured for. In third-party platform deployments that is your own Vertex AI, Bedrock, Azure, or gateway endpoint |
 | Files that a user attaches, with a Claude account sign-in | Uploaded to Anthropic with the user's Claude sign-in when the user attaches them, before the message is sent. Each file expires 28 days after the add-in uploads it. If Anthropic does not accept an expiry for the user's organization, the add-in uploads the file with no expiry. The add-in does not delete files itself. Earlier versions of the add-in set no expiry on the files they uploaded. The add-in started setting an expiry on September 15, 2026 |
+| Dictated audio, with a Claude account sign-in | Streamed through Anthropic's server at `pivot.claude.ai` to Anthropic's transcription service while the user dictates. The transcribed text returns the same way. See [Use dictation in Claude for M365](/docs/office-agents/dictation) |
 | Chat history, uploaded skills, and connector registrations | Not synced between devices and not backed up on any server. The add-in still sends their contents to the model endpoint when Claude uses them, as the rows above describe. Every chat request includes the name and description of each skill that is turned on. With a Claude account sign-in, it also includes the name and description of each plugin the user has turned on, with the names of its skills and connectors, and the organization's Claude settings can turn skills off, which stops both. When Claude uses a skill, the add-in also sends the skill's instructions and Markdown files. With a Claude account sign-in, files attached in a chat are also uploaded to Anthropic |
-| Claude for Outlook writing style guide, draft preferences, and scratchpad | Not synced between devices and not backed up on any server. To build the style guide, the add-in sends recent sent mail, with the first recipient's address of each message, to the model endpoint. Learning draft preferences from the user's edits to drafts is off unless Anthropic turns it on. While it is on, the add-in saves the user's edits to drafts on the device, sends them to the model endpoint to build the draft preferences, and adds a summary of the draft preferences to the Instructions field in Settings. Turning it off does not delete edits to drafts or draft preferences already saved on the device, and does not remove a summary already added to the Instructions field. The user can delete that summary in Settings. Every Outlook chat request includes the style guide and the Instructions field. The add-in puts that summary on one line between two marker lines. While learning draft preferences is off, chat requests leave out a summary that is still in that form. If those lines have been edited, the add-in may not recognize the summary, and then sends it with the rest of the Instructions field. Every message the user sends in Outlook includes the scratchpad |
-| Sign-in credentials | To the services the sign-in is for, with two exceptions described last. A Bedrock sign-in sends the Entra ID token to AWS, which exchanges it for short-lived credentials. A Claude account token also goes to `claude.ai` with feature-flag requests. The exceptions: a credential that you put in the query string of the manifest URL also reaches Anthropic's server at `pivot.claude.ai` each time the add-in loads, and the server's request logs record it. A Vertex AI sign-in also returns Google's one-time authorization code to `pivot.claude.ai` in the query string, where request logs can record it. The code cannot be exchanged for a token without your OAuth client secret, so keep the client secret out of the manifest URL query string too. See [Keep credentials out of the manifest URL query string](/docs/office-agents/third-party-platforms#keep-credentials-out-of-the-manifest-url-query-string) |
-| Identifiers on model requests | Each request for a model response carries the name of the add-in, a random identifier for the device, and a session ID. For a chat message, the session ID is the conversation's ID. The add-in also sends helper requests to the same endpoint. In every Office app, they summarize a long conversation, write the status line shown while Claude thinks, and, when memory is on, check an entry before Claude saves it. In Word and PowerPoint, they check how the document or a slide looks after Claude edits it, and in Word they also check Claude's reasoning before it edits legal language. In Outlook, they rewrite a passage the user selects in a draft, and learn the user's writing style from recent sent mail and, while learning draft preferences is on, from the user's edits to drafts. Each helper request carries a session ID made from the kind of helper request, the device identifier, and the date in UTC, so helper requests of one kind from one device on one day share a session ID. With a Claude account sign-in, requests also carry the user's account ID. In third-party platform deployments, requests carry no account ID and no email address. That includes deployments whose settings Anthropic serves, where members sign in with a Claude account. The short test requests that the add-in sends to check which models and features your endpoint supports, such as web search and code execution, carry none of these values |
+| Claude for Outlook writing style guide, draft preferences, and scratchpad | Not synced between devices and not backed up on any server. The add-in reads sent mail to build the style guide only when the user has just agreed to it, once for each agreement, and stores no standing agreement. It asks during setup if Claude can already reach the mailbox. Wherever the add-in has a per-user key to mark the guide with, as described in "What chat history is keyed to", Settings has a "Learn my writing style" button under Writing style. The button first says what Claude will read, and the read runs after the user confirms. Learning the style again takes the same button and the same confirmation. Nothing else starts this read: not loading the add-in, a new chat, a change of user, a timer, or an earlier attempt that failed. To build the guide, the add-in sends recent sent mail, with the first recipient's address of each message, to the model endpoint. Earlier versions built the guide without asking. When the chat pane finds such a guide and can tell that it is this user's, it asks whether to use it or delete it, and reads nothing either way. A guide that it cannot tell is this user's, such as one whose Voice pattern or Notes lines the user has edited, stays in the field and is not sent, and Settings says so. If the user has removed enough of a guide's labelled lines, the add-in treats what is left as the user's own text and sends it with chat requests. Learning draft preferences from the user's edits to drafts is off unless Anthropic turns it on. While it is on, the add-in saves the user's edits to drafts on the device, sends them to the model endpoint to build the draft preferences, and adds a summary of the draft preferences to the Instructions field in Settings. Turning it off does not delete edits to drafts or draft preferences already saved on the device, and does not remove a summary already added to the Instructions field. The user can delete that summary in Settings. Every Outlook chat request includes the Instructions field and any text the user wrote in the Writing style field. It includes a guide built from sent mail only for the user who agreed to build it or to use it. Versions of the add-in from April 13 to 17, 2026 wrote a short writing-style note into the Instructions field between two marker lines, and chat requests leave that note out. The add-in puts the draft preferences summary on one line between two marker lines. While learning draft preferences is off, chat requests leave out a summary that is still in that form. If those lines have been edited, the add-in may not recognize the summary, and then sends it with the rest of the Instructions field. Every message the user sends in Outlook includes the scratchpad. The user can delete this data from the device, with the exceptions described in [Data retention](#data-retention) |
+| Sign-in credentials | To the services the sign-in is for, with two exceptions described last. A Bedrock sign-in sends the Entra ID token to AWS, which exchanges it for short-lived credentials. A Claude account token also goes to `claude.ai` with feature-flag requests. While the user dictates, it also goes to Anthropic's server at `pivot.claude.ai`, which uses it to open the connection to Anthropic's transcription service. The exceptions: a credential that you put in the query string of the manifest URL also reaches Anthropic's server at `pivot.claude.ai` each time the add-in loads, and the server's request logs record it. A Vertex AI sign-in also returns Google's one-time authorization code to `pivot.claude.ai` in the query string, where request logs can record it. The code cannot be exchanged for a token without your OAuth client secret, so keep the client secret out of the manifest URL query string too. See [Keep credentials out of the manifest URL query string](/docs/office-agents/third-party-platforms#keep-credentials-out-of-the-manifest-url-query-string) |
+| Identifiers on model requests | Each request for a model response carries the name of the add-in, a random identifier for the device, and a session ID. For a chat message, the session ID is the conversation's ID. The add-in also sends helper requests to the same endpoint. In every Office app, they summarize a long conversation, write the status line shown while Claude thinks, and, when memory is on, check an entry before Claude saves it. In Word and PowerPoint, they check how the document or a slide looks after Claude edits it, and in Word they also check Claude's reasoning before it edits legal language. In Outlook, they rewrite a passage the user selects in a draft, learn the user's writing style from recent sent mail each time the user agrees to it, and, while learning draft preferences is on, learn draft preferences from the user's edits to drafts. Each helper request carries a session ID made from the kind of helper request, the device identifier, and the date in UTC, so helper requests of one kind from one device on one day share a session ID. With a Claude account sign-in, requests also carry the user's account ID. In third-party platform deployments, requests carry no account ID and no email address. That includes deployments whose settings Anthropic serves, where members sign in with a Claude account. The short test requests that the add-in sends to check which models and features your endpoint supports, such as web search and code execution, carry none of these values |
 | Feature-flag requests | In every deployment, the add-in asks `claude.ai` which features to show. Each request includes the device identifier, the Office app, and, when the user is signed in to Office, the Entra ID tenant ID. With a Claude account sign-in, it also includes the user's email address, account ID, and organization ID. In every deployment, the add-in sends a usage event for each feature variant it showed. With a Claude account sign-in, the add-in also sends each variant it showed directly to Anthropic, with the organization ID |
 | Usage events | Sent to Anthropic's server at `pivot.claude.ai`, which forwards them to Anthropic's event logging service. Each event has a name and properties such as counts, durations, the model, and the Office app and its version, with the device identifier and an ID for the task pane session. With a Claude account sign-in, events also carry the account and organization IDs. Before sending an event, the add-in removes the fields known to carry file names, file paths, error text, and the names of your connectors and their tools. The filter matches field names, so it does not remove such text from a field it does not name. Events that load an Excel workbook or a PowerPoint presentation carry an unsalted hash of the file's path or address. With a Claude account sign-in, a user can rate a response and add a comment. The comment reaches Anthropic's server, which forwards the comment's length but not its text. When a user types a job role that is not on the list, the server forwards that the user chose Other, but not the text |
 | Identifiers from Office on usage events | When the user is signed in to Office, usage events also carry the Entra ID tenant ID, the domain of the user's email address, and the hash described in [What chat history is keyed to](#what-chat-history-is-keyed-to). The hash is unsalted, so anyone who knows the user's Entra ID object ID can match it |
@@ -29643,9 +29751,9 @@ members sign in with a Claude account. This option is in preview. Feature-flag
 requests, usage events, and the session records that Sentry keeps, which count
 sessions and crashes, then carry the identifiers described for a Claude account
 sign-in. Error reports follow the row for third-party platform deployments.
-Files that these members attach are not uploaded to Anthropic. Your
-organization's setting that turns off third-party analytics does not apply to
-these members.
+Files that these members attach are not uploaded to Anthropic, and dictation
+is not available to them. Your organization's setting that turns off
+third-party analytics does not apply to these members.
 
 Until September 23, 2026, Anthropic's server sent usage events to Segment, a
 third-party analytics service. These included the text of rating comments and
@@ -30734,6 +30842,9 @@ consultants tracking multiple client threads.
 >
 > Claude for Outlook is currently in beta and available to Pro, Max, Team,
 > and Enterprise plans.
+> It is not available on the Free plan. If you connect through a
+> [third-party platform](#connect-through-a-third-party-platform), you can use
+> the add-in without a Claude account.
 
 ## What you can do
 
@@ -30741,8 +30852,8 @@ With Claude for Outlook, you can:
 
 * Triage your unread inbox into what needs you, what Claude can handle,
   and what is noise.
-* Draft replies, reply-alls, and forwards in your voice, landed unsent in
-  Outlook's compose pane.
+* Draft replies, reply-alls, and forwards, in your voice if you let Claude
+  learn it, landed unsent in Outlook's compose pane.
 * Summarize long threads into decisions made, open items, and who owes
   what, with per-email citations.
 * Read `.docx` and `.xlsx` attachments inline without opening them.
@@ -30762,10 +30873,28 @@ Claude for Outlook runs on the following Outlook clients.
   Microsoft 365 subscription
 * Outlook on Mac with a Microsoft 365 subscription
 
+In Outlook on the web with Chrome or Microsoft Edge at version 137 or
+earlier, Claude may not be able to search your mailbox, read attachments, or
+change a draft you have open. The same applies to Outlook on Windows when the
+Microsoft Edge WebView2 Runtime, which Outlook uses to show add-ins, is at
+version 137 or earlier. See
+[Claude cannot search, read attachments, or change an open draft](#claude-cannot-search-read-attachments-or-change-an-open-draft).
+
 The following are not supported: Outlook 2016 and 2019 perpetual or
 volume-licensed editions, Outlook on iOS, Outlook on Android, and
 mailboxes hosted on Exchange on-premises. Exchange Online through
 Microsoft 365 is required.
+Shared mailboxes and mailboxes you open as a delegate are also not
+supported. Claude for Outlook searches, triages, and moves mail only in
+your own mailbox.
+
+Anthropic has not tested Claude for Outlook with Outlook 2021 or 2024
+perpetual or volume-licensed editions, including Office LTSC. Microsoft
+ended support for Office 2021 and Office LTSC 2021 on October 13, 2026.
+
+Gmail, Yahoo, iCloud, IMAP, and POP accounts added to Outlook are not
+supported. Microsoft states that Outlook on Windows does not support add-ins
+on these accounts.
 
 ### Install for yourself
 
@@ -30779,39 +30908,80 @@ Select "Get it now" to install.
 
 **3. Open Claude in Outlook**
 
-Open Outlook, open any email, select the Claude button in the message
-ribbon, and sign in with your Claude account.
+Open Outlook, then open or select an email. Select the Claude button
+and sign in with your Claude account.
 
-If you do not see the Claude button on the message, open the overflow menu
-on the reading pane, choose Customize actions, and check Claude under
-Apps. It then appears on every message and in the Home ribbon.
+The add-in may not appear right away in desktop Outlook. If you do not see
+the Claude button, restart Outlook.
+
+The button is labeled Claude, and each Outlook client puts it in a
+different place.
+
+* **Outlook on the web and new Outlook on Windows**: open or select a
+  message, select Apps on its action bar or More apps on the ribbon, then
+  select Claude. To keep Claude on the ribbon and the action bar, select
+  More apps on the ribbon, right-click Claude, and select Pin.
+* **Classic Outlook on Windows**: set the Reading Pane to Right or Bottom
+  in the View tab, because Microsoft states that add-ins are unavailable
+  otherwise. Select a message, then select Claude on the Home tab of the
+  ribbon. If Claude is not there, select All Apps on the ribbon, then
+  select Claude. With the Simplified Ribbon, All Apps is behind the
+  ellipsis button. If the message is open in its own window, look on the
+  ribbon of that window.
+* **Outlook on Mac**: set the Reading Pane to Right or Below in the View
+  menu, because Microsoft states that add-ins are unavailable otherwise.
+  Select a message, then select Claude on the toolbar. If Claude is not
+  there, select the ellipsis button on the toolbar, then select Claude.
+
+Your organization's Microsoft 365 administrator may need to let you install
+store add-ins, or deploy Claude for Outlook for you. Features that
+look beyond the open email, such as triage, search, and free/busy lookups,
+also need a one-time approval to read your mailbox, which in some
+organizations only an administrator can give. See
+[Troubleshoot installation](#troubleshoot-installation).
+
+### Remove the add-in
+
+Where you remove Claude for Outlook depends on your Outlook client.
+
+In Outlook on the web and Outlook on Windows, select More Apps on the
+navigation bar or All Apps on the ribbon, then Add apps. On the Apps page,
+select Manage your apps, find Claude, and select More options, then
+Remove. Microsoft's
+[Use add-ins in Outlook](https://support.microsoft.com/en-us/office/use-add-ins-in-outlook-1ee261f9-49bf-4ba6-b3e2-2ba7bcab64c8)
+page gives these steps for new Outlook. In classic Outlook, the button after
+All Apps is Add Apps or Get Add-ins, depending on your version or account
+type. Get Add-ins opens the Add-Ins for Outlook dialog instead of the Apps
+page, so remove Claude there.
+
+In Outlook on Mac, open the
+[Add-Ins for Outlook dialog](https://aka.ms/olksideload) in a browser and
+remove Claude there.
+
+If there is no option to remove it, your administrator manages the add-in.
+Ask them to remove it.
 
 ### Deploy to your organization
 
 Organization admins can deploy Claude for Outlook through the Microsoft
 365 Admin Center.
 
-**1. Allow Office Store access**
+**1. Open Integrated apps**
 
 In the [Microsoft 365 Admin Center](https://admin.microsoft.com), go
-to Settings, Org Settings, User owned apps and services, and turn on
-["Let users access the Office Store"](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-addins-in-the-admin-center).
+to Settings, then Integrated apps.
 
-**2. Open Integrated apps**
-
-Go to Settings, then Integrated apps.
-
-**3. Find the add-in**
+**2. Find the add-in**
 
 Search for "Claude for Outlook" in Microsoft AppSource.
 
-**4. Deploy**
+**3. Deploy**
 
 Deploy the add-in to your organization or to specific people. See
 [Microsoft's deployment guide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-deployment-of-add-ins)
 for assignment options.
 
-**5. Grant Microsoft Graph consent**
+**4. Grant Microsoft Graph consent**
 
 Complete the [Microsoft Graph admin consent](#grant-microsoft-graph-consent)
 step below so users are not prompted individually.
@@ -30830,20 +31000,29 @@ step below so users are not prompted individually.
 > [install the add-in themselves](#install-for-yourself).
 
 After installation, team members open Outlook, open any email, select the
-Claude button in the message ribbon, and sign in with their Claude
-credentials. Pinning the task pane keeps it open as you move between
+Claude button, and sign in with their Claude credentials. See
+[Install for yourself](#install-for-yourself) for where each Outlook client
+puts the button. Pinning the task pane keeps it open as you move between
 messages.
 
-> [!WARNING]
->
-> Organizations that have disabled "Let users access the Office Store" may
-> find that admin-deployed add-ins don't appear for users. To work around
-> this, deploy using the manifest XML file described below.
+You do not need to turn on the setting that lets users access the Office
+Store, which Microsoft now calls Microsoft Marketplace, to deploy Claude for
+Outlook.
+[Microsoft states](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-addins-in-the-admin-center)
+that the setting does not apply to Outlook add-ins. If the add-in does not
+appear for people 72 hours after you deploy it from the store, deploy it
+from the manifest file instead, as described in
+[Install from a manifest file](#install-from-a-manifest-file).
+
+People who install the add-in for themselves need the
+[My Marketplace Apps user role](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/add-ins-for-outlook/specify-who-can-install-and-manage-add-ins)
+in Exchange Online. Microsoft enables that role for everyone by default, so
+check whether your organization removed it.
 
 ### Install from a manifest file
 
-If your organization blocks the Microsoft Store, an IT administrator can
-deploy the add-in by uploading its manifest file directly.
+If deploying from the store does not work for your organization, an IT
+administrator can deploy the add-in by uploading its manifest file directly.
 
 **1. Download the manifest**
 
@@ -30858,9 +31037,9 @@ to Settings, then Integrated apps.
 
 **3. Upload the add-in**
 
-Select Upload custom apps, then Office Add-in. Choose "I have a
-manifest file on this device", select the file you downloaded, and
-upload it.
+Select Upload custom apps, then Office Add-in. Choose the option to
+upload a manifest file from your device, select the file you downloaded,
+and upload it.
 
 **4. Assign people**
 
@@ -30869,21 +31048,136 @@ people, specific groups, or just yourself for testing.
 
 **5. Deploy**
 
-Review the settings and select Deploy. The add-in appears within
-minutes for most people. Full organization rollout can take up to 24
-hours on the Microsoft 365 side.
+Review the settings and select Finish deployment. The add-in can take
+up to 72 hours to appear for everyone, and people may need to restart
+Outlook to see it.
 
 **6. Grant Microsoft Graph consent**
 
-Complete the consent step in the next section.
+Complete the [Microsoft Graph admin consent](#grant-microsoft-graph-consent)
+step below.
+
+### Troubleshoot installation
+
+Find your symptom below.
+
+#### The Claude button is missing after you install
+
+Open or select a message first, then look where your Outlook client puts
+the button. [Install for yourself](#install-for-yourself) lists the place
+for each client. The add-in may not appear right away in desktop Outlook,
+so restart Outlook if you still do not see the button.
+
+#### "Get it now" does nothing or returns to the same page
+
+Add-ins are installed on a mailbox, not on a device. Sign in to the listing
+page with the same Microsoft account that you use in Outlook, then select
+"Get it now" again.
+
+If the install still does not complete, your organization may restrict who
+can install Outlook add-ins. In Exchange Online, the
+[My Marketplace Apps user role](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/add-ins-for-outlook/specify-who-can-install-and-manage-add-ins)
+controls whether people can install add-ins from the store for themselves.
+Ask your Microsoft 365 administrator to assign you that role or to
+[deploy Claude for Outlook to your organization](#deploy-to-your-organization).
+
+#### You use a Gmail, Yahoo, iCloud, IMAP, or POP account in Outlook
+
+These accounts are not supported. Claude for Outlook needs a mailbox on
+Exchange Online, as described in [Supported versions](#supported-versions).
+
+#### You use a Free Claude account
+
+Claude for Outlook is not available on the Free plan. You can install the
+add-in, but you cannot finish signing in. After you select "Connect" on the
+page that opens in your browser, it says which plans include the add-in and
+links to the upgrade page. The Claude pane keeps showing your sign-in code
+until it expires.
+
+To use Claude for Outlook, upgrade your plan. Then sign in again from the
+Claude pane: select "Start over" if the code expired, "Continue in browser" if
+your code still shows, or "Log in".
+
+If you also belong to an organization on a Team or Enterprise plan, you do
+not need to upgrade. On the page in your browser, select "Try a different
+account", choose that organization, and select "Connect" again.
+
+#### Mailbox features are unavailable
+
+Features that look beyond the open email, such as triage, search, and
+free/busy lookups, need a one-time approval to read your mailbox. If the
+setup screen says "Your admin needs to approve access", select "Copy link
+for your admin" and send the link to your Microsoft 365 administrator.
+After they approve, select "I've been approved". See
+[Grant Microsoft Graph consent](#grant-microsoft-graph-consent) for what
+the administrator does.
+
+If the setup screen says "Your admin needs to grant you access", your
+organization requires each person to be assigned to Claude, and you are not
+assigned yet. Select "Copy request for your admin" and send the text to your
+Microsoft 365 administrator. After they assign you, select "I've been
+assigned".
+
+You do not have to wait for your administrator. Select "Continue without
+mailbox access" to use Claude on the email you have open. The other features
+stay off until your administrator acts.
+
+If you already continued, select the warning button in the row with the +
+button at the message box. It offers the same link or request for your
+administrator, and Retry for after they act.
+
+If the setup screen says "This Outlook client doesn't support Microsoft
+Graph sign-in", approval will not help, because this Outlook client cannot
+use triage, search, or free/busy lookups. Unless your organization requires a
+sensitivity label check, reading and drafting on the open email still work,
+so select "Continue without mailbox access" to keep going.
+To use those features, update Outlook to a current Microsoft 365
+subscription version, or use Outlook on the web.
+
+If a screen titled "Can't check this email's label" says "This Outlook client
+doesn't support Microsoft Graph sign-in", your organization requires a
+sensitivity label check that this client cannot run. That screen has no
+"Continue without mailbox access" option, and Try again will not help. To use
+Claude on that email, update Outlook or use Outlook on the web.
+
+#### The setup screen says "Couldn't connect to Microsoft Graph"
+
+This message can mean that access to your mailbox has not been approved
+yet, or that sign-in failed for another reason. Select Retry, and complete
+the Microsoft sign-in if a window opens. If the window says "Need admin
+approval", your Microsoft 365 administrator needs to approve access for your
+organization, as described in
+[Grant Microsoft Graph consent](#grant-microsoft-graph-consent). If the
+screen changes to "Your admin needs to approve access" or "Your admin needs
+to grant you access", follow
+[Mailbox features are unavailable](#mailbox-features-are-unavailable).
+
+If it still fails, ask your Microsoft 365 administrator whether they have
+completed [Microsoft Graph consent](#grant-microsoft-graph-consent). If the
+screen shows "Copy error for support", send them the copied text. To use
+Claude in the meantime, select "Continue without mailbox access". Triage,
+search, and free/busy lookups stay off until the connection works.
+
+#### The Claude pane is blank or does not load
+
+If the pane shows "Claude couldn't load Office's add-in library", your
+network may be blocking `appsforoffice.microsoft.com`. Ask your IT
+administrator to allow that address, then reopen the pane.
+
+If the pane stays blank, check that your Outlook is one of the
+[supported versions](#supported-versions). Outlook 2016 and 2019 perpetual
+or volume-licensed editions can run add-ins in an older browser engine, and
+the Claude pane may stay blank there. Update to a current Microsoft 365
+subscription version of Outlook, or use Outlook on the web.
 
 ### Grant Microsoft Graph consent
 
 Claude for Outlook reads mail and calendar data through Microsoft Graph.
-This requires a one-time tenant-wide grant from a Global Administrator
-and is separate from the Integrated apps deployment.
+This needs a one-time grant for your whole tenant, separate from the
+Integrated apps deployment. A Global Administrator or a Cloud Application
+Administrator can give it.
 
-Have a Global Administrator open the following admin consent link in a
+Have one of them open the following admin consent link in a
 browser where they are signed in to your Microsoft 365 tenant.
 
 ```
@@ -30894,11 +31188,13 @@ The administrator sees a Microsoft permissions screen listing
 `Mail.ReadWrite`, `Calendars.Read`, `User.Read`, and `offline_access`.
 After they select Accept, all users in the organization
 can use Claude for Outlook without additional Microsoft prompts. The grant
-takes effect immediately. Only the add-in rollout in the previous step can
-take up to 24 hours.
+takes effect immediately. Only the add-in rollout itself can take up to 72
+hours.
 
-If this step is skipped, every user sees a "Need admin approval" message
-when Claude first tries to read mail or calendar data.
+If this step is skipped, people may see "Your admin needs to approve
+access" or "Couldn't connect to Microsoft Graph" on the Claude setup screen.
+If they try again from there, Microsoft may show its own "Need admin
+approval" window.
 
 The redirect to `pivot.claude.ai` after consent carries only the consent
 outcome, never a token or authorization code. See
@@ -31005,8 +31301,8 @@ Ask Claude what needs your attention. Claude reads your unread mail and
 attachments and sorts them into three groups: action items for you, items
 Claude can handle for your review, and noise you can archive in one
 selection. Each action item carries a one-line reason. Items Claude can
-handle, such as scheduling asks, acknowledgments, and standard-form
-documents, arrive pre-drafted.
+handle, such as short acknowledgments, come with an action Claude proposes,
+and Claude drafts the replies when you say so.
 
 Prompts to try:
 
@@ -31017,10 +31313,18 @@ Prompts to try:
 ## Draft replies in your voice
 
 Tell Claude what you want to say. It drafts the reply into Outlook's
-native compose pane, unsent. Tone is learned from your sent folder, so
-the draft matches your sentence length and formality register. Claude
-leaves the closing off so Outlook can append your configured signature
-without duplication.
+native compose pane, unsent. If you say yes when Claude asks during setup,
+or select "Learn my writing style" under Writing style in Settings and
+confirm, Claude reads your recent sent mail once and writes a style guide, so
+the draft matches your sentence length and formality register. Claude does
+not read your sent mail to write the guide at any other time. It can still
+read sent messages for other tasks, such as drafting a reply. To update the
+guide, select the button again. To delete the style guide, Claude's
+scratchpad, and what Claude learned from your edits on this device, select
+"Delete what Claude
+has learned about my writing" under Writing style in Settings. Claude leaves
+the closing off so Outlook can append your configured signature without
+duplication.
 Claude chooses reply versus reply-all deliberately and warns before adding
 anyone who was not on the thread.
 
@@ -31058,7 +31362,8 @@ Prompts to try:
 
 ## Search your mailbox
 
-Ask Claude to find a past conversation by topic, not only by keywords.
+Ask Claude to find a past conversation by topic. Claude searches your mailbox
+by keyword, using words it picks from your request.
 Results return as citations that open the source message in Outlook so
 you can verify every answer against the original email.
 
@@ -31110,8 +31415,9 @@ For setup instructions, see
 
 ## Model availability
 
-When you sign in with a Claude account, you can choose between Claude
-Opus 4.7, Opus 4.6, and Sonnet 4.6. When you connect through a
+When you sign in with a Claude account, you can choose from the models in the
+model menu, which depend on your plan and your organization's settings. When
+you connect through a
 third-party platform such as Amazon Bedrock, Vertex AI, Azure AI Foundry,
 or an LLM gateway, Claude for Outlook supports Claude Opus 4.7 and later
 and Claude Sonnet 5 and later. Earlier model generations are not available
@@ -31125,13 +31431,21 @@ free/busy lookups, and move or flag operations, Claude uses Microsoft
 Graph. All Graph calls run in your browser, and the Graph access token
 stays in the browser's MSAL cache and is never sent to Anthropic.
 
-Claude never sends mail or invites on its own. The add-in does not request
+The add-in never sends mail or invites. It does not request
 the `Mail.Send` permission. Every draft lands unsent in Outlook's compose
 or appointment form, and you click Send.
 
 ![Claude reads the open item via Office.js and uses Microsoft Graph for mailbox-wide actions; the Graph token stays in the browser.](https://mintcdn.com/claude-ai/-4jzPa4NasvobarI/images/office-agents/architecture/outlook-graph.png?fit=max\&auto=format\&n=-4jzPa4NasvobarI\&q=85\&s=3760f3ba806ce4cb2f835cfa2e409eae)
 
 Outlook mailbox access: the open item comes through Office.js, broader mailbox actions use Microsoft Graph, and the Graph token stays in the browser.
+
+Connectors are separate from the add-in's own access. A
+[connector](/docs/office-agents/connectors-and-skills), such as Microsoft 365,
+can send mail, messages, or invites. Claude asks for your approval before
+each connector action, unless you selected the "Always allow" button for that
+connector, such as "Always allow Microsoft 365 tools", on its approval card.
+Your organization can remove that button. Some actions, such as sending mail
+or Teams messages through the Microsoft 365 connector, still ask every time.
 
 Where mailbox content goes after Claude reads it depends on how you sign
 in.
@@ -31194,6 +31508,26 @@ enabled, Claude for Outlook sessions are included in the Compliance API.
 This coverage requires no additional setup: the same Compliance Access
 Keys apply.
 
+## Unsupported capabilities
+
+Claude for Outlook does not support the following.
+
+* Warnings when you select Send. Claude for Outlook does not use
+  Outlook's Smart Alerts, so it does not check or hold a message or
+  invite when you select Send. To have a draft checked, ask Claude to
+  review it before you send.
+* Shared mailboxes and mailboxes you open as a delegate. Claude for
+  Outlook searches, triages, and moves mail only in your own mailbox.
+* Mailbox-wide features without Microsoft Graph consent. Features that
+  look beyond the open email or event, such as search, triage, reading a
+  whole thread, free/busy lookups, and move or flag actions, need
+  Microsoft Graph consent. In an organization, an administrator can grant
+  it once for everyone, as described in
+  [Grant Microsoft Graph consent](#grant-microsoft-graph-consent).
+
+For the Outlook versions and mailboxes that are not supported, see
+[Supported versions](#supported-versions).
+
 ## Prompt injection risks
 
 Be cautious with email from external or untrusted senders. Email bodies
@@ -31214,8 +31548,10 @@ working with email from external or untrusted senders.
 
 As a beta feature, Claude for Outlook is not recommended for:
 
-* Unattended sending. Claude never sends mail or invites on its own; every
-  draft lands unsent for your review.
+* Unattended sending. The add-in never sends mail or invites; every
+  draft lands unsent for your review. After you select "Always allow" for
+  a connector, Claude can use it without asking, and some connectors can
+  send.
 * Client-facing or counterparty correspondence without reading the draft
   first.
 * Replacing your judgment on which emails matter or how to handle a
@@ -31232,6 +31568,33 @@ To use Claude for Outlook safely and effectively:
 * Apply appropriate Microsoft 365 permissions and Conditional Access
   policies for the add-in.
 * Maintain human oversight for anything leaving your organization.
+
+## Troubleshooting
+
+### Claude cannot search, read attachments, or change an open draft
+
+If only features that look beyond the open email, such as search, triage,
+and calendar, do not work, mailbox access may not be approved yet. See
+[Grant Microsoft Graph consent](#grant-microsoft-graph-consent).
+
+If Claude also cannot read attachments on the open email or change a draft
+you have open, check the causes below.
+
+* **An older version of Chrome or Microsoft Edge in Outlook on the web**:
+  at version 137 or earlier, these features may not work. Update the browser
+  to the latest version, then restart it. If you cannot update it, ask your
+  IT administrator.
+* **An older WebView2 Runtime in Outlook on Windows**: Outlook on Windows
+  shows add-ins in the Microsoft Edge WebView2 Runtime, and at version 137
+  or earlier these features may not work. The runtime updates itself by
+  default, separately from Outlook and Microsoft 365 updates. If it is out
+  of date, your organization may manage its updates. Ask your IT
+  administrator to update it to the latest version, then restart Outlook.
+  See
+  [Microsoft's guidance on WebView2 and Microsoft 365 Apps](https://learn.microsoft.com/en-us/deployoffice/webview2-install).
+* **A content blocker**: some content blockers, such as ad blockers, have
+  the same effect, even in a current browser. Turn off the content blocker,
+  then reload the page or restart Outlook, and try again.
 
 
 # Claude for M365 overview
@@ -32015,6 +32378,13 @@ All paths need:
 Your organization's IT team manages these resources. Anthropic cannot
 provide or reset credentials.
 
+> [!NOTE]
+>
+> Bedrock direct does not support AWS GovCloud (US) regions. An alternative
+> is an [LLM gateway](#gateway-requirements-for-it-teams) that your
+> organization operates. Anthropic has not tested a gateway with Amazon
+> Bedrock in GovCloud.
+
 ## Network allowlist
 
 The add-in requires access to specific domains. The required domains
@@ -32027,6 +32397,13 @@ directly (1P) or a third-party platform (3P).
 > inference provider. Domains pointing to Anthropic (such as
 > `pivot.claude.ai`) serve the add-in's interface, feature configuration,
 > and operational telemetry, not prompt or response content.
+>
+> [Dictation](/docs/office-agents/dictation) is an exception. It is available
+> only when users sign in with a Claude account and inference goes to
+> `api.anthropic.com`. The add-in sends the user's Claude access token and
+> streams the user's audio over a WebSocket connection to `pivot.claude.ai`,
+> which forwards them to Anthropic's transcription service and returns the
+> transcribed text.
 
 ### Anthropic API (1P)
 
@@ -32035,10 +32412,10 @@ inference goes to `api.anthropic.com`.
 
 | Domain | Required when | Purpose |
 | - | - | - |
-| `pivot.claude.ai` | Always | Add-in host serving task pane UI, analytics, icon search, skill downloads, and telemetry. |
+| `pivot.claude.ai` | Always | Add-in host serving task pane UI, analytics, icon search, skill downloads, telemetry, and the WebSocket relay for dictation audio. |
 | `claude.ai` | Always | Anthropic OAuth sign-in and feature-flag evaluation. |
 | `hcaptcha.com`, `*.hcaptcha.com` | Always | hCaptcha browser check on the `claude.ai` sign-in and approval pages, which open in the user's web browser. If these domains are blocked, the sign-in approval can fail with a message that the browser couldn't be verified. |
-| `api.anthropic.com` | Always | Claude inference API, file uploads, code-execution containers, and MCP connector registry. |
+| `api.anthropic.com` | Always | Claude inference API, file uploads, code-execution containers, and each user's list of MCP connectors. |
 | `appsforoffice.microsoft.com` | Always | Microsoft Office.js runtime script (required by all Office add-ins). |
 | `login.microsoftonline.com` | If using Outlook | Microsoft Entra ID sign-in via Nested App Auth for the Graph token. |
 | `o1158394.ingest.us.sentry.io` | Optional | Crash and error reporting; blocking degrades diagnostics only. |
@@ -32254,13 +32631,18 @@ add-in warns in the console when one of these keys arrives in the query
 string and ignores it there from October 19, 2026.
 
 The following example shows the change. Apply it to both `SourceLocation`
-and the `Taskpane.Url` resource, keep `&` written as `&amp;` in the XML,
-and redeploy the manifest from the Microsoft 365 admin center.
+and the `Taskpane.Url` resource, and keep `&` written as `&amp;` in the XML.
 
 ```text theme={null}
 before: https://pivot.claude.ai/?gateway_url=https://ai-gateway.example.com/v1&amp;gateway_token=sk-gw-xxxxx&amp;m=excel3p-1.0.0.1
 after:  https://pivot.claude.ai/?gateway_url=https://ai-gateway.example.com/v1&amp;m=excel3p-1.0.0.1#gateway_token=sk-gw-xxxxx
 ```
+
+Before you redeploy the manifest from the Microsoft 365 admin center, raise
+the number in its `<Version>` element, for example from `1.0.0.1` to
+`1.0.0.2`. Microsoft requires a
+[higher version number for every manifest change](https://learn.microsoft.com/en-us/office/dev/add-ins/publish/maintain-breaking-changes),
+and without one, Office can keep using the old manifest.
 
 ### Admin feature controls
 
@@ -32276,7 +32658,7 @@ array to vary it per user.
 | `addin.access` | Kill switch: the add-in refuses to run. |
 | `file.upload` | Blocks attaching files to the conversation. |
 | `web_search` | Removes the built-in web search and web fetch tools, whose queries are served by Anthropic's search provider, along with the user-facing web search toggle. Code execution is unaffected. |
-| `permission_mode.accept_all_edits` | Keeps users in "Ask before edits": "Accept all edits" and "Skip all permissions" can't be turned on, and users already in either mode go back to "Ask before edits". Connector "Always allow" choices are unaffected. |
+| `permission_mode.accept_all_edits` | Keeps users in "Ask before edits": "Accept all edits" and "Skip all permissions" can't be turned on, and users already in either mode go back to "Ask before edits". Connector "Always allow" choices and Outlook's "Always allow mailbox search" are unaffected. |
 | `permission_mode.dangerously_always_allow` | Removes the "Dangerously always allow" button from approval cards. It switches users to the mode shown as "Skip all permissions"; users already in that mode are moved to "Accept all edits". |
 
 Unknown slugs are ignored, so setting a slug from a newer add-in version
@@ -32311,6 +32693,7 @@ If a skill fails to load, the add-in doesn't replace it with a later
 skill. To see which skills failed to load, select the + button at the
 bottom of the chat pane, and then select Skills. A note at the top of the
 list names up to three of those skills and gives the number of any others.
+The note leaves out a skill that still has a copy from an earlier load.
 
 If a bootstrap call takes more than 10 seconds when the add-in
 loads with an existing connection, the add-in has no admin-provisioned
@@ -32335,6 +32718,61 @@ the bootstrap call made when the add-in sets up a new connection. On that
 record, `count` is the number of different skill names in the response,
 and `cap` is the limit, 20.
 
+### Publish a new or changed skill
+
+The add-in loads the `skills` array when the pane loads and at each
+scheduled bootstrap call before the response expires. It also calls the
+bootstrap endpoint when a user selects New chat or starts to type the first
+message of a chat.
+
+That extra call happens at most once every 30 seconds in each open pane,
+counted from the last time the pane read the skills. The add-in retries a call
+up to three times if the endpoint can't be reached or answers with a 5xx, 408,
+425, or 429 status. Skill file downloads aren't retried. From the response, the add-in uses only the
+`skills` array. It doesn't apply a token or any other setting, so keep
+tokens from earlier calls valid until they expire.
+
+After that call, the add-in loads the array again if an entry might have
+changed.
+
+| Skill entry | Counts as changed when |
+| - | - |
+| With `sha256` | The `sha256`, `name`, or `description` differs. A different `url` alone doesn't count. |
+| Inline `content`, no `sha256` | The `content`, `name`, or `description` differs. |
+| `url`, no `sha256` | Always. The add-in can't tell whether the file changed. |
+
+An added, removed, or reordered entry also counts as a change, and so does
+an entry that failed to load the last time. When the add-in loads the array
+again, it downloads the `url` of each skill within the limit of 20, unless
+the entry has inline `content`. It does the same when the pane loads and at
+each scheduled bootstrap call.
+
+To avoid downloads on the call at New chat or the first message when nothing
+changed, give each `url` entry a `sha256`: the SHA-256 of the file, as 64
+hexadecimal characters. Update the `sha256` whenever the file changes: the
+add-in refuses a file that doesn't match it.
+
+The load runs in the background and a chat never waits for it:
+
+* A message sent before the load ends goes without the new skill. A message
+  sent after the load ends has it.
+* If the call fails or takes more than 10 seconds, the add-in keeps the
+  skills that it has.
+* A skill that fails to load keeps the copy the pane already had, until a later
+  load of that skill succeeds. The copy is held only in memory: if the pane
+  reloads while the file still fails, the skill is missing until it loads. The
+  add-in sends the warning log record `Bootstrap skill failed to load`
+  to your [OpenTelemetry collector](/docs/office-agents/opentelemetry).
+* A skill published within 30 seconds of the last read appears in a later
+  chat.
+
+To remove every skill, return an empty `skills` array. If a response has
+no `skills` key, the add-in keeps the skills that it has.
+
+Serve the bootstrap response with `Cache-Control: no-store`, so that no
+cache between the add-in and the endpoint answers with an older copy. A
+response with `Last-Modified` and no `Cache-Control` can be stored too.
+
 ### Deploy to Outlook
 
 Outlook requires a separate manifest file from Excel, PowerPoint, and
@@ -32345,8 +32783,8 @@ you are deploying to Outlook, it generates a second file named
 own custom app in the steps below.
 
 Claude for Outlook reads mail and calendar data through Microsoft Graph,
-which requires a one-time tenant-wide grant from a Global Administrator
-regardless of which platform serves the model. Complete the
+which requires a one-time tenant-wide grant from a Global Administrator or a
+Cloud Application Administrator, regardless of which platform serves the model. Complete the
 [Microsoft Graph admin consent](/docs/office-agents/outlook#grant-microsoft-graph-consent)
 step before deployment so users are not prompted individually. The Graph
 token stays in the user's Outlook client and is never sent to your
@@ -36568,12 +37006,14 @@ On Claude Desktop 2.37337.0 or later, a user who belongs to any organization tha
 
 You can use `forceLoginOrgUUID` to help prevent shadow IT, which here means people using personal Claude accounts or other organizations' accounts in Claude Desktop on work computers. A user who signs in to standard Claude Desktop with an account that isn't in your organization sees a page that reads "This account is not approved by your enterprise admin" and can only log out.
 
-Claude Desktop 4.16336.0 or later checks **Sign in with Claude Console** against the `forceLoginOrgUUID` in the device's managed profile. Users see that sign-in where the profile [selects the Claude API with no static key or credential helper](/docs/third-party/claude-desktop/claude-api#choose-an-authentication-approach). If the key leaves out the Claude Console organization that a user selects, the app records a warning in `main.log` and still uses the sign-in. A later release stops using a sign-in that the key leaves out. Where `forceLoginOrgUUID` is set, that release also stops using an API key that a version before 3.1623.0 [created at sign-in](/docs/third-party/claude-desktop/claude-api#choose-an-authentication-approach), whatever IDs it lists, until the device's next sign-in.
+Claude Desktop 4.16336.0 or later checks **Sign in with Claude Console** against the `forceLoginOrgUUID` in the device's managed profile. Users see that sign-in where the profile [selects the Claude API with no static key or credential helper](/docs/third-party/claude-desktop/claude-api#choose-an-authentication-approach). If the key leaves out the Claude Console organization that a user selects, the app records a warning in `main.log` and still uses the sign-in.
 
-A user whose organization the key leaves out also sees a notice that reads "Your Claude Console sign-in will stop working after a future update". The notice gives the ID of that Claude Console organization, and the user can dismiss it. A user whose device still uses an API key from before 3.1623.0 sees the same notice, whatever IDs `forceLoginOrgUUID` lists. For that user it gives no ID and says to sign out and sign in again. The notice requires Claude Desktop 4.23118.0 or later.
+On some versions from Claude Desktop 4.23118.0, a user whose organization the key leaves out also sees a notice that reads "Your Claude Console sign-in will stop working after a future update". Updating the app doesn't stop the sign-in. The notice gives the ID of that Claude Console organization, and the user can dismiss it. On those versions, a user whose device still uses an API key that a version before 3.1623.0 [created at sign-in](/docs/third-party/claude-desktop/claude-api#choose-an-authentication-approach) sees the same notice, whatever IDs `forceLoginOrgUUID` lists. For that user it gives no ID and says to sign out and sign in again.
+
+To stop the warning and the notice, list the organization or have the user sign in to a listed one:
 
 * **Add the organization:** a Claude Console organization has its own ID. In Claude Console, go to [**Settings > Organization**](https://platform.claude.com/settings/organization) and copy the **Organization ID**. Add the ID of each Claude Console organization that you allow to `forceLoginOrgUUID`, in a JSON array with your Claude organization's ID.
-* **Check a device:** search `main.log`, and any numbered copies beside it such as `main1.log`, in the [logs directory](/docs/third-party/claude-desktop/data-storage#where-data-lives) on the user's device for `coming release`. If a warning names the ID of a Claude Console organization that you allow, add that ID. Otherwise, have the user sign out and sign in again with a Claude Console organization that the key lists.
+* **Check a device:** search `main.log`, and any numbered copies beside it such as `main1.log`, in the [logs directory](/docs/third-party/claude-desktop/data-storage#where-data-lives) on the user's device for `forceLoginOrgUUID`. On some versions, the warning also says that a coming release stops using the sign-in. Updating the app doesn't stop it. If a warning names the ID of a Claude Console organization that you allow, add that ID. If a warning about Claude Console sign-in names no ID, or the ID of an organization that you don't allow, have the user sign out and sign in again with a Claude Console organization that the key lists.
 * **Before a user signs in again:** unless [`deploymentOrganizationUuid`](/docs/third-party/claude-desktop/configuration#deploymentorganizationuuid) is set, the app stores sessions and other local data under the organization of the sign-in. After a sign-in to another organization, earlier data can stop appearing in the app. Setting that key now has the same effect. Neither deletes the earlier sessions.
 
 To deploy `forceLoginOrgUUID`:
@@ -50273,7 +50713,7 @@ On Linux, installing the `claude-desktop` package adds Anthropic's apt repositor
 
 ## Sending telemetry to your own collector
 
-Independently of what's sent to Anthropic, you can export session activity to your own OpenTelemetry collector by setting `otlpEndpoint`. This is the recommended way to retain an audit trail in environments that disable Anthropic-bound telemetry.
+Independently of what's sent to Anthropic, you can export session activity to your own OpenTelemetry collector by setting `otlpEndpoint`. This is the recommended way to retain an audit trail in environments that disable Anthropic-bound telemetry. The export isn't a complete record of a session; see [Content capture](#content-capture).
 
 For third-party deployments, the export includes session metadata (event names, durations, token counts, result counts, errors) by default, but not message content. It also identifies the signed-in user; see [User attribution](#user-attribution). Records of skill scans are an exception to leaving out message content. If you turn on [skill scanning](/docs/third-party/claude-desktop/extensions#skill-scanning), the export also carries `custom3p_skill_scan_completed` records of scan results, and a record's summary can quote the skill. Claude Desktop sends the summary even when [content capture](#content-capture) (`otlpContentCapture`) is off. See [Monitoring](/docs/cowork/monitoring) for the event schema and the [`otlp*` keys](/docs/third-party/claude-desktop/configuration#otlpendpoint) in the configuration reference.
 
@@ -50335,7 +50775,17 @@ To include content in the export, set `otlpContentCapture` to an array of catego
 | `toolContent` | Tool output content, up to the [content length limit](#content-length-limit) |
 | `rawApiBodies` | Inference request and response bodies, up to the [content length limit](#content-length-limit) |
 
-On Claude Desktop version 1.17377 or later, enabling `userPrompts` also captures model responses, even if `assistantResponses` is not listed. On those versions, no `otlpContentCapture` configuration captures user prompts without model responses.
+Your collector doesn't get a [`user_prompt`](/docs/cowork/monitoring#user-prompt-event) event for some messages that people send. Don't rely on content capture alone to keep what people type.
+
+On Claude Desktop 1.17377.1 or later, listing `userPrompts` also captures model responses by default, even if `assistantResponses` isn't listed.
+
+To capture user prompts and redact model response text, set `OTEL_LOG_ASSISTANT_RESPONSES` to `0` in the `env` block of [Claude Code's own managed settings](/docs/third-party/claude-desktop/code#interaction-with-claude-code%E2%80%99s-own-managed-settings), and leave `rawApiBodies` out of `otlpContentCapture`. Each [`assistant_response`](/docs/cowork/monitoring#model-response-event) event still arrives, with `<REDACTED>` in place of the text. Requires Claude Desktop 2.37337.1 or later.
+
+Check these points before you deploy the setting:
+
+* **Where to set it**: in the highest-priority Claude Code managed settings on the device, not in a per-user Windows registry policy. See **More detail** under [`otlpContentCapture`](/docs/third-party/claude-desktop/configuration#otlpcontentcapture).
+* **No Claude Code managed settings on the device yet**: also set `parentSettingsBehavior` to `"merge"` in the settings you create, or Claude Code can drop the restrictions that Claude Desktop passes to it
+* **Background agents in Code sessions**: when an agent that Claude runs in the background finishes, Claude Code passes the agent's final response back to the conversation as a prompt. Your collector can receive that text in a `user_prompt` event, and on a trace span when [traces](#traces-beta) are on, even with the variable set to `0`. Cowork and Chat sessions don't run agents in the background.
 
 Conversation titles arrive on the desktop application's own stream (`claude-desktop`) as a `desktop_session_title_set` event that carries each Cowork and Code session's title and the Claude Code `session.id` to join on. The event is exported only when [`otlpDesktopLogLevel`](/docs/third-party/claude-desktop/configuration#otlpdesktoploglevel) is `info` or `debug`, and the title text is included only when `otlpContentCapture` includes `userPrompts`. Requires Claude Desktop 1.44121.1 or later.
 

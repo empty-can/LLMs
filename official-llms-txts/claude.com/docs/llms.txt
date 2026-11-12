@@ -63,6 +63,7 @@
 - [Overview](https://claude.com/docs/cowork/overview.md): Learn about Cowork, Anthropic's agentic workspace
 - [Changelog](https://claude.com/docs/cowork/changelog.md): Release notes for Claude Desktop
 - [Run tasks in the background with Dispatch](https://claude.com/docs/cowork/guide/dispatch.md): Assign work to a Dispatch agent that plans, runs, and reports on tasks while you do something else, on this computer or from your phone.
+- [Network access for shell commands](https://claude.com/docs/cowork/guide/network-access.md): Which hosts the shell commands in a Cowork task can reach, and what works on package registries and GitHub.
 - [Install plugins](https://claude.com/docs/cowork/guide/plugins.md): Add packaged skills, connectors, and agents to Cowork from the plugin marketplace or a file.
 - [Organize work with projects](https://claude.com/docs/cowork/guide/projects.md): Group folders, instructions, and context into a Cowork project so Claude starts each session with the right setup.
 - [Monitoring](https://claude.com/docs/cowork/monitoring.md): Track Cowork usage and activity across your organization with OpenTelemetry

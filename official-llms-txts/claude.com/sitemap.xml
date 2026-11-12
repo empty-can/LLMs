@@ -2254,6 +2254,9 @@
     <loc>https://claude.com/de/solutions/healthcare</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/solutions/legal</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/solutions/life-sciences</loc>
   </url>
   <url>
@@ -3610,6 +3613,9 @@
     <loc>https://claude.com/fr/solutions/healthcare</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/solutions/legal</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/solutions/life-sciences</loc>
   </url>
   <url>
@@ -4055,6 +4061,9 @@
   </url>
   <url>
     <loc>https://claude.com/it/solutions/government</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/solutions/legal</loc>
   </url>
   <url>
     <loc>https://claude.com/it/solutions/life-sciences</loc>
@@ -4958,6 +4967,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/solutions/healthcare</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/solutions/legal</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/solutions/life-sciences</loc>
@@ -6310,6 +6322,9 @@
     <loc>https://claude.com/marketplace/connectors/aptus-ai-nextos</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/arag-spain-insurance</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/archera</loc>
   </url>
   <url>
@@ -6329,6 +6344,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/athenahq</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/athletedata</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/atlar</loc>
@@ -6694,9 +6712,6 @@
     <loc>https://claude.com/marketplace/connectors/claude-academy</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/connectors/claude-motion-to-mirage</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/connectors/clay</loc>
   </url>
   <url>
@@ -6884,6 +6899,12 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/craft-io</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/creparser-deal-review</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/creparser-lease-abstraction</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/crossbeam</loc>
@@ -7147,6 +7168,9 @@
     <loc>https://claude.com/marketplace/connectors/extend</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/extuitive</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/factset</loc>
   </url>
   <url>
@@ -7262,6 +7286,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/function</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/fundraise-up-for-organizations</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/funnel</loc>
@@ -7508,6 +7535,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/infobip-message</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/infor</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/informatica-catalog-discovery</loc>
@@ -8234,6 +8264,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pagerduty</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/pagesjaunes</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pandadoc</loc>
@@ -9244,6 +9277,9 @@
     <loc>https://claude.com/marketplace/connectors/verisk-xactrestore</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/versine</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/vertiso-memory</loc>
   </url>
   <url>
@@ -10144,9 +10180,6 @@
     <loc>https://claude.com/marketplace/plugins/growthbook</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/plugins/gumlet</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/plugins/handsontable-skills</loc>
   </url>
   <url>
@@ -10658,9 +10691,6 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/render</loc>
-  </url>
-  <url>
-    <loc>https://claude.com/marketplace/plugins/replo</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/resend</loc>
