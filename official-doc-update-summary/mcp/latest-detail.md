@@ -1,154 +1,340 @@
 ---
-対象期間: 2026年11月10日 〜 2026年11月11日
-作成日: 2026-11-11
+対象期間: 2026年11月11日 〜 2026年11月12日
+作成日: 2026-11-12
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、新規ページが 1 件と、既存の 4 ページの小さな変更がありました（`llms-full.txt` は追加 32 行・削除 10 行、索引 `llms.txt` は追加 1 行）。50 行以上の更新はありません。
+今回の対象期間の取り込みは 1 回で、Registry の文書を中心に 17 ページに差分がありました（`llms-full.txt` は追加 362 行・削除 65 行、索引 `llms.txt` は変更なし）。50 行以上が変わったのは、Registry の認証・GitHub Actions・クイックスタートの 3 ページです。
 
 主要なものを以下に挙げます。
 
-1. ワーキンググループ 14 件の Leads・Discord のチャンネル・Focus を 1 つの表にまとめた Working Groups Overview のページが加わった
-2. Extension Support Matrix で、MCP Inspector の行の MCP Apps 列に、リンク付きの `Partial` が入った
-3. Security IG の憲章の Discussion Topics から、SEP-2809（Attested Tool-Server Admission）の行がなくなった
-4. Transports WG の憲章が、上流リポジトリの `CHARTER.md` と `docs/` を指さなくなり、参照先が `proposals/` などに替わった
+1. GitHub 認証で組織の名前空間（`io.github.<orgname>/*`）に公開するには組織の Owner であることが要るようになり、`mcp-publisher login github` では今のところ組織の名前空間に公開できないと書かれた
+2. GitHub Actions の 3 つのワークフロー例が `mcp-publisher` の版を `v1.8.1` に固定して Sigstore の署名を検証するようになり、CI で registry のトークンを守るための節が加わった
+3. DNS 認証の TXT レコードはドメインの apex に置くこと、Ed25519 の鍵には OpenSSL 3.0 以降が要ることなどが書かれ、DNS 認証と HTTP 認証のトラブルシューティングが加わった
+4. クイックスタートにパッケージを持たないリモートだけのサーバーの手順が加わり、Registry がリモート URL の所有を確かめないことが Publishing Remote Servers に書かれた
+5. SEP Guidelines などが SEP-3398 に合わせて書き直され、SEP は working group（例外として Core Maintainers）が sponsor し、sponsor が付くまでは draft の PR のままになる形になった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**ワーキンググループを一覧するページが新設された**](#1-ワーキンググループを一覧するページが新設された):  
-  Working Groups Overview（`community/working-groups/overview`、25 行）が索引と本文に加わった。活動中のワーキンググループ 14 件を、Leads・Discord・Focus の列を持つ 1 つの表にまとめている。並んでいるグループは、Working Groups and Interest Groups の Current groups にある 14 件と同じ。
-2. [**Extension Support Matrix で MCP Inspector の MCP Apps 列に Partial が入った**](#2-extension-support-matrix-で-mcp-inspector-の-mcp-apps-列に-partial-が入った):  
-  Support matrix の MCP Inspector の行で、空だった MCP Apps 列に、Inspector リポジトリの `docs/mcp-app-review.md` へリンクした `Partial` が入った。Skills 列の `Partial` は前からある。
-3. [**Security IG の議題表から SEP-2809 の行がなくなった**](#3-security-ig-の議題表から-sep-2809-の行がなくなった):  
-  Security Charter の Discussion Topics の表から、SEP-2809「Attested Tool-Server Admission (ATSA)」（Draft）の行が消え、議題は 6 件から 5 件になった。Changelog に行は足されていない。
-4. [**Transports 憲章の上流リポジトリへの参照先が替わった**](#4-transports-憲章の上流リポジトリへの参照先が替わった):  
-  Transports Charter で、上流リポジトリ `transports-wg` の `CHARTER.md` と `docs/` へのリンクがなくなった。補助資料の置き場所は `proposals/` に、範囲の補足の参照先はリポジトリのトップの `#mission` に替わり、Resources の 2 つのリンクは「Proposals and decision records」の 1 つにまとまった。
+1. [**組織の名前空間への公開に組織の Owner 権限が要るようになった**](#1-組織の名前空間への公開に組織の-owner-権限が要るようになった):  
+  How to Authenticate の GitHub 認証に、個人と組織の名前空間を説明する節が加わった。組織の名前空間（`io.github.<orgname>/*`）に公開するにはその組織の Owner でなければならず、ふつうのメンバーでは足りない。`mcp-publisher login github` は今のところ組織の名前空間に公開できないので、GitHub Actions（OIDC）か Personal Access Token を使う。
+2. [**GitHub Actions の例が mcp-publisher の版を固定し署名を検証するようになった**](#2-github-actions-の例が-mcp-publisher-の版を固定し署名を検証するようになった):  
+  3 つのワークフロー例が、`releases/latest` から取得してそのまま展開するのをやめ、`MCP_PUBLISHER_VERSION: v1.8.1` の版を取得して `cosign verify-blob` で検証してから展開するようになった。組織のトークンを Environment secret に置くことなどを勧める「Securing your registry token in CI」の節が加わった。
+3. [**DNS 認証と HTTP 認証の注意点とトラブルシューティングが加わった**](#3-dns-認証と-http-認証の注意点とトラブルシューティングが加わった):  
+  DNS 認証の TXT レコードは `_mcp-auth.` などのセレクタの下ではなくドメインの apex に置くこと、Ed25519 の鍵には OpenSSL 3.0 以降が要ること（macOS の LibreSSL では作れない）、ECDSA P-384 のログインには `--algorithm ecdsap384` を付けることが書かれた。Registry 側から見た HTTP 検証の要件と、DNS・HTTP 認証のトラブルシューティングの節が加わった。
+4. [**リモートだけのサーバーの公開手順とリモート URL の扱いが書かれた**](#4-リモートだけのサーバーの公開手順とリモート-url-の扱いが書かれた):  
+  クイックスタートに、`packages` を持たず `remotes` だけの `server.json` で公開する手順の節が加わった。Publishing Remote Servers には、Registry が確かめるのは `name` の名前空間の管理だけでリモート URL の管理は確かめないこと、複数のサーバー名が同じ URL を指せることが書かれた。
+5. [**SEP は working group が sponsor する形になった**](#5-sep-は-working-group-が-sponsor-する形になった):  
+  SEP Guidelines が sponsor の規則を SEP-3398 に合わせ、SEP を sponsor するのは working group（例外として Core Maintainers）になった。sponsor が付くまでの PR は、`proposal` ラベルの付いた PR から、`wg-support-needed` ラベルの付いた draft の PR に替わった。Contributing to MCP の手順も、working group に持ち込んで sponsor を得る流れに書き直された。
 <!-- light:highlight-list:end -->
 
-## 1. ワーキンググループを一覧するページが新設された
+## 1. 組織の名前空間への公開に組織の Owner 権限が要るようになった
 
-今回の対象期間の取り込みは 1 回で、MCP の索引 `llms.txt`（追加 1 行）と本文 `llms-full.txt`（追加 32 行・削除 10 行）の両方に差分がありました。`llms-full.txt` の総行数は 44,925 行から 44,947 行に、収録ページ数は 159 件から 160 件（`examples` が 2 回収録されているため、URL としては 158 件から 159 件）に、索引のエントリ数は 364 件から 365 件になっています。差分のあったページは 5 件です。
+今回の対象期間の取り込みは 1 回です。MCP の入力ファイルでは本文 `llms-full.txt` だけが変わり（追加 362 行・削除 65 行）、索引 `llms.txt` には差分がありません。`llms-full.txt` の総行数は 44,947 行から 45,244 行になり、収録ページ数（160 件。`examples` が 2 回収録されているため、URL としては 159 件）と索引のエントリ数（365 件）は変わっていません。差分のあったページは 17 件で、Registry の文書（`registry/` 配下）が 7 件、コミュニティ文書（`community/` 配下）が 4 件、SEP が 6 件です。
 
 | ページ | 行数 | 追加 | 削除 | 扱い |
 |---|---|---|---|---|
-| Working Groups Overview | 新規 → 25 | 25 | 0 | 新規追加（ハイライト 1） |
-| Extension Support Matrix | 58 → 58 | 1 | 1 | 軽微な更新（ハイライト 2） |
-| Security Charter | 137 → 136 | 0 | 1 | 軽微な更新（ハイライト 3） |
-| Transports Charter | 153 → 151 | 5 | 7 | 軽微な更新（ハイライト 4） |
-| Governance Working Group Charter | 185 → 185 | 1 | 1 | 軽微な更新 |
+| How to Authenticate When Publishing to the Official MCP Registry | 278 → 396 | 120 | 2 | 大幅更新（ハイライト 1・3） |
+| How to Automate Publishing with GitHub Actions | 217 → 306 | 97 | 8 | 大幅更新（ハイライト 1・2） |
+| Quickstart: Publish an MCP Server to the MCP Registry | 285 → 322 | 50 | 13 | 大幅更新（ハイライト 4） |
+| SEP Guidelines | 138 → 148 | 27 | 17 | 軽微な更新（ハイライト 5） |
+| Contributing to MCP | 120 → 122 | 11 | 9 | 軽微な更新（ハイライト 5） |
+| Publishing Remote Servers | 170 → 185 | 15 | 0 | 軽微な更新（ハイライト 4） |
+| Frequently Asked Questions | 44 → 58 | 15 | 1 | 軽微な更新 |
+| MCP Registry Aggregators | 108 → 114 | 6 | 0 | 軽微な更新 |
+| MCP Registry Supported Package Types | 256 → 261 | 6 | 1 | 軽微な更新 |
+| SEP-2640: Skills Extension | 667 → 667 | 6 | 6 | 軽微な更新 |
+| Working Groups and Interest Groups | 151 → 151 | 2 | 2 | 軽微な更新（ハイライト 5） |
+| SEP-3398: Release Cycle Updates | 276 → 276 | 2 | 2 | 軽微な更新 |
+| Working Groups Overview | 25 → 26 | 1 | 0 | 軽微な更新 |
+| SEP-1577: Sampling With Tools | 392 → 392 | 1 | 1 | 軽微な更新 |
+| SEP-2133: Extensions | 286 → 286 | 1 | 1 | 軽微な更新 |
+| SEP-2575: Make MCP Stateless | 838 → 838 | 1 | 1 | 軽微な更新 |
+| SEP-3392: Extension Lifecycle | 299 → 299 | 1 | 1 | 軽微な更新 |
 
-行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。5 ページの追加・削除の合計は、`llms-full.txt` 全体の差分（追加 32 行・削除 10 行）と一致します。
+行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。17 ページの追加・削除の合計は、`llms-full.txt` 全体の差分（追加 362 行・削除 65 行）と一致します。
 
-新しいページは Working Groups Overview（`community/working-groups/overview`）で、説明文は「Current MCP working groups, their leads, channels, and focus.」です。本文はまず、ワーキンググループは SEP・拡張・コードのような具体的な成果を出すもので、それぞれが範囲・Leads・運営を定めた憲章のもとで動く、と述べます。続けて、このページは活動中のワーキンググループを一覧するものであり、グループの仕組みや参加・設立の方法は Working groups and interest groups のページに、憲章の出し方は charter template にある、と案内しています。
+**個人と組織の名前空間。** How to Authenticate When Publishing to the Official MCP Registry の GitHub Authentication に、h3「Personal vs. organization namespaces」が加わりました。
 
-本体は Working group・Leads・Discord・Focus の 4 列の表で、次の 14 件がアルファベット順に並びます。
+- GitHub 認証では、個人の名前空間 `io.github.<your-username>/*` は常に与えられる
+- 組織の名前空間 `io.github.<orgname>/*` に公開するには、その組織の **Owner** でなければならない。ふつうのメンバーであるだけでは「もう足りない」とされ、Registry はメンバーとしての役割を確かめて、admin にだけ組織の名前空間を与える。組織に属しているだけの人が、組織の名前でサーバーを公開したり上書きしたりするのを防ぐため、と説明している
 
-- Apps・File Uploads・Filesystems・Governance・Infrastructure・Inspector V2・Interceptors
-- Progressive Disclosure・Registry・SDK・Server Card・Skills Over MCP・Tasks and Events・Transports
+**`login github` の制限。** 同じ節の WARNING は、`mcp-publisher login github` では今のところ組織の名前空間に公開できない、としています。対話式のデバイスフローは GitHub App に対して認証し、GitHub App のユーザートークンは組織のメンバーシップを読めません。GitHub が空のリストを返すため、Registry には所有する組織が見えず、個人の名前空間だけが与えられます。組織での役割や、メンバーシップを公開しているかどうかに関わらず、すべての人が影響を受けるとされ、追跡 issue として registry リポジトリの #1468 が挙がっています。組織のサーバーを今公開するには、組織での役割を示せる次のどちらかを使います。
 
-各列の内容は次のとおりです。
+- **GitHub Actions**: OIDC で公開する。この制限を受けない
+- **Personal Access Token**: `mcp-publisher login github --token <YOUR_TOKEN>` で、下記の要件を満たすトークンを使う
 
-- **Working group**: 各グループの憲章へのリンク
-- **Leads**: GitHub のプロフィールへリンクした名前。各憲章の Leadership の節で Lead とされている人と同じで、Progressive Disclosure だけは、憲章で Facilitator とされている 2 人が挙がっている
-- **Discord**: チャンネル名。Infrastructure・Interceptors・Tasks and Events の 3 件は「Not listed yet」
-- **Focus**: 1 行の説明。たとえば Transports は「Evolving transport bindings and transport-adjacent protocol architecture」
+**PAT の要件。** PAT で認証する場合（CI で使う場合や、上の制限を避ける場合）、トークンは Registry が組織での役割を読めるものでなければなりません。読めないトークンでも個人の名前空間には公開できますが、組織への公開は知らされないまま使えなくなります。
 
-並んでいるグループは、Working Groups and Interest Groups の Current groups にあるワーキンググループの一覧（14 件）と同じです（Current groups では Apps を「MCP Apps」と書いています）。Current groups 自体は今回変わっておらず、この新しいページへのリンクもありません。`llms-full.txt` の中でこのページを指すリンクは、まだどこにもありません。憲章の出し方を書いた Group Charter Template も、新しいグループは Current groups に 1 行を足すよう求めたままです。interest group について同じような一覧ページは、索引にありません。
+| トークンの種類 | 要件 |
+|---|---|
+| Classic PAT | `read:org` スコープ |
+| Fine-grained PAT | Organization permissions → Members → Read-only（`read:org` に相当）。1 つのリソースオーナーに結び付くため、作成した組織しか見えない |
 
-索引では Group Charter Template と MCP Apps Working Group Charter の間、つまりワーキンググループの憲章の並びの先頭に入りました。本文では、パスのアルファベット順どおり Interceptors Charter と Progressive Disclosure Charter の間に収録されています。
+どちらの場合もリポジトリのスコープは要りません（Registry はコードを読み書きしない、と説明しています）。
 
-- [Working Groups Overview - MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)
-- [Working Groups and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
+**GitHub Actions のページも合わせて変わりました。** How to Automate Publishing with GitHub Actions の Step 2: Add Secrets で、PAT 認証のシークレット `MCP_GITHUB_TOKEN` の説明が書き換わりました。これまでは「`read:org` と `read:user` のスコープを持つ PAT」でした。今回は、Registry が要るのは組織の Owner であることを確かめるための役割の読み取りだけだとして、最小限の権限だけを与え、リポジトリのスコープは付けないよう求めています。
 
-## 2. Extension Support Matrix で MCP Inspector の MCP Apps 列に Partial が入った
+- Classic PAT: `read:org` スコープだけ。`read:user` は要らない（スコープの無いトークンでも認証でき、個人の名前空間には公開できる）
+- Fine-grained PAT: 上の表と同じ権限。公開先の組織に対して作る
 
-Extension Support Matrix の Support matrix で、MCP Inspector の行が書き換わりました。MCP Apps 列は空でしたが、今回 `Partial` が入り、Inspector のリポジトリの `docs/mcp-app-review.md`（`https://github.com/modelcontextprotocol/inspector/blob/main/docs/mcp-app-review.md`）へリンクしています。Skills 列の `Partial`（CLI の README の `#skill-verification---verify` へのリンク）は前からあり、変わっていません。リンク先の文書の中身は、今回の入力からは確認できません。
+組織のトークンは、ふつうのリポジトリのシークレットではなく、`mcp-registry-publish` 環境の Environment secret に置くよう書き加えられました（ハイライト 2 参照）。Step 2 の冒頭の「リポジトリにシークレットを追加する必要があるかもしれない」からは、「リポジトリに」が外れています。
 
-なお、2026年10月20日のサマリで書いたとおり、`llms-full.txt` の書式が変わってから、この表では対応を示すチェックマークが出力されていません。空のセルが非対応を意味するとは限らず、`llms-full.txt` から読み取れるのはリンク付きの `Partial` だけです。
+- [How to Authenticate When Publishing to the Official MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/authentication#github-authentication)
+- [How to Automate Publishing with GitHub Actions - MCP Docs](https://modelcontextprotocol.io/registry/github-actions#step-2-add-secrets)
 
-- [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+## 2. GitHub Actions の例が mcp-publisher の版を固定し署名を検証するようになった
 
-## 3. Security IG の議題表から SEP-2809 の行がなくなった
+How to Automate Publishing with GitHub Actions の Step 1: Create a Workflow File には、認証方法ごとに 3 つのワークフロー例（OIDC authentication (recommended)・PAT authentication・DNS authentication）があります。3 つとも、`mcp-publisher` を入れる手順が同じように書き換わりました。
 
-Security Charter（Security Interest Group の憲章）の Discussion Topics の表から、次の行がなくなりました。
-
-| Item | Name | Status | Champion |
-|---|---|---|---|
-| SEP-2809（PR へのリンク） | Attested Tool-Server Admission (ATSA) | Draft | `@metereconsulting` |
-
-これで表は 6 件から 5 件になり、残るのは SDK vulnerability disclosure（In progress、Champion は Facilitators）と、Open の 4 件です。Open の 4 件は、承認後の `list_changed` の意味（runtime drift）、サプライチェーンの完全性、サーバーをまたぐツールの識別、Tool Annotations IG と合同の capability declarations です。Item の列に SEP が書かれた行は、これでなくなりました。
-
-行がなくなった理由は書かれておらず、Changelog の最新の行も 2026年08月26日（routing group への再編）のままです。SEP-2809 という番号は、`llms-full.txt` のどこにも出てこなくなりました。2026年06月16日のサマリでは、IG が新設されたときの議題の 1 つとしてこの SEP を挙げていました。
-
-- [Security Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/security#discussion-topics)
-
-## 4. Transports 憲章の上流リポジトリへの参照先が替わった
-
-Transports Charter で、上流のリポジトリ `modelcontextprotocol/transports-wg` を指すリンクが、次の 4 か所で書き換わりました。
-
-| 箇所 | これまで | 今回 |
+| | これまで | 今回 |
 |---|---|---|
-| Mission Statement | working group repository とその upstream charter（`CHARTER.md`）が、技術的な焦点・提案の方針・補足の詳細を保つ | working group repository が保つ |
-| In Scope の Validation and Guidance | 補助資料は upstream の documentation（`tree/main/docs`）に置く | 補助資料は upstream の proposals directory（`tree/main/proposals`）に置く |
-| In Scope の直後の段落 | upstream の scope statement（`CHARTER.md#scope`）は補足の文脈であり、憲章の境界を広げられない | upstream の mission statement（リポジトリのトップの `#mission`）が同じ扱い |
-| Resources | リポジトリの下に Proposals（`proposals`）と Supporting documentation and decision records（`docs`）の 2 つ | Proposals and decision records（`proposals`）の 1 つ |
+| 取得する版 | `releases/latest/download/` から最新版を取得 | ジョブの `env` に `MCP_PUBLISHER_VERSION: v1.8.1` を置き、`releases/download/${MCP_PUBLISHER_VERSION}` から取得 |
+| 検証 | なし（`curl -L` の出力をそのまま `tar xz` で展開） | アーカイブと `.sigstore.json` を取得し、`cosign verify-blob` で検証してから展開する。展開後は両ファイルを消す |
+| ステップ | Install mcp-publisher | Install cosign（`sigstore/cosign-installer` をコミットの SHA で固定。コメントは `v4.1.2`）と Download and verify mcp-publisher |
 
-これでこの憲章から、`CHARTER.md` と `docs/` へのリンクはなくなりました。上流のメンバー名簿（`GOVERNANCE.md#members`）、open な PR、`roadmaps/` と `meetings/` へのリンクは残っています。上流の側で何が変わったのかは、今回の入力からは分かりません。Changelog は 2026年08月23日の初版の行だけで、今回の変更は記録されていません。
+`cosign verify-blob` には、証明書の identity として registry リポジトリの `.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}` を、OIDC の issuer として `https://token.actions.githubusercontent.com` を指定しています。例の前には、例が `mcp-publisher` を特定のリリースに固定し、Sigstore のバンドルを検証してから展開していること、上げるときは `MCP_PUBLISHER_VERSION` を意図したリリースタグに意識して更新し、書き換わりうる `releases/latest` の URL には戻さないこと、という説明が加わりました。
 
-2026年08月26日のサマリは、この憲章が技術的な詳細を上流の `CHARTER.md` に任せていると書きましたが、その記述はもう当てはまりません。なお、SEP-2575: Make MCP Stateless のページには、`transports-wg` の `docs/` 配下の文書（`sessions-vs-sessionless-decision.md`）へのリンクが残っています。
+PAT authentication の例には `environment: mcp-registry-publish` が加わり、`MCP_GITHUB_TOKEN` はふつうのリポジトリのシークレットではなく保護された Environment から取り、その環境をデフォルトブランチやリリースタグに限定するように、というコメントが付きました。OIDC と DNS の例には `environment:` はありません。
 
-- [Transports Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/transports#scope)
+**Securing your registry token in CI。** Step 2: Add Secrets の下に h3 が新設されました。
+
+- どのトークンで認証するにしても、価値の高い認証情報として扱う。**組織**の名前空間で認証したときの registry のトークンは、このリポジトリのサーバーだけでなく、`io.github.<org>/*` の**どのサーバーでも**公開・上書きできる
+- 考えるべきは「このシークレットが見えるジョブでコードを動かせるのは誰か」で、既定では（ブランチやタグの push によって）リポジトリに書き込めるすべての人であり、組織の Owner だけではない。ふつうのリポジトリのシークレットにすると、公開できる人を書き込み権限のある全員に広げてしまう
+- 勧める対策（後ろほど強い）
+  1. トークンを、リポジトリや組織のシークレットではなく Environment secret として保存する。ジョブが環境のシークレットを読めるのは `environment:` を宣言したときだけ。ただし `environment:` キーだけでは何も守らない。環境がまだ無ければ、GitHub は初回の実行時に保護ルールの無い環境を自動で作り、`environment:` を宣言したジョブもふつうのリポジトリと組織のシークレットを受け取る。守りになるのは、トークンをその環境のシークレットとして保存し、環境を 2・3 のように設定すること
+  2. deployment branch rule で、その環境をデフォルトブランチやリリースタグに限り、そのブランチを required pull request reviews で保護する。レビューされ、メンテナーが承認したコードだけがトークンに届くようになる
+  3. （最も強い）環境に required reviewer を付け、公開のたびに人の明示的な承認を待たせる
+- 上の対策に関わらず避ける落とし穴
+  - PR の head のコードをチェックアウトする `pull_request_target` のワークフローから公開しない。このトリガーはベースリポジトリの文脈でシークレット付きで動くので、信頼できないフォークからの PR がトークンを持ち出しうる。環境のブランチルールはここでは守りにならず（ref はベースブランチのまま）、守れるのは required reviewer だけ
+  - 公開リポジトリでは、公開のジョブに self-hosted runner を使わない（フォークからの PR がジョブを載せられることがある）
+- 既定では**フォークからの** PR はシークレットを受け取らず、ブランチも push できないので、上の設定ミスが無ければ外部のコントリビューターはトークンに届かない
+
+Troubleshooting の表には「invalid audience」の行が加わり、`mcp-publisher` のバイナリがこの registry のデプロイに対して古すぎるので、`MCP_PUBLISHER_VERSION` を対応するリリースに上げてワークフローを再実行するよう書かれました。
+
+なお、Quickstart の Step 3: Install `mcp-publisher` は、今回も macOS/Linux・Windows とも `releases/latest/download/` から取得して、検証せずに展開する手順のままです。
+
+- [How to Automate Publishing with GitHub Actions - MCP Docs](https://modelcontextprotocol.io/registry/github-actions#step-1-create-a-workflow-file)
+- [How to Automate Publishing with GitHub Actions - MCP Docs](https://modelcontextprotocol.io/registry/github-actions#securing-your-registry-token-in-ci)
+
+## 3. DNS 認証と HTTP 認証の注意点とトラブルシューティングが加わった
+
+How to Authenticate の DNS Authentication と HTTP Authentication に、注意書きとコマンドの修正が入りました。
+
+- **TXT レコードは apex に置く（DNS）**: WARNING が加わった。TXT レコードはドメインの apex（例: `example.com`）に置き、`_mcp-auth.example.com` や `_mcp-registry.example.com` のようなセレクタの下に置かない。MCP の DNS 認証は SPF と同じ apex への置き方で、DKIM のようなセレクタへの置き方ではない。セレクタの下に置くと Registry には見えず、認証は一般的な署名のエラーで失敗する。鍵を替えるときは、前の TXT レコードを apex から消すこと（残った古いレコードが先に試され、検証が失敗する）
+- **Ed25519 には OpenSSL 3.0 以降（DNS・HTTP）**: NOTE が加わった。macOS に標準で入っている LibreSSL（システムの `openssl`）は `genpkey` で Ed25519 を実装しておらず、`Algorithm Ed25519 not found` で失敗する。macOS では `brew install openssl@3` で入れ、コマンドの `openssl` を `/opt/homebrew/opt/openssl@3/bin/openssl`（Apple Silicon）か `/usr/local/opt/openssl@3/bin/openssl`（Intel）に置き換える。ECDSA P-384 の手順は LibreSSL でも動く。HTTP Authentication の NOTE は、DNS Authentication の NOTE を参照している
+- **ECDSA P-384 のログイン（DNS・HTTP）**: ECDSA P-384 の鍵でログインするコマンドに `--algorithm ecdsap384` が付いた（`mcp-publisher login dns --algorithm ecdsap384 …`・`mcp-publisher login http --algorithm ecdsap384 …`）
+
+**Troubleshooting failed HTTP verification。** HTTP Authentication の下に h3 が新設されました。Registry は `mcp-publisher login http` のときに自分のインフラから検証ファイルを取りに行くので、手元の `curl` が成功しても、ログインが通る証拠にはなりません。Registry がエンドポイントを使えないと、ファイルが他のどのクライアントにも正しく返っていても、ログインは `token exchange failed with status 401` で失敗します。取りに行くリクエストの性質は次のとおりです。
+
+| 項目 | 内容 |
+|---|---|
+| リクエスト | `GET https://<domain>/.well-known/mcp-registry-auth`。`Accept: text/plain` と `User-Agent: mcp-registry/1.0` を付ける |
+| ステータス | `200 OK`。リダイレクトはたどらないので、`3xx` は検証の失敗になる |
+| 本文 | 証明のレコード。4096 バイトまで。前後の空白は無視される |
+| タイムアウト | リクエスト全体で 10 秒 |
+| 送信元 | ホストされた Registry は Google Cloud で動いているので、リクエストは Google Cloud のアドレスから来る。許可リストに載せられる固定のアドレスではない |
+
+よくある失敗の原因として、次の 5 つが挙がっています。
+
+- ブラウザでないクライアントにチャレンジを出したり止めたりする WAF・ボット対策・「under attack」のルール
+- Google Cloud のアドレス範囲を外す地域ブロックや IP の許可リスト
+- 届かないアドレスを指す `AAAA`（IPv6）レコード。ドメインの公開アドレスのどれにも届かなければ、ブラウザで IPv4 が通っても検証は失敗する
+- 別のホストやパスへの `301`/`302` のリダイレクト
+- `/.well-known/mcp-registry-auth` が、証明のレコードの代わりに HTML のエラーページを `200 OK` で返すこと
+
+Registry と同じヘッダーで取得する `curl` のコマンド例と、ログインのエラーに含まれる Registry 側の取得失敗の例（`dial tcp <ip>:443: i/o timeout`・`HTTP 403: failed to fetch key from ...`・`HTTP 301: failed to fetch key from ...`）も載っています。ループバック・プライベート・リンクローカル・キャリアグレード NAT の範囲に解決されるアドレスは設計上拒否されるので、エンドポイントは公開のアドレスで届かなければなりません。
+
+**Troubleshooting DNS and HTTP authentication。** h2 が新設され、4 つの h3 があります。冒頭では、鍵を替えたり再試行したりする前に公開している証明のレコードを確かめ、Registry が返す詳しいエラーを読むよう求めています（取得の失敗と署名の不一致は原因が違う）。
+
+- **Compare the "Expected proof record" against what is actually published**: ログインのコマンドは毎回 `Expected proof record:` の行を出力する。公開している MCPv1 のレコードのアルゴリズム（`k=`）と公開鍵（`p=`）が、今のコマンドの出力と一致するか確かめる。鍵を替えた後はログインのコマンドを実行し直して比べる。HTTP の検証では前後の空白と末尾の改行は取り除かれるので、それだけで署名の不一致にはならない。署名が一致しないとき、Registry のエラーには試した公開鍵のフィンガープリントが含まれる
+- **DNS: verify the TXT record before logging in**: `dig TXT example.com +short` で、`--domain` に渡したドメインそのものに MCPv1 のレコードがあるか確かめる。`_mcp-auth.example.com` では返り `example.com` では返らないなら、置き場所が違う。既知の誤ったセレクタ（`_mcp-auth.<domain>`・`_mcp-registry.<domain>`）に正しい形の MCPv1 レコードがあり、指定のドメインには無いときは、Registry は置き違いを示す専用のエラーを返す。Registry は公開されている有効な MCP の鍵をすべて試し、別の TXT レコードにある別の鍵が正しい鍵より優先されることはない。使わなくなった MCP 認証のレコードは、使用中の鍵と他のサービスの TXT レコードを残して消す
+- **HTTP: verify the well-known endpoint before logging in**: 上の Troubleshooting failed HTTP verification を参照する。手元のマシンからのリクエストが成功しても、Registry がエンドポイントに届くことにはならない
+- **Confirm the algorithm matches the key**: `--algorithm` フラグ（既定は `ed25519`）は、公開しているレコードの `k=` と一致しなければならない。Ed25519 で署名して `ecdsap384` のレコードと照合する（またはその逆の）と、検証は失敗する
+
+なお、今回加わった記述の間で、次の 2 点の書き方が食い違っています。
+
+- **セレクタの下に置いたレコード**: DNS Authentication の WARNING は「一般的な署名のエラーで失敗する」とし、トラブルシューティングの節は、`_mcp-auth.<domain>`・`_mcp-registry.<domain>` に置いた場合は置き違いを示す専用のエラーを返す、としている
+- **古い鍵のレコード**: WARNING は「残った古いレコードが先に試され、検証が失敗する」とし、トラブルシューティングの節は「有効な鍵をすべて試し、別の鍵が正しい鍵より優先されることはない」としている
+
+- [How to Authenticate When Publishing to the Official MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/authentication#dns-authentication)
+- [How to Authenticate When Publishing to the Official MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/authentication#troubleshooting-failed-http-verification)
+- [How to Authenticate When Publishing to the Official MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/authentication#troubleshooting-dns-and-http-authentication)
+
+## 4. リモートだけのサーバーの公開手順とリモート URL の扱いが書かれた
+
+Quickstart: Publish an MCP Server to the MCP Registry の Prerequisites の前に、h2「Remote-only servers」が加わりました。
+
+- MCP サーバーが公開のリモートのエンドポイントでだけ提供されているなら、パッケージなしでメタデータを公開できる
+- Node.js と npm の前提条件と Step 1〜2 を飛ばし、Step 3（`mcp-publisher` のインストール）から続ける
+- `server.json` には `remotes` のエントリが要り、`packages` は省いてよい。例は `io.github.my-username/weather` という名前で、`remotes` に `streamable-http` の `https://weather.example.com/mcp` を持つ
+- リモートの URL は公開でアクセスできなければならない。トランスポート・URL の変数・ヘッダーは Publishing Remote Servers を参照する
+- どの認証方法でも、Registry が確かめるのは `name` の名前空間を管理していることで、リモート URL を管理していることは確かめない
+
+合わせて、Prerequisites の npm アカウントの項目に「パッケージを持つサーバーのみ」と書き添えられました。Step 4 には、リモートだけのサーバーでも `mcp-publisher init` は `packages` のエントリを生成するので、`packages` の配列を `remotes` の配列に置き換えるように、という NOTE が加わっています。
+
+**Publishing Remote Servers。** 冒頭に、`remotes` だけのサーバーは `packages` のエントリが要らないので、Package Types にあるパッケージの所有確認は当てはまらない、という一文が加わりました。続けて h2「Ownership Verification」が新設されています。
+
+- 公開のとき Registry は、サーバーの `name` の名前空間を管理していることを認証方法で確かめる。リモート URL を管理していることは、認証方法に関わらず確かめない
+  - GitHub 認証で `io.github.my-username/weather` という名前なら、証明されるのは GitHub のアカウント `my-username` の管理であって、リモート URL を提供するドメインの管理ではない
+  - DNS 認証・HTTP 認証で `com.example/weather` という名前なら、`example.com` の管理は証明されるが、リモート URL が `example.com` にあるかは確かめない
+- リモート URL が自分の管理するドメインにあるなら、DNS 認証か HTTP 認証を使い、サーバー名にそのドメインを反映させることを勧める。サーバー名とリモート URL が同じ公開者のものだと、利用者に分かるため
+- 複数のサーバー名が同じリモート URL を指せる。既存の掲載はその URL を予約せず、別の公開者が自分の管理する名前空間で掲載するのを妨げない。URL が同じでも、他の公開者の掲載を公開・編集したり、そのステータスを変えたりする権限にはならない
+- 利用者は、Registry のレコードをリモート URL ではなく、サーバー名とバージョンで識別すべきとされる。URL で引くと、それぞれ独自のメタデータ・ヘッダー・テンプレートの変数を持つ複数のサーバー名に一致しうる。共有された URL から設定をまとめたり、公開者の所有や推薦を推し量ったりしてはならない
+
+- [Quickstart: Publish an MCP Server to the MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/quickstart#remote-only-servers)
+- [Publishing Remote Servers - MCP Docs](https://modelcontextprotocol.io/registry/remote-servers#ownership-verification)
+
+## 5. SEP は working group が sponsor する形になった
+
+SEP Guidelines の冒頭に「このページの sponsor の規則は SEP-3398 に従う」という一文が加わり、sponsor にまつわる記述が書き直されました。SEP-3398（Release Cycle Updates）は Process の SEP で、2026年10月14日に Accepted になっています。その Sponsorship and Submission の節は、SEP は正式なレビューの前に Working Group か Core Maintainer のグループの sponsor を要する、と定めています（SEP-3398 のページ自体は、今回はリンクのアンカー 2 か所が変わっただけです）。SEP Guidelines の節ごとの変更は次のとおりです。
+
+| 節 | これまで | 今回 |
+|---|---|---|
+| Before you write | 領域を担当する working group か interest group に、まず持ち込む。合うグループが無ければ GitHub Discussions か Discord の `#general` でスレッドを立てる。事前の議論は必須で PR の説明からリンクしなければならず、リンクの無い SEP は受け付けない | 正式なレビューの前に working group の sponsor が要るとして、sponsor を得る 4 段階を挙げる（①ロードマップの重点に合うか確かめる。合わない SEP は待ち行列が長くハードルも高い ②担当の working group に、その Discord のチャンネルか会議で持ち込む。interest group は先に問題の整理を手伝えるが、sponsor するのは working group ③working group で合意してから、グループが sponsor したい SEP を書く ④working group が Workflow を通じて Core Maintainers のレビューに出す） |
+| Workflow の図 | Idea → Awaiting sponsor（PR のラベル `proposal`）→ sponsor が自分を割り当てて draft | Idea → Draft pull request（まだ SEP の手続きの外）→ working group が sponsor に同意して draft status（PR は ready for review）。working group が先に同意すれば、Idea から直接 draft status に進む。Awaiting sponsor から withdrawn への矢印はなくなった |
+| Workflow の手順 2 | リポジトリは collaborator からの PR しか受け付けない。collaborator でなければ、先に sponsor を見つけて PR を開いてもらう | `modelcontextprotocol` の GitHub 組織のメンバーでない作者は、working group の leads か sponsor に PR を開いてもらう |
+| Workflow の手順 4・5 | PR に `proposal` ラベル（sponsor 待ち）が付き、sponsor が自分を割り当てて `draft` にする | working group が sponsor に同意するまでは draft の PR のまま（SEP の手続きの外で、`Status` は未設定、`wg-support-needed` ラベルが付く）。同意したら PR を ready for review にし、`Sponsor` ヘッダーに名前のある人が `draft` にする |
+| Status の表 | `draft` は「sponsor が付き、PR のコメントで非公式なレビュー中」 | `draft` に「PR は ready for review」が加わった |
+| Sponsors | sponsor は Core Maintainer・Maintainer、または working group の範囲内の SEP についての WG Lead。MAINTAINERS.md で担当の Maintainer を探してグループのチャンネルで頼み、2 週間応答が無ければ `#general` で尋ねる | SEP を sponsor するのは working group で、Core Maintainers も sponsor できる（例外であり、ふつうは Core Maintainers 自身から出た提案の場合）。`Sponsor` ヘッダーには、`Name (@handle), on behalf of the Transports Working Group` のように、グループに代わって動く Maintainer か Core Maintainer を書く。資格のある WG Lead もこの役を担える |
+
+Before you write には、担当する interest group はあるが working group は無い場合、その interest group が forming a group の手続きで working group を立ち上げ、その working group が sponsor する、と書かれました（interest group が持つ領域ではこれが通常の道とされる）。どのグループも担当しない場合は、新しい working group を提案します。Discord の `#general` のスレッドは、新しい working group に加わる人を探すのに使える、という位置付けになりました。Sponsors では、sponsor の務めに Core Maintainers のレビューへ出すことと実装の追跡が加わり、sponsor するグループ・sponsor・作者の三者が SEP を前に進める責任を負う、とされました。作者が PR を開けないときは、working group の leads の一人か sponsor が開きます。
+
+**Contributing to MCP。** Propose a protocol change の冒頭に「SEP には sponsor（working group か Core Maintainers）が要る」という一文が加わり、4 段階の手順が書き直されました。
+
+| | これまで | 今回 |
+|---|---|---|
+| 1 | Discuss the idea（グループのチャンネルで議論する。SEP の PR はその議論にリンクする） | Check the roadmap（ロードマップの重点に合うか。重点の領域内の SEP は expedited review を受ける） |
+| 2 | Build a prototype | Bring it to a working group（担当の working group にチャンネルか会議で持ち込む。領域が interest group のものなら、その interest group が working group を立ち上げ、その working group が sponsor する。SEP の PR はその議論にリンクする） |
+| 3 | Find a sponsor | Draft a SEP the group sponsors（グループの合意の後で書く。グループが sponsor に同意するまでは draft の PR に置く。プロトタイプを含める） |
+| 4 | Write the SEP（書き込み権限が無ければ sponsor に PR を開いてもらう） | Bring it to the Core Maintainers（この時点では working group のメンバーで、仕様リポジトリに PR を開ける権限があるはず。まだ無ければ working group の leads が PR を開く。sponsor が Core Maintainers のレビューに出す） |
+
+**Working Groups and Interest Groups。** 冒頭で、SEP は「PR を開く前に」関係する working group との事前の議論と「その承認」が要る、としていた部分が、「PR を ready for review にする前に」事前の議論と「sponsor への同意」が要る、に替わりました。Working groups and interest groups の節の「ふつうの道筋では、interest group が問題を整理し、新しい working group・既存のグループ・直接出された SEP のいずれかが解く」は、「interest group が問題を整理し、working group が解く。既存の working group か、interest group が forming a group の手続きで立ち上げる新しい working group で、結果の SEP はその working group が sponsor する」になり、直接出された SEP という道は書かれなくなりました。
+
+2026年11月09日のサマリでは、SEP Guidelines の sponsor に WG Lead が加わったことと、sponsor 待ちを示す `proposal` ラベルを挙げましたが、これらは上のとおり書き換わっています。
+
+- [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#sponsors)
+- [SEP Guidelines - MCP Docs](https://modelcontextprotocol.io/community/sep-guidelines#before-you-write)
+- [Contributing to MCP - MCP Docs](https://modelcontextprotocol.io/community/contributing#propose-a-protocol-change)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Working Groups Overview**](#1-working-groups-overview) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)):  
-  活動中のワーキンググループ 14 件を、Leads・Discord のチャンネル・Focus とともに 1 つの表で一覧するページ（詳細はハイライト 1 参照）。
+*(新規追加されたページはありません)*
 <!-- light:new-pages:end -->
-
-## 1. Working Groups Overview
-
-`community/working-groups/overview` に置かれた 25 行のページで、索引の説明文は「Current MCP working groups, their leads, channels, and focus.」です。短い前書きのあと、Working group・Leads・Discord・Focus の 4 列の表に 14 件のワーキンググループが並びます。グループの仕組み・参加・設立については Working groups and interest groups のページへ、憲章の出し方については charter template へ案内しています。
-
-並んでいるのは Working Groups and Interest Groups の Current groups と同じ 14 件で、Discord が「Not listed yet」なのは Infrastructure・Interceptors・Tasks and Events の 3 件です。interest group を一覧するページはありません（詳細はハイライト 1 参照）。
-
-- [Working Groups Overview - MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-*(大幅に更新されたページはありません)*
+- [**How to Authenticate When Publishing to the Official MCP Registry**](#1-how-to-authenticate-when-publishing-to-the-official-mcp-registry) ([MCP Docs](https://modelcontextprotocol.io/registry/authentication#troubleshooting-dns-and-http-authentication)):  
+  278 行から 396 行になった。GitHub 認証に個人と組織の名前空間の節、DNS・HTTP 認証に注意書きと HTTP 検証のトラブルシューティングの節、末尾に DNS・HTTP 認証のトラブルシューティングの節が加わった（追加 120 行・削除 2 行。詳細はハイライト 1・3 参照）。
+- [**How to Automate Publishing with GitHub Actions**](#2-how-to-automate-publishing-with-github-actions) ([MCP Docs](https://modelcontextprotocol.io/registry/github-actions#securing-your-registry-token-in-ci)):  
+  217 行から 306 行になった。3 つのワークフロー例が `mcp-publisher` の版を固定して署名を検証するようになり、PAT のスコープの説明が書き直され、CI でトークンを守る節と「invalid audience」の対処が加わった（追加 97 行・削除 8 行。詳細はハイライト 1・2 参照）。
+- [**Quickstart: Publish an MCP Server to the MCP Registry**](#3-quickstart-publish-an-mcp-server-to-the-mcp-registry) ([MCP Docs](https://modelcontextprotocol.io/registry/quickstart#remote-only-servers)):  
+  285 行から 322 行になった。リモートだけのサーバーの節、npm 以外のパッケージの案内、`description` の 100 文字の上限、`mcp-publisher` の `status`・`validate` コマンドなどが加わった（追加 50 行・削除 13 行。詳細はハイライト 4 参照）。
 <!-- light:updated-pages:end -->
+
+## 1. How to Authenticate When Publishing to the Official MCP Registry
+
+見出し（h2・h3。コードフェンスの外で数えた値）は 3 個から 10 個になりました。変更の内容はハイライト 1・3 のとおりで、ページの順に並べると次のとおりです。
+
+| 節 | 変更 |
+|---|---|
+| GitHub Authentication | h3 Personal vs. organization namespaces を新設（ハイライト 1） |
+| DNS Authentication | apex に置く WARNING と OpenSSL 3.0 の NOTE を追加。ECDSA P-384 のログインに `--algorithm ecdsap384`（ハイライト 3） |
+| HTTP Authentication | OpenSSL 3.0 の NOTE を追加。ECDSA P-384 のログインに `--algorithm ecdsap384`。h3 Troubleshooting failed HTTP verification を新設（ハイライト 3） |
+| Troubleshooting DNS and HTTP authentication | h2 を新設。h3 が 4 個（ハイライト 3） |
+
+削除された 2 行は、DNS と HTTP の ECDSA P-384 のログインのコマンドで、`--algorithm ecdsap384` を付けた行に置き換わりました。ページ冒頭の、認証方法と名前の形式の表は変わっておらず、GitHub 認証の形式として `io.github.username/*` と `io.github.orgname/*` を並べたままです。
+
+- [How to Authenticate When Publishing to the Official MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/authentication#github-authentication)
+- [How to Authenticate When Publishing to the Official MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/authentication#troubleshooting-dns-and-http-authentication)
+
+## 2. How to Automate Publishing with GitHub Actions
+
+見出しは 4 個から 5 個（Securing your registry token in CI が加わった）になりました。変更の内容はハイライト 1・2 のとおりで、節ごとには次のとおりです。
+
+| 節 | 変更 |
+|---|---|
+| Step 1: Create a Workflow File | 例の前に、版の固定と検証についての説明を追加。3 つの例に `MCP_PUBLISHER_VERSION: v1.8.1` と cosign による検証のステップ、PAT の例に `environment: mcp-registry-publish`（ハイライト 2） |
+| Step 2: Add Secrets | PAT のスコープの説明を Classic・Fine-grained に分けて書き直し、組織のトークンは Environment secret に置くよう追加（ハイライト 1） |
+| Securing your registry token in CI | h3 を新設（ハイライト 2） |
+| Troubleshooting | 「invalid audience」の行を追加（ハイライト 2） |
+
+削除された 8 行は、3 つの例の Install mcp-publisher のステップ（ステップ名と `curl` の行）の 6 行と、Step 2 の 2 行です。
+
+- [How to Automate Publishing with GitHub Actions - MCP Docs](https://modelcontextprotocol.io/registry/github-actions#step-1-create-a-workflow-file)
+- [How to Automate Publishing with GitHub Actions - MCP Docs](https://modelcontextprotocol.io/registry/github-actions#securing-your-registry-token-in-ci)
+
+## 3. Quickstart: Publish an MCP Server to the MCP Registry
+
+見出しは 9 個から 10 個（Remote-only servers が加わった）になりました。リモートだけのサーバーについてはハイライト 4 のとおりです。そのほかの変更は次のとおりです。
+
+- **冒頭**: npm 以外のパッケージ（PyPI・NuGet・OCI・MCPB）を公開する場合も流れは同じで、Step 1 の所有確認だけがパッケージの種類ごとに違う、という NOTE が加わった。Package Types で該当する仕組みを確かめてから戻るよう案内している
+- **Prerequisites**: npm アカウントの項目が「パッケージを持つサーバーのみ」になった。サンプルのサーバーを取得する `git clone` が、SSH（`git@github.com:…`）から HTTPS（`https://github.com/…`）に替わった
+- **Step 2: Publish the package**: ビルドのコマンドの先頭にあった `cd weather-server-typescript` がなくなった
+- **Step 3: Install `mcp-publisher`**: `brew install mcp-publisher` のコードブロックに「Homebrew」のラベルが付いた。`mcp-publisher --help` の出力例に、`status`（サーバーのバージョンのステータスを更新する）と `validate`（公開せずに `server.json` を検証する）のコマンドと、`mcp-publisher <command> --help` の案内が加わった
+- **Step 4: Create `server.json`**: Registry は `description` を 100 文字までに制限しており、長いと検証に通らない、という説明が加わった。`mcp-publisher init` が生成する `server.json` の例の `version`（サーバーとパッケージの両方）が `1.0.0` から `1.0.1` になり、例の `package.json` の版（`1.0.1`）とそろった。続く編集の差分の例からは版の書き換えがなくなり、`environmentVariables` を消す変更だけになった。リモートだけのサーバーについての NOTE も加わった（ハイライト 4）
+- **Troubleshooting**: 「Registry validation failed for package」の対処が、パッケージの種類に応じた所有確認の印を入れる、という書き方になった。npm は `package.json` の `mcpName`、PyPI と NuGet はパッケージの README の `mcp-name: <server-name>` の行（または HTML コメント）、ほかの種類は Package Types を参照する
+
+- [Quickstart: Publish an MCP Server to the MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/quickstart#remote-only-servers)
+- [Quickstart: Publish an MCP Server to the MCP Registry - MCP Docs](https://modelcontextprotocol.io/registry/quickstart#troubleshooting)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-既存のページで差分があったのは 4 件で、いずれも追加・削除とも 10 行未満です。ハイライトで扱った 3 ページのほかに、Governance WG の憲章でリンク先のアンカーが替わりました。
+差分のあった 17 ページのうち、大幅更新で扱った 3 ページのほかに、14 ページで小さな変更がありました（いずれも追加・削除とも 30 行未満）。
+
+**新機能**
+
+- Frequently Asked Questions の「Can I delete/unpublish my server?」の答えが、「今のところできない」から「できる」になった — [Frequently Asked Questions](https://modelcontextprotocol.io/registry/faq#general)
+  - `mcp-publisher status --status deleted` でステータスを `deleted` にする。バージョンを指定するか `--all-versions` で全バージョンを対象にし、`--message` で理由を付ける
+  - 削除したサーバーは既定の API の一覧には出ないが、`include_deleted=true` で取得できる。ステータスを `active` に戻せば復元できる
+  - サーバーのメタデータが Registry から完全に消えることはなく、`deleted` は発見から隠すだけで履歴は残る
+- MCP Registry Supported Package Types の Docker/OCI Images で、対応するレジストリに Quay.io（`quay.io`）が加わり、`identifier` の例に `quay.io/myorg/my-mcp-server:1.0.0` が加わった — [MCP Registry Supported Package Types](https://modelcontextprotocol.io/registry/package-types#docker%2Foci-images)
+- Working Groups Overview の表に Core Primitives の行が加わり、ワーキンググループは 14 件から 15 件になった — [Working Groups Overview](https://modelcontextprotocol.io/community/working-groups/overview)
+  - Leads は Kurtis Van Gent と David Soria Parra、Discord は `#core-primitives-wg`、Focus は「ロードマップの Improved Primitives の領域のもとでの、ツールの結果の形・安定性・audience」
+  - ほかの行と違い、リンク先は憲章のページではなく GitHub のリポジトリ `modelcontextprotocol/core-primitives-wg`。索引に Core Primitives の憲章のページは無い
+  - Working Groups and Interest Groups の Current groups は 14 件のままで、Core Primitives は載っていない。2026年11月11日のサマリでは、この表と Current groups のグループは同じと書いたが、今回から一致しなくなった
+  - ロードマップ（今回は変更なし）の Improved Primitives は、Tool result shape・Progressive discovery・Primitive annotations の担当を Core Primitives WG とし、Tool result shape の項では「このロードマップの期間に結成」と書いている
 
 **機能改善**
 
-- Extension Support Matrix の Support matrix で、MCP Inspector の MCP Apps 列に、`docs/mcp-app-review.md` へリンクした `Partial` が入った（詳細はハイライト 2 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+- MCP Registry Aggregators の Consuming the MCP Registry REST API に、h3「Efficient synchronization」が加わった — [MCP Registry Aggregators](https://modelcontextprotocol.io/registry/registry-aggregators#efficient-synchronization)
+  - 最初にページ送りで全件を取得した後は、Registry 全体を取り直さず、`updated_since` で差分を同期する
+  - すべての `nextCursor` をたどる間は同じタイムスタンプを使い、全ページを反映し終えてから新しいチェックポイントを保存する
+  - 同期の時間窓を少し重ね、サーバー名とバージョンで重複を除く（再試行やタイムスタンプの境目で更新を落とさないため）。差分の結果には削除されたサーバーも含まれるので、そのステータスの変化も手元に反映する
+  - HTTP の圧縮を扱えるクライアントを使う（例: `curl --compressed`）。結果は手元に保存し、利用者のリクエストごとに全件を取り直さない。失敗したりレート制限を受けたりしたときは、全件の並行取得をやり直さず、バックオフ付きで再試行する
+- MCP Registry Supported Package Types の PyPI と NuGet の所有確認に、README の `mcp-name: <サーバー名>` の後ろには区切り（改行・空白・HTML タグ・コメントの終わり `-->`）が要る、という説明が加わった。単独の行か `<!-- … -->` の中に置く。サーバー名の直後に文末のピリオドのような文字を続けると、一致しなくなる — [MCP Registry Supported Package Types](https://modelcontextprotocol.io/registry/package-types#pypi-packages)
+- Publishing Remote Servers に、`remotes` だけのサーバーには Package Types の所有確認が当てはまらないという説明と、h2「Ownership Verification」が加わった（詳細はハイライト 4 参照） — [Publishing Remote Servers](https://modelcontextprotocol.io/registry/remote-servers#ownership-verification)
 
 **その他**
 
-- Security Charter の Discussion Topics から、SEP-2809「Attested Tool-Server Admission (ATSA)」の行がなくなった（詳細はハイライト 3 参照） — [Security Charter](https://modelcontextprotocol.io/community/interest-groups/security#discussion-topics)
-- Transports Charter で、上流リポジトリの `CHARTER.md` と `docs/` へのリンクがなくなり、参照先が `proposals/` とリポジトリのトップの `#mission` に替わった。Resources の 2 つのリンクは 1 つにまとまった（詳細はハイライト 4 参照） — [Transports Charter](https://modelcontextprotocol.io/community/working-groups/transports#scope)
-- Governance Working Group Charter の Charter Updates で、改訂の手順を指すリンクの文言が「Charter Amendments」から「charter amendment」に、リンク先が `/community/working-interest-groups#charter-amendments` から `#amending-or-retiring-a-group` に替わった。リンク先は、Working Groups and Interest Groups に前回の時点からある見出し「Amending or retiring a group」 — [Governance Working Group Charter](https://modelcontextprotocol.io/community/working-groups/governance#charter-updates)
+- SEP Guidelines が sponsor の規則を SEP-3398 に合わせて書き直した。SEP を sponsor するのは working group（例外として Core Maintainers）で、sponsor が付くまでは `wg-support-needed` ラベルの付いた draft の PR になる（詳細はハイライト 5 参照） — [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines#sponsors)
+- Contributing to MCP の Propose a protocol change の 4 段階が、ロードマップの確認・working group への持ち込み・グループが sponsor する SEP の作成・Core Maintainers への提出に書き直された（詳細はハイライト 5 参照） — [Contributing to MCP](https://modelcontextprotocol.io/community/contributing#propose-a-protocol-change)
+- Working Groups and Interest Groups の冒頭と Working groups and interest groups の節で、SEP は working group が sponsor する、という書き方になった（詳細はハイライト 5 参照） — [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#working-groups-and-interest-groups)
+- Contributing to MCP の冒頭で、招待や役割が無くてもできることの列挙から「discussion を開く」がなくなり、「issue を開く」だけになった — [Contributing to MCP](https://modelcontextprotocol.io/community/contributing)
+- SEP-2640: Skills Extension で、`skills/list`・`skills/get` の節へのページ内リンク（6 行・8 か所）のアンカーが、`#enumeration-via-skillslist`・`#retrieval-via-skillsget` から `#enumeration-via-skills%2Flist`・`#retrieval-via-skills%2Fget` になった — [SEP-2640: Skills Extension](https://modelcontextprotocol.io/seps/2640-skills-extension#enumeration-via-skills%2Flist)
+- SEP-3398: Release Cycle Updates で、Working Groups and Interest Groups の意思決定の節へのリンクが `#decision-making-process` から `#making-decisions` に、Hard Freeze の節へのページ内リンクが `#hard-freeze--1-month-before-release` から `#hard-freeze-%E2%80%94-1-month-before-release` になった — [SEP-3398: Release Cycle Updates](https://modelcontextprotocol.io/seps/3398-release-cycle-updates#sponsorship-and-submission)
+- SEP-3392: Extension Lifecycle で、Working Groups and Interest Groups の意思決定の節へのリンクが `#decision-making-process` から `#making-decisions` になった — [SEP-3392: Extension Lifecycle](https://modelcontextprotocol.io/seps/3392-extension-lifecycle#roles)
+- SEP-2133: Extensions で、`_meta` のキーの規則へのリンクのアンカーが `#meta` から `#_meta` になった — [SEP-2133: Extensions](https://modelcontextprotocol.io/seps/2133-extensions#definition)
+- SEP-2575: Make MCP Stateless で、Core Maintainers による sessions-vs-sessionless の決定へのリンク先が、`transports-wg` リポジトリの `docs/sessions-vs-sessionless-decision.md` から `proposals/stateless/session-removal-decision.md` になった。2026年11月11日のサマリで、`docs/` 配下の文書へのリンクが残っていると書いたもの — [SEP-2575: Make MCP Stateless](https://modelcontextprotocol.io/seps/2575-stateless-mcp#explicit-session-management)
+- SEP-1577: Sampling With Tools で、参照実装の `toolLoopSampling.ts` へのリンクが、typescript-sdk のブランチ `ochafik/sep1577` からコミット `d372eff7…` を指すものになった — [SEP-1577: Sampling With Tools](https://modelcontextprotocol.io/seps/1577--sampling-with-tools#motivation)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-10.md](./archives/latest/2026-11-10.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-10.md](./archives/latest-detail/2026-11-10.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-11.md](./archives/latest/2026-11-11.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-11.md](./archives/latest-detail/2026-11-11.md)
 
 <!--
-base_commit: 5ed60081bc6921a82747ac292a0c99583f7521e4
-head_commit: c85f1a228a539e3f1157cb0caf9aea01e5add4d1
-generated_at_full: 2026-11-12T15:19:05+09:00
+base_commit: c85f1a228a539e3f1157cb0caf9aea01e5add4d1
+head_commit: 77f196ce342a0c6130e111a1fa66ada14d87a243
+generated_at_full: 2026-11-13T15:39:20+09:00
 -->
