@@ -544,6 +544,9 @@
     <loc>https://claude.com/customers/aes</loc>
   </url>
   <url>
+    <loc>https://claude.com/customers/aig-case-study</loc>
+  </url>
+  <url>
     <loc>https://claude.com/customers/airops</loc>
   </url>
   <url>
@@ -817,6 +820,9 @@
     <loc>https://claude.com/customers/figma</loc>
   </url>
   <url>
+    <loc>https://claude.com/customers/firecrawl</loc>
+  </url>
+  <url>
     <loc>https://claude.com/customers/fountain</loc>
   </url>
   <url>
@@ -928,6 +934,9 @@
     <loc>https://claude.com/customers/jamf-qa</loc>
   </url>
   <url>
+    <loc>https://claude.com/customers/jane-street-capital</loc>
+  </url>
+  <url>
     <loc>https://claude.com/customers/jetbrains</loc>
   </url>
   <url>
@@ -998,6 +1007,9 @@
   </url>
   <url>
     <loc>https://claude.com/customers/medgate</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/customers/mercado-libre</loc>
   </url>
   <url>
     <loc>https://claude.com/customers/micro1</loc>
@@ -1085,6 +1097,9 @@
   </url>
   <url>
     <loc>https://claude.com/customers/parcha</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/customers/paypal</loc>
   </url>
   <url>
     <loc>https://claude.com/customers/pelanor</loc>
@@ -1306,6 +1321,9 @@
     <loc>https://claude.com/customers/tome</loc>
   </url>
   <url>
+    <loc>https://claude.com/customers/travelers</loc>
+  </url>
+  <url>
     <loc>https://claude.com/customers/trellix</loc>
   </url>
   <url>
@@ -1316,6 +1334,9 @@
   </url>
   <url>
     <loc>https://claude.com/customers/twilio-qa</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/customers/ust-case-study</loc>
   </url>
   <url>
     <loc>https://claude.com/customers/vambe</loc>
@@ -2017,6 +2038,9 @@
     <loc>https://claude.com/de/resources/articles/claude-code-and-slack</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/claude-code-desktop-redesign</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/claude-code-guide-for-startups</loc>
   </url>
   <url>
@@ -2030,6 +2054,9 @@
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/claude-design-stays-on-brand-for-daily-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/resources/articles/claude-duet</loc>
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/claude-excel-powerpoint-updates</loc>
@@ -2116,6 +2143,9 @@
     <loc>https://claude.com/de/resources/articles/how-anthropic-uses-claude-for-legal</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/how-anthropic-uses-claude-legal</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/how-anthropic-uses-claude-marketing</loc>
   </url>
   <url>
@@ -2140,6 +2170,9 @@
     <loc>https://claude.com/de/resources/articles/how-to-create-skills-key-steps-limitations-and-examples</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects</loc>
   </url>
   <url>
@@ -2150,6 +2183,12 @@
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/resources/articles/introducing-artifacts-for-legal-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/resources/articles/introducing-routines-in-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/introduction-to-agentic-coding</loc>
@@ -2188,6 +2227,9 @@
     <loc>https://claude.com/de/resources/articles/skills-explained</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/smart-reports-surveys-pooled-budgets</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/structured-outputs-on-the-claude-developer-platform</loc>
   </url>
   <url>
@@ -2195,6 +2237,9 @@
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/uber-s-ciso-on-building-an-insider-threat-program-for-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/resources/articles/unified-claude-enterprise</loc>
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/using-claude-md-files</loc>
@@ -2506,10 +2551,16 @@
     <loc>https://claude.com/es/resources/articles/auto-mode-default-in-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/resources/articles/best-practices-for-prompt-engineering</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/resources/articles/building-agents-with-skills-equipping-agents-for-specialized-work</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/building-multi-agent-systems-when-and-how-to-use-them</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/claude-code-desktop-redesign</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/claude-code-guide-for-startups</loc>
@@ -2522,6 +2573,9 @@
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/claude-design-stays-on-brand-for-daily-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/claude-duet</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/claude-excel-powerpoint-updates</loc>
@@ -2605,6 +2659,9 @@
     <loc>https://claude.com/es/resources/articles/how-anthropic-teams-use-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/resources/articles/how-anthropic-uses-claude-legal</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/resources/articles/how-anthropic-uses-claude-marketing</loc>
   </url>
   <url>
@@ -2623,6 +2680,12 @@
     <loc>https://claude.com/es/resources/articles/how-to-configure-hooks</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/resources/articles/how-to-create-skills-key-steps-limitations-and-examples</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects</loc>
   </url>
   <url>
@@ -2630,6 +2693,12 @@
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/introducing-artifacts-for-legal-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/introducing-routines-in-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/making-claude-a-better-electrical-engineer</loc>
@@ -2656,10 +2725,16 @@
     <loc>https://claude.com/es/resources/articles/skills</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/resources/articles/smart-reports-surveys-pooled-budgets</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/resources/articles/the-ai-native-sdlc-playbook</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/uber-s-ciso-on-building-an-insider-threat-program-for-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/unified-claude-enterprise</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/were-expanding-the-claude-startups-program-to-help-founders-build</loc>
@@ -3376,6 +3451,9 @@
     <loc>https://claude.com/fr/resources/articles/claude-code-and-slack</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/articles/claude-code-desktop-redesign</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/articles/claude-code-guide-for-startups</loc>
   </url>
   <url>
@@ -3389,6 +3467,9 @@
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/claude-design-stays-on-brand-for-daily-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/resources/articles/claude-duet</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/claude-excel-powerpoint-updates</loc>
@@ -3502,6 +3583,9 @@
     <loc>https://claude.com/fr/resources/articles/how-to-create-skills-key-steps-limitations-and-examples</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects</loc>
   </url>
   <url>
@@ -3512,6 +3596,12 @@
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/resources/articles/introducing-artifacts-for-legal-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/resources/articles/introducing-routines-in-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/introduction-to-agentic-coding</loc>
@@ -3550,6 +3640,9 @@
     <loc>https://claude.com/fr/resources/articles/skills-explained</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/articles/smart-reports-surveys-pooled-budgets</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/articles/structured-outputs-on-the-claude-developer-platform</loc>
   </url>
   <url>
@@ -3560,6 +3653,9 @@
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/uber-s-ciso-on-building-an-insider-threat-program-for-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/resources/articles/unified-claude-enterprise</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/using-claude-md-files</loc>
@@ -3868,10 +3964,16 @@
     <loc>https://claude.com/it/resources/articles/auto-mode-default-in-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/resources/articles/best-practices-for-prompt-engineering</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/resources/articles/building-agents-with-skills-equipping-agents-for-specialized-work</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/building-multi-agent-systems-when-and-how-to-use-them</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/claude-code-desktop-redesign</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/claude-code-guide-for-startups</loc>
@@ -3887,6 +3989,9 @@
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/claude-design-stays-on-brand-for-daily-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/claude-duet</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/claude-excel-powerpoint-updates</loc>
@@ -3970,6 +4075,9 @@
     <loc>https://claude.com/it/resources/articles/how-anthropic-teams-use-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/resources/articles/how-anthropic-uses-claude-legal</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/resources/articles/how-anthropic-uses-claude-marketing</loc>
   </url>
   <url>
@@ -3988,6 +4096,12 @@
     <loc>https://claude.com/it/resources/articles/how-to-configure-hooks</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/resources/articles/how-to-create-skills-key-steps-limitations-and-examples</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects</loc>
   </url>
   <url>
@@ -3995,6 +4109,12 @@
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/introducing-artifacts-for-legal-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/introducing-routines-in-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/making-claude-a-better-electrical-engineer</loc>
@@ -4021,10 +4141,16 @@
     <loc>https://claude.com/it/resources/articles/skills</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/resources/articles/smart-reports-surveys-pooled-budgets</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/resources/articles/the-ai-native-sdlc-playbook</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/uber-s-ciso-on-building-an-insider-threat-program-for-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/unified-claude-enterprise</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/were-expanding-the-claude-startups-program-to-help-founders-build</loc>
@@ -4138,6 +4264,9 @@
     <loc>https://claude.com/ja/customers</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/adalat-ai</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/advolve</loc>
   </url>
   <url>
@@ -4168,6 +4297,12 @@
     <loc>https://claude.com/ja/customers/assembled</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/athena</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/attention</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/audience-strategies</loc>
   </url>
   <url>
@@ -4181,6 +4316,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/customers/benchling</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/binti</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/biomni</loc>
@@ -4229,6 +4367,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/customers/circleback</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/circleci</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/classdojo</loc>
@@ -4747,6 +4888,9 @@
     <loc>https://claude.com/ja/resources/articles/claude-code-and-slack</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/resources/articles/claude-code-desktop-redesign</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/resources/articles/claude-code-guide-for-startups</loc>
   </url>
   <url>
@@ -4760,6 +4904,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/claude-design-stays-on-brand-for-daily-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/claude-duet</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/claude-excel-powerpoint-updates</loc>
@@ -4873,6 +5020,9 @@
     <loc>https://claude.com/ja/resources/articles/how-to-create-skills-key-steps-limitations-and-examples</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects</loc>
   </url>
   <url>
@@ -4886,6 +5036,12 @@
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/integrate-apis-seamlessly</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/introducing-artifacts-for-legal-work</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/introducing-routines-in-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/introduction-to-agentic-coding</loc>
@@ -4921,6 +5077,9 @@
     <loc>https://claude.com/ja/resources/articles/skills-explained</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/resources/articles/smart-reports-surveys-pooled-budgets</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/resources/articles/structured-outputs-on-the-claude-developer-platform</loc>
   </url>
   <url>
@@ -4928,6 +5087,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/uber-s-ciso-on-building-an-insider-threat-program-for-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/unified-claude-enterprise</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/using-claude-md-files</loc>
@@ -5794,6 +5956,9 @@
     <loc>https://claude.com/ko/resources/articles/claude-design-stays-on-brand-for-daily-work</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/resources/articles/claude-duet</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/resources/articles/claude-excel-powerpoint-updates</loc>
   </url>
   <url>
@@ -5908,6 +6073,9 @@
     <loc>https://claude.com/ko/resources/articles/how-to-create-skills-key-steps-limitations-and-examples</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/resources/articles/how-to-manage-costs-and-demonstrate-roi-for-claude-code-on-google-cloud</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects</loc>
   </url>
   <url>
@@ -5921,6 +6089,9 @@
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/integrate-apis-seamlessly</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ko/resources/articles/introducing-artifacts-for-legal-work</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/introducing-routines-in-claude-code</loc>
@@ -5962,6 +6133,9 @@
     <loc>https://claude.com/ko/resources/articles/skills-explained</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/resources/articles/smart-reports-surveys-pooled-budgets</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/resources/articles/structured-outputs-on-the-claude-developer-platform</loc>
   </url>
   <url>
@@ -5969,6 +6143,9 @@
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/uber-s-ciso-on-building-an-insider-threat-program-for-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ko/resources/articles/unified-claude-enterprise</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/using-claude-md-files</loc>
@@ -6167,6 +6344,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/10x-genomics-cloud</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/1password</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/8am-mycase</loc>
@@ -6571,9 +6751,6 @@
     <loc>https://claude.com/marketplace/connectors/bolna</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/connectors/boltz-api</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/connectors/bonsai</loc>
   </url>
   <url>
@@ -6628,7 +6805,13 @@
     <loc>https://claude.com/marketplace/connectors/bronto</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/bubble-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/busycal</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/cafeteria</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/caisey</loc>
@@ -6836,9 +7019,6 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/collibra</loc>
-  </url>
-  <url>
-    <loc>https://claude.com/marketplace/connectors/cometchat</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/commerce-layer-metrics</loc>
@@ -7480,9 +7660,6 @@
     <loc>https://claude.com/marketplace/connectors/harvey</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/connectors/have-i-been-pwned</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/connectors/health-data-avatar-hda</loc>
   </url>
   <url>
@@ -7904,6 +8081,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/lz-virtual-mail</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/mabl</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/macaly-cloud</loc>
@@ -8506,6 +8686,9 @@
     <loc>https://claude.com/marketplace/connectors/process-street</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/product-hunt</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/productboard</loc>
   </url>
   <url>
@@ -8941,6 +9124,9 @@
     <loc>https://claude.com/marketplace/connectors/sparxx-io</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/specter</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/speeda</loc>
   </url>
   <url>
@@ -9136,9 +9322,6 @@
     <loc>https://claude.com/marketplace/connectors/ticketmaster</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/connectors/ticktick</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/connectors/tiktok-for-business</loc>
   </url>
   <url>
@@ -9155,9 +9338,6 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/tinyfish</loc>
-  </url>
-  <url>
-    <loc>https://claude.com/marketplace/connectors/tixel</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/tldraw</loc>
@@ -9316,9 +9496,6 @@
     <loc>https://claude.com/marketplace/connectors/vdr-ideals</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/connectors/veltra-activities</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/connectors/vendr-software-pricing-tools</loc>
   </url>
   <url>
@@ -9361,6 +9538,9 @@
     <loc>https://claude.com/marketplace/connectors/visier</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/vistaprint</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/vital-care-finder</loc>
   </url>
   <url>
@@ -9401,6 +9581,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/webull</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/weinc</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/wetransfer</loc>
@@ -10972,6 +11155,9 @@
     <loc>https://claude.com/marketplace/plugins/testing</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/plugins/theme-examples</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/plugins/thoughtspot-spottercode</loc>
   </url>
   <url>
@@ -11339,6 +11525,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/articles/building-ai-agents-in-healthcare-and-life-sciences</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/articles/building-always-on-agents</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/articles/building-an-ai-native-revenue-organization</loc>
