@@ -8338,6 +8338,9 @@
     <loc>https://claude.com/marketplace/connectors/navan</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/ncino-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/neimo</loc>
   </url>
   <url>
@@ -9257,6 +9260,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/tactiq</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/taktile</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/tally</loc>

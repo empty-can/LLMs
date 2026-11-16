@@ -469,7 +469,7 @@ Auto mode in Claude Science checks:
 Even when auto mode is on, Claude Science still asks permission for:
 
 * Network access
-* Access to files outside the session's workspace folder
+* Access to files outside the session's workspace folder, other than [what the sandbox's rules let code read or write](/docs/claude-science/core-concepts#sandbox)
 * Remote compute
 * Claude Science's package and environment tools
 * Any tool you set to **Ask each time**
@@ -1269,7 +1269,26 @@ Claude might choose to propose a plan before starting multi-step work. You appro
 
 ## Sandbox
 
-All code Claude writes runs inside an operating-system sandbox on your computer. The sandbox can read and write only the workspace and the folders you've granted. Its network is deny-by-default: outbound connections go through a local proxy that allows only package managers, the scientific databases behind Featured connectors, and hosts you've approved.
+By default, Claude's code runs inside an operating-system sandbox on your computer, except steps you approve to run outside it, such as jobs on remote compute. The sandbox's network is deny-by-default: outbound connections go through a local proxy that allows only package managers, the scientific databases behind Featured connectors, and hosts you or your organization have approved.
+
+The sandbox lets code write to these locations and, on macOS and Linux, nowhere else by default:
+
+* Folders where you've [granted](#permission-cards) **Read & write** access
+* Folders that Claude Science provides, such as the session's [workspace folder](#projects-and-sessions) and the project's [artifacts](/docs/claude-science/artifacts) folder
+* Temporary storage, which is the shared `/tmp` folder on macOS and private folders on Linux and Windows
+
+The sandbox is designed to block reads of your home directory, apart from folders you've granted and folders that Claude Science needs to run the code, such as workspace folders, [artifacts](/docs/claude-science/artifacts), saved tool results, and [conda environments](/docs/claude-science/tools-and-environments). These folders can belong to other sessions and projects:
+
+* Code can read the artifacts of all your projects and the saved tool results of all your sessions, which can include copies of earlier messages from long conversations.
+* On macOS, code can also read the workspace folders of all your sessions.
+
+These rules limit what code can read, but they aren't a guarantee. Don't rely on the sandbox alone to protect sensitive files on your computer, including in your home directory, and keep Claude Science up to date, because new versions include sandbox fixes.
+
+Outside your home directory, code can read these locations without a grant:
+
+* **macOS**: most locations your account can read, such as `/Applications` and `/Users/Shared`, and the parts of other people's home folders that macOS lets your account read. Code isn't allowed to read external drives and network shares mounted under `/Volumes`, other than Claude Science's own folders if its data folder is on one. You can't grant folders there. Code can read a drive or network share that's mounted outside both `/Volumes` and your home directory, if your account can.
+* **Linux**: system directories such as `/usr`, `/opt`, and `/nix`, and a fixed set of configuration files and folders in `/etc`. By default, code can't read other locations, apart from Claude Science's own folders, unless you grant them.
+* **Windows**: locations that Windows makes readable to every sandboxed app, such as `C:\Windows` and `C:\Program Files`. Code can also read the environment variables saved for your Windows account, so don't store secrets such as API keys in them.
 
 ## Delegation
 
@@ -2201,7 +2220,7 @@ One-sentence definitions for the terms you meet in Claude Science, from artifact
 
 **[Reviewer](/docs/claude-science/the-reviewer)**: the independent agent that re-examines Claude's claims and artifacts at checkpoints, recording each issue it raises as a finding on the artifact's Review tab; on some plans it runs in the background automatically.
 
-**Sandbox**: the isolated environment all of Claude's code runs in; reaching outside it needs your approval.
+**[Sandbox](/docs/claude-science/core-concepts#sandbox)**: the isolated environment that Claude's code runs in by default, which limits the files it can read and change and the network hosts it can reach.
 
 **Scope**: how long an approval lasts (Once, This conversation, This project, or Global), with every standing grant listed and revocable under Settings > Permissions.
 
@@ -2670,7 +2689,7 @@ Claude Science is a desktop application that pairs Claude with an analysis envir
 
 You describe a research task or analysis in plain language; Claude writes and runs Python, R, or shell code in a sandbox, reads the folders you grant it, pulls data from scientific databases through connectors, and saves results as versioned artifacts with a full provenance record. A background reviewer can check Claude's claims against the work that was actually run.
 
-Your files stay on your computer, and code runs in a sandbox. You approve each new folder, network host, and remote job before Claude can use it.
+Your files stay on your computer, and code runs in a sandbox. By default, Claude's code needs your approval before it uses a folder or network host outside the [sandbox's limits](/docs/claude-science/core-concepts#sandbox), and remote jobs run only with your approval.
 
 > [!NOTE]
 >
@@ -38621,7 +38640,7 @@ These keys are translated into Claude Code [managed settings](https://code.claud
 | Claude Desktop on 3P key | Claude Code policy it produces |
 | - | - |
 | `coworkEgressAllowedHosts` | A network sandbox restricted to your hosts, `allowManagedDomainsOnly`, and `WebFetch` allow rules for the same hosts, which [don't block other hosts](/docs/third-party/claude-desktop/web-tools#how-the-egress-allowlist-applies-in-code-sessions). Claude Code's own inference and telemetry connections run outside the sandbox. A shell command or [HTTP hook](https://code.claude.com/docs/en/hooks#http-hook-fields) that calls your inference provider, `api.anthropic.com`, or your OTLP collector needs that host in the list. |
-| `allowedWorkspaceFolders` | A filesystem sandbox for shell commands, which can then create or change files only inside your allowed roots and the session's temporary locations. Those commands can still read files outside the roots, except where `blockReadsOutsideWorkingDirectories` or a [`Read(…)` rule](#file-path-rules-and-shell-commands) hides them. The roots are also passed as `additionalDirectories` at launch, which is always applied independent of managed-settings precedence, and the app keeps Claude's file tools inside the roots. The app also refuses to start a Code session outside an allowed root. |
+| `allowedWorkspaceFolders` | A filesystem sandbox for shell commands, which can then create or change files only inside your allowed roots and the session's temporary locations. Those commands can still read files outside the roots, except where `blockReadsOutsideWorkingDirectories` or a [`Read(…)` rule](#file-path-rules-and-shell-commands) hides them. The roots are also passed as `additionalDirectories` at launch, which is always applied independent of managed-settings precedence. The app also keeps Claude's file tools inside the roots, except that they can read [plugin files](#plugin-files-under-allowedworkspacefolders). It refuses to start a Code session outside an allowed root. |
 | `blockReadsOutsideWorkingDirectories` | Claude Code's `permissions.blockReadsOutsideWorkingDirectories` for Code sessions. Claude's file tools refuse to read outside the working directories (the session's folder plus your allowed roots, if any) in every permission mode. Where the sandbox from `allowedWorkspaceFolders` or `coworkEgressAllowedHosts` is running, it also hides the user's home directory and similar locations, such as other users' home folders and mounted volumes, from shell commands. A sandboxed command can't read a hidden location, even after the user approves the command. Without a running sandbox, a shell command that reads outside the working directories, or that Claude Code cannot analyze, asks the user for approval first, even in bypass permissions mode. The key requires Claude Desktop 1.46388.1 or later. The block takes effect only in sessions that run Claude Code v2.1.257 or later; if the app cannot install its current Claude Code engine and a session runs one older than v2.1.257 that is still on the device, that session runs without the block and the app logs a warning. |
 | `managedMcpServers` | `strictPluginOnlyCustomization` set to `["mcp"]`, so the Code session does not load MCP servers that users define on Claude Code's side (`~/.claude.json`, a project's `.mcp.json`, or `claude mcp add`); your managed servers, which the app connects and supplies to the session itself, and MCP servers bundled in plugins still load. Per-tool [`toolPolicy`](/docs/third-party/claude-desktop/configuration#tool-permissions-for-managed-mcp-servers) values on each server are emitted as `permissions.deny` (for `blocked`) or `permissions.ask` (for `ask`) rules against the corresponding `mcp__<server>__<tool>` names. In local Code sessions and Code sessions on an SSH host, `allow` doesn't pre-approve the tool. |
 | `isLocalDevMcpEnabled` | When `false` and `allowedPluginMcpServers` is unset, an `allowedMcpServers` list that admits only remote servers, with `allowManagedMcpServersOnly`, whether or not `managedMcpServers` is set. The Code session refuses local (stdio) servers bundled in plugins from marketplaces or that users install themselves, and local servers that users define on Claude Code's side (`~/.claude.json`, a project's `.mcp.json`, or `claude mcp add`). Those plugins' remote servers still connect. Your managed servers and the servers from the organization plugins directory, which the app connects and supplies to the session itself, aren't subject to the list. |
@@ -38643,6 +38662,26 @@ Under `blockReadsOutsideWorkingDirectories`, sandboxed shell commands can still 
 While `blockReadsOutsideWorkingDirectories` is on and Claude Code's [`sandbox.autoAllowBashIfSandboxed`](https://code.claude.com/docs/en/settings-reference#sandbox-autoallowbashifsandboxed) is off, a sandboxed command that reads outside the working directories can ask for approval first, [even in bypass permissions mode](https://code.claude.com/docs/en/permission-modes#actions-no-mode-auto-approves). Claude Code managed settings can replace the sandbox and other policy values that Claude Desktop supplies. Before you set `sandbox.autoAllowBashIfSandboxed` in those settings, read [Interaction with Claude Code's own managed settings](#interaction-with-claude-code%E2%80%99s-own-managed-settings).
 
 An allowed root that is or contains the home directory, such as `~` or `/Users`, leaves the home directory readable, so list folders below it. The block guards against content a session reads steering Claude into the user's files, not against the user, who can re-open any path, up to their whole home folder, with `sandbox.filesystem.allowRead` (shell commands) or `permissions.additionalDirectories` (file tools and shell commands) in their own Claude Code settings, while a settings file tracked in a git repository cannot.
+
+### Plugin files under `allowedWorkspaceFolders`
+
+A skill can tell Claude to read reference files from its plugin's install folder. When that folder is outside the folders that [`allowedWorkspaceFolders`](/docs/third-party/claude-desktop/configuration#allowedworkspacefolders) lists, Claude's Read, Grep, and Glob tools can still read it for these plugins:
+
+* **Local session, [`disableSideloadFlags`](https://code.claude.com/docs/en/settings-reference#disablesideloadflags) unset or `false`**: plugins and skills that Claude Desktop delivers, plugins that users install from marketplaces, and plugins that the Claude Code managed settings on the device turn on
+* **Local session, `disableSideloadFlags` set to `true`**: plugins that the Claude Code managed settings on the device turn on, each set to `true` under [`enabledPlugins`](https://code.claude.com/docs/en/settings-reference#enabledplugins)
+* **Session over SSH**: plugins that Claude Desktop copies to the host
+
+Claude's Write and Edit tools are still refused in these folders. For what limits shell commands, see [Applied as managed policy](#applied-as-managed-policy) and [Interaction with Claude Code's own managed settings](#interaction-with-claude-code%E2%80%99s-own-managed-settings).
+
+For a plugin that a Claude Code managed-settings file turns on, these reads require Claude Desktop 4.23118.0 or later. For a plugin that a macOS configuration profile for Claude Code or an `HKLM` registry policy turns on, they require Claude Desktop 5.1231.0 or later.
+
+Claude can report `Path is outside the workspace folders allowed by your administrator` in a local session when it tries to read a plugin's files under `~/.claude/plugins/cache`. If the Claude Code managed settings on the device set `disableSideloadFlags` to `true`, turn that plugin on for the device:
+
+1. In the managed-settings file, profile, or `HKLM` registry policy that sets `disableSideloadFlags`, add the plugin under `enabledPlugins` as `plugin-name@marketplace-name`, set to `true`. The marketplace's name is the `name` in its `marketplace.json` file. Claude Code then installs the plugin and keeps it on for everyone who receives those settings. Review the plugin first, because its hooks then run for those users even where [`allowManagedHooksOnly`](https://code.claude.com/docs/en/settings-reference#what-runs-under-allowmanagedhooksonly) is `true`.
+2. If those settings don't register the plugin's marketplace yet, add it under [`extraKnownMarketplaces`](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces). For an example of both keys, and for what to add if you restrict marketplaces, see [Turn off user hooks](/docs/third-party/claude-desktop/extensions#turn-off-user-hooks). The example also sets `allowManagedHooksOnly`, which stops users' own hooks; these steps don't need it.
+3. After the settings reach a device, ask the user to restart Claude Desktop and start a new session. If the first session still shows the message, start another.
+
+Keep plugin folders out of `allowedWorkspaceFolders`, which is for the folders that Claude works in. A plugin's folder holds hooks and commands that Claude Code runs.
 
 ### File path rules and shell commands
 
@@ -49044,7 +49083,7 @@ The check is enforced against the **resolved** path, so symlinks and `..` traver
 
 > [!NOTE]
 >
-> The allowlist controls what users can **attach**. Within an attached read/write folder, the agent can read and write every file the user's OS account can reach. Data outside the allowed roots cannot be attached in Cowork and is out of reach of Claude's file tools in Code sessions. A Code session's shell commands are confined only by the sandbox described under [Code](/docs/third-party/claude-desktop/code#applied-as-managed-policy): where it applies they can change files only inside the roots and temporary locations but can still read outside them unless you also set [`blockReadsOutsideWorkingDirectories`](/docs/third-party/claude-desktop/configuration#blockreadsoutsideworkingdirectories), and where it does not apply (Windows devices, hosts without the sandbox dependencies) the allowlist does not confine them and that key can only turn such reads into approval prompts. To let the agent read data in Cowork without changing it, list the folder with `mode` set to `ro`.
+> The allowlist controls what users can **attach**. Within an attached read/write folder, the agent can read and write every file the user's OS account can reach. Data outside the allowed roots can't be attached in Cowork, and Claude's file tools in Code sessions can't open it, except that they can read [plugin files](/docs/third-party/claude-desktop/code#plugin-files-under-allowedworkspacefolders). A Code session's shell commands are confined only by the sandbox described under [Code](/docs/third-party/claude-desktop/code#applied-as-managed-policy): where it applies they can change files only inside the roots and temporary locations but can still read outside them unless you also set [`blockReadsOutsideWorkingDirectories`](/docs/third-party/claude-desktop/configuration#blockreadsoutsideworkingdirectories), and where it does not apply (Windows devices, hosts without the sandbox dependencies) the allowlist does not confine them and that key can only turn such reads into approval prompts. To let the agent read data in Cowork without changing it, list the folder with `mode` set to `ro`.
 
 ## Network drives on Windows
 
@@ -50297,6 +50336,19 @@ An MCP server in a remote session runs on the device or on the host, depending o
 * **Servers bundled in any other plugin that Claude Desktop copies to the host**: the host. The engine starts the plugin's local servers there, and connects to its remote MCP servers from there.
 * **Servers in Claude Code's own configuration on the host**: the host. The engine reads files such as `~/.claude.json` in the SSH user's home directory and a project's `.mcp.json`, and starts their local servers and connects to their remote MCP servers from there.
 
+Claude Desktop starts a managed local (stdio) server on the device, so its tools read and write the device's files, while the session's own file edits and commands run on the host. If a local server that only Code sessions use has to work on the session's files, deliver it in a plugin from one of your [plugin marketplaces](/docs/third-party/claude-desktop/extensions#plugin-marketplaces-admin) instead of in `managedMcpServers`. Claude Desktop copies the plugin to the host, which needs [SFTP](#hosts-without-sftp), and the engine starts the server there. In a local Code session, the engine starts it on the device, so its command has to work on both.
+
+Before you move a server, check the following:
+
+* **Your MCP keys**: this works only with `isLocalDevMcpEnabled` at `true` and `allowedPluginMcpServers` unset. Otherwise, the session refuses a plugin's local servers.
+* **The last managed server**: if you remove your last server from `managedMcpServers`, Code sessions again load the MCP servers that users define in Claude Code's own configuration.
+* **Tool policy**: `toolPolicy` doesn't move with the server. To keep it, see [Plugin structure](/docs/third-party/claude-desktop/extensions#plugin-structure).
+* **Users**: with `installationPreference` set to `"required"`, users can't turn off the plugin in the app, but they can in their own Claude Code settings.
+* **Secrets**: a secret in the plugin's `.mcp.json` file reaches every device that installs the plugin and every host where a user starts a remote session.
+* **The host's policy**: a [`managed-mcp.json`](https://code.claude.com/docs/en/managed-mcp) file on the host, or `disableSideloadFlags`, `allowedMcpServers`, or `deniedMcpServers` in its Claude Code managed settings, or a setup in which your organization starts Claude Code on the host itself, can keep the server out.
+
+A copy of the server in Claude Code's own configuration on the host is no substitute. The engine never loads a server there that has a managed server's name, and the session shows no message about it.
+
 With the device's OpenSSH client, the user's first message can wait up to ten seconds, with the line `Setting up your MCP servers on <host>…` under it. This can happen after a session starts, and after a quit, once Claude Desktop rejoins the running engine. Claude Desktop is handing the engine the local servers that the user added under **Settings > Developer**. If the engine doesn't get them in time, the message goes anyway, and the conversation shows `This message went without your MCP servers. If you need them, send it again once they're connected.` If the task needs those servers, have the user wait until Claude finishes responding, then send the message again. Requires Claude Desktop 4.4212.0 or later.
 
 [`isLocalDevMcpEnabled`](/docs/third-party/claude-desktop/configuration#islocaldevmcpenabled), `managedMcpServers`, `allowedPluginMcpServers`, and `deniedPluginMcpServers` decide which of these servers a remote session loads, as they do for a local Code session (see [Applied as managed policy](/docs/third-party/claude-desktop/code#applied-as-managed-policy)). If the host has its own Claude Code managed settings, those take precedence over the Claude Code policy these keys produce (see [Managed configuration on the remote host](#managed-configuration-on-the-remote-host)).
@@ -50899,6 +50951,8 @@ SSH connected, but Claude Desktop couldn't place or start the remote server or t
 * **`[SETUP_DIR_NOEXEC]`**: on a [host without SFTP](#hosts-without-sftp), the host didn't run a test program from `~/.claude/remote` in the SSH user's home directory, so the app didn't copy the remote server. A home directory mounted `noexec` and a restricted login shell are two causes. Have the host's administrator let the SSH user run programs from `~/.claude/remote`.
 * **`[SERVER_NOT_RUNNABLE]`**: the remote server didn't run from `~/.claude/remote` in the SSH user's home directory, or stopped before it answered. A home directory mounted `noexec` is one cause, and security software on the host that keeps programs from running there is another. Have the host's administrator check that programs can run from that folder. Before Claude Desktop 4.4212.0, the code appears only on a [host without SFTP](#hosts-without-sftp).
 * **`[DOWNLOAD_BUSY]`**: Anthropic's download server answered that it is busy, so Claude Desktop couldn't download the engine or the remote server to the device. Claude Desktop has already waited and asked again. Have the user try again in a few minutes. If the code keeps coming back, check whether a proxy on the device's network limits downloads from `downloads.claude.ai`, because a proxy can give the same answer.
+* **`[DOWNLOAD_FAILED]`, or `Couldn't prepare the deploy locally` with a network code such as `[ETIMEDOUT]`**: the device couldn't download one of the programs that it puts on the host. In the message, `(server binary)` stands for the remote server and `(cli archive)` for the engine. Have the user check the device's internet connection. If your network blocks `downloads.claude.ai`, allow it. If you can't, and your SSH hosts run Linux on x64 or arm64, install Claude Desktop with the [offline installer](/docs/third-party/claude-desktop/installation#ssh-remote-sessions-with-the-offline-installer), which bundles the remote server and the engine for those hosts.
+* **`[DOWNLOAD_GOT_WEB_PAGE]`**: a web page came back in place of the download. If the device's network has a sign-in page, have the user sign in. If a proxy answers `downloads.claude.ai` with a block page, allow that address or use the offline installer, as for `[DOWNLOAD_FAILED]`.
 
 `[SESSION_LIMIT]` and `[SFTP_NOT_STARTED]` require Claude Desktop 2.31226.0 or later. `[SFTP_NOT_STARTED]` appears only when the device's OpenSSH client makes the connection. Their cards are titled `<host> allows too few SSH sessions per connection` and `SFTP doesn't start on <host>`.
 
@@ -50911,6 +50965,8 @@ Before Claude Desktop 4.29.0, the `[EXEC_NO_INPUT]` card is titled `<host> doesn
 `[SETUP_DIR_NOEXEC]` and `[SERVER_NOT_RUNNABLE]` require Claude Desktop 3.1623.0 or later. Their card is titled `Ask <host>'s administrator to let Claude's server run`.
 
 `[DOWNLOAD_BUSY]` requires Claude Desktop 4.4212.0 or later, and its card is titled `Try again in a few minutes`. Before Claude Desktop 4.4212.0, the card for `[SETUP_DIR_NOEXEC]` and `[SERVER_NOT_RUNNABLE]` is titled `Claude's server didn't run on <host>`.
+
+`[DOWNLOAD_GOT_WEB_PAGE]` requires Claude Desktop 4.16336.0 or later, and its card is titled `Sign in to your network, or ask IT to allow the download`. From the same version, the `[DOWNLOAD_FAILED]` card is titled `Check your internet connection, or ask IT to allow the download`.
 
 ### Git commands fail with Read-only file system
 
