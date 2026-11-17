@@ -14409,7 +14409,7 @@ A single directory listing can still serve customers who need elevated permissio
 
 ### Offer a listing and a custom connector
 
-A supported pattern is to list a connector in the directory with safe, broadly applicable defaults, and provide enterprise customers a separate URL to add as a custom connector with elevated permissions or tenant-specific configuration. Document both paths in your own product docs.
+A supported pattern is to list a connector in the directory with safe, broadly applicable defaults, and provide enterprise customers a separate URL to add as a custom connector with elevated permissions or tenant-specific configuration. Claude treats that URL as a custom connector, so it can [mark the connector's open MCP Apps **Unverified**](/docs/connectors/building/testing#test-in-claude-as-a-custom-connector). Document both paths in your own product docs.
 
 ### Per-tenant URLs
 
@@ -14435,7 +14435,7 @@ Enterprise Managed Auth (EMA) lets organizations connect their users to your MCP
 
 Claude calls this feature auto-connect, for identity provider-issued and Claude-issued assertions alike. The connector directory labels listings marked as supporting it **Auto-connect**.
 
-To support auto-connect, you [make your authorization server accept and validate the assertion](#authorization-server-requirements), [test your implementation](#test-your-implementation), and [give customer administrators the settings and documentation they need](#support-customer-administrators).
+To support auto-connect, you [make your authorization server accept and validate the assertion](#authorization-server-requirements), [test your implementation](#test-your-implementation), and [give customer administrators the settings and documentation they need](#support-customer-administrators). You can also [support express admin setup](#support-express-admin-setup), so that administrators can register the trusted issuer directly from Claude.
 
 ## Understand how Enterprise Managed Auth works
 
@@ -14500,7 +14500,7 @@ Keep the `issuer` value exactly as published, trailing slash included. A Claude-
 
 **2. Register the trusted issuer**
 
-Bind each customer workspace to one trusted issuer rather than accepting any well-formed JWT, and allow that issuer to be a Claude issuer URL, not only a URL on an identity provider's domain. The binding happens in [your product's admin settings](#admin-settings-in-your-product), where a workspace's administrator enters the issuer URL and your authorization server stores it as that workspace's trusted issuer. Resolve each assertion to exactly one workspace, as [Validate the identity assertion](#validate-the-identity-assertion) describes.
+Bind each customer workspace to one trusted issuer rather than accepting any well-formed JWT, and allow that issuer to be a Claude issuer URL, not only a URL on an identity provider's domain. The binding happens in [your product's admin settings](#admin-settings-in-your-product), where a workspace's administrator enters the issuer URL and your authorization server stores it as that workspace's trusted issuer, or automatically through [express admin setup](#support-express-admin-setup). Resolve each assertion to exactly one workspace, as [Validate the identity assertion](#validate-the-identity-assertion) describes.
 
 > [!WARNING]
 >
@@ -14570,7 +14570,7 @@ Run these checks, in this order, on every token request. When a check fails, rej
 
 Before the first check, find the one workspace the assertion is for. If you identify workspaces by your own tenant ID and the assertion carries [`aud_tenant`](#identity-assertion-claims), take the workspace that `aud_tenant` names. Otherwise, take the workspace that registered `iss`, and reject the assertion if no workspace or more than one did.
 
-1. **Issuer**: `iss` equals, as an exact string, the trusted issuer registered for that workspace. A prefix or host match admits other customers' users. Check this before you fetch any keys.
+1. **Issuer**: `iss` equals, as an exact string, the trusted issuer registered for that workspace. **Match the entire issuer URL, including its path, not just the host.** Claude issuer URLs differ only in the issuer ID at the end of the path, so a prefix or host match admits other customers' users. Check this before you fetch any keys.
 2. **Keys**: fetch `<iss>/.well-known/openid-configuration`, confirm that the document's `issuer` equals `iss`, and fetch the key set from the document's `jwks_uri`. Use only keys from that key set, and ignore any key or key URL carried in the assertion's header. Don't pin a single key. Cache keys for as long as the response headers allow, and fetch them again when an assertion names a `kid` you haven't seen.
 3. **Signature**: the signature verifies against a key from that key set. Accept ES256 and RS256, and reject every other `alg`, including `none` and HMAC algorithms such as HS256. Claude-issued assertions use ES256.
 4. **Type**: the `typ` header is `oauth-id-jag+jwt`. Check `typ` yourself if your JWT library doesn't check it.
@@ -14632,7 +14632,7 @@ For **IdP-managed**, follow the first step under **Setup guide** to register Cla
 
 **3. Register the issuer in your test workspace**
 
-Register the issuer URL as the trusted issuer of a test workspace in your product. For **Claude-issued**, copy the **Issuer URL** that the setup shows into your test workspace, and if you identify workspaces by your own tenant ID, enter the test workspace's ID in **Tenant ID (optional)**.
+Register the issuer URL as the trusted issuer of a test workspace in your product. For **Claude-issued**, copy the **Issuer URL** that the setup shows into your test workspace, and if you identify workspaces by your own tenant ID, enter the test workspace's ID in **Tenant ID**.
 
 **4. Run the connection test**
 
@@ -14657,9 +14657,9 @@ A customer's administrator turns on Enterprise Managed Auth for their organizati
 
 ### Admin settings in your product
 
-In your product's admin settings, give each customer's administrator a control that turns Enterprise Managed Auth on or off for their workspace and a field for the trusted issuer URL. Accept only an `https` URL in the field, and let only the workspace's administrators set it. The administrator copies the URL from their identity provider or, for Claude-issued assertions, from the **Issuer URL** box in Claude's managed authorization setup for your connector. When the administrator saves, register the URL as that workspace's trusted issuer.
+In your product's admin settings, give each customer's administrator a control that turns Enterprise Managed Auth on or off for their workspace and a field for the trusted issuer URL. Accept only an `https` URL in the field, and let only the workspace's administrators set it. The administrator copies the URL from their identity provider or, for Claude-issued assertions, from the **Issuer URL** box in Claude's managed authorization setup for your connector. When the administrator saves, register the URL as that workspace's trusted issuer. With [express admin setup](#support-express-admin-setup), Claude sets the issuer for them, so they don't copy the URL.
 
-If you identify workspaces by your own tenant ID, show that ID in the same settings. The administrator enters it in the **Tenant ID (optional)** field in Claude's managed authorization setup for your connector, and it then arrives in each Claude-issued assertion as [`aud_tenant`](#identity-assertion-claims).
+If you identify workspaces by your own tenant ID, show that ID in the same settings. The administrator enters it in the **Tenant ID** field in Claude's managed authorization setup for your connector, and it then arrives in each Claude-issued assertion as [`aud_tenant`](#identity-assertion-claims).
 
 ### Provide setup documentation
 
@@ -14669,12 +14669,87 @@ Publish documentation that walks an enterprise administrator through enabling En
 
 If your product has an app in the Okta Integration Network, work with Okta to enable Cross App Access (XAA) for that app. Until that app supports Cross App Access, customers who use Okta need to create a custom app in Okta for your product before they can set up Enterprise Managed Auth.
 
+## Support express admin setup
+
+Express admin setup lets administrators register the trusted issuer directly from Claude. The administrator clicks the **Connect** button for your connector in Claude's managed authorization setup and approves one consent screen. Claude then sends you the issuer URL, and you send back your tenant ID if you use one. It works with **Claude-issued** and **IdP-managed**, and it's optional but highly recommended for ease of setup.
+
+### What to build for express admin setup
+
+After your server meets the [authorization server requirements](#authorization-server-requirements), add these:
+
+1. **A new scope**: support `ema_issuer:manage`, which allows turning on Enterprise Managed Auth and setting the trusted issuer for one workspace. List it in `scopes_supported` in your authorization server metadata so that Claude shows the **Connect** button. If you prefer not to advertise it, email `mcp-review@anthropic.com` to have your listing marked instead.
+2. **A grant for Claude only**: issue the scope only to the client you registered for Claude or to `https://claude.ai/oauth/mcp-oauth-client-metadata`, plus its `/confidential_client` form if you list `private_key_jwt`. Match the client ID and redirect URI in full. Never grant the scope unasked.
+3. **A consent screen**: name the workspace, say what approval turns on, and let only the workspace's administrators approve.
+4. **Your issuer in the redirect**: include `iss` ([RFC 9207](https://www.rfc-editor.org/rfc/rfc9207)), set to your metadata's `issuer`, in every redirect back to Claude. Set `authorization_response_iss_parameter_supported` to `true` in your metadata, so that Claude can confirm the code came from your authorization server.
+5. **One extra token response field**: return `ema_setup_endpoint`, an `https` URL on the same origin as your issuer, token endpoint, or MCP server. Return no refresh token.
+6. **A setup endpoint**: accept a `PUT` with `ema_issuer`, store it as the trusted issuer of the token's workspace, turn on Enterprise Managed Auth, and return your tenant ID as `aud_tenant` if you use one. Support both [kinds of issuer URL](#who-issues-the-identity-assertion).
+7. **Checks on every call**: the token carries the scope, the approver administers the workspace, no other customer's workspace has registered the issuer, and the issuer passes the checks you run in your [admin settings](#admin-settings-in-your-product). Accept Claude issuer URLs, which have the exact host `identity.anthropic.com` and the path `/issuers/<issuer-id>`. If the workspace has single sign-on set up, also accept the issuer URL of the identity provider account that it signs in through. Refuse any other issuer, even when a workspace administrator approved the request.
+
+### Express admin setup requests
+
+Claude starts with an authorization request for the setup scope:
+
+```http theme={null}
+GET /authorize?response_type=code
+  &client_id=your-registered-client-id
+  &redirect_uri=https://claude.ai/api/mcp/auth_callback
+  &scope=ema_issuer:manage
+  &resource=https://mcp.example.com
+  &state=opaque-value
+  &code_challenge=pkce-challenge&code_challenge_method=S256
+```
+
+Claude exchanges the code at your token endpoint, and your response names the setup endpoint:
+
+```json {6} theme={null}
+{
+  "access_token": "setup-access-token",
+  "token_type": "Bearer",
+  "expires_in": 300,
+  "scope": "ema_issuer:manage",
+  "ema_setup_endpoint": "https://auth.example.com/ema/trusted-issuer"
+}
+```
+
+Claude sends the issuer once, without following redirects, and you answer within 10 seconds:
+
+```http theme={null}
+PUT /ema/trusted-issuer HTTP/1.1
+Host: auth.example.com
+Authorization: Bearer setup-access-token
+Content-Type: application/json
+
+{"ema_issuer": "https://identity.anthropic.com/issuers/<issuer-id>"}
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"aud_tenant": "your-tenant-id"}
+```
+
+To refuse, change nothing and return a `4xx` status with `error` and `error_description`, which Claude shows to the administrator. Use `access_denied` when the user doesn't administer the workspace and `issuer_in_use` when another customer's workspace has registered the issuer.
+
+Claude uses the access token once and doesn't store it. For **Claude-issued**, Claude fills in your tenant ID. For **IdP-managed**, the administrator enters it in their identity provider.
+
+### Test express admin setup
+
+[Add your connector](#add-your-connector-and-run-the-connection-test) from a deployment that advertises the scope, open its managed authorization setup, and click **Connect**. If the button doesn't show and you use Claude's Client ID Metadata Document, check that your metadata lists `none` in `token_endpoint_auth_methods_supported`. Check each of these cases:
+
+* An administrator who completes the flow gets a registered issuer and a passing connection test, with each kind of issuer
+* A user who isn't a workspace administrator can't grant the scope
+* Another client, or a redirect URI that doesn't match in full, is refused the scope
+* An ordinary sign-in is never granted the scope, and its token is refused at the setup endpoint
+* An issuer registered to another customer's workspace is refused
+* An issuer that is neither a Claude issuer URL nor the workspace's own single sign-on issuer is refused
+* A different issuer replaces the first, and an assertion from the first issuer is then refused
+
 ## Launch checklist
 
 Confirm each of the following before you ask Anthropic to mark your directory listing as supporting Enterprise Managed Auth:
 
 * Sign-in works end to end for each kind of assertion your server accepts
 * Every case in [Cases to check before launch](#cases-to-check-before-launch) passes, including the refused ones
+* If you support express admin setup, every case in [Test express admin setup](#test-express-admin-setup) passes
 * Your admin settings let a customer's administrator set the trusted issuer for their workspace
 * Your setup documentation for administrators is published, and its URL is on [your directory listing](/docs/connectors/building/managing-your-listing)
 
@@ -15572,10 +15647,10 @@ Use the guidelines to [pick a display mode](#display-modes), [adapt to mobile](#
 
 ## Design for the conversation
 
-Design your app as an extension of the conversation rather than a separate app that appears alongside it. Your app inherits conversational context and helps users accomplish meaningful tasks without breaking flow. These principles follow from that:
+Design your app as an extension of the conversation rather than a separate app that appears alongside it. Your app helps users accomplish meaningful tasks without breaking flow. These principles follow from that:
 
 * **Conversational**: fit naturally into dialogue, and don't force users to learn new interaction patterns
-* **Contextual**: use conversation history to inform what you display and when
+* **Contextual**: use the arguments that Claude passes to your tool to inform what you display and when
 * **Integrated**: inherit styling and conventions from the containing environment
 * **Adaptive**: handle variable sizing, mobile viewports, and diverse accessibility needs gracefully
 
@@ -15689,7 +15764,6 @@ Full screen mode has these constraints:
 * A fullscreen request from your app opens the side panel where there is one, and users go on to full screen from the panel
 * The composer is always visible, so design your UX to work with it
 * No floating panels, so use collapsible sidebars, tabs, or pagination to disclose details
-* The chat sheet maintains conversational context
 
 On mobile, your app fills the entire screen with the chat input and navigation bar overlaid on top, so keep critical UI within the safe area. Use the full viewport width, and support both portrait and landscape where it makes sense.
 
@@ -15697,7 +15771,9 @@ On mobile, your app fills the entire screen with the chat input and navigation b
 
 ## Mobile guidelines
 
-MCP Apps on mobile follow the same principles as on web, but the constrained viewport and touch-based interaction require specific adaptations. On mobile, Claude renders apps in a native WebView, `WKWebView` on iOS and `WebView` on Android, rather than a sandboxed iframe. Apps on mobile have no camera, microphone, or location access, and users must add a connector on web or desktop before it appears on mobile.
+MCP Apps on mobile follow the same principles as on web, but the constrained viewport and touch-based interaction require specific adaptations. On mobile, Claude renders apps in a native WebView, `WKWebView` on iOS and `WebView` on Android.
+
+On Android, apps have no camera, microphone, or location access. On iOS, an app that requests the camera or the microphone in `_meta.ui.permissions` can use it after the user allows it. A view that Claude allows to embed a site [can't use either](/docs/connectors/building/mcp-apps/embedded-sites#device-features-in-views-that-embed-sites). Claude on mobile doesn't report these features in `app.getHostCapabilities()?.sandbox?.permissions`, so call the browser API, such as `getUserMedia()`, without checking that field, and handle a refusal.
 
 ### Host context for layout
 
@@ -15827,6 +15903,44 @@ Use monochromatic, outlined icons that match the host's icon color tokens. Icons
 
 ![Icon style examples](https://mintcdn.com/claude-ai/IXMfN0TT8kfXbN6T/images/mcp-apps/icons.png?fit=max\&auto=format\&n=IXMfN0TT8kfXbN6T\&q=85\&s=1454f1f3e5e13107cbe543e8d6d617df)
 
+### Declare an app icon for Claude
+
+Claude can show an icon of your own for an MCP App, in place of your connector's icon or your listing's logo. The icon can appear in the title bar over a view in the side panel and in full screen. Where the app has an [entry point](/docs/connectors/building/mcp-apps/entry-points), the icon can also appear on the app's tile on the [**Artifacts**](https://claude.ai/artifacts) page. Declared icons aren't available in every organization or conversation.
+
+Declare the icon in the `icons` list of your server's `serverInfo`, as an inline `data:` URI:
+
+```ts theme={null}
+import { readFileSync } from "node:fs";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+
+const icon = {
+  src: `data:image/png;base64,${readFileSync("icon.png").toString("base64")}`,
+  mimeType: "image/png",
+};
+
+const server = new McpServer({
+  name: "board",
+  version: "1.0.0",
+  icons: [icon],
+});
+```
+
+Your server's `initialize` result then holds the icon in `serverInfo.icons`.
+
+These have to hold:
+
+* **Source**: an inline `data:` URI in `src`. Claude doesn't fetch an icon from a URL. An `https:` entry for other clients can stay in the list, after the inline one
+* **Format**: `data:image/png;base64,` or `data:image/jpeg;base64,`. Claude removes an inline SVG entry from `serverInfo`
+* **Size**: keep the icon to 64 to 128 px and under 10 KB. Declare one inline icon in `serverInfo`, where the whole object, icons included, can take about 16,000 characters of JSON. Beyond that, Claude drops all of it
+* **Connector**: the connector has a [Verified](/docs/connectors/verification#verified) listing, or it's a custom connector whose address matches no directory listing
+* **Names**: the tool's [title](/docs/connectors/building/mcp-apps/entry-points#set-the-title-name-and-description-of-the-marked-tool), and a custom connector's name, leave out Claude's name and Anthropic's name
+
+When no declared icon meets the requirements, Claude shows the listing's logo or the connector's icon, and shows no error. If your icon meets the requirements and doesn't appear, your organization may not have access, or the conversation may not offer it.
+
+To give each app its own icon, add an `icons` list to the tool that opens the app, in your server's `tools/list` result. Claude uses the tool's icon before the server's. To check that the field is there, [list your server's tools](/docs/connectors/building/testing#validate-with-mcp-inspector).
+
+Version 1 of the TypeScript SDK (`@modelcontextprotocol/sdk`), which the [quickstart](/docs/connectors/building/mcp-apps/quickstart) uses, doesn't send a tool's `icons` through `registerTool` or `registerAppTool`. With it, use `serverInfo`, which gives all your apps one icon, or answer `tools/list` yourself. Version 2 (`@modelcontextprotocol/server`) sends them through `registerTool`, and through `registerAppTool` in JavaScript.
+
 ### Spacing
 
 Maintain generous padding and logical groupings. Balance information density with readability, adapting to viewport constraints.
@@ -15858,6 +15972,8 @@ Push these to the chat input:
 * Anything that benefits from Claude's interpretation
 
 If the interaction requires language understanding or generates a response from Claude, it goes through chat. If it's a direct UI action on content your app already controls, handle it in the app.
+
+When your app loads again, it starts from your HTML, so store on your server anything that you need to keep.
 
 ### Reveal complexity progressively
 
@@ -16400,6 +16516,7 @@ You declare your site's origin, and Claude has to allow that origin for your con
 
 * **Where sites load**: Claude applies different rules to directory connectors and custom connectors, so start with [where embedded sites load](#where-embedded-sites-load)
 * **Device features**: check [which device features your connector's views lose](#device-features-in-views-that-embed-sites), such as the camera
+* **Sign-in**: Claude passes no session to your site, so plan [how users sign in](#sign-a-user-in-to-an-embedded-site)
 
 ## Where embedded sites load
 
@@ -16423,7 +16540,7 @@ When Claude blocks an origin for a directory connector, the view opens and the `
 
 ### Allowed origins in a custom connector
 
-Where embedded sites are available for custom connectors, Claude lists the origins that you declare for the view and asks the user to allow them.
+Where embedded sites are available for custom connectors, Claude lists the origins that you declare for the view and asks the user to allow them. That request can also warn the user that Anthropic hasn't reviewed the connector or the websites, and the user can still allow them. Under a Verified listing that allows the origins, users get no such warning.
 
 For embedded sites, a connector counts as custom when a user added it by URL and its address matches no directory listing. Check these details of your connector:
 
@@ -16584,6 +16701,8 @@ An embedded site inherits the sandbox of the view around it, and the browser tre
 * **Navigation**: the site can navigate its own frame and submit forms to its own origin. The site can't navigate the Claude page.
 * **Redirects**: for a redirect in the frame, the destination and each origin that the redirect passes through must be origins that Claude allows
 
+A connector's views load from its own sandbox host under `claudemcpcontent.com`: the same host in every conversation if you set [`ui.domain`](/docs/connectors/building/mcp-apps/getting-started#set-ui-domain-for-claude), and a different host in each if you don't.
+
 ### Sessions and cookies in an embedded site
 
 Claude passes no session to the site, and a call to `document.requestStorageAccess()` is rejected. To keep a session inside the frame:
@@ -16613,7 +16732,7 @@ Plan for other views to lose the same features, including views that embed nothi
 * **Directory connector**: when the listing allows an origin, plan for the connector's other views to lose them
 * **Custom connector**: where [embedded sites are available for custom connectors](#availability-of-embedded-sites-for-custom-connectors), plan for every view of the connector to lose them
 
-To see which features Claude granted a view, read `app.getHostCapabilities()?.sandbox?.permissions` in the view's script after `app.connect()` resolves. Each key is a granted feature.
+To see which features Claude granted a view, read `app.getHostCapabilities()?.sandbox?.permissions` in the view's script after `app.connect()` resolves. Each key is a granted feature. Claude on mobile doesn't report these features.
 
 Also plan for `Element.requestFullscreen()` to fail, in views and in embedded sites. Don't depend on a video player's full-screen button.
 
@@ -16722,6 +16841,7 @@ A view is one rendered instance of your app's UI in Claude. When a user opens yo
 * **Arguments**: make every input optional and show a useful starting state when the arguments are `{}`.
   * Claude can choose a value for an optional input, so don't treat a value as proof of the user's choice.
 * **Conversation**: on the web, the app opens in a new conversation each time a user opens it
+* **Icon**: Claude can show an [icon that you declare](/docs/connectors/building/mcp-apps/design-guidelines#declare-an-app-icon-for-claude) on the app's tile and over the open view
 * **Display mode**: on the web, Claude shows the view full screen when the view supports `fullscreen`, so include `fullscreen` if you declare [`availableDisplayModes`](/docs/connectors/building/mcp-apps/design-guidelines#declare-supported-display-modes).
   * Without `fullscreen`, the view appears in the conversation.
 * **Approval**: if the tool's permission is **Needs approval**, Claude asks the user for approval before the view opens. If the conversation's permission setting is **Auto**, Claude can open the view without asking.
@@ -17036,7 +17156,7 @@ For `https://example.com/mcp`, the command prints:
 c3d80a4ed901ee05b21755a88273b4a4.claudemcpcontent.com
 ```
 
-If Claude reports `Invalid ui.domain format` or `ui.domain mismatch`, see [Troubleshoot MCP Apps](/docs/connectors/building/mcp-apps/troubleshooting#ui-domain-validation-fails).
+If Claude shows an error instead of your app after you set this value, see [Troubleshoot MCP Apps](/docs/connectors/building/mcp-apps/troubleshooting#ui-domain-validation-fails).
 
 ### Build with an AI coding agent
 
@@ -17056,6 +17176,8 @@ Once the MCP Apps skills plugin is installed, ask your agent to "Create an MCP A
 If you have an existing app built on the OpenAI Apps SDK, follow the [migration reference](https://modelcontextprotocol.github.io/ext-apps/api/documents/Migrate_OpenAI_App.html) to move it to the MCP Apps SDK. The MCP Apps skills can also do the migration: ask your agent to "Migrate from OpenAI Apps SDK" or "Convert my OpenAI App to an MCP App".
 
 If your tools already declare global [entry points](/docs/connectors/building/mcp-apps/entry-points) under the `openai/ui` key, check what else each tool needs in Claude in [Mark a tool as a global entry point](/docs/connectors/building/mcp-apps/entry-points#mark-a-tool-as-a-global-entry-point).
+
+After you migrate, [one codebase can run in Claude and in other hosts that support MCP Apps](#register-tools-and-resources-once-for-every-host). One thing that differs is [`ui.domain`](#set-ui-domain-for-claude): each host has its own format.
 
 ## Send feedback on MCP Apps
 
@@ -18030,7 +18152,7 @@ To fix the iOS failures, allowlist on the `Origin` header instead of `Referer`, 
 
 ### `ui.domain` validation fails
 
-Setting [`_meta.ui.domain`](https://modelcontextprotocol.github.io/ext-apps/api/interfaces/app.McpUiResourceMeta.html#domain) on your resource opts your app into a stable sandbox origin, which you need if your app runs its own OAuth flow. Claude validates the value against your connector URL, and when validation fails it shows an `Invalid ui.domain format` or `ui.domain mismatch` error instead of rendering the app.
+Setting [`_meta.ui.domain`](https://modelcontextprotocol.github.io/ext-apps/api/interfaces/app.McpUiResourceMeta.html#domain) on your resource opts your app into a stable sandbox origin, which you need if your app runs its own OAuth flow. Claude validates the value against your connector URL, and when validation fails on the web or in Claude Desktop it shows an error instead of rendering the app.
 
 The value must be exactly `{hash}.claudemcpcontent.com`, where `{hash}` is the first 32 hexadecimal characters of the SHA-256 digest of your full connector URL. Compute it by running this command with your own URL:
 
@@ -18830,6 +18952,7 @@ Once the connector is added, check these:
 * **The connection**: the connector shows **Connected** under **Your connectors**. If it shows **Connect** or **Reconnect** instead, sign-in didn't finish, and [Debug connection failures](#debug-connection-failures) covers the usual causes
 * **Your tools**: open the connector's page and look under **Tool permissions**. Every tool your server advertises should be listed with the name and description you gave it, because those are what Claude reads when it decides to call a tool
 * **A real call**: in a chat, turn the connector on from **+ > Connectors**, ask for something that needs one of your tools, and approve the call when Claude asks. Confirm on your server that the request arrived with the arguments you expected, and in Claude that the result reads well. [Use the connector in a conversation](/docs/connectors/getting-started#use-the-connector-in-a-conversation) shows what the user sees at each point
+* **An MCP App**: while your app is open, Claude can mark the connector **Unverified**, in the conversation, in the side panel, and in full screen. The mark means that Anthropic hasn't verified the connector, not that your server has a fault. People who install your connector from a directory listing don't see it
 
 ### Test a local server
 
@@ -19286,6 +19409,23 @@ For **OAuth client**, choose how Claude identifies itself to the server's author
 For **Request headers**, add fixed credentials such as API keys that Claude sends on every request. See [Authenticate with request headers](#authenticate-with-request-headers).
 
 Change **Advanced > Transport** only if the server's documentation says to. A URL ending in `/sse` selects the older SSE transport.
+
+#### Add the GitHub MCP server
+
+The settings that work for GitHub's remote MCP server depend on which of its URLs you enter:
+
+* **Base URL `https://api.githubcopilot.com/mcp/`**: you don't register an OAuth client. People sign in to GitHub through a client that Anthropic has already registered with GitHub
+* **A toolset or read-only URL**, such as `https://api.githubcopilot.com/mcp/x/issues` or a GitHub MCP server URL ending in `/readonly`: these URLs need a GitHub App that you register yourself, entered with both its client ID and its client secret
+* **Read-only tools without a GitHub App**: if your **Add custom connector** dialog has a **Request headers** section, enter the base URL, then in that section choose **Custom header** and enter `X-MCP-Readonly` as the name and `true` as the value, as described in [Authenticate with request headers](#authenticate-with-request-headers). GitHub's server then limits the connector to its read-only tools for everyone who uses it
+
+To register the GitHub App for a toolset or read-only URL:
+
+1. In GitHub's developer settings for your account or organization, [register a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app) with `https://claude.ai/api/mcp/auth_callback` as its callback URL.
+2. Generate a client secret for the App, and copy it along with the client ID.
+3. Install the GitHub App on each GitHub organization or account whose repositories people need to reach. Installing it on an organization needs the approval of one of that organization's admins.
+4. In the **Add custom connector** dialog, under **OAuth client**, choose **Use your own OAuth client** and enter both the client ID and the client secret. GitHub doesn't issue a token without the secret, so a connector with only a client ID fails when people sign in.
+
+To stop Claude from using write tools on a GitHub connector that's already added, each person can set those tools to **Blocked** under [**Tool permissions**](/docs/connectors/getting-started#manage-or-disconnect-a-connector) on the connector's page.
 
 ### Authenticate with request headers
 
@@ -21204,7 +21344,7 @@ Community connectors show a **Community** label in the directory and in [**Custo
 
 ### Custom
 
-You added a Custom connector yourself, and Anthropic hasn't reviewed it. [Custom connectors](/docs/connectors/custom/add-unlisted#add-a-connector-by-url) explains how to add one.
+You added a Custom connector yourself, and Anthropic hasn't reviewed it. While a Custom connector's MCP App is open, Claude can mark the connector **Unverified**. [Custom connectors](/docs/connectors/custom/add-unlisted#add-a-connector-by-url) explains how to add one.
 
 ## Directory listing versus custom connectors
 
@@ -24294,6 +24434,16 @@ You'll find the settings in **Settings > Capabilities**. On Team and Enterprise 
 | **Domain allowlist** is **Package managers only** | The same, plus common package registries and `github.com` |
 | **Domain allowlist** is **All domains** | Any host, unless your organization applied the [HIPAA configuration](/docs/cowork/hipaa-setup#limit-network-access-for-cowork-shell-commands) |
 
+## Connectors and MCP servers
+
+The network settings on this page don't apply to connectors, desktop extensions, or local Model Context Protocol (MCP) servers. Adding a service's domain to **Additional allowed domains** doesn't change what any of them can reach. Claude Desktop handles connector requests outside the VM and usually sends them through Anthropic's servers, which contact the service. Desktop extensions and local MCP servers run on your computer, outside the VM, and use your computer's network connection.
+
+MCP servers that a plugin adds, including its connectors, might be an exception. They're usually outside the VM too. In some setups, such as when your organization turns on the `requireCoworkFullVmSandbox` managed setting, Claude might start them in the VM or contact them from the VM. The network settings then apply to that traffic, and a host that isn't allowed is blocked.
+
+On Team and Enterprise plans, your admin manages connectors and desktop extensions in **Organization settings > Connectors**.
+
+If your organization deploys Claude Desktop with its own model provider, Claude Desktop contacts each connector's service directly from your computer and ignores `requireCoworkFullVmSandbox`. For the controls in that case, see [MCP, plugins, skills, and hooks](/docs/third-party/claude-desktop/extensions).
+
 ## Download-only hosts
 
 If a task can reach these hosts, it can download from them, but uploads to them are blocked. This doesn't apply when **Domain allowlist** is **All domains**. To publish or push, [use a terminal on your own computer](#push-or-publish-from-your-own-computer).
@@ -24332,6 +24482,7 @@ Ask Claude to make the changes in a folder you connected to the task. Then open 
 These pages cover related topics.
 
 * [Organize work with projects](/docs/cowork/guide/projects) for the folders a task can read and write
+* [Install plugins](/docs/cowork/guide/plugins) for what a plugin can add to Cowork
 * [Cowork overview](/docs/cowork/overview) for an introduction to Cowork
 
 
@@ -26039,8 +26190,9 @@ Expand a setting to see its chain view, which shows the value in effect and wher
 Each setting has a fixed kind, which decides how its values combine across the chain:
 
 * A **simple value** is replaced at each level, and the most specific level that set it wins. Most settings work this way, including lists of values such as network hosts, where a lower level's list replaces the one above it.
-* A **restriction** is a limit that each level below the tenant can tighten but not loosen from what the levels above it set. The tightest of those values takes effect, except that values set below a [lock](#locks) don't apply. For example, if the tenant sets a session timeout of 30 minutes, an organization can set 15, but a value of 60 has no effect.
-* A **collection** accumulates entries from each level. A level can add entries to what the level above provided. Connectors and plugins work this way.
+* A **restriction** is a limit that each level below the tenant can tighten but not loosen from what the levels above it set. The tightest of those values takes effect, except that values set below a [lock](#locks) don't apply. For example, if the tenant sets a session idle timeout of 30 minutes, an organization can set 15, but a value of 60 has no effect.
+* A **collection** accumulates entries from each level. Connectors and plugins work this way.
+* A **product switch**, such as **Claude Desktop**, turns a whole product on or off. Once an administrator turns the product off at any level that applies to a person, turning it on at a lower level has no effect.
 
 ### Locks
 
@@ -26062,7 +26214,7 @@ In addition to setting values for your whole tenant or organization, you can set
 A group's settings can be tenant-wide or scoped to one organization:
 
 * **Tenant-wide group settings** sit between the tenant and the organization in the chain. Tenant administrators manage these.
-* **Organization group settings** are scoped to one organization. A value set here applies only to people who are both a member of the group and a member of that organization, and it is the most specific level in the chain. Organization owners manage these for their own organization and see the same list of groups the tenant does.
+* **Organization group settings** apply only to people who are members of both the group and the organization. Organization owners manage these for their own organization.
 
 To edit settings for a group, choose the group in the scope bar on the Config page, which says whose settings you are editing. Groups appear there once your directory has pushed them. To add connectors for a group's members, see [Who receives a connector](/docs/government/connectors/overview#who-receives-a-connector).
 
@@ -26075,7 +26227,7 @@ To edit settings for a group, choose the group in the scope bar on the Config pa
 How you give a feature to one group and nobody else depends on the setting:
 
 * **A simple value, such as Code in Claude Desktop**: turn the feature off on the organization's Config page, then choose the group in the scope bar on that page and turn it on.
-* **The switch for a whole product that is off until a level turns it on, such as Claude Code**: leave it unset for the tenant and the organization, and turn it on for the group. An off saved at the tenant or the organization takes priority over the group's on, so [reset](#working-with-the-list) it there first.
+* **A product switch that is off until a level turns it on, such as Claude Code**: leave it unset for the tenant and the organization, and turn it on for the group. An off saved at the tenant or the organization takes priority over the group's on, so [reset](#working-with-the-list) it there first.
 
 To do this for every organization at once, make the same changes on the tenant Config page and choose **Must use this value** for the group, so that an organization's own value can't override it. You can't also lock the feature off for everyone else, because that lock would apply to the group too. An organization can still turn it on for its own members.
 
@@ -26829,8 +26981,6 @@ A fresh install of Claude Desktop connects to claude.ai. To connect it to Claude
 
 ## Before you begin
 
-Confirm each of the following before you start either path.
-
 * **User accounts exist.** Claude Desktop signs users in to the same accounts as this portal. For each user, including your own test account, check with your tenant administrators that the user can sign in (a [routing rule](/docs/government/tenant-admin/identity-and-access) covers them) and has a [seat tier](/docs/government/org-admin/seat-tiers) with at least one model enabled.
 * **Devices and browsers can reach the hosts they need.** Allow the hosts under [Network access](#network-access).
 * **The device meets Claude Desktop's requirements.** See the Claude Desktop [system requirements](/docs/third-party/claude-desktop/installation#system-requirements) for macOS and Windows device requirements. For a Windows fleet, work through the [Windows fleet checklist](/docs/government/deploy-desktop/windows-checklist).
@@ -26924,13 +27074,13 @@ Video: Deploy to your fleet (1 min 32 s). Narrated with an AI-generated voice, w
 
 Push both the app installer and the configuration profile through your device management system.
 
-The profile needs these keys. In the macOS and Windows profiles, write every value as a string exactly as shown, including booleans as the strings `"true"` or `"false"`; the Linux file uses native JSON types, as shown.
+The profile needs these keys. In the macOS and Windows profiles, write every value as a string, including `true`. The Linux file uses native JSON types.
 
 | Key | Value | Purpose |
 | - | - | - |
 | `bootstrapUrl` | `https://<claude-for-government-host>/gateway-api/user/bootstrap` | Required. Points the app at Claude for Government. |
-| `disableDeploymentModeChooser` | `"true"` | Required. Hides the claude.ai sign-in option. Claude for Government also sends this setting, but the profile must set it too (see [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser) in the Claude Desktop configuration reference). |
-| `deploymentMode` | `"3p"` | Required on Claude Desktop 4.16336.0 or later. Keeps the app on Claude for Government. Earlier versions read `disableDeploymentModeChooser`, so set both. |
+| `disableDeploymentModeChooser` | `true` | Required. Hides the claude.ai sign-in option. Claude for Government also sends this setting, but the profile must set it too (see [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser) in the Claude Desktop configuration reference). |
+| `deploymentMode` | `3p` | Required on Claude Desktop 4.16336.0 or later. Keeps the app on Claude for Government. Earlier versions read `disableDeploymentModeChooser`, so set both. |
 
 No other keys are needed to connect the app; Claude for Government [supplies everything else](/docs/third-party/claude-desktop/bootstrap) per user after sign-in. If your agency distributes Claude Desktop updates itself, [Automatic updates](#automatic-updates) describes one more key to add.
 
@@ -26942,7 +27092,7 @@ Leave these keys unset:
 
 ### macOS
 
-Claude Desktop reads managed preferences in the `com.anthropic.claudefordesktop` domain. Deploy a configuration profile that sets the keys in that domain as strings.
+Claude Desktop reads managed preferences in the `com.anthropic.claudefordesktop` domain. Deploy a configuration profile that sets the keys in that domain. Have your management system install the profile for the whole computer, not for one user account, and keep every key in that one profile.
 
 ```xml theme={null}
 <key>bootstrapUrl</key>
@@ -26954,7 +27104,9 @@ Claude Desktop reads managed preferences in the `com.anthropic.claudefordesktop`
 <string>3p</string>
 ```
 
-For a `.mobileconfig` to start from, use the Export menu described under [Configure a single machine](#configure-a-single-machine), and check it as that section says before you upload it.
+For a `.mobileconfig` to start from, use the **Export** menu described under [Configure a single machine](#configure-a-single-machine). Before you upload the file, make sure it sets the keys above, and change `PayloadScope` to `System` if it says `User`.
+
+If you already deployed a user-level profile, copy the keys you still need into the computer-level profile before you deploy it, and remove the user-level profile once the new one is installed.
 
 ### Windows
 
@@ -27004,11 +27156,11 @@ Turning on developer mode does not change this: the configuration window stays r
 On macOS and Windows, Claude Desktop downloads and installs its own updates by default. On a Mac with the app in `/Applications`, macOS asks a user who is not an administrator for an administrator's name and password before an update installs. Until someone enters them, the update does not install. If your agency distributes Claude Desktop updates itself, turn automatic updates off in both of the following places so that devices never update themselves.
 
 * **On the Config page.** Have a tenant administrator turn on [Block automatic updates](/docs/government/config/settings#block-automatic-updates) and [lock](/docs/government/config/overview#locks) it, so that no level below theirs can turn updates back on. An organization owner can turn it on for their own organization, whose Config page offers no lock. Claude Desktop applies this setting once a user has signed in and the app has loaded their configuration from Claude for Government. With that configuration loaded, the app follows this setting alone, whether it is on or off, and ignores the profile value.
-* **In the profile.** Add `disableAutoUpdates` with the value `"true"` beside [`bootstrapUrl`](#the-bootstrap-address) in your [macOS](#macos) and [Windows](#windows) profiles. The app applies the profile value only when it starts without a signed-in user, for example on a newly deployed device or when a user opens the app and has to sign in again because their session expired. Without the Config page setting, the profile value does not stop signed-in devices from updating.
+* **In the profile.** Add `disableAutoUpdates` with the value `true` beside [`bootstrapUrl`](#the-bootstrap-address) in your [macOS](#macos) and [Windows](#windows) profiles. The app applies the profile value only when it starts without a signed-in user, for example on a newly deployed device or when a user opens the app and has to sign in again because their session expired. Without the Config page setting, the profile value does not stop signed-in devices from updating.
 
 Claude Desktop reads its update settings when it starts. If the app is already running on a device when you change the Config page setting or the profile, the change applies the next time the app starts. If you leave automatic updates on, see [Restart deadline for updates](/docs/government/config/settings#restart-deadline-for-updates).
 
-On Claude Desktop versions earlier than 1.25927.0, the Config page setting alone does not reliably stop updates. On those versions, a profile that sets `disableAutoUpdates` to `"true"` stops automatic updates for signed-in users too, until you remove the key.
+On Claude Desktop versions earlier than 1.25927.0, the Config page setting alone does not reliably stop updates. On those versions, a profile that sets `disableAutoUpdates` to `true` stops automatic updates for signed-in users too, until you remove the key.
 
 On Linux, apt installs Claude Desktop updates, and the app does not download or install its own. The **Block automatic updates** setting and the `disableAutoUpdates` key do not change these updates. To stop the app's own check of Anthropic's [update hosts](/docs/third-party/claude-desktop/telemetry#required-egress-paths) for a new version, use both, with the key in the [Linux file](#linux). To keep Linux devices on the versions your agency distributes, follow [Auto-updates](/docs/third-party/claude-desktop/telemetry#auto-updates) in the Claude Desktop documentation.
 
@@ -27054,8 +27206,9 @@ After sign-in, what the app offers matches that user's [product availability](/d
 | An **Apply settings from your organization?** window appears after sign-in or at every launch, or the app quits when the user dismisses that window | The bootstrap address was entered in the app or set per user (for example under `HKEY_CURRENT_USER`), and the user has not yet clicked **Allow** | Have the user answer it as in the **Allow the gateway address** step under [Configure a single machine](#configure-a-single-machine). If the address is not on your host, check the bootstrap address configured on that device. To stop the prompt across a fleet, deliver the bootstrap address through machine-wide device management, as described under [Deploy to your fleet](#deploy-to-your-fleet) |
 | The browser shows a connection error instead of Claude for Government or its sign-in page: "Secure Connection Failed" with `PR_CONNECT_RESET_ERROR` in Firefox, or `ERR_CONNECTION_RESET` in Chrome | A web filter, firewall, or proxy reset the connection, either on your agency's network or on the Claude for Government side. | If the address opens in another browser on the same computer, check the first browser's proxy and DNS settings. Otherwise, open the address from outside your agency's network, for example on a phone using cellular data. If the phone shows a web page, not a connection error, have your network team allow the host in that address and the hosts described under [Network access](#network-access). If the phone also fails, or the team finds no block, contact your Anthropic representative with the address, the time and time zone of the error, and your network's public IP addresses. |
 | During sign-in, the browser shows a Microsoft page titled "You cannot access this right now", sometimes in one browser but not in another | Microsoft Entra ID shows this page when one of your agency's Conditional Access policies blocks the sign-in, for example a policy that limits which browsers, devices, or locations can sign in. The refusal happens before the sign-in reaches Claude for Government, so nothing in the app or in this portal changes it. | Ask your identity team to find the failed sign-in in the identity provider's sign-in logs. Adjust the policy, or have the user sign in from a browser or device the policy allows (Claude Desktop opens sign-in in the computer's default browser). |
-| The app shows **Your session has expired** or **Couldn't verify your sign-in** with a **Sign in again** button, or a device that was already set up opens to the sign-in screen | The user's Claude for Government session ended. A session ends once the user has gone without using Claude for longer than the [Session idle timeout](/docs/government/config/settings#session-idle-timeout) your tenant administrators set, which is 24 hours unless they change it, or when it reaches the [Maximum session length](/docs/government/config/settings#maximum-session-length) if one is set. A session also ends when the user or an administrator signs it out. A device left idle, locked, or asleep does not keep a session alive. [How long sessions last](/docs/government/account/sessions#how-long-sessions-last) lists other ways a session ends | Have the user sign in again. When a session has ended, the app keeps the user's configuration and asks them to sign in again, with a message and a **Sign in again** button while the app is open, or with the sign-in screen the next time it starts, and it reloads the configuration once they sign in. If people are asked to sign in more often than you intend, ask a tenant administrator or organization owner to review **Session idle timeout** and **Maximum session length** on the [Config](/docs/government/tenant-admin/configuration) page |
+| The app shows **Your session has expired** or **Couldn't verify your sign-in** with a **Sign in again** button, or a device that was already set up opens to the sign-in screen | The user's Claude for Government session ended. A session ends once the user has gone without using Claude for longer than the [Session idle timeout](/docs/government/config/settings#session-idle-timeout) your tenant administrators set, which is 24 hours unless they change it, or when it reaches the [Maximum session length](/docs/government/config/settings#maximum-session-length) if one is set. A session also ends when the user or an administrator signs it out. A device left idle, locked, or asleep does not keep a session alive. [How long sessions last](/docs/government/account/sessions#how-long-sessions-last) lists other ways a session ends | Have the user sign in again. If people are asked to sign in more often than you intend, ask a tenant administrator or organization owner to review **Session idle timeout** and **Maximum session length** on the [Config](/docs/government/tenant-admin/configuration) page |
 | A **Configuration sync issue** banner on a Claude Desktop version earlier than 1.34493.0 | On these versions, an ended session can appear as this banner. Versions earlier than 1.32352.0 that ask for the **Apply settings from your organization?** approval also show it, with "bootstrap response is missing required field(s): inferenceGatewayBaseUrl" | Update the app to the latest version, then sign in again or answer the prompt |
+| **This version of Claude Desktop is too old for the Code tab** | The app's [agent helper](/docs/third-party/claude-desktop/installation#endpoint-security-software) is older than Claude for Government accepts in Code, because the app is out of date or hasn't downloaded its new helper. Chat and Cowork aren't affected | [Update the app](#before-you-begin), allow [`downloads.claude.ai`](#network-access), then restart the app |
 | On a Windows device, Cowork tasks fail, the app shows an error about starting Claude's workspace that mentions a Windows update, or, with [Advanced file analysis in Chat](/docs/government/config/settings#advanced-file-analysis-in-chat) on, Claude can't read some attached files in Chat, such as Word, Excel, or PowerPoint files | The device has installed the Windows update released September 8, 2026, but not Microsoft's later update that fixes the problem. Cowork tasks and Advanced file analysis in Chat need the workspace. | Install the latest Windows update on the device and restart it. On Windows 11 24H2 and 25H2, the fix is KB5129195. No Claude Desktop update is needed. See [Resolved: Cowork on Windows](/docs/cowork/changelog#resolved-cowork-on-windows) in the Claude Desktop changelog. |
 | [Web search](/docs/government/config/settings#web-search) is on for your organization, but a user does not have it, and under **Customize**, then **Connectors**, **Web Search** shows as not connected and **Connect** fails, while chat works | A firewall or secure web gateway on that user's network path filters traffic by application. Claude Desktop connects to web search on your Claude for Government host over HTTPS, and such equipment can classify that connection as Model Context Protocol (MCP) traffic and block it even when the host itself is allowed. | Ask your network team to allow this traffic to your Claude for Government host for the affected users. The user's `main.log` records each failed attempt, including any block page the network returned. Then have the user select **Connect** next to **Web Search**, or restart the app. |
 | The app shows **Couldn't download Claude's workspace**, or **Failed to start Claude's workspace** with a download error under it, or Chat conversations and Cowork tasks fail to start with "Host Claude Code binary not available. Check that the download completed." | Claude Desktop could not download a complete, verified copy of the Cowork workspace or the [agent helper](/docs/third-party/claude-desktop/installation#endpoint-security-software) from `downloads.claude.ai`. | Follow [Cowork workspace or Claude CLI fails to download](/docs/third-party/claude-desktop/installation#cowork-workspace-or-claude-cli-fails-to-download) in the Claude Desktop documentation. |
@@ -28269,7 +28422,7 @@ You can create, edit, and delete self-managed tiers only if your tenant has [all
 
 * **Five-hour spend limit** sets how much each user on this tier can spend in a 5-hour window, expressed in dollars. When a user reaches this amount, further requests are refused until the limit [resets](/docs/government/account/usage#reading-the-reset-times).
 * **Seven-day spend limit** does the same for a 7-day window. Both limits apply at the same time, so whichever is reached first stops the user.
-* **Allowed models** controls which [Claude models](/docs/government/desktop/models) users on this tier may use. If you leave it empty, users on the tier have no model access regardless of their spend limits.
+* **Allowed models** controls which [Claude models](/docs/government/desktop/models) users on this tier may use. If you leave it empty, users on the tier have no model access. Claude Desktop's model picker leaves out models marked **Deprecated**, so allow at least one model that isn't.
 * **Default model** sets the model that new chats, tasks, and Code sessions in Claude Desktop start on, chosen from the tier's allowed models. It applies to users who haven't picked a model or effort level in the model picker.
 * Select **Always start with the default model** to start every new chat, task, and Code session on the default model. Requires a **Default model** and Claude Desktop 2.110.0 or later.
 * **New members start here** makes this the tier that people start on when they join your organization, as described under [How seats are assigned automatically](/docs/government/org-admin/seats#how-seats-are-assigned-automatically). Turning it on here turns it off for any other tier. On a tier with a seat limit and a mapped group, turning it off can move provisioned users who are in no mapped group [to another tier](/docs/government/org-admin/provisioning#group-to-seat-tier).
@@ -28278,7 +28431,7 @@ You can create, edit, and delete self-managed tiers only if your tenant has [all
 
 Go to **People > Tiers**, open a self-managed tier, and use its **Edit** form.
 
-* Changes to spend limits and allowed models take effect immediately for every user on the tier: if you lower the spend limit, a user who is already over the new limit will be blocked on their next request until the limit resets, and if you remove a model from **Allowed models** it becomes unavailable to every user on the tier straight away.
+* Changes to spend limits and allowed models take effect immediately for every user on the tier: if you lower the spend limit, a user who is already over the new limit will be blocked on their next request until the limit resets.
 * Changes to **Default model** and **Always start with the default model** reach users when Claude Desktop next [refreshes its configuration](/docs/government/config/overview#when-changes-take-effect), and a new default appears the next time they start Claude Desktop. When you set or change a tier's **Default model**, Claude Desktop prompts users on that tier who have the app open [to restart](/docs/government/config/settings#restart-deadline-for-configuration-changes). To avoid the prompt, set a tier's **Default model** before its users first open Claude Desktop.
 
 If a banner that begins **Anthropic has provided default seat tiers** appears in the organization admin portal, Anthropic has set up a self-managed seat tier for your organization to review. Click **Review seat tiers**, then adjust the tier in the **Edit** form and click **Save**, or click **Keep these values**.
@@ -28399,11 +28552,7 @@ Changing a user's tier takes effect on their very next request. If you move some
 
 Every [seat tier](/docs/government/org-admin/seat-tiers) sets a **5-hour** and a **7-day** spend limit for each user. When a user reaches either limit, further requests are refused until that limit resets. The **Usage** bars on a user's card show how much of the user's 5-hour and 7-day spend limits are currently used. Hover over the bars to see when each limit resets.
 
-If a user on a self-managed tier has hit a limit and you want them to continue working immediately, use **Reset usage limits** in the **…** menu on their card. This clears both of their current windows so their next request is admitted. Their usage still shows on the [Analytics](/docs/government/org-admin/analytics) page.
-
-> [!NOTE]
->
-> You cannot reset limits for users on [Anthropic-managed tiers](/docs/government/org-admin/seat-tiers#anthropic-managed-versus-self-managed-tiers).
+If a user has hit a limit and you want them to continue working immediately, use **Reset usage limits** in the **…** menu on their card. The action appears only while the [**Let organizations manage their own seat tiers**](/docs/government/config/settings#let-organizations-manage-their-own-seat-tiers) setting is on, which a tenant administrator can change. You cannot reset limits for users on [Anthropic-managed tiers](/docs/government/org-admin/seat-tiers#anthropic-managed-versus-self-managed-tiers). A reset clears what the user has used of both limits. Their usage still shows on the [Analytics](/docs/government/org-admin/analytics) page.
 
 ## Sign out everywhere
 
@@ -28887,7 +29036,7 @@ The table shows what a person may see when sign-in fails, and what to do about i
 | - | - | - |
 | "We couldn't find an organization for that email." | The address's domain is not a verified domain of any active tenant. Until Anthropic finishes setting up your tenant, everyone sees this | Verify the domain under [Domains](#domains). If no administrator can sign in, contact your Anthropic representative |
 | "Single sign-on isn't configured for your organization yet." | The domain is verified, but no identity provider is connected | Connect [single sign-on](#single-sign-on). Primary Owners and tenant administrators can use the [emailed link](#emailed-sign-in-link) |
-| **Almost there** | Your identity provider signed them in, but no routing rule matched, or the rule's organization is deactivated | Find them under **Rejected sign-ins** and add a [rule](#routing-rules) that covers them |
+| **Almost there**: "You signed in successfully, but you haven't been added to an organization yet." | Your identity provider signed them in, but no routing rule matched, or the rule's organization is deactivated | Find them under **Rejected sign-ins** and add a [rule](#routing-rules) that covers them |
 | **Signed in with a different account** | Your identity provider returned another address than the one they typed | They can continue as the returned address. If sign-in then finds no organization, verify that address's domain, or correct the address your provider sends |
 | **Email address missing** | Your identity provider didn't send an email address | Add an email attribute or claim in your identity provider, or name it under [Attribute mapping](#attribute-mapping-advanced) |
 | **Account deactivated** | Their account or directory entry is deactivated | Reactivate them in your directory: see [Deactivated users](/docs/government/org-admin/users#deactivated-users). If your directory doesn't manage them, contact your Anthropic representative |
@@ -29374,13 +29523,13 @@ Video: Directory sync (SCIM) and group mappings (2 min 3 s). Narrated with an AI
 >
 > Under Provisioning rules, route groups to organizations. Send research-staff to Research Office, and claude-users to Operations Bureau. The first match wins, so add the narrower group first or drag it to the top.
 >
-> Once a rule covers them, they are placed in its organization, and the list clears on its own.
+> As people are placed in organizations, they leave the waiting list.
 >
 > In the organization's admin view, People now includes Group mappings. Map claude-users to a seat tier, here Standard, and claude-owners to the Owner role.
 >
 > On Users, the provisioned members now hold their mapped seat tier and role.
 >
-> While sync is connected, your directory is the source of truth. Change groups in your provider, because role or seat tier edits made by hand are overwritten by the group mappings.
+> While sync is connected, your directory is the source of truth. To change someone's role or seat tier, change their groups in your provider.
 
 ### Users, seat tiers, and Readiness for organization owners
 
@@ -29406,7 +29555,7 @@ Video: Organization owners: users, seat tiers, and Readiness (1 min 48 s). Narra
 >
 > Tiers lists the seat tiers available to your organization, and your tenant can let you create your own.
 >
-> Model access comes from the seat tier, never from the role. Tenant administrator is separate from these roles. If directory groups set roles or tiers, change the group in your provider, because the group mappings overwrite edits made by hand.
+> Model access comes from the seat tier, never from the role. Tenant administrator is separate from these roles. If directory groups set roles or tiers, change the group in your provider.
 
 ### Config essentials
 
@@ -29796,7 +29945,7 @@ holds and what it is scoped to.
 | `claude-memory` | Only with a Claude account sign-in, and only when memory is on: notes that Claude saves so it can use them in later conversations, such as the user's role, their feedback on Claude's work, and details of their projects. A note can include content from a document Claude read. Each note holds its file name, its text, the user's ID, and the time it was last changed | One user |
 | `claude-office-inflight` | Crash-detection records. There is one record for each add-in pane that is running a tool call. It holds a random ID for the pane, the conversation's ID, the tool's name, the Office app and its version, the start time, and, in Excel, Word, and PowerPoint, the document's file path or URL if it had one when the add-in opened. When the add-in opens and finds a record from a call that began more than 10 minutes earlier, which usually means Office or the add-in closed during the call, it sends a usage event for that record and deletes it. The event carries the pane's and the conversation's IDs, the Office app and its version, the time from the call's start until the record was found, and the tool's name, with a connector's tool reported only as a connector tool. It does not carry the document's path. [Data retention](#data-retention) gives when each record is deleted | The device profile, not the individual user |
 | `claude-office-snipped-results` | Parts of the current conversation that were moved out of Claude's working context, which can include document content. A saved conversation keeps its own copy in `claude-chat-history`. [Data retention](#data-retention) gives when this store is emptied | The device profile, not the individual user |
-| Local storage | Settings, onboarding and terms flags, and the active sign-in profile | The browser profile |
+| Local storage | Settings, onboarding and terms flags, the active sign-in profile, and file identifiers for two markers: a file where the user started a new chat, kept until a message is sent or a saved conversation is opened there, and a file whose last conversation the pane is reopening, kept until it shows | The browser profile |
 
 Conversations, memory notes, and the Outlook writing style guide are scoped to
 the individual user. Uploaded skills, connector registrations, crash-detection
@@ -29813,8 +29962,11 @@ each person their own operating system account.
 Apart from the edits a user asks Claude to make, Claude for M365 writes two
 values into the Office document itself, as add-in settings, when its task pane
 opens in Excel, PowerPoint, or Word. The first, `claude.fileId`, is a random
-identifier that lets the add-in recognize the file after a rename or a Save As.
-A copy made with Save As keeps the same identifier. The second,
+identifier that lets the add-in recognize the file after a rename or a Save As,
+and reopen the user's most recent conversation in that file when the pane next
+opens in it. A copy made with Save As keeps the same identifier, so in a copy,
+or in the same file under another name or folder, the pane offers the earlier
+conversation rather than reopening it. The second,
 `Office.AutoShowTaskpaneWithDocument`, asks Office to open the Claude task pane
 when the document opens. [Microsoft supports automatic opening](https://learn.microsoft.com/office/dev/add-ins/develop/automatically-open-a-task-pane-with-a-document)
 only for add-ins that are centrally deployed or sideloaded, and only for people
@@ -29875,14 +30027,12 @@ too. Signing out does not delete the tokens that Microsoft's sign-in library
 keeps.
 
 Signing out also asks Anthropic to revoke the Claude account sign-in that the
-task pane holds, and a sign-in that
-[serves add-in settings from your Claude organization](/docs/office-agents/third-party-platforms#serve-add-in-settings-from-your-claude-organization),
-so that they cannot be used to get new access tokens. The add-in sends this
-request once and does not try again if it fails. A separate Claude sign-in in
-an Office app with its own storage is not revoked. Signing out does not revoke
-any other credential with the service that issued it. That includes the
-connector tokens, the tokens that Microsoft's sign-in library keeps, Vertex AI,
-Amazon Bedrock, and Foundry sign-ins, and a gateway token or API key.
+task pane holds, so that it cannot be used to get new access tokens. The add-in
+sends this request once and does not try again if it fails. A separate Claude
+sign-in in an Office app with its own storage is not revoked. Signing out does
+not revoke any other credential with the service that issued it. That includes
+the connector tokens, the tokens that Microsoft's sign-in library keeps, Vertex
+AI, Amazon Bedrock, and Foundry sign-ins, and a gateway token or API key.
 
 The add-in does not encrypt these credentials. The boundary protecting the
 browser copy is the operating system account: a standard account on the same
@@ -30010,8 +30160,8 @@ learned about my writing" does the following on that device:
   had read it.
 
 It does not delete memory notes, or saved conversations, which can hold
-scratchpad text from earlier messages. It cannot delete anything already sent to
-the model endpoint.
+scratchpad text and proposed writing style changes from earlier messages. It
+cannot delete anything already sent to the model endpoint.
 
 Where several users share a browser profile, data stored under another user's
 key stays. The Writing style and Instructions fields are shared by all of them,
@@ -30040,26 +30190,16 @@ review to the paths that carry content off the endpoint.
 | Files that a user attaches, with a Claude account sign-in | Uploaded to Anthropic with the user's Claude sign-in when the user attaches them, before the message is sent. Each file expires 28 days after the add-in uploads it. If Anthropic does not accept an expiry for the user's organization, the add-in uploads the file with no expiry. The add-in does not delete files itself. Earlier versions of the add-in set no expiry on the files they uploaded. The add-in started setting an expiry on September 15, 2026 |
 | Dictated audio, with a Claude account sign-in | Streamed through Anthropic's server at `pivot.claude.ai` to Anthropic's transcription service while the user dictates. The transcribed text returns the same way. See [Use dictation in Claude for M365](/docs/office-agents/dictation) |
 | Chat history, uploaded skills, and connector registrations | Not synced between devices and not backed up on any server. The add-in still sends their contents to the model endpoint when Claude uses them, as the rows above describe. Every chat request includes the name and description of each skill that is turned on. With a Claude account sign-in, it also includes the name and description of each plugin the user has turned on, with the names of its skills and connectors, and the organization's Claude settings can turn skills off, which stops both. When Claude uses a skill, the add-in also sends the skill's instructions and Markdown files. With a Claude account sign-in, files attached in a chat are also uploaded to Anthropic |
-| Claude for Outlook writing style guide, draft preferences, and scratchpad | Not synced between devices and not backed up on any server. The add-in reads sent mail to build the style guide only when the user has just agreed to it, once for each agreement, and stores no standing agreement. It asks during setup if Claude can already reach the mailbox. Wherever the add-in has a per-user key to mark the guide with, as described in "What chat history is keyed to", Settings has a "Learn my writing style" button under Writing style. The button first says what Claude will read, and the read runs after the user confirms. Learning the style again takes the same button and the same confirmation. Nothing else starts this read: not loading the add-in, a new chat, a change of user, a timer, or an earlier attempt that failed. To build the guide, the add-in sends recent sent mail, with the first recipient's address of each message, to the model endpoint. Earlier versions built the guide without asking. When the chat pane finds such a guide and can tell that it is this user's, it asks whether to use it or delete it, and reads nothing either way. A guide that it cannot tell is this user's, such as one whose Voice pattern or Notes lines the user has edited, stays in the field and is not sent, and Settings says so. If the user has removed enough of a guide's labelled lines, the add-in treats what is left as the user's own text and sends it with chat requests. Learning draft preferences from the user's edits to drafts is off unless Anthropic turns it on. While it is on, the add-in saves the user's edits to drafts on the device, sends them to the model endpoint to build the draft preferences, and adds a summary of the draft preferences to the Instructions field in Settings. Turning it off does not delete edits to drafts or draft preferences already saved on the device, and does not remove a summary already added to the Instructions field. The user can delete that summary in Settings. Every Outlook chat request includes the Instructions field and any text the user wrote in the Writing style field. It includes a guide built from sent mail only for the user who agreed to build it or to use it. Versions of the add-in from April 13 to 17, 2026 wrote a short writing-style note into the Instructions field between two marker lines, and chat requests leave that note out. The add-in puts the draft preferences summary on one line between two marker lines. While learning draft preferences is off, chat requests leave out a summary that is still in that form. If those lines have been edited, the add-in may not recognize the summary, and then sends it with the rest of the Instructions field. Every message the user sends in Outlook includes the scratchpad. The user can delete this data from the device, with the exceptions described in [Data retention](#data-retention) |
+| Claude for Outlook writing style guide, draft preferences, and scratchpad | Not synced between devices and not backed up on any server. The add-in reads sent mail to build the style guide only when the user has just agreed to it, once for each agreement, and stores no standing agreement. It asks during setup if Claude can already reach the mailbox. Wherever the add-in has a per-user key to mark the guide with, as described in "What chat history is keyed to", Settings has a "Learn my writing style" button under Writing style. The button first says what Claude will read, and the read runs after the user confirms. Learning the style again takes the same button and the same confirmation. Nothing else starts this read: not loading the add-in, a new chat, a change of user, a timer, or an earlier attempt that failed. To build the guide, the add-in sends recent sent mail, with the first recipient's address of each message, to the model endpoint. Earlier versions built the guide without asking. When the chat pane finds such a guide and can tell that it is this user's, it asks whether to use it or delete it, and reads nothing either way. A guide that it cannot tell is this user's, such as one whose Voice pattern or Notes lines the user has edited, stays in the field and is not sent, and Settings says so. If the user has removed enough of a guide's labelled lines, the add-in treats what is left as the user's own text and sends it with chat requests. Learning draft preferences from the user's edits to drafts is off unless Anthropic turns it on. While it is on, the add-in saves the user's edits to drafts on the device, sends them to the model endpoint to build the draft preferences, and adds a summary of the draft preferences to the Instructions field in Settings. Turning it off does not delete edits to drafts or draft preferences already saved on the device, and does not remove a summary already added to the Instructions field. The user can delete that summary in Settings. When the user says in chat how drafts should sound, Claude can propose a change to one line of the Writing style field, or to one sentence of a long line. A card shows the new text and the text it replaces, and the change is saved only if the user allows it. Proposing or saving a change does not start a read of sent mail. Claude does not propose changes if the user has turned off "Let Claude suggest improvements" under Instructions in Settings. Every Outlook chat request includes the Instructions field and any text the user wrote or allowed in the Writing style field. It includes a guide built from sent mail only for the user who agreed to build it or to use it. Versions of the add-in from April 13 to 17, 2026 wrote a short writing-style note into the Instructions field between two marker lines, and chat requests leave that note out. The add-in puts the draft preferences summary on one line between two marker lines. While learning draft preferences is off, chat requests leave out a summary that is still in that form. If those lines have been edited, the add-in may not recognize the summary, and then sends it with the rest of the Instructions field. Every message the user sends in Outlook includes the scratchpad. The user can delete this data from the device, with the exceptions described in [Data retention](#data-retention) |
 | Sign-in credentials | To the services the sign-in is for, with two exceptions described last. A Bedrock sign-in sends the Entra ID token to AWS, which exchanges it for short-lived credentials. A Claude account token also goes to `claude.ai` with feature-flag requests. While the user dictates, it also goes to Anthropic's server at `pivot.claude.ai`, which uses it to open the connection to Anthropic's transcription service. The exceptions: a credential that you put in the query string of the manifest URL also reaches Anthropic's server at `pivot.claude.ai` each time the add-in loads, and the server's request logs record it. A Vertex AI sign-in also returns Google's one-time authorization code to `pivot.claude.ai` in the query string, where request logs can record it. The code cannot be exchanged for a token without your OAuth client secret, so keep the client secret out of the manifest URL query string too. See [Keep credentials out of the manifest URL query string](/docs/office-agents/third-party-platforms#keep-credentials-out-of-the-manifest-url-query-string) |
-| Identifiers on model requests | Each request for a model response carries the name of the add-in, a random identifier for the device, and a session ID. For a chat message, the session ID is the conversation's ID. The add-in also sends helper requests to the same endpoint. In every Office app, they summarize a long conversation, write the status line shown while Claude thinks, and, when memory is on, check an entry before Claude saves it. In Word and PowerPoint, they check how the document or a slide looks after Claude edits it, and in Word they also check Claude's reasoning before it edits legal language. In Outlook, they rewrite a passage the user selects in a draft, learn the user's writing style from recent sent mail each time the user agrees to it, and, while learning draft preferences is on, learn draft preferences from the user's edits to drafts. Each helper request carries a session ID made from the kind of helper request, the device identifier, and the date in UTC, so helper requests of one kind from one device on one day share a session ID. With a Claude account sign-in, requests also carry the user's account ID. In third-party platform deployments, requests carry no account ID and no email address. That includes deployments whose settings Anthropic serves, where members sign in with a Claude account. The short test requests that the add-in sends to check which models and features your endpoint supports, such as web search and code execution, carry none of these values |
+| Identifiers on model requests | Each request for a model response carries the name of the add-in, a random identifier for the device, and a session ID. For a chat message, the session ID is the conversation's ID. The add-in also sends helper requests to the same endpoint. In every Office app, they summarize a long conversation, write the status line shown while Claude thinks, and, when memory is on, check an entry before Claude saves it. In Word and PowerPoint, they check how the document or a slide looks after Claude edits it, and in Word they also check Claude's reasoning before it edits legal language. In Outlook, they rewrite a passage the user selects in a draft, learn the user's writing style from recent sent mail each time the user agrees to it, and, while learning draft preferences is on, learn draft preferences from the user's edits to drafts. Each helper request carries a session ID made from the kind of helper request, the device identifier, and the date in UTC, so helper requests of one kind from one device on one day share a session ID. With a Claude account sign-in, requests also carry the user's account ID. In third-party platform deployments, requests carry no account ID and no email address. The short test requests that the add-in sends to check which models and features your endpoint supports, such as web search and code execution, carry none of these values |
 | Feature-flag requests | In every deployment, the add-in asks `claude.ai` which features to show. Each request includes the device identifier, the Office app, and, when the user is signed in to Office, the Entra ID tenant ID. With a Claude account sign-in, it also includes the user's email address, account ID, and organization ID. In every deployment, the add-in sends a usage event for each feature variant it showed. With a Claude account sign-in, the add-in also sends each variant it showed directly to Anthropic, with the organization ID |
 | Usage events | Sent to Anthropic's server at `pivot.claude.ai`, which forwards them to Anthropic's event logging service. Each event has a name and properties such as counts, durations, the model, and the Office app and its version, with the device identifier and an ID for the task pane session. With a Claude account sign-in, events also carry the account and organization IDs. Before sending an event, the add-in removes the fields known to carry file names, file paths, error text, and the names of your connectors and their tools. The filter matches field names, so it does not remove such text from a field it does not name. Events that load an Excel workbook or a PowerPoint presentation carry an unsalted hash of the file's path or address. With a Claude account sign-in, a user can rate a response and add a comment. The comment reaches Anthropic's server, which forwards the comment's length but not its text. When a user types a job role that is not on the list, the server forwards that the user chose Other, but not the text |
 | Identifiers from Office on usage events | When the user is signed in to Office, usage events also carry the Entra ID tenant ID, the domain of the user's email address, and the hash described in [What chat history is keyed to](#what-chat-history-is-keyed-to). The hash is unsalted, so anyone who knows the user's Entra ID object ID can match it |
-| Error reports sent to Sentry, with a Claude account sign-in | The user's account ID, the text of the error, the name of the tool that failed, and details about what failed, such as the name of a skill, a skill file, a memory entry, or a connector's host. The error text and these details can include conversation and document content. A report also lists the hosts the add-in contacted before the error |
-| Error reports sent to Sentry, in third-party platform deployments | Once the add-in has loaded the user's sign-in, each report holds only the type of error, where in the code it happened, the add-in's version, the Office app with its platform and version, the sign-in type, and the name of the built-in tool that failed. Reports sent before that point, such as those from the sign-in page, also include the error text and the hosts the add-in contacted |
+| Error reports sent to Sentry, with a Claude account sign-in | The user's account ID, the type of error, where in the add-in's code it happened, the name of the tool that failed, and other details about what failed, such as IDs and counts. A report also lists the hosts the add-in contacted, which can include a connector's host, and the add-in pages visited before the error. Before sending a report, the add-in removes the error text, a failed tool's input, and the names of files, skills, and connectors from the fields known to carry them. The filter matches field names, so it does not remove such text from a field it does not name. Until November 2026, error reports also included the text of the error and those names, which could include conversation and document content |
+| Error reports sent to Sentry, in third-party platform deployments | Once the add-in has loaded the user's sign-in, each report holds only the type of error, where in the code it happened, the add-in's version, the Office app with its platform and version, the sign-in type, and the name of the built-in tool that failed. Reports sent before that point, such as those from the sign-in page, also include other details about what failed, the hosts the add-in contacted, and the add-in pages visited |
 | Diagnostic traces, logs, and metrics sent to Anthropic | Counts, durations, error types, the model, request IDs, the names of built-in tools, and a session ID. With a Claude account sign-in, traces also carry the organization ID. Before sending traces and logs, the add-in removes every field that is not on an allowlist, so they exclude conversation text, document contents, file names, and the names of your connectors and their tools. Before sending metrics, the add-in removes a list of fields that includes file names and connector names |
-| Telemetry sent to a custom OpenTelemetry collector you configure | A collector set in the claude.ai admin console, in the manifest, in Entra ID claims, or by your bootstrap endpoint receives the full audit trail, including prompt content and tool inputs and outputs. That path skips the allowlist filter by design. A collector named in add-in settings that Anthropic serves from your Claude organization receives only the kinds of content those settings select, and no conversation or tool content if they select none. While a custom collector is set, traces and logs go only to that collector, and metrics still go to Anthropic. See [Audit and observability](/docs/office-agents/enterprise-readiness#audit-and-observability) |
-
-When Anthropic
-[serves your add-in settings from your Claude organization](/docs/office-agents/third-party-platforms#serve-add-in-settings-from-your-claude-organization),
-members sign in with a Claude account. This option is in preview. Feature-flag
-requests, usage events, and the session records that Sentry keeps, which count
-sessions and crashes, then carry the identifiers described for a Claude account
-sign-in. Error reports follow the row for third-party platform deployments.
-Files that these members attach are not uploaded to Anthropic, and dictation
-is not available to them. Your organization's setting that turns off
-third-party analytics does not apply to these members.
+| Telemetry sent to a custom OpenTelemetry collector you configure | A collector set in the claude.ai admin console, in the manifest, in Entra ID claims, or by your bootstrap endpoint receives the full audit trail, including prompt content and tool inputs and outputs. That path skips the allowlist filter by design. A collector named in an administrator-managed settings document receives only the kinds of content that document selects, and no conversation or tool content if it selects none. While a custom collector is set, traces and logs go only to that collector, and metrics still go to Anthropic. See [Audit and observability](/docs/office-agents/enterprise-readiness#audit-and-observability) |
 
 Until September 23, 2026, Anthropic's server sent usage events to Segment, a
 third-party analytics service. These included the text of rating comments and
@@ -30074,16 +30214,15 @@ sign-in, can still be sent.
 
 The setting does not stop the following:
 
-* The session records that Sentry keeps. They can include the user's account
-  ID.
+* The session records that Sentry keeps, which count sessions and crashes. They
+  can include the user's account ID.
 * Feature-flag requests, and the feature variants the add-in sends directly to
   Anthropic.
 * The identifiers on model requests.
 * The traces, logs, and metrics sent to Anthropic.
 
-In third-party platform deployments, including those whose settings Anthropic
-serves, no add-in setting stops usage events or error reports. You can block
-the Sentry host listed in the
+In third-party platform deployments, no add-in setting stops usage events or
+error reports. You can block the Sentry host listed in the
 [network allowlist](/docs/office-agents/third-party-platforms#network-allowlist).
 
 ## Chat history and skills missing after a Microsoft 365 update on Windows
@@ -30585,8 +30724,13 @@ context in recently closed workbooks.
 Chat history is stored locally in your browser using IndexedDB. It is
 not synced across devices and can be cleared from Settings at any time.
 Reinstalling the add-in or switching between Claude add-ins does not
-remove it. See [Data storage and retention](/docs/office-agents/data-storage)
-for where it sits on disk and how long it is kept.
+remove it. When you open the Claude pane in a workbook you have used it
+in before, it reopens your most recent conversation in that workbook and
+shows a notice saying so; select New chat to start a fresh one. In a copy
+of the workbook, or the same workbook under another name or folder, the pane
+offers that conversation instead; select Continue to reopen it. See
+[Data storage and retention](/docs/office-agents/data-storage) for where it
+sits on disk and how long it is kept.
 
 When you sign in with a Claude account, the add-in sends your
 conversations to Anthropic, including the content Claude reads from your
@@ -31146,7 +31290,7 @@ consultants tracking multiple client threads.
 
 > [!NOTE]
 >
-> Claude for Outlook is currently in beta and available to Pro, Max, Team,
+> Claude for Outlook is generally available to Pro, Max, Team,
 > and Enterprise plans.
 > It is not available on the Free plan. If you connect through a
 > [third-party platform](#connect-through-a-third-party-platform), you can use
@@ -31625,12 +31769,18 @@ confirm, Claude reads your recent sent mail once and writes a style guide, so
 the draft matches your sentence length and formality register. Claude does
 not read your sent mail to write the guide at any other time. It can still
 read sent messages for other tasks, such as drafting a reply. To update the
-guide, select the button again. To delete the style guide, Claude's
+guide, select the button again, edit it in Settings, or tell Claude in chat how
+drafts should sound. Claude shows you the change to the guide in a card and
+saves it only if you allow it. Claude suggests such changes while "Let Claude
+suggest improvements" is on under Instructions in Settings. To delete the style
+guide, Claude's
 scratchpad, and what Claude learned from your edits on this device, select
 "Delete what Claude
-has learned about my writing" under Writing style in Settings. Claude leaves
-the closing off so Outlook can append your configured signature without
-duplication.
+has learned about my writing" under Writing style in Settings. Claude usually
+ends a draft with your sign-off from the guide, or, with no guide or one that
+doesn't say, a short closing and your first name, even if Outlook adds your
+signature below it. If the guide says you don't sign off, Claude adds none. To
+change how drafts end, tell Claude.
 Claude chooses reply versus reply-all deliberately and warns before adding
 anyone who was not on the thread.
 
@@ -31850,9 +32000,9 @@ requests.
 Review every draft and inbox action before accepting it, especially when
 working with email from external or untrusted senders.
 
-## Recommended use during beta
+## Current limitations
 
-As a beta feature, Claude for Outlook is not recommended for:
+Claude for Outlook is not recommended for:
 
 * Unattended sending. The add-in never sends mail or invites; every
   draft lands unsent for your review. After you select "Always allow" for
@@ -31865,7 +32015,9 @@ As a beta feature, Claude for Outlook is not recommended for:
 * Mailboxes containing privileged or regulated data without appropriate
   organizational controls.
 
-To use Claude for Outlook safely and effectively:
+## Best practices
+
+Follow these guidelines to use Claude for Outlook safely and effectively.
 
 * Review drafted replies and invites before sending, especially recipient
   lists.
@@ -32528,8 +32680,13 @@ context in recently closed presentations.
 Chat history is stored locally in your browser using IndexedDB. It is
 not synced across devices and can be cleared from Settings at any time.
 Reinstalling the add-in or switching between Claude add-ins does not
-remove it. See [Data storage and retention](/docs/office-agents/data-storage)
-for where it sits on disk and how long it is kept.
+remove it. When you open the Claude pane in a presentation you have used it
+in before, it reopens your most recent conversation in that presentation and
+shows a notice saying so; select New chat to start a fresh one. In a copy
+of the presentation, or the same presentation under another name or folder, the pane
+offers that conversation instead; select Continue to reopen it. See
+[Data storage and retention](/docs/office-agents/data-storage) for where it
+sits on disk and how long it is kept.
 
 When you sign in with a Claude account, the add-in sends your
 conversations to Anthropic, including the content Claude reads from your
@@ -32772,16 +32929,6 @@ AI Foundry.
 | Your Foundry gateway URL | If using Foundry direct through your own gateway | The gateway or proxy set in `azure_base_url`. Connections made while it is set do not call `<resource>.services.ai.azure.com`. |
 | Your MCP server URLs | If using connectors | The remote MCP servers listed in `mcp_servers`. The task pane calls them directly from the user's machine, so each must allow CORS for `https://pivot.claude.ai`. For servers that use OAuth sign-in, the same applies to their authorization server. |
 | `graph.microsoft.com` | If using Outlook | Microsoft Graph mailbox and calendar API. |
-
-If Anthropic serves your add-in settings from your Claude organization,
-as described in
-[Serve add-in settings from your Claude organization](#serve-add-in-settings-from-your-claude-organization),
-also allow `claude.ai`, `api.anthropic.com`, `hcaptcha.com`, and
-`*.hcaptcha.com`. Members sign in with their Claude account at
-`claude.ai`, and the add-in reads your organization's settings from
-`api.anthropic.com`. The `claude.ai` sign-in and approval pages run an
-hCaptcha browser check. Inference still goes only to the gateway or cloud
-provider the add-in connects to.
 
 ## Deploy the add-in for your organization
 
@@ -33145,147 +33292,7 @@ sideload and validate a manifest locally before a tenant-wide upload.
 > Start with a pilot group to confirm functionality, then widen
 > assignment. You can change assignment later without redeploying.
 
-## Serve add-in settings from your Claude organization
-
-Anthropic can serve the add-in's configuration to the members of a
-Claude organization directly, in place of manifest parameters, Microsoft
-Entra ID attributes, or a bootstrap endpoint. Members sign in with the
-add-in's standard "Log in" button and their Claude account. The add-in
-then reads the organization's settings from Anthropic and fills in the
-connection screen with them. Prompts and responses still travel only to
-the gateway or cloud provider the add-in connects to. What reaches
-Anthropic then depends on the provider, as
-[What Anthropic collects](#what-anthropic-collects) describes.
-
-This option is in preview. It works in Anthropic's preview environments
-and is not yet enabled for production organizations. Members need the
-add-in's "Log in" button, which the Microsoft AppSource install and any
-manifest without connection parameters show.
-
-### How the sign-in works
-
-The sequence below is what a member sees. No per-member admin action is
-needed.
-
-1. The member selects "Log in" on the add-in's sign-in screen and
-   approves the sign-in in the browser with their Claude account.
-2. Anthropic's sign-in response identifies the member's organization as
-   one whose add-in settings Anthropic serves. The add-in confirms with
-   Anthropic that the account and organization on the token match that
-   response, stores the sign-in, and reloads the task pane. If the check
-   fails, the add-in discards and revokes the token and shows "Couldn't
-   verify your organization's sign-in."
-3. After the reload, the add-in reads the organization's settings from
-   `api.anthropic.com` and opens the connection screen with the served
-   values filled in, such as the gateway URL. When the served settings
-   include every value the connection needs, the add-in connects without
-   further input. Otherwise the member enters the missing value,
-   typically the gateway token from your IT team, and connects.
-4. While the member stays signed in, the add-in reads the served
-   settings again at each launch and periodically while it runs, so
-   changes an admin makes apply without redeploying the manifest.
-
-### What served settings control
-
-Served settings use the same configuration keys as the manifest and a
-bootstrap endpoint, including the keys described in
-[Per-user configuration](#per-user-configuration) and
-[Admin feature controls](#admin-feature-controls). A few rules are
-specific to this path:
-
-* **Connection values**: for a member signed in this way, the add-in
-  fills in the connection screen from the served settings, not from
-  manifest parameters, Entra ID attributes, or a bootstrap endpoint.
-* **Other connection paths**: on the connection screen, the member can
-  select another [connection path](#connection-paths) and enter their
-  own values. The add-in then sends prompts to the provider the member
-  chose.
-* **Supported providers**: served settings can name an LLM gateway,
-  Bedrock, Vertex AI, or Foundry as the inference provider.
-* **Unsupported settings**: if served settings name Bedrock Mantle or
-  set a Bedrock base URL, the add-in makes no new connection. A member
-  who is already connected keeps that connection until they sign out. A
-  member who isn't connected yet sees the connection screen without its
-  fields, with Try again and Sign out actions. After you change the
-  served settings, the member selects Try again to load them. Until
-  then, the screen shows one of these messages:
-  * Bedrock Mantle: "This add-in can't use your organization's inference
-    provider. Let your IT team know."
-  * Bedrock base URL: "This add-in can't use your organization's Bedrock
-    base URL. Let your IT team know."
-* **Applied as delivered**: the add-in applies served settings the same
-  way it applies manifest configuration, with no per-setting consent
-  prompt. The Claude organization admin who edits served settings can
-  be a different person from the Microsoft 365 admin who deployed the
-  manifest.
-* **No bootstrap endpoint**: a member signed in this way uses no
-  bootstrap endpoint at all. If served settings name a `bootstrap_url`,
-  the add-in ignores it and never sends the member's token there.
-* **Last known settings at reload**: the add-in keeps the most recent
-  served document so a reloading task pane can start on it while it
-  reads the current one. The saved copy is used only for the member and
-  organization it was fetched for, and is replaced as soon as the
-  current document arrives.
-* **Settings withdrawn**: if Anthropic stops serving settings for the
-  organization, the add-in stops using any saved copy and shows "Claude
-  isn't available for your organization here" until the member signs
-  out. If the first read fails before any settings have arrived, the
-  add-in shows "Couldn't load your organization's settings" with Try
-  again and Sign out actions instead of starting on defaults.
-
-### What the add-in stores for this sign-in
-
-The sign-in is an OAuth access token and refresh token that can read
-the member's profile and the organization's add-in settings. The add-in
-also sends it with the feature-flag and telemetry requests described in
-[What Anthropic collects](#what-anthropic-collects) so those requests
-identify the signed-in member. It carries no inference access, so it
-cannot be used to send prompts to Anthropic.
-
-The add-in stores the token in localStorage within its sandboxed iframe,
-in the same place and form as a Claude account sign-in, and refreshes it
-in the background. It is not synced to Anthropic's servers. Unlike a
-Claude account sign-in, it is also not copied to the Office add-in
-storage that lets a sign-in carry across Office applications, so a
-member can be asked to log in again in another Office application or
-after Office clears the add-in's browser storage.
-
-Signing out revokes the token with Anthropic, removes it and the saved
-settings from storage, and signs the member out of any other open Claude
-task panes that share that storage.
-
-If the browser blocks the add-in's storage, for example when
-third-party site data is blocked for Office on the web, the add-in
-refuses the sign-in rather than holding it in memory only. It revokes
-the token and asks the member to allow site data for the add-in and
-select "Log in" again.
-
 ## Connection instructions for end users
-
-### Claude account with organization-served settings
-
-Use these steps if your IT team told you to sign in with your Claude
-account and your organization's settings are served by Anthropic.
-
-**1. Open the add-in**
-
-Open Excel, PowerPoint, Word, or Outlook and launch the Claude add-in.
-
-**2. Log in with your Claude account**
-
-On the sign-in screen, select "Log in", then approve the sign-in in
-the browser window that opens. The task pane reloads when the
-sign-in is accepted.
-
-**3. Review the connection and connect**
-
-The connection screen opens with your organization's values filled
-in. If a field such as the gateway token is empty, enter the value
-your IT team provided, then connect. If every value was served, the
-add-in connects on its own.
-
-If another Claude task pane was already open, it shows "Reload to finish
-signing in". Select Reload in that pane.
 
 ### LLM gateway
 
@@ -33706,9 +33713,13 @@ uses such metadata for analytic and product-improvement purposes.
 When the add-in uses Azure AI Foundry, directly or through a gateway,
 Anthropic operates the Claude models as an independent processor for
 Microsoft, and Anthropic's data use terms apply. For deployments hosted
-on Azure, prompts and responses stay within Azure, and only usage
-metadata and content flagged by Anthropic's safety systems reach
-Anthropic. For deployments hosted on Anthropic, prompts and responses are
+on Azure, Anthropic processes prompts and completions on Azure
+infrastructure and stores retained content there. Retained content
+includes content flagged by Anthropic's safety systems for Anthropic to
+review. Operational data that contains no prompts or completions is
+stored on Anthropic's systems outside Azure. Examples include safety
+classifier scores, identifiers, and usage and billing data. For
+deployments hosted on Anthropic, prompts and responses are
 processed on Anthropic's infrastructure. See
 [Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry)
 for details.
@@ -33872,10 +33883,7 @@ send inference requests to your organization's infrastructure instead,
 and your IT team controls how that traffic is routed and logged.
 
 Some features work differently through third-party platforms, and
-others aren't available. A member who signs in
-with a Claude account to an organization whose settings Anthropic
-serves is in the third-party platform column too, because inference
-goes to a gateway or cloud provider.
+others aren't available.
 
 | Feature | Claude account | Third-party platform |
 | - | - | - |
@@ -34286,8 +34294,13 @@ context in recently closed documents.
 Chat history is stored locally in your browser using IndexedDB. It is
 not synced across devices and can be cleared from Settings at any time.
 Reinstalling the add-in or switching between Claude add-ins does not
-remove it. See [Data storage and retention](/docs/office-agents/data-storage)
-for where it sits on disk and how long it is kept.
+remove it. When you open the Claude pane in a document you have used it
+in before, it reopens your most recent conversation in that document and
+shows a notice saying so; select New chat to start a fresh one. In a copy
+of the document, or the same document under another name or folder, the pane
+offers that conversation instead; select Continue to reopen it. See
+[Data storage and retention](/docs/office-agents/data-storage) for where it
+sits on disk and how long it is kept.
 
 When you sign in with a Claude account, the add-in sends your
 conversations to Anthropic, including the content Claude reads from your
@@ -45617,6 +45630,7 @@ The connector provides these read and search tools:
 | `read_resource` | Fetch a specific item, such as a message, event, or file |
 | `teams_list_chats` | List the user's Teams chats and their members, to find a chat to read or post in |
 | `get_me` | Return the signed-in user's own profile |
+| `get_granted_scopes` | List the scopes that Microsoft Entra grants the connector for the signed-in user |
 | `search_people` | Search for people by name or email address (needs `People.Read`) |
 | `teams_list_teams`, `teams_list_channels` | List the user's teams and a team's channels (need `Team.ReadBasic.All` and `Channel.ReadBasic.All`) |
 | `teams_list_channel_messages` | List a channel's messages, or the replies in one conversation (needs `ChannelMessage.Read.All`) |
@@ -45709,7 +45723,7 @@ The list doesn't block the following:
 * **Other routes to Claude**: files users upload, folders on the device, other connectors, and the remote Microsoft 365 connector
 * **Devices without a device-management profile**: the user can edit the configuration and remove the list
 
-Purview label blocking relies on sensitivity-label information returned by Microsoft's APIs or stored in the document itself. Anthropic does not control or independently verify the accuracy, completeness, or timeliness of the label information. Label blocking is a retrieval filter, not a security control: it supplements, and does not replace, your organization's own access controls, data loss prevention, and data-handling policies.
+When enabled, Claude is restricted from reaching files with specific Purview labels, even if the user has access to them normally. Not all files or surfaces are covered, so this setting should not replace your organization's own access controls.
 
 ### How users sign in
 
@@ -45759,6 +45773,20 @@ After a brokered attempt falls back to the system browser, the connector stays o
 The connector's Entra tokens are stored on the device, encrypted by Claude Desktop using the operating system's secure storage. Each configured entry has its own token store, and tokens persist across app restarts so users are not asked to sign in again each session.
 
 Selecting **Disconnect** next to the connector signs the user out and deletes its stored tokens. Where the user signed in through the broker, the device's work or school account itself is managed by the operating system and remains after Disconnect; remove the account in Windows Settings (**Accounts → Access work or school**) or macOS Company Portal, or revoke the user's sessions in Entra, to end access entirely. With `continuousAccessEvaluation` at its default of `enabled` on Claude Desktop 1.49585.0 or later, Microsoft Graph rejects the connector's current access token within minutes of the revocation. With `continuousAccessEvaluation` set to `disabled`, or on earlier app versions, revocation takes effect once the current one-hour access token expires.
+
+### Audit local connector tool calls
+
+Claude Desktop records each approved tool call to the local Microsoft 365 connector as a `builtin_m365_call` event, and sends it to your [OTLP collector](/docs/third-party/claude-desktop/telemetry#sending-telemetry-to-your-own-collector) under the `service.name` value `claude-desktop`. To receive the event, set [`otlpDesktopLogLevel`](/docs/third-party/claude-desktop/configuration#otlpdesktoploglevel) to `info` or `debug` (the default is `error`), then in your collector keep the log records whose body is `builtin_m365_call`. Each record identifies the user as described under [User attribution](/docs/third-party/claude-desktop/telemetry#user-attribution).
+
+Whatever [`otlpContentCapture`](/docs/third-party/claude-desktop/telemetry#content-capture) is set to, the event carries the tool's name but not its arguments or the text of its result. Its attributes include:
+
+* **`m365_tool`**: the tool's name, such as `outlook_email_search`
+* **`status`**: `ok`, `error`, or `cancelled`, or, when no tool ran, `user_disconnected` (the user isn't signed in to the connector) or `respawn_failed` (the app couldn't start or reach the connector)
+* **`is_write`**: `false` when the app confirms that the tool only reads, otherwise `true`
+
+Because `true` doesn't prove a write, compare `m365_tool` with the read and search tools listed under [Configure scopes](#configure-scopes), and count every other tool as a write.
+
+A call that the user declines produces no `builtin_m365_call` event. It appears in the session's telemetry as a [`tool_decision`](/docs/cowork/monitoring#tool-decision-event) event with `decision` set to `reject`.
 
 ### Troubleshoot the local connector
 
@@ -46119,7 +46147,18 @@ An API key that managed configuration delivers is never stored in the `configLib
 
 ## Automatic deletion of idle sessions
 
-By default, chats, Cowork tasks, and Code sessions stay on the device until the user deletes them. To delete them after a period without activity, set [`chatSessionRetentionDays`](/docs/third-party/claude-desktop/configuration#chatsessionretentiondays), [`coworkSessionRetentionDays`](/docs/third-party/claude-desktop/configuration#coworksessionretentiondays), or [`codeSessionRetentionDays`](/docs/third-party/claude-desktop/configuration#codesessionretentiondays) to a number of days from 1 to 3650. Each key covers one kind of session, and a kind you leave unset is kept until the user deletes it. Idle time counts from the session's last activity, and pinned sessions are not exempt.
+By default, chats, Cowork tasks, and Code sessions stay on the device until the user deletes them. To delete them after a period without activity, set [`chatSessionRetentionDays`](/docs/third-party/claude-desktop/configuration#chatsessionretentiondays), [`coworkSessionRetentionDays`](/docs/third-party/claude-desktop/configuration#coworksessionretentiondays), or [`codeSessionRetentionDays`](/docs/third-party/claude-desktop/configuration#codesessionretentiondays) to a number of days from 1 to 3650. Each key covers one kind of session, and a kind you leave unset is kept until the user deletes it. Idle time counts from the session's last activity, such as a message, and pinned sessions aren't exempt.
+
+> [!WARNING]
+>
+> If you set `chatSessionRetentionDays` or `coworkSessionRetentionDays`, an upcoming release of Claude Desktop deletes idle chats and Cowork tasks that earlier versions keep past the period you set. The app can delete many of them at once, shortly after it first starts on that release. Users see no notice, and deleted sessions can't be recovered.
+>
+> Earlier versions keep an idle chat or Cowork task for one more period after actions such as these, which the upcoming release doesn't count as activity:
+>
+> * **Turning a connector or tool on or off**: from Claude Desktop 3.1623.0 until the upcoming release, when a user does this, the app can keep all of that user's idle chats and Cowork tasks
+> * **Renaming or pinning a chat or task without sending a message**: this affects only that chat or task
+>
+> If you want those sessions deleted, you don't need to do anything. To keep some users' sessions, make the change described under [Keep sessions for some users](#keep-sessions-for-some-users) now, before their devices update.
 
 With [Unified Claude](/docs/third-party/claude-desktop/unified-claude) on, a conversation started from the home screen on a device that can run Cowork is a Cowork session. `coworkSessionRetentionDays` covers it along with users' other Cowork tasks, and `chatSessionRetentionDays` still covers Chat conversations. While `coworkSessionRetentionDays` is unset, neither key deletes a home-screen conversation that is a Cowork session, even if `chatSessionRetentionDays` is set. If you use `chatSessionRetentionDays`, keep it and set `coworkSessionRetentionDays` as well.
 
@@ -46201,7 +46240,7 @@ Use an export and import if:
 Both settings are off by default.
 
 * **Managed configuration**: set [`claudeAiImport`](/docs/third-party/claude-desktop/configuration#claudeaiimport) to `{"enabled": true, "exportEnabled": true}`, along with any fields you already set in it
-* **[Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console)**: go to the **Capabilities** page and turn on the **Enable import** and **Enable export** switches under **Claude.ai data import**. To turn them on for some users, use a [per-group permission policy](/docs/third-party/claude-desktop/admin-console#per-group-permission-policies).
+* **[Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console)**: go to the **Capabilities** page and turn on the **Enable import** and **Enable export for import on another device** switches under **Claude.ai data import**. To turn them on for some users, use a [per-group permission policy](/docs/third-party/claude-desktop/admin-console#per-group-permission-policies).
 
 Both devices need Claude Desktop 4.23118.0 or later, the same platform, and [the same organization](#requirements-for-the-new-device). Earlier versions export only sessions, their output files, and project names.
 
@@ -47201,7 +47240,10 @@ This page walks an IT administrator through a Microsoft Foundry deployment: crea
 >
 > Microsoft Foundry offers Claude models in two hosting options, Hosted on Azure and Hosted on Anthropic, and you choose one when you configure the model deployment in Microsoft Foundry. Under both options, Anthropic operates the Claude models and handles conversation data as an independent processor for Microsoft. Your use of Claude through Microsoft Foundry is subject to Anthropic's data use terms.
 >
-> Deployments hosted on Azure run inference in an Anthropic-operated service on Azure infrastructure, not in your Azure tenant, and prompts and completions remain within Azure. The only data the service sends out of Azure to Anthropic is usage metadata and any content that Anthropic's safety systems flag. Deployments hosted on Anthropic send prompts and completions to Anthropic's own infrastructure for inference. See [hosting options for Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#hosting-options) for details.
+> * Deployments hosted on Azure run inference in an Anthropic-operated service on Azure infrastructure, not in your Azure tenant. For deployments hosted on Azure, Anthropic processes prompts and completions on Azure infrastructure and stores retained content there. Retained content includes content flagged by Anthropic's safety systems for Anthropic to review. Operational data that contains no prompts or completions is stored on Anthropic's systems outside Azure. Examples include safety classifier scores, identifiers, and usage and billing data.
+> * Deployments hosted on Anthropic send prompts and completions to Anthropic's own infrastructure for inference.
+>
+> See [hosting options for Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#hosting-options) for details.
 
 ## Choose an authentication approach
 
@@ -49017,7 +49059,10 @@ When using Microsoft Foundry, the app also sends conversation content only to yo
 
 Microsoft Foundry offers Claude models in two hosting options, Hosted on Azure and Hosted on Anthropic, and you choose one when you configure the model deployment in Microsoft Foundry. Under both options, Anthropic operates the Claude models and handles conversation data as an independent processor for Microsoft. Your use of Claude through Microsoft Foundry is subject to Anthropic's data use terms.
 
-Deployments hosted on Azure run inference in an Anthropic-operated service on Azure infrastructure, not in your Azure tenant, and prompts and completions remain within Azure. The only data the service sends out of Azure to Anthropic is usage metadata and any content that Anthropic's safety systems flag. Deployments hosted on Anthropic send prompts and completions to Anthropic's own infrastructure for inference. See [hosting options for Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#hosting-options) for details.
+* Deployments hosted on Azure run inference in an Anthropic-operated service on Azure infrastructure, not in your Azure tenant. For deployments hosted on Azure, Anthropic processes prompts and completions on Azure infrastructure and stores retained content there. Retained content includes content flagged by Anthropic's safety systems for Anthropic to review. Operational data that contains no prompts or completions is stored on Anthropic's systems outside Azure. Examples include safety classifier scores, identifiers, and usage and billing data.
+* Deployments hosted on Anthropic send prompts and completions to Anthropic's own infrastructure for inference.
+
+See [hosting options for Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#hosting-options) for details.
 
 See the [Overview](/docs/third-party/claude-desktop/overview) for the architecture and [Data handling by provider](/docs/third-party/claude-desktop/overview#data-handling-by-provider) for each provider's data path.
 
@@ -49532,7 +49577,7 @@ With `3p` or `1p`, a user can't [move the device to an Enterprise Admin Console 
 While a fleet updates to 4.16336.0, plan for these cases:
 
 * **A profile that gains `3p`, or gains `1p` and sets nothing to connect to**: also set `disableDeploymentModeChooser` to `true` until every device has updated. On a device with a bootstrap server, set it in the response too. If a profile that you export from the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration) doesn't set `disableDeploymentModeChooser` to `true`, add the key to the exported file.
-* **[The Linux file](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file)**: versions before 4.16336.0 treat a key that they don't recognize as an error in `managed-settings.json`, so add `deploymentMode` to a device's file after that device updates.
+* **[The Linux file](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file)**: an earlier version treats `deploymentMode` as a key that it doesn't recognize (see [Keys that an earlier version does not recognize](#keys-that-an-earlier-version-does-not-recognize)), so add it to a device's file after that device updates.
 
 ### Update keys and managed precedence
 
@@ -49547,7 +49592,23 @@ When a managed source sets only keys from this group (any of them), the device k
 
 A profile of only these keys leaves what the device connects to in the local configuration, which a user can edit. If that connection runs every session on a server and none on the device, that server answers the device's update checks, so the app installs only the updates that the server offers. Update, restart, and re-check timing then comes from that server or takes its default, and most of these keys stop applying, though `disableAutoUpdates` and the network proxy keys still apply. To prevent this, set the connection in the profile, or set [`deploymentMode`](#restrict-a-device-to-one-deployment-mode) to `1p` on a device that only signs in to claude.ai.
 
-[`organizationAnnouncement`](/docs/third-party/claude-desktop/configuration#organizationannouncement) and [`deploymentLogo`](/docs/third-party/claude-desktop/configuration#deploymentlogo), the logo shown beside the announcement, aren't in the group. A profile that sets either or both of them, alone or beside keys from the group, also leaves the locally authored configuration in force. The `organizationAnnouncement` entry lists what such a profile changes. For a profile that also sets `bootstrapUrl`, see [Which configuration source applies on a device](/docs/third-party/claude-desktop/configuration-format#which-configuration-source-applies-on-a-device).
+[`organizationAnnouncement`](/docs/third-party/claude-desktop/configuration#organizationannouncement), [`deploymentLogo`](/docs/third-party/claude-desktop/configuration#deploymentlogo) (the logo shown beside the announcement), and [`remoteFileDownloads`](/docs/third-party/claude-desktop/configuration#remotefiledownloads) aren't in the group. A profile that sets one or more of them, alone or beside keys from the group, also leaves the locally authored configuration in force. Such a profile still changes how WSL sessions and shell commands work on the device (see [What a profile or policy changes on a device](#what-a-profile-or-policy-changes-on-a-device)). Update devices before you add one of these keys (see [Keys that an earlier version does not recognize](#keys-that-an-earlier-version-does-not-recognize)). For a profile that also sets `bootstrapUrl`, see [Which configuration source applies on a device](/docs/third-party/claude-desktop/configuration-format#which-configuration-source-applies-on-a-device).
+
+### What a profile or policy changes on a device
+
+A profile or policy for Claude Desktop, even one that leaves the local configuration in place, changes these behaviors on the device, among others:
+
+* **Sessions in Windows Subsystem for Linux (WSL)**: Claude Desktop refuses them unless machine policy (`HKLM`) sets [`disableWslSessions`](/docs/third-party/claude-desktop/configuration#disablewslsessions) to `false`. A per-user `false` doesn't count. `disableWslSessions` is an [app-behavior key](#update-keys-and-managed-precedence), so put the app-behavior keys that you use in the same policy.
+* **Shell commands in Code sessions**: Claude Code's sandbox turns on where it can run, and shell commands reach no host (see [Unset allowlist in Code sessions](/docs/third-party/claude-desktop/web-tools#unset-allowlist-in-code-sessions)). This happens where the profile leaves the local configuration in place and the user left **Allowed egress hosts** at **Not set**. Have the user add the hosts that shell commands need under **Capabilities > Allowed egress hosts** in the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration). A profile that holds the whole configuration sets the hosts itself, in `coworkEgressAllowedHosts`.
+* **`coworkEgressAllowedHosts` in the profile**: keep [`coworkEgressAllowedHosts`](/docs/third-party/claude-desktop/configuration#coworkegressallowedhosts) out of a profile or policy that doesn't set a connection. With that key and without a connection, the profile replaces the user's configuration, and Claude Desktop starts with nothing to connect to.
+
+### Keys that an earlier version does not recognize
+
+Update a device before you add a key that its version of Claude Desktop doesn't recognize. What that version does with the key differs by platform:
+
+* **Windows**: a machine policy (`HKLM`) that holds only keys that the version doesn't recognize turns off the settings from the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration), the [Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console), or a [bootstrap server](/docs/third-party/claude-desktop/bootstrap). That includes the connection. Beside a key that the version recognizes, Claude Desktop ignores the unrecognized key.
+* **Linux**: an unrecognized key in `/etc/claude-desktop/managed-settings.json` turns off the same settings when the file holds no other key, or only the [app-behavior keys and the keys treated like them](#update-keys-and-managed-precedence). Where the file also sets a connection, the file still applies, but a device that uses the Enterprise Admin Console goes back to the file's settings at its next launch, and features that need every key of the file read, such as automatic deletion of idle sessions, can stay off.
+* **macOS**: Claude Desktop doesn't see the key and keeps its settings. The profile still counts as a profile (see [What a profile or policy changes on a device](#what-a-profile-or-policy-changes-on-a-device)).
 
 ## 5. Distribute the app
 
@@ -49700,6 +49761,8 @@ The migration never changes or deletes the Claude (third-party) data. Nothing mi
 * Skills with plugin components or an unreadable header, or over about 10 MB or 200 files
 * Scheduled Code tasks in folders Claude Code doesn't trust
 * A few system or network folders. The user can attach most of them again.
+* Artifacts. The **Artifacts** page in Claude Enterprise doesn't list them. Their files stay on the computer, by default in [`~/Claude/`](/docs/third-party/claude-desktop/data-storage#data-shared-with-standard-claude-desktop).
+* [Project memory](/docs/third-party/claude-desktop/data-storage#project-memory). A migrated project starts without the memory that Claude kept for it in Claude (third-party), and **Notes from Cowork** in **Settings > Import** doesn't include it.
 
 Migrated sessions stay on the computer and don't sync to claude.ai. Continuing one sends its content to Anthropic. Uploaded skills, added instructions, added Cowork memory, plugin marketplaces, and MCP tool on/off settings go to the user's account. Claude also sends standard usage data.
 
@@ -49712,7 +49775,7 @@ Migrated sessions stay on the computer and don't sync to claude.ai. Continuing o
 
 Special cases:
 
-* If Cowork runs only in its VM sandbox in your organization (for example, because [`requireCoworkFullVmSandbox`](/docs/third-party/claude-desktop/configuration#requirecoworkfullvmsandbox) is enforced), nothing is migrated. Ask your Anthropic account team.
+* If the policy or profile that carries your Claude settings sets [`requireCoworkFullVmSandbox`](/docs/third-party/claude-desktop/configuration#requirecoworkfullvmsandbox) to `true`, Claude Enterprise applies the key, although Claude (third-party) ignores it. Cowork then runs only in its VM sandbox, and the migration waits until you remove the key. Remove the key as part of the configuration change, and keep it removed afterward. If you set it again, users can't continue their migrated Cowork sessions. If your organization needs Cowork to run only in its VM sandbox in Claude Enterprise, ask your Anthropic account team before you migrate.
 * If your organization needs HIPAA, make it HIPAA-ready before users first sign in. A HIPAA-ready organization migrates no skills, local MCP servers, extensions, plugins, plugin marketplaces, instructions, or Cowork memory.
 * With the MSIX install on Windows versions before Windows 11 (build 22000), for example on Windows 10, update Claude in place. Uninstalling or resetting it can delete the [Claude (third-party) data](/docs/third-party/claude-desktop/data-storage#where-data-lives).
 * On Linux, where Claude Desktop is in [beta](https://code.claude.com/docs/en/desktop-linux), the same steps apply, with the keys as JSON in the root-owned file [`/etc/claude-desktop/managed-settings.json`](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file). If that file doesn't meet the ownership and permission rules described there, Claude ignores every key in it. Use an unlocked desktop keyring on each computer, such as GNOME Keyring or KDE Wallet, so that Claude can protect what it saves.
@@ -49738,7 +49801,7 @@ Choose one option for the keys that connect Claude to your cloud provider, such 
 * **To move everyone to Claude Enterprise**, remove those keys. Also remove [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser), [`deploymentMode`](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode), and [`deploymentOrganizationUuid`](/docs/third-party/claude-desktop/configuration#deploymentorganizationuuid). If your settings come from a [bootstrap server](/docs/third-party/claude-desktop/bootstrap), copy the keys you want to keep into the policy or profile itself.
 * **To let each user switch between your cloud provider and Claude Enterprise**, keep those keys and `deploymentOrganizationUuid`. They must be in the same `HKEY_LOCAL_MACHINE` policy or configuration profile as `importThirdPartyHistoryIntoOrgUUID`, because on Windows Claude [reads one policy location](/docs/third-party/claude-desktop/mdm#4-deploy-the-configuration). Make sure [`disableDeploymentModeChooser`](/docs/third-party/claude-desktop/configuration#disabledeploymentmodechooser) isn't set in the policy or profile, or by your bootstrap server, and that [`deploymentMode`](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode) is unset or `any`. Claude's welcome screen then offers **Or sign in with Claude.ai**. Your cloud provider settings still apply while a user works with your cloud provider. With your cloud provider and with Claude Enterprise, Claude uses some of the same folders on the computer, as described under [Data shared with standard Claude Desktop](/docs/third-party/claude-desktop/data-storage#data-shared-with-standard-claude-desktop).
 
-Leave other keys in place. In Claude Enterprise, the desktop extensions feature is on unless [`isDesktopExtensionEnabled`](/docs/third-party/claude-desktop/configuration#isdesktopextensionenabled) is set to `false`.
+Remove `requireCoworkFullVmSandbox`, unless your organization needs Cowork to run only in its VM sandbox, as described under the special cases in [Before you begin](#before-you-begin). Leave other keys in place. In Claude Enterprise, the desktop extensions feature is on unless [`isDesktopExtensionEnabled`](/docs/third-party/claude-desktop/configuration#isdesktopextensionenabled) is set to `false`.
 
 **2. Set your organization ID**
 
@@ -49788,6 +49851,7 @@ Claude shows no error on screen when nothing migrates. The app's `main.log` usua
 * `importThirdPartyHistoryIntoOrgUUID` didn't arrive as a device policy.
 * Claude opened with your cloud provider instead of asking the user to sign in to Claude Enterprise. If you removed the cloud provider keys, one remains. If you kept them, the user didn't click **Or sign in with Claude.ai** yet.
 * The user signed in to another organization.
+* Cowork runs only in its VM sandbox in Claude Enterprise, so the migration waits. Claude doesn't show **Settings > Import**, and writes `Cowork is not in host-loop mode` to `main.log` each time it opens. If [`requireCoworkFullVmSandbox`](/docs/third-party/claude-desktop/configuration#requirecoworkfullvmsandbox) is in the policy or profile, remove it as described under the special cases in [Before you begin](#before-you-begin), then have the user quit Claude fully and open it again. If the key isn't there, ask your Anthropic account team.
 * If you kept the cloud provider keys and the welcome screen doesn't show **Or sign in with Claude.ai**, `disableDeploymentModeChooser` is still set or `deploymentMode` is `3p`. Remove both keys from the policy or profile, and `disableDeploymentModeChooser` from what your bootstrap server returns.
 * On Linux, Claude rejected `/etc/claude-desktop/managed-settings.json`, for example because of its ownership, its permissions, or invalid JSON, and read none of its keys. Search `main.log` in `~/.config/Claude/logs/` for `managed-settings.json`.
 
@@ -49825,7 +49889,7 @@ A finished entry can change later. A Claude Desktop update, or a new step that A
 An entry can stay `in_progress`:
 
 * Until the user opens Claude again
-* While Cowork runs only in its [VM sandbox](/docs/third-party/claude-desktop/configuration#requirecoworkfullvmsandbox)
+* While Cowork runs only in its VM sandbox, as described under [Nothing migrated](#nothing-migrated)
 * While the [skills settings](#before-you-begin) are off
 * While Anthropic has paused a step
 
@@ -50123,7 +50187,10 @@ For Google Cloud's Agent Platform and Amazon Bedrock, data handling is governed 
 
 Microsoft Foundry offers Claude models in two hosting options, Hosted on Azure and Hosted on Anthropic, and you choose one when you configure the model deployment in Microsoft Foundry. Under both options, Anthropic operates the Claude models and handles conversation data as an independent processor for Microsoft. Your use of Claude through Microsoft Foundry is subject to Anthropic's data use terms.
 
-Deployments hosted on Azure run inference in an Anthropic-operated service on Azure infrastructure, not in your Azure tenant, and prompts and completions remain within Azure. The only data the service sends out of Azure to Anthropic is usage metadata and any content that Anthropic's safety systems flag. Deployments hosted on Anthropic send prompts and completions to Anthropic's own infrastructure for inference. See [hosting options for Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#hosting-options) for details.
+* Deployments hosted on Azure run inference in an Anthropic-operated service on Azure infrastructure, not in your Azure tenant. For deployments hosted on Azure, Anthropic processes prompts and completions on Azure infrastructure and stores retained content there. Retained content includes content flagged by Anthropic's safety systems for Anthropic to review. Operational data that contains no prompts or completions is stored on Anthropic's systems outside Azure. Examples include safety classifier scores, identifiers, and usage and billing data.
+* Deployments hosted on Anthropic send prompts and completions to Anthropic's own infrastructure for inference.
+
+See [hosting options for Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#hosting-options) for details.
 
 For the Anthropic API, Anthropic processes conversation data under your Anthropic agreement, as described on the [Claude API](/docs/third-party/claude-desktop/claude-api) page. For an [LLM gateway](/docs/third-party/claude-desktop/gateway) you operate, data handling depends on the upstream provider your gateway routes each request to.
 
@@ -50437,6 +50504,53 @@ To prevent or limit the move, set one of these keys in the profile itself:
 
 Before you add either key to a profile that sets only [app-behavior keys](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence), such as `disableAutoUpdates`, read the warning under [Keep a device on its managed profile](/docs/third-party/claude-desktop/admin-console#keep-a-device-on-its-managed-profile).
 
+### File downloads from the remote host
+
+Users can download files from a remote session's folders to their device. For example, they right-click a file in the **Files** pane and select **Download file**. The [`remoteFileDownloads`](/docs/third-party/claude-desktop/configuration#remotefiledownloads) key sets which files they can download from an SSH host and from a Code session in Windows Subsystem for Linux (WSL).
+
+The key requires Claude Desktop 5.1231.0 or later. Earlier versions don't read the value and offer at most what `limited` allows. Before you put the key in a profile or policy that an earlier version reads, see [Deploy remoteFileDownloads through device management](#deploy-remotefiledownloads-through-device-management).
+
+Each value lets users download these files.
+
+| Value | Files that users can download |
+| - | - |
+| Unset or `limited` | `.pdf`, `.docx`, `.xlsx`, and `.pptx` files up to 25 MiB, images up to 10 MiB, and text files up to 1 MiB |
+| `all` | Files of any size, of any type that Claude Desktop doesn't refuse |
+| `none` | No files. Claude Desktop hides its **Download file** options. |
+
+Under `limited` and `all`, Claude Desktop refuses a fixed list of file types that an operating system can run or act on when opened, such as `.exe`, `.js`, `.ps1`, and `.jar`. Claude Desktop goes by the file's extension. Scripts such as `.py` and `.sh` aren't on the list.
+
+On a [host without SFTP](#hosts-without-sftp), `limited` and `all` both allow text files up to 1 MiB and nothing else.
+
+> [!WARNING]
+>
+> Where Claude Desktop is the only program on a device that can reach the host, `all` gives users a way to take files off the host in bulk. Claude Desktop's logs and telemetry keep no list of the files that were downloaded. `ssh.log` in the [logs directory](/docs/third-party/claude-desktop/data-storage#where-data-lives) on the device names the hosts that Claude Desktop connects to and, under `all`, records each copy's size and duration. On such devices, set the key to `limited` where users can't change it (see [Deploy remoteFileDownloads through device management](#deploy-remotefiledownloads-through-device-management)), unless users need other file types or larger files.
+
+`none` isn't a security boundary. In Claude Desktop, users can still open the files that they can't download, and Claude can still read them. To limit which files a user can reach on the host, review the SSH user's rights there (see [Account that a remote session runs under](#account-that-a-remote-session-runs-under)).
+
+Claude Desktop reads and applies the value by these rules:
+
+* **Spelling**: Claude Desktop ignores letter case. It treats a value that isn't `limited`, `all`, `none`, or empty as `none`, so a mistyped `all` turns downloads off. An empty value counts as unset. On Windows, a mistyped value in a machine policy also makes Claude Desktop refuse WSL sessions, even where machine policy sets [`disableWslSessions`](/docs/third-party/claude-desktop/configuration#disablewslsessions) to `false`.
+* **When a change takes effect**: an open app applies a new value from device management, the [Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console), or a [bootstrap server](/docs/third-party/claude-desktop/bootstrap) without a relaunch, once a [re-check](/docs/third-party/claude-desktop/configuration-format#when-a-configuration-change-on-a-device-takes-effect) reads it and a second check about 30 seconds later confirms it. A value set in the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration) applies no later than the relaunch that **Apply Changes** asks for.
+
+You can set the key in these places:
+
+* **Device management**: users can't edit a machine-scoped profile or policy. For when its value applies, see [Deploy remoteFileDownloads through device management](#deploy-remotefiledownloads-through-device-management).
+* **Enterprise Admin Console**: the console's value applies unless the device has a profile or policy that holds this key and, beside it, nothing but the [app-behavior keys and the keys treated like them](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence). On a Windows device with no machine policy (`HKLM`), a per-user policy (`HKCU`) counts as such a policy. Whoever can write to `HKCU` can then set `all` over the console's `none` (see **A machine policy on Windows** under [Deploy remoteFileDownloads through device management](#deploy-remotefiledownloads-through-device-management)).
+* **Bootstrap response**: put the key inside the `codeSurface` object.
+* **In-app configuration window**: the key appears in the **Code surface** section while Code is enabled, in Claude Desktop 5.11492.0 or later. The user can change a value that is set there.
+
+### Deploy remoteFileDownloads through device management
+
+Connection settings are the keys that say where Claude Desktop gets inference or its configuration, such as the inference provider keys or the bootstrap keys. Before you deploy [`remoteFileDownloads`](#file-downloads-from-the-remote-host) through [device management](/docs/third-party/claude-desktop/mdm), plan for these cases:
+
+* **Devices on a version before 5.1231.0**: update all devices to Claude Desktop 5.1231.0 or later first. On earlier versions, on Windows and Linux, a profile or policy that holds this key can turn off other settings, connection settings included. On macOS, Claude Desktop doesn't see the key. For each platform's case, see [Keys that an earlier version does not recognize](/docs/third-party/claude-desktop/mdm#keys-that-an-earlier-version-does-not-recognize).
+* **A profile or policy that holds your connection settings**: set the key in that same profile or policy, and set the same value in the bootstrap response or the console too. Connection settings are outside the [app-behavior keys and the keys treated like them](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence). Where a profile or policy holds any key outside them, a [bootstrap server](/docs/third-party/claude-desktop/bootstrap) or an [Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console) that leaves `remoteFileDownloads` out overrides the profile's value, and the key counts as unset.
+* **A profile or policy that holds this key and, beside it, nothing but the app-behavior keys and the keys treated like them**: the user's or the console's configuration stays in place. The profile's value takes precedence over the value from the Enterprise Admin Console, a bootstrap server, or the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration).
+* **A machine policy on Windows**: while machine policy (`HKLM`) holds this key, Claude Desktop applies nothing from a per-user policy (`HKCU`). Move what the per-user policy holds, connection settings included, into the machine policy.
+
+A profile or policy, even one that holds only this key, also changes how WSL sessions and shell commands in Code sessions work on the device (see [What a profile or policy changes on a device](/docs/third-party/claude-desktop/mdm#what-a-profile-or-policy-changes-on-a-device)).
+
 ## Inference credentials on the remote host
 
 > [!WARNING]
@@ -50668,7 +50782,7 @@ These features need SFTP, so they are off in that session. Users can keep workin
 * File attachments
 * The Changes pane
 * Plugins that Claude Desktop copies from the device
-* Downloads of PDF and Office files: the download option is missing, or the download fails with `Couldn't download <name>`
+* [File downloads](#file-downloads-from-the-remote-host), except text files up to 1 MiB: the download option is missing, or the download fails with `Couldn't download <name>`
 
 A session without SFTP needs at least the following. Where one is missing, setup fails (see [Setup on the host fails after SSH connects](#setup-on-the-host-fails-after-ssh-connects)).
 
@@ -51292,7 +51406,13 @@ For third-party deployments, the export includes session metadata (event names, 
 
 The export carries logs and metrics. Cowork sessions, Code sessions, and the desktop application's own events arrive under the `service.name` values `cowork`, `claude-code-desktop`, and `claude-desktop` respectively. With [Unified Claude](/docs/third-party/claude-desktop/unified-claude) on, a Cowork session started from the home screen also arrives under `cowork`. The export isn't checked against the [agent egress allowlist](#required-egress-paths), so `otlpEndpoint` doesn't need an entry in `coworkEgressAllowedHosts`; your perimeter firewall still needs to allow the host.
 
-For static collector headers, extra resource attributes, and the log level of the desktop application's own event stream, see [`otlpHeaders`, `otlpResourceAttributes`, and `otlpDesktopLogLevel`](/docs/third-party/claude-desktop/configuration#otlpheaders) in the configuration reference. Events on the `claude-desktop` stream include `desktop_ssh_sandbox_check_failed`, described under [Sandbox status on the remote host](/docs/third-party/claude-desktop/ssh-remote-sessions#sandbox-status-on-the-remote-host), and `desktop_ssh_policy_check_failed`, described under [Policy status on the remote host](/docs/third-party/claude-desktop/ssh-remote-sessions#policy-status-on-the-remote-host).
+For static collector headers, extra resource attributes, and the log level of the desktop application's own event stream, see [`otlpHeaders`, `otlpResourceAttributes`, and `otlpDesktopLogLevel`](/docs/third-party/claude-desktop/configuration#otlpheaders) in the configuration reference.
+
+Events on the `claude-desktop` stream include:
+
+* **`desktop_ssh_sandbox_check_failed`**: see [Sandbox status on the remote host](/docs/third-party/claude-desktop/ssh-remote-sessions#sandbox-status-on-the-remote-host)
+* **`desktop_ssh_policy_check_failed`**: see [Policy status on the remote host](/docs/third-party/claude-desktop/ssh-remote-sessions#policy-status-on-the-remote-host)
+* **`builtin_m365_call`**: see [Audit local connector tool calls](/docs/third-party/claude-desktop/connectors-m365#audit-local-connector-tool-calls)
 
 ### Collector endpoint and headers
 
@@ -51393,6 +51513,56 @@ Two scope notes:
 * Trace export uses Claude Code's session-tracing beta, and the span structure may change while the feature is in beta.
 
 With `otlpEndpoint` set, `otlpTracesEnabled` alone decides whether Cowork and Code sessions export traces. Leaving it unset or `false` keeps traces off even when Claude Code's own settings on the device, including managed settings, turn tracing on (Claude Desktop 1.52386.0 or later).
+
+### EDR install events
+
+If you [run an EDR sensor in Cowork](https://support.claude.com/en/articles/17828685-run-your-endpoint-detection-and-response-edr-sensor-in-claude-cowork), each start of the Cowork workspace VM reports the result of the install to your collector on the `claude-desktop` stream. A start sends at most one record, either of these:
+
+| Event | Severity | Sent when |
+| - | - | - |
+| `lam_vm_edr_extension_install_completed` | `info` | The VM reports that the package's `install.sh` exited with code 0, and Claude Desktop accepts the report. |
+| `lam_vm_edr_extension_install_failed` | `error` | The run ended any other way. A cause that lasts is reported again at every start. |
+
+Your collector receives both at every [`otlpDesktopLogLevel`](/docs/third-party/claude-desktop/configuration#otlpdesktoploglevel) except `off`, including the default, `error`. A collector pipeline that keeps only `error` records drops the install event, so filter on the event name instead.
+
+Before Claude Desktop 5.1231.0, the install event needs `info` or `debug`.
+
+Read these events as a report from the VM, not as proof that a sensor is protecting a device:
+
+* An install event means only that the script exited 0 at that start. It says nothing about what the script did or whether the sensor still runs.
+* The VM reports most of these fields about itself, and root in the VM can report anything.
+* A missing record proves nothing. Claude Desktop sends each batch once and drops it if your collector doesn't accept it, and a record can be lost when the app quits.
+* Claude Desktop sends no record if the VM fails to start, if `coworkEDRIntegration` isn't set, or if its name is misspelled in the managed configuration.
+
+Each record carries the identity described in [User attribution](#user-attribution), plus these attributes where they apply:
+
+| Attribute | Events | Description |
+| - | - | - |
+| `edr_outcome_kind` | Failed | How the run ended. See the table of kinds below. |
+| `edr_outcome_reason` | Failed | Why, within that kind. It is absent when Anthropic switched the integration off for every vendor. |
+| `edr_vendor_id` | Both | The vendor the VM says signed the package. For `switched_off` with reason `vendor_blocked`, the vendor you named in `coworkEDRIntegrationVendor`. |
+| `edr_vendor_verified` | Both | Whether the VM says a signature check backs `edr_vendor_id`. |
+| `edr_package_sha256` | Both | The SHA-256 of the VM's copy of the package, as the VM reports it. |
+| `edr_root_kind` | Both | Which of the VM's key lists matched the signature: `production` or `test`. |
+| `edr_signature_expires_epoch_s` | Completed | When the VM says the signature expires, in Unix seconds. |
+| `exit_code` | Failed | The script's exit code, for `script_exit_nonzero` and `script_not_started`. |
+| `edr_last_observed` | Failed | For a run that was cut off, the last state Claude Desktop saw. |
+| `edr_malformed_check` | Failed | For `malformed_status`, which check the VM's answer failed. |
+| `duration_ms` | Both | How long the run took, in milliseconds. A failed event has it only for `script_failed` and `unknown`. |
+| `guest_reported` | Both | `false` for `switched_off` and `refused_host`, which Claude Desktop or its Windows VM service decides. `true` for every other result, including `unknown` when the VM never answered. |
+| `test_hooks_latched` | Both | Should be `false`. If it is `true` on an install event from a released build, treat that install as unconfirmed and check how the app was started. |
+
+`edr_outcome_kind` has these values:
+
+| Kind | Meaning | Common reasons |
+| - | - | - |
+| `switched_off` | Anthropic switched the integration off. A fully third-party deployment has no such switch. | `vendor_blocked` |
+| `refused_host` | Claude Desktop or its Windows VM service declined, and the script didn't run. Check your device management settings and the package's location. `flag_state_unknown` means that the app couldn't recently check Anthropic's switch, and doesn't occur in a fully third-party deployment. | `not_machine_managed`, `config_invalid`, `vendor_not_named`, `path_unresolvable`, `path_unreadable`, `path_bad_size`, `flag_state_unknown` |
+| `refused_guest` | The VM declined, and the script didn't run. Check the package and its signature with your vendor. | `signature_file_missing`, `signature_invalid`, `signature_expired`, `vendor_unknown`, `script_missing` |
+| `script_failed` | The script ran and failed, or the VM couldn't start it or lost track of it. | `script_exit_nonzero`, `script_timeout`, `script_signaled`, `script_not_started`, `script_outcome_unknown` |
+| `unknown` | Claude Desktop couldn't learn the result: the VM didn't answer in time, stopped or restarted, or gave an answer that the app doesn't accept. The script may or may not have run. | `deadline_exceeded`, `vm_stopped`, `malformed_status` |
+
+These two events are the only ones for this feature, and their reason values can grow as Claude Desktop changes. Treat a value you don't recognize as a failed install.
 
 ## Required egress paths
 

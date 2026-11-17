@@ -365,3 +365,6 @@
 - [Feature Lifecycle and Deprecation](https://modelcontextprotocol.io/community/feature-lifecycle.md): How individual MCP specification features move through Active, Deprecated, and Removed states, and the timeline implementers can plan against.
 - [SDK Tiers](https://modelcontextprotocol.io/community/sdk-tiers.md): What each SDK tier requires, how conformance is measured, how an SDK moves between tiers, and the issue labels SDK repositories must use.
 - [Antitrust Policy](https://modelcontextprotocol.io/community/antitrust.md): MCP Project Antitrust Policy for participants and contributors
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

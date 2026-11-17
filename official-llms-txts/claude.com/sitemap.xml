@@ -1327,6 +1327,9 @@
     <loc>https://claude.com/customers/trellix</loc>
   </url>
   <url>
+    <loc>https://claude.com/customers/tribe-ai</loc>
+  </url>
+  <url>
     <loc>https://claude.com/customers/triple-whale</loc>
   </url>
   <url>
@@ -4387,6 +4390,9 @@
     <loc>https://claude.com/ja/customers/codewords</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/cogent</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/coinbase</loc>
   </url>
   <url>
@@ -4414,6 +4420,9 @@
     <loc>https://claude.com/ja/customers/delightai-qa</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/descript</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/doctolib</loc>
   </url>
   <url>
@@ -4424,6 +4433,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/customers/emergent</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/epic-systems</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/esentire</loc>
@@ -4454,6 +4466,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/customers/gitlab</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/gitlab-enterprise</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/grab</loc>
@@ -4546,6 +4561,9 @@
     <loc>https://claude.com/ja/customers/loreal</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/lyft</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/magicschool</loc>
   </url>
   <url>
@@ -4574,6 +4592,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/customers/n26</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/n8n</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/nbim</loc>
@@ -4618,6 +4639,12 @@
     <loc>https://claude.com/ja/customers/perplexity</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/postman</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/pratham-international</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/prosper-global</loc>
   </url>
   <url>
@@ -4648,6 +4675,9 @@
     <loc>https://claude.com/ja/customers/rileybot</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/rocket</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/scribd</loc>
   </url>
   <url>
@@ -4666,6 +4696,9 @@
     <loc>https://claude.com/ja/customers/shopify</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/shortcut</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/skillfully</loc>
   </url>
   <url>
@@ -4682,6 +4715,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/customers/sourcegraph</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/sourcegraph-claude-for-work</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/spotify</loc>
@@ -4711,10 +4747,16 @@
     <loc>https://claude.com/ja/customers/tabnine</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/tasklet</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/telus</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/thomson-reuters</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/thomson-reuters-qa</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/tidio</loc>
@@ -4736,6 +4778,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/customers/try</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/vambe</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/vanta</loc>
@@ -4762,7 +4807,16 @@
     <loc>https://claude.com/ja/customers/you-dot-com</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/customers/zapia</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/customers/zapier</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/zencoder</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/customers/zingage</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/customers/zoom</loc>
@@ -6889,6 +6943,9 @@
     <loc>https://claude.com/marketplace/connectors/checkatrade</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/checkly-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/checkout-com</loc>
   </url>
   <url>
@@ -7633,6 +7690,9 @@
     <loc>https://claude.com/marketplace/connectors/grtwo-docs</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/guardz</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/guidepoint</loc>
   </url>
   <url>
@@ -8341,6 +8401,12 @@
     <loc>https://claude.com/marketplace/connectors/ncino-mcp</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/ncino-mortgage-admin-mcp</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/ncino-mortgage-lo-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/neimo</loc>
   </url>
   <url>
@@ -8653,6 +8719,9 @@
     <loc>https://claude.com/marketplace/connectors/polly</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/popcorn-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/pophive</loc>
   </url>
   <url>
@@ -8852,6 +8921,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/retool</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/revax</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/revealed</loc>
@@ -9719,6 +9791,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/zoom-for-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zoom-whiteboard-for-claude</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/zoominfo</loc>
@@ -10732,6 +10807,9 @@
     <loc>https://claude.com/marketplace/plugins/notion</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/plugins/numbersgame</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/plugins/nvidia-skills</loc>
   </url>
   <url>
@@ -11372,6 +11450,9 @@
   </url>
   <url>
     <loc>https://claude.com/product/claude-security</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/product/code-review</loc>
   </url>
   <url>
     <loc>https://claude.com/product/cowork</loc>
@@ -12911,6 +12992,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/claude-on-vertex-ai</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/webinars/claude-rearview-roadmap-review-november-2026</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/claude-rearview-roadmap-review-october-2026</loc>
