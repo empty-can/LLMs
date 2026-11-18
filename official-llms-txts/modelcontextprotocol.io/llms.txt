@@ -43,7 +43,6 @@
 - [Security Best Practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices.md): Security considerations, attack vectors, and best practices for MCP implementations
 - [MCP Inspector](https://modelcontextprotocol.io/docs/2025-11-25/tools/inspector.md): In-depth guide to using the MCP Inspector for testing and debugging Model Context Protocol servers
 - [Debugging](https://modelcontextprotocol.io/docs/2025-11-25/tools/debugging.md): A comprehensive guide to debugging Model Context Protocol (MCP) integrations
-- [Example Servers](https://modelcontextprotocol.io/examples.md): A list of example servers and implementations
 - [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/2025-06-18/getting-started/intro.md)
 - [Architecture overview](https://modelcontextprotocol.io/docs/2025-06-18/learn/architecture.md)
 - [Understanding MCP servers](https://modelcontextprotocol.io/docs/2025-06-18/learn/server-concepts.md)
@@ -60,7 +59,6 @@
 - [Security Best Practices](https://modelcontextprotocol.io/docs/2025-06-18/tutorials/security/security_best_practices.md): Security considerations, attack vectors, and best practices for MCP implementations
 - [MCP Inspector](https://modelcontextprotocol.io/docs/2025-06-18/tools/inspector.md): In-depth guide to using the MCP Inspector for testing and debugging Model Context Protocol servers
 - [Debugging](https://modelcontextprotocol.io/docs/2025-06-18/tools/debugging.md): A comprehensive guide to debugging Model Context Protocol (MCP) integrations
-- [Example Servers](https://modelcontextprotocol.io/examples.md): A list of example servers and implementations
 - [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/2025-03-26/getting-started/intro.md)
 - [Architecture overview](https://modelcontextprotocol.io/docs/2025-03-26/learn/architecture.md)
 - [Understanding MCP servers](https://modelcontextprotocol.io/docs/2025-03-26/learn/server-concepts.md)
@@ -77,7 +75,6 @@
 - [Security Best Practices](https://modelcontextprotocol.io/docs/2025-03-26/tutorials/security/security_best_practices.md): Security considerations, attack vectors, and best practices for MCP implementations
 - [MCP Inspector](https://modelcontextprotocol.io/docs/2025-03-26/tools/inspector.md): In-depth guide to using the MCP Inspector for testing and debugging Model Context Protocol servers
 - [Debugging](https://modelcontextprotocol.io/docs/2025-03-26/tools/debugging.md): A comprehensive guide to debugging Model Context Protocol (MCP) integrations
-- [Example Servers](https://modelcontextprotocol.io/examples.md): A list of example servers and implementations
 - [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/2024-11-05/getting-started/intro.md)
 - [Architecture overview](https://modelcontextprotocol.io/docs/2024-11-05/learn/architecture.md)
 - [Understanding MCP servers](https://modelcontextprotocol.io/docs/2024-11-05/learn/server-concepts.md)
@@ -94,7 +91,6 @@
 - [Security Best Practices](https://modelcontextprotocol.io/docs/2024-11-05/tutorials/security/security_best_practices.md): Security considerations, attack vectors, and best practices for MCP implementations
 - [MCP Inspector](https://modelcontextprotocol.io/docs/2024-11-05/tools/inspector.md): In-depth guide to using the MCP Inspector for testing and debugging Model Context Protocol servers
 - [Debugging](https://modelcontextprotocol.io/docs/2024-11-05/tools/debugging.md): A comprehensive guide to debugging Model Context Protocol (MCP) integrations
-- [Example Servers](https://modelcontextprotocol.io/examples.md): A list of example servers and implementations
 - [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/draft/getting-started/intro.md)
 - [Architecture overview](https://modelcontextprotocol.io/docs/draft/learn/architecture.md)
 - [Understanding MCP servers](https://modelcontextprotocol.io/docs/draft/learn/server-concepts.md)
@@ -121,7 +117,6 @@
 - [Recipes](https://modelcontextprotocol.io/docs/draft/tools/inspector/recipes.md): Practical guides for transports, importing configs, reviewing MCP Apps, Docker, network hosting, and persistent connections with mcpdo
 - [Security](https://modelcontextprotocol.io/docs/draft/tools/inspector/security.md): The Inspector's threat model in one place, covering the web backend, Docker, secret storage, stdio servers, and the mcpdo daemon
 - [Debugging](https://modelcontextprotocol.io/docs/draft/tools/debugging.md): A comprehensive guide to debugging Model Context Protocol (MCP) integrations
-- [Example Servers](https://modelcontextprotocol.io/examples.md): A list of example servers and implementations
 - [Specification](https://modelcontextprotocol.io/specification/2026-07-28/index.md)
 - [Key Changes](https://modelcontextprotocol.io/specification/2026-07-28/changelog.md)
 - [Deprecated Features](https://modelcontextprotocol.io/specification/2026-07-28/deprecated.md)
