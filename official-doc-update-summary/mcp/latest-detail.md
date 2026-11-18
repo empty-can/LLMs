@@ -1,95 +1,89 @@
 ---
-対象期間: 2026年11月15日 〜 2026年11月16日
-作成日: 2026-11-16
+対象期間: 2026年11月16日 〜 2026年11月17日
+作成日: 2026-11-17
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、入力の 2 ファイルとも差分がありました（`llms-full.txt` は追加 12 行・削除 11 行で 2 ページ、`llms.txt` は末尾への 3 行の追加）。本文の変更は仕様の Architecture と Overview の 2 ページで、非推奨の Sampling・Roots・ログを機能の例として挙げていた記述が書き換えられました。
+今回の対象期間の取り込みは 1 回で、入力の 2 ファイルとも差分がありました（`llms-full.txt` は Extensions Overview の 1 ページで追加 20 行・削除 6 行、`llms.txt` は重複していた Example Servers のエントリ 5 件の削除）。本文の変更では、拡張のライフサイクルの規則がいくつか補われ、Experimental の作業を置くリポジトリの一覧が加わりました。
 
 主要なものを以下に挙げます。
 
-1. 仕様の Architecture と Overview で、サーバーがクライアントに求める入力の例が Elicitation になり、Sampling・Roots・ログは非推奨と明記されるか例から外れた。Architecture のシーケンス図の `InputRequiredResult` の例も、`sampling/createMessage` から `elicitation/create` に替わった
+1. Extensions Overview で、拡張のライフサイクルの規則が補われた。Beta を経る要件は Core Maintainers が記録に残る投票で免除できること、段階の変更は Core Maintainer が承認すること、破壊的変更での `revision` 文字列の規則が Experimental にも及ぶこと（無ければ初期リビジョン、知らない値なら有効にすべきでない）が加わり、Experimental の作業を置く 5 つのリポジトリの表が載った
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**仕様の Architecture と Overview で非推奨の機能が例から外れた**](#1-仕様の-architecture-と-overview-で非推奨の機能が例から外れた):  
-  仕様の Architecture（追加 9 行・削除 8 行）と Overview（`basic`。追加 3 行・削除 3 行）で、Sampling・Roots・ログを機能の例として挙げていた記述が書き換えられた。サーバーがクライアントに求める入力の例は Elicitation になり、Sampling と Roots の要求も `InputRequiredResult` で届くが非推奨だ、という脚注が加わった。Overview の構成要素の一覧では、Sampling・Roots・ログが非推奨と明記され、Utilities の例にページネーションが加わった。
+1. [**Extensions Overview で拡張のライフサイクルの規則が補われた**](#1-extensions-overview-で拡張のライフサイクルの規則が補われた):  
+  拡張の概要ページ Extensions Overview（追加 20 行・削除 6 行）で、ライフサイクルの規則が補われた。Beta を経る要件は Core Maintainers が記録に残る投票（recorded vote）で免除できること、段階の変更は Core Maintainer が承認すること、破壊的変更を加える拡張が settings オブジェクトの `revision` 文字列を追加・増分すべきなのは Experimental と Beta の両方であること（`revision` が無ければ初期リビジョンを意味し、知らない `revision` を受け取った側は拡張を有効にすべきでない）が書き加えられた。Experimental Extensions には、Experimental の作業を置く 5 つのリポジトリの表が加わった。
 <!-- light:highlight-list:end -->
 
-## 1. 仕様の Architecture と Overview で非推奨の機能が例から外れた
+## 1. Extensions Overview で拡張のライフサイクルの規則が補われた
 
-今回の対象期間の取り込みは 1 回で、入力の 2 ファイルとも差分がありました。本文 `llms-full.txt` は追加 12 行・削除 11 行で、総行数は 45,524 行から 45,525 行になり、変更のあったページは仕様の Architecture と Overview（`basic`）の 2 件です。どちらも 50 行未満の変更なので、軽微な更新に当たります。収録ページ数（160 件。`examples` が 2 回収録されているため、URL としては 159 件）は変わっていません。索引 `llms.txt` の変更は末尾への 3 行の追加だけで、エントリ数（365 件）は変わっていません（軽微な更新の「その他」参照）。
+今回の対象期間の取り込みは 1 回で、入力の 2 ファイルとも差分がありました。本文 `llms-full.txt` は追加 20 行・削除 6 行で、総行数は 45,525 行から 45,539 行になり、変更のあったページは Extensions Overview（`extensions/overview`）の 1 件です。50 行未満の変更なので、軽微な更新に当たります。収録ページ数（160 件。`examples` が 2 回収録されているため、URL としては 159 件）は変わっていません。索引 `llms.txt` の変更は重複していたエントリ 5 件の削除で、エントリ数は 365 件から 360 件になりました（軽微な更新の「その他」参照）。
 
 | ページ | 行数 | 追加 | 削除 | 主な変更 |
 |---|---|---|---|---|
-| Architecture（仕様） | 173 → 174 | 9 | 8 | 導入文、Host・Servers・Capability Negotiation の記述と図 |
-| Overview（仕様、`basic`） | 498 → 498 | 3 | 3 | 構成要素の一覧、Message Patterns の MRTR の説明 |
+| Extensions Overview | 282 → 296 | 20 | 6 | Extension Lifecycle、Official Extension Repositories、Experimental Extensions と Ground Rules、Evolution |
 
-行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。どちらのページも見出し（Architecture は 6 個、Overview は 24 個）は変わっていません。
+行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。見出し（19 個）は変わっていません。
 
-Sampling・Roots・プロトコル経由のログは、base の時点でもプロトコルのバージョン `2026-07-28` で非推奨とされ、Deprecated Features のページ（`/specification/2026-07-28/deprecated`）の一覧に載っていました。今回は仕様の 2 ページで、これらを機能の例として挙げていた記述が書き換えられています。
+**Extensions Overview。** 次の 5 つの節が変わりました。
 
-**Architecture（仕様）。** 次の 4 か所が変わりました。
+- **Extension Lifecycle**: 段階の表の Experimental の行で、Entry（その段階に入る方法）が「Extension Maintainer が追加する」から「Extension Maintainer が追加するか、いずれかの Maintainer が `experimental-ext-` のリポジトリを作る」になった。表の下の、拡張は Experimental から始まり Beta を経なければならない、という文には、「Core Maintainers が記録に残る投票（recorded vote）でその要件を免除した場合を除き」という条件が加わった
+- **Official Extension Repositories**: 拡張の仕様を置くディレクトリが段階を示す、という説明のあとに、ライフサイクルより前からあるリポジトリはまだこの配置へ移行している途中なので、各拡張の現在の段階は以下の表を基準とする、という 1 文が加わった。MCP Apps の表では、説明の末尾にピリオドが付いた
+- **Experimental Extensions**: Experimental の作業を置くリポジトリの表（5 行）が加わった。載っているのは、`experimental-ext-interceptors`（ツール呼び出しやリソースの読み取りのような操作の傍受・検証・変換）、`experimental-ext-variants`（サーバーが自身の複数のバリアントを公開し、クライアントが選べるようにする）、`experimental-ext-tool-annotations`（アクションのメタデータと信頼のためのツールアノテーションの草案）、`experimental-ext-file-uploads`（クライアントとツールの間でのファイルの帯域外の移動）、`experimental-ext-filesystems`（一覧・検索・書き込みのような、1 回の読み取りを超える Resources の操作）の 5 つ。このうち `experimental-ext-interceptors` は、base の時点でも直前の段落にリポジトリ名の例として載っていた
+- **Ground Rules**: 実験的な状態の明示について、「公開するパッケージは（README やパッケージ名などで）実験的な状態を明示する」が、「`experimental-ext-` のリポジトリは（README などで）実験的な状態を明示し、公開するパッケージもそれを示す名前にする」になった
+- **Evolution**: 拡張の変更はその Extension Maintainers が承認し、Core Maintainer のレビューは要らない、という文に、「唯一の例外は段階の変更で、これは Core Maintainer が承認する」が加わった。Beta の項目の末尾にあった、破壊的変更を加える拡張は settings オブジェクトの `revision` 文字列を追加・増分すべきだ、という文は Beta の項目から外れ、識別子の扱いを述べた段落のあとに独立した段落として置かれた。対象は「Experimental または Beta の拡張」と明記され、`revision` が無い場合は初期リビジョンを意味すること、知らない `revision` を受け取った側は拡張を有効にすべきでないこと、の 2 点が加わった
 
-- **導入文**: MCP は JSON-RPC の上に作られ、クライアントとサーバーの間の「コンテキストの交換とサンプリングの調整」に焦点を当てたプロトコルを提供する、という文から「サンプリングの調整」が外れ、「コンテキストの交換」だけになった
-- **Host**: ホストの役割の一覧で、「AI/LLM の統合とサンプリングを調整する」が「AI/LLM の統合を調整する」になった
-- **Servers**: サーバーの役割の一覧で、返信の中の `InputRequiredResult` でクライアントに入力を求める、という項目の入力の例が「sampling・elicitation・roots」から「たとえば elicitation」になり、脚注が加わった。脚注は、Sampling と Roots の要求も `InputRequiredResult` で届くが、どちらもプロトコルのバージョン `2026-07-28` で非推奨で、新しい実装では使うべきでない、とし、Deprecated Features のページへリンクしている
-- **Capability Negotiation**: クライアントが宣言する capability の例が、「sampling への対応と elicitation の処理」から「elicitation の処理」になった。シーケンス図の「Server requires client input」の分岐では、サーバーが返す `InputRequiredResult` の例が `sampling/createMessage` から `elicitation/create` に替わり、続く 2 つの矢印も、クライアントからホストへの「AI に転送する」とホストからの「AI の応答」から、「ユーザーに入力を求める」と「ユーザーの応答」に替わった
+なお、このページの Extension Lifecycle からリンクされている SEP-3392: Extension Lifecycle のページ（`seps/3392-extension-lifecycle`。今回は変更なし）には、base の時点から、Core Maintainers が記録に残る投票で免除しない限り Beta を飛ばしてはならない（MUST NOT）という規定と、`revision` が無い場合は初期リビジョンを意味し、知らない `revision` を受け取った側は拡張を有効にすべきでない（SHOULD NOT）という規定がありました。
 
-**Overview（仕様、`basic`）。** 次の 2 か所が変わりました。
-
-- **冒頭の構成要素の一覧**: Client Features が「クライアントが提供する Elicitation・Sampling・ルートのディレクトリの一覧」から「クライアントが提供する Elicitation。Sampling とルートのディレクトリの一覧は非推奨」に、Utilities が「ログや引数の補完のような横断的な関心事」から「引数の補完やページネーションのような横断的な関心事。ログは非推奨」になった。2 つの「非推奨」は、どちらも Deprecated Features のページへのリンク
-- **Message Patterns**: 一覧の Multi Round-Trip Requests（MRTR）の説明で、サーバーが要求を完了するために必要とするクライアントの追加の入力が、「sampling・elicitation・roots」から「たとえば elicitation」になった
-
-なお、Overview からリンクされている Message Patterns のページ（`basic/patterns`）の Multi Round-Trip Requests の節には、サーバーがクライアントの入力（sampling, elicitation, or roots）を必要とするとき、という記述が今回も残っています。
-
-- [Architecture - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/architecture/index#servers)
-- [Architecture - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/architecture/index#capability-negotiation)
-- [Overview - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#message-patterns)
+- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#extension-lifecycle)
+- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#experimental-extensions)
+- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#evolution)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回の対象期間に新たに追加されたページはありません。索引 `llms.txt` には末尾に 3 行が加わりましたが、エントリ（365 件）は増えておらず、本文 `llms-full.txt` の収録ページ数（160 件。URL としては 159 件）も前回と同じです。
+今回の対象期間に新たに追加されたページはありません。本文 `llms-full.txt` の収録ページ数（160 件。URL としては 159 件）は前回と同じです。索引 `llms.txt` ではエントリが 5 件減りましたが、重複していたエントリが外れたもので、索引から消えたページはありません（一意の URL は 360 件のまま）。
 <!-- light:new-pages:end -->
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。本文の変更は 2 ページで計 23 行（追加 12 行・削除 11 行）にとどまり、どちらも軽微な更新に当たります（ハイライト 1 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。本文の変更は 1 ページで計 26 行（追加 20 行・削除 6 行）にとどまり、軽微な更新に当たります（ハイライト 1 参照）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms-full.txt` と `llms.txt` の 2 件で、本文の 2 ページの変更と、索引の末尾への追加がありました。
+今回差分が出たファイルは `llms-full.txt` と `llms.txt` の 2 件で、本文の 1 ページの変更と、索引の重複エントリの削除がありました。
 
 **機能改善**
 
-- Architecture（仕様）の導入文と Host の役割の一覧から、サンプリングの調整を外した（詳細はハイライト 1 参照） — [Architecture](https://modelcontextprotocol.io/specification/2026-07-28/architecture/index#host)
-- 同ページの Servers で、クライアントに求める入力の例を elicitation だけにし、Sampling と Roots の要求も `InputRequiredResult` で届くが非推奨だという脚注を加えた（詳細はハイライト 1 参照） — [Architecture](https://modelcontextprotocol.io/specification/2026-07-28/architecture/index#servers)
-- 同ページの Capability Negotiation で、クライアントの capability の例を elicitation の処理だけにし、シーケンス図の `InputRequiredResult` の例を `elicitation/create` とユーザーへの入力の要求に替えた（詳細はハイライト 1 参照） — [Architecture](https://modelcontextprotocol.io/specification/2026-07-28/architecture/index#capability-negotiation)
-- Overview（仕様、`basic`）の冒頭の構成要素の一覧で、Client Features の Sampling とルートのディレクトリの一覧、Utilities のログを非推奨と明記し、Utilities の例にページネーションを加えた（詳細はハイライト 1 参照） — [Overview](https://modelcontextprotocol.io/specification/2026-07-28/basic/index)
-- 同ページの Message Patterns で、MRTR でクライアントに求める追加の入力の例を「sampling・elicitation・roots」から「たとえば elicitation」に改めた（詳細はハイライト 1 参照） — [Overview](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#message-patterns)
+- Extensions Overview の Extension Lifecycle で、Experimental の段階に入る方法に `experimental-ext-` のリポジトリの作成を加え、Beta を経る要件は Core Maintainers が記録に残る投票で免除できると明記した（詳細はハイライト 1 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#extension-lifecycle)
+- 同ページの Official Extension Repositories で、ライフサイクルより前からあるリポジトリは配置の移行中なので、各拡張の現在の段階は表を基準とすると明記した（詳細はハイライト 1 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#official-extension-repositories)
+- 同ページの Experimental Extensions に、Experimental の作業を置く 5 つのリポジトリの表を加えた（詳細はハイライト 1 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#experimental-extensions)
+- 同ページの Ground Rules で、実験的な状態の明示を、`experimental-ext-` のリポジトリ（README など）と公開するパッケージの名前に分けて定めた（詳細はハイライト 1 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#ground-rules)
+- 同ページの Evolution で、段階の変更は Core Maintainer が承認すると明記し、`revision` 文字列の規則の対象を Experimental と Beta の拡張とし、`revision` が無い場合と知らない値を受け取った場合の扱いを加えた（詳細はハイライト 1 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#evolution)
 
 **その他**
 
-- 索引 `llms.txt` の末尾に、空行 2 行と `This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.` という 1 文が加わった。ファイルは 367 行から 370 行になった（末尾の改行が無くなったため、改行の数では 367 から 369）。エントリではないので、エントリ数（365 件）は変わらない
+- Extensions Overview の MCP Apps の表で、説明の末尾にピリオドが付いた — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#mcp-apps)
+- 索引 `llms.txt` で、`docs/2025-11-25/`・`docs/2025-06-18/`・`docs/2025-03-26/`・`docs/2024-11-05/`・`docs/draft/` の各ページの並びの末尾（Debugging の直後）にあった Example Servers（`examples.md`）のエントリ 5 件が外れた。`docs/2026-07-28/` の並びの後ろの 1 件は残り、同じ URL のエントリは 6 件から 1 件になった。エントリ数は 365 件から 360 件、ファイルは 370 行から 365 行になった（末尾に改行が無いため、改行の数では 369 から 364）。一意の URL は 360 件のままで、索引から消えたページはない
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-15.md](./archives/latest/2026-11-15.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-15.md](./archives/latest-detail/2026-11-15.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-16.md](./archives/latest/2026-11-16.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-16.md](./archives/latest-detail/2026-11-16.md)
 
 <!--
-base_commit: 080ef492a175aad917a584b345b6ed85c63c5b84
-head_commit: 819daa7cd17307570b2a672fc258fafc61fd2cb2
-generated_at_full: 2026-11-17T15:31:44+09:00
+base_commit: 819daa7cd17307570b2a672fc258fafc61fd2cb2
+head_commit: ab0340993aa5987d27a891141698d57dc355b88b
+generated_at_full: 2026-11-18T15:27:25+09:00
 -->
