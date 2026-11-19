@@ -67,6 +67,7 @@
 - [Install plugins](https://claude.com/docs/cowork/guide/plugins.md): Add packaged skills, connectors, and agents to Cowork from the plugin marketplace or a file.
 - [Organize work with projects](https://claude.com/docs/cowork/guide/projects.md): Group folders, instructions, and context into a Cowork project so Claude starts each session with the right setup.
 - [Keep a folder connected after it's renamed or moved](https://claude.com/docs/cowork/guide/renamed-folders.md): On macOS, Claude Desktop can find a connected folder at its new location and ask whether to keep it connected to your session.
+- [Answer when Claude asks to fetch a web page](https://claude.com/docs/cowork/guide/web-links.md): Which links Claude fetches without asking in a Cowork task that runs on your computer, and when it asks you first.
 - [Monitoring](https://claude.com/docs/cowork/monitoring.md): Track Cowork usage and activity across your organization with OpenTelemetry
 - [Set up Cowork (local mode) for a HIPAA-ready organization](https://claude.com/docs/cowork/hipaa-setup.md): Prepare members' computers to run Cowork (local mode) under the HIPAA configuration. Covers the Claude Desktop policy, network limits, and local data.
 - [Work with Claude Tag](https://claude.com/docs/claude-tag/overview.md): Claude Tag puts Claude in your Slack channels with admin-governed access. See what to hand it, how setup works, and where to start as an admin or end user.
@@ -285,6 +286,7 @@
 - [Import your data from Claude for Government Web](https://claude.com/docs/government/desktop/import.md): Copy your conversations, projects, and files from Claude for Government Web into Claude Desktop, or move your Claude Desktop data to another computer.
 - [Plugins in Claude Desktop](https://claude.com/docs/government/desktop/plugins.md): Find, install, create, and remove plugins in Claude Desktop for Claude for Government, and understand what plugins add in this deployment.
 - [Skills in Claude Desktop](https://claude.com/docs/government/desktop/skills.md): Skills in Claude Desktop for Claude for Government: where they come from, how to create and manage your own, and how administrators distribute them.
+- [Design and Slides in Claude Desktop](https://claude.com/docs/government/desktop/design-and-slides.md): Make a design or a slide deck in Claude Desktop for Claude for Government, find, export, or delete it, and turn Design and Slides on for your members.
 - [Models in Claude Desktop](https://claude.com/docs/government/desktop/models.md): Switch models in Claude Desktop on Claude for Government, see what the 1M context window does, and find what controls which models you see.
 - [Connect Claude Code to Claude for Government](https://claude.com/docs/government/deploy-claude-code/configure.md): Connect the Claude Code command-line tool to Claude for Government with managed settings on macOS, Windows, and Linux, and confirm a device is set up.
 - [Your account](https://claude.com/docs/government/account/overview.md): Check your own account details, usage limits, and active sessions in the Claude for Government web portal.

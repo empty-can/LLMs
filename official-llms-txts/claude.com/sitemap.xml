@@ -2044,6 +2044,9 @@
     <loc>https://claude.com/de/product/claude-security</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/product/code-review</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/product/cowork</loc>
   </url>
   <url>
@@ -2149,6 +2152,9 @@
     <loc>https://claude.com/de/resources/articles/claude-marketplace</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/claude-meetings</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/claude-models-on-google-cloud-anthropic-managed</loc>
   </url>
   <url>
@@ -2156,6 +2162,9 @@
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/resources/articles/claude-tag-guide-for-startups</loc>
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/code-review-is-now-generally-available</loc>
@@ -2227,6 +2236,9 @@
     <loc>https://claude.com/de/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/how-enterprises-are-building-ai-agents-in-2026</loc>
   </url>
   <url>
@@ -2260,6 +2272,9 @@
     <loc>https://claude.com/de/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/interactive-connectors-full-tool</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/introducing-artifacts-for-legal-work</loc>
   </url>
   <url>
@@ -2267,6 +2282,12 @@
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/introduction-to-agentic-coding</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/resources/articles/j-crew-style-advisor-with-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/de/resources/articles/jpmorganchase-expands-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/de/resources/articles/key-benefits-transitioning-agentic-coding</loc>
@@ -2593,6 +2614,9 @@
     <loc>https://claude.com/es/product/claude-security</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/product/code-review</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/product/cowork</loc>
   </url>
   <url>
@@ -2686,6 +2710,9 @@
     <loc>https://claude.com/es/resources/articles/claude-marketplace</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/resources/articles/claude-meetings</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/resources/articles/claude-models-on-google-cloud-anthropic-managed</loc>
   </url>
   <url>
@@ -2693,6 +2720,9 @@
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/claude-tag-guide-for-startups</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/code-review-is-now-generally-available</loc>
@@ -2761,6 +2791,9 @@
     <loc>https://claude.com/es/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/resources/articles/how-healthcare-organizations-use-claude-tag</loc>
   </url>
   <url>
@@ -2788,10 +2821,19 @@
     <loc>https://claude.com/es/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
   </url>
   <url>
+    <loc>https://claude.com/es/resources/articles/interactive-connectors-full-tool</loc>
+  </url>
+  <url>
     <loc>https://claude.com/es/resources/articles/introducing-artifacts-for-legal-work</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/introducing-routines-in-claude-code</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/j-crew-style-advisor-with-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/jpmorganchase-expands-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/making-claude-a-better-electrical-engineer</loc>
@@ -3547,6 +3589,9 @@
     <loc>https://claude.com/fr/product/claude-security</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/product/code-review</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/product/cowork</loc>
   </url>
   <url>
@@ -3652,6 +3697,9 @@
     <loc>https://claude.com/fr/resources/articles/claude-marketplace</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/articles/claude-meetings</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/articles/claude-models-on-google-cloud-anthropic-managed</loc>
   </url>
   <url>
@@ -3659,6 +3707,9 @@
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/resources/articles/claude-tag-guide-for-startups</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/code-review-is-now-generally-available</loc>
@@ -3730,6 +3781,9 @@
     <loc>https://claude.com/fr/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/articles/how-enterprises-are-building-ai-agents-in-2026</loc>
   </url>
   <url>
@@ -3763,6 +3817,9 @@
     <loc>https://claude.com/fr/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/articles/interactive-connectors-full-tool</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/articles/introducing-artifacts-for-legal-work</loc>
   </url>
   <url>
@@ -3770,6 +3827,12 @@
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/introduction-to-agentic-coding</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/resources/articles/j-crew-style-advisor-with-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/fr/resources/articles/jpmorganchase-expands-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/fr/resources/articles/key-benefits-transitioning-agentic-coding</loc>
@@ -4096,6 +4159,9 @@
     <loc>https://claude.com/it/product/claude-security</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/product/code-review</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/product/cowork</loc>
   </url>
   <url>
@@ -4192,6 +4258,9 @@
     <loc>https://claude.com/it/resources/articles/claude-marketplace</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/resources/articles/claude-meetings</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/resources/articles/claude-models-on-google-cloud-anthropic-managed</loc>
   </url>
   <url>
@@ -4199,6 +4268,9 @@
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/claude-tag-guide-for-startups</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/code-review-is-now-generally-available</loc>
@@ -4267,6 +4339,9 @@
     <loc>https://claude.com/it/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/resources/articles/how-healthcare-organizations-use-claude-tag</loc>
   </url>
   <url>
@@ -4294,10 +4369,19 @@
     <loc>https://claude.com/it/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
   </url>
   <url>
+    <loc>https://claude.com/it/resources/articles/interactive-connectors-full-tool</loc>
+  </url>
+  <url>
     <loc>https://claude.com/it/resources/articles/introducing-artifacts-for-legal-work</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/introducing-routines-in-claude-code</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/j-crew-style-advisor-with-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/jpmorganchase-expands-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/making-claude-a-better-electrical-engineer</loc>
@@ -5068,6 +5152,9 @@
     <loc>https://claude.com/ja/product/claude-security</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/product/code-review</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/product/cowork</loc>
   </url>
   <url>
@@ -5176,6 +5263,9 @@
     <loc>https://claude.com/ja/resources/articles/claude-marketplace</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/resources/articles/claude-meetings</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/resources/articles/claude-models-on-google-cloud-anthropic-managed</loc>
   </url>
   <url>
@@ -5183,6 +5273,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/claude-tag-guide-for-startups</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/code-review-is-now-generally-available</loc>
@@ -5254,6 +5347,9 @@
     <loc>https://claude.com/ja/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/resources/articles/how-enterprises-are-building-ai-agents-in-2026</loc>
   </url>
   <url>
@@ -5290,6 +5386,9 @@
     <loc>https://claude.com/ja/resources/articles/integrate-apis-seamlessly</loc>
   </url>
   <url>
+    <loc>https://claude.com/ja/resources/articles/interactive-connectors-full-tool</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ja/resources/articles/introducing-artifacts-for-legal-work</loc>
   </url>
   <url>
@@ -5297,6 +5396,12 @@
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/introduction-to-agentic-coding</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/j-crew-style-advisor-with-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/jpmorganchase-expands-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/key-benefits-transitioning-agentic-coding</loc>
@@ -6130,6 +6235,9 @@
     <loc>https://claude.com/ko/product/claude-security</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/product/code-review</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/product/cowork</loc>
   </url>
   <url>
@@ -6244,6 +6352,9 @@
     <loc>https://claude.com/ko/resources/articles/claude-marketplace</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/resources/articles/claude-meetings</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/resources/articles/claude-models-on-google-cloud-anthropic-managed</loc>
   </url>
   <url>
@@ -6251,6 +6362,9 @@
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/claude-security-now-scans-continuously-and-tracks-fixes</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ko/resources/articles/claude-tag-guide-for-startups</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/code-review-is-now-generally-available</loc>
@@ -6325,6 +6439,9 @@
     <loc>https://claude.com/ko/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/resources/articles/how-curative-is-building-a-national-provider-network-with-agents-on-claude</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/resources/articles/how-enterprises-are-building-ai-agents-in-2026</loc>
   </url>
   <url>
@@ -6361,6 +6478,9 @@
     <loc>https://claude.com/ko/resources/articles/integrate-apis-seamlessly</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/resources/articles/interactive-connectors-full-tool</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/resources/articles/introducing-artifacts-for-legal-work</loc>
   </url>
   <url>
@@ -6368,6 +6488,12 @@
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/introduction-to-agentic-coding</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ko/resources/articles/j-crew-style-advisor-with-claude</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ko/resources/articles/jpmorganchase-expands-claude-code</loc>
   </url>
   <url>
     <loc>https://claude.com/ko/resources/articles/key-benefits-transitioning-agentic-coding</loc>
@@ -7165,6 +7291,9 @@
     <loc>https://claude.com/marketplace/connectors/canva</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/carbonarc</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/cargoai</loc>
   </url>
   <url>
@@ -7268,6 +7397,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/clay</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/clear-street-studio</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/clearstreet</loc>
@@ -7735,6 +7867,9 @@
     <loc>https://claude.com/marketplace/connectors/fantastical</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/faraday</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/fastmail</loc>
   </url>
   <url>
@@ -8024,6 +8159,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/helix-genosphere</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/hertz-car-rental</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/hex</loc>
@@ -8338,6 +8476,9 @@
     <loc>https://claude.com/marketplace/connectors/letsfg</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/levels</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/light</loc>
   </url>
   <url>
@@ -8626,6 +8767,9 @@
     <loc>https://claude.com/marketplace/connectors/mongodb-atlas</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/monk</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/monte-carlo</loc>
   </url>
   <url>
@@ -8755,6 +8899,9 @@
     <loc>https://claude.com/marketplace/connectors/numbersgame-mcp-square</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/numbersgame-ramp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/nutrient-dws</loc>
   </url>
   <url>
@@ -8798,6 +8945,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/open-targets</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/openalex</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/openlens</loc>
@@ -8929,6 +9079,9 @@
     <loc>https://claude.com/marketplace/connectors/pendo</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/perplexity-computer</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/perseus-vault-persistent-memory-for-claude</loc>
   </url>
   <url>
@@ -8999,6 +9152,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/plotly-cloud</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/ploy</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pocket-capture</loc>
@@ -9202,6 +9358,9 @@
     <loc>https://claude.com/marketplace/connectors/reply-io-mcp-for-claude</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/reprise</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/resend</loc>
   </url>
   <url>
@@ -9320,6 +9479,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/sandboxaq</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/sandstone</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/sanity</loc>
@@ -9754,6 +9916,9 @@
     <loc>https://claude.com/marketplace/connectors/topcounsel</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/tr-highq</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/tracy-at-qode</loc>
   </url>
   <url>
@@ -9859,10 +10024,16 @@
     <loc>https://claude.com/marketplace/connectors/usafacts-connector</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/usertesting</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/v0</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/vaisala-xweather</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/validity-engage</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/valuecase-v2</loc>
@@ -10214,6 +10385,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/appfollow-ai-toolkit</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/apptweak-api</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/appwrite</loc>
@@ -11153,6 +11327,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/oracledb</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/orbit-by-postman-api-and-mcp-server</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/ory-agent-plugin</loc>
@@ -13151,6 +13328,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/best-practices-for-claude-in-excel-and-powerpoint</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/webinars/best-practices-for-government-it-modernization-with-claude</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/build-agents-with-claude-platform-on-google-cloud</loc>

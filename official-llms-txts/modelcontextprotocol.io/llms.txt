@@ -20,6 +20,7 @@
 - [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli.md): Scripting the MCP Inspector: methods, output formats, exit codes, and CI recipes
 - [TUI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/tui.md): The terminal MCP Inspector: navigation, tabs, and keyboard reference
 - [mcpdo connection client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo.md): Connect to an MCP server once, then run many commands against that named connection
+- [Load testing](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/load-testing.md): Call a tool, or a weighted mix of tools, resources and prompts, repeatedly and concurrently from the web client, the CLI or mcpdo, and read the latency and error-rate summary
 - [Configuration and flags](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration.md): Catalog vs. config files, which client owns which flag, and every environment variable
 - [Authorization](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/authorization.md): How the MCP Inspector performs OAuth, re-authorizes mid-session, and shares tokens between its clients
 - [Protocol eras](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras.md): How the Inspector negotiates legacy vs. modern MCP, and how every feature is handled between protocol eras
@@ -111,6 +112,7 @@
 - [CLI client](https://modelcontextprotocol.io/docs/draft/tools/inspector/cli.md): Scripting the MCP Inspector: methods, output formats, exit codes, and CI recipes
 - [TUI client](https://modelcontextprotocol.io/docs/draft/tools/inspector/tui.md): The terminal MCP Inspector: navigation, tabs, and keyboard reference
 - [mcpdo connection client](https://modelcontextprotocol.io/docs/draft/tools/inspector/mcpdo.md): Connect to an MCP server once, then run many commands against that named connection
+- [Load testing](https://modelcontextprotocol.io/docs/draft/tools/inspector/load-testing.md): Call a tool, or a weighted mix of tools, resources and prompts, repeatedly and concurrently from the web client, the CLI or mcpdo, and read the latency and error-rate summary
 - [Configuration and flags](https://modelcontextprotocol.io/docs/draft/tools/inspector/configuration.md): Catalog vs. config files, which client owns which flag, and every environment variable
 - [Authorization](https://modelcontextprotocol.io/docs/draft/tools/inspector/authorization.md): How the MCP Inspector performs OAuth, re-authorizes mid-session, and shares tokens between its clients
 - [Protocol eras](https://modelcontextprotocol.io/docs/draft/tools/inspector/protocol-eras.md): How the Inspector negotiates legacy vs. modern MCP, and how every feature is handled between protocol eras
