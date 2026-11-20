@@ -658,6 +658,9 @@
     <loc>https://claude.com/customers/brian-impact-foundation</loc>
   </url>
   <url>
+    <loc>https://claude.com/customers/bristol-myers-squibb</loc>
+  </url>
+  <url>
     <loc>https://claude.com/customers/bubble</loc>
   </url>
   <url>
@@ -1202,6 +1205,9 @@
   </url>
   <url>
     <loc>https://claude.com/customers/rogo</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/customers/salesforce</loc>
   </url>
   <url>
     <loc>https://claude.com/customers/satispay</loc>
@@ -6796,6 +6802,9 @@
     <loc>https://claude.com/marketplace/connectors/8am-mycase</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/abacum-ai</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/abency</loc>
   </url>
   <url>
@@ -6845,6 +6854,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/adspirer-ads-performance-marketing-agent</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/adspirer-marketing-analytics-attribution</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/adspirer-retail-media-ads</loc>
@@ -7292,6 +7304,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/carbonarc</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/cardboard</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/cargoai</loc>
@@ -7756,6 +7771,9 @@
     <loc>https://claude.com/marketplace/connectors/droplinked</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/drugbank</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/dualentry</loc>
   </url>
   <url>
@@ -7933,6 +7951,9 @@
     <loc>https://claude.com/marketplace/connectors/fiverr-mcp</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/flexpa</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/flexport</loc>
   </url>
   <url>
@@ -7975,10 +7996,16 @@
     <loc>https://claude.com/marketplace/connectors/frontify</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/fullenrich-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/fullstory</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/function</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/fundraise-up-for-donors</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/fundraise-up-for-organizations</loc>
@@ -8177,6 +8204,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/honeycomb</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/hostinger-connector</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/hubspot</loc>
@@ -8449,6 +8479,9 @@
     <loc>https://claude.com/marketplace/connectors/leadfeeder</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/leandata-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/learning-commons-knowledge-graph</loc>
   </url>
   <url>
@@ -8506,6 +8539,9 @@
     <loc>https://claude.com/marketplace/connectors/listen-labs</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/litera</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/litmus-mcp</loc>
   </url>
   <url>
@@ -8522,6 +8558,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/local-falcon-7832b1</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/logmein-resolve</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/lois</loc>
@@ -8986,6 +9025,9 @@
     <loc>https://claude.com/marketplace/connectors/orion-advisor-solutions</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/orla</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/orshot</loc>
   </url>
   <url>
@@ -9077,6 +9119,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pendo</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/pennylane-mcp</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/perplexity-computer</loc>
@@ -9256,6 +9301,9 @@
     <loc>https://claude.com/marketplace/connectors/qonto</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/qualia-connect</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/quartr</loc>
   </url>
   <url>
@@ -9302,6 +9350,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/ravendb</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/ravio-mcp</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/razorpay</loc>
@@ -9476,6 +9527,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/salesloft</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/samsara-mcp</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/sandboxaq</loc>
@@ -9979,6 +10033,9 @@
     <loc>https://claude.com/marketplace/connectors/twinmind-app</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/type</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/typefully</loc>
   </url>
   <url>
@@ -10219,6 +10276,9 @@
     <loc>https://claude.com/marketplace/connectors/xtiles</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/yardi-deal-manager</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/yardi-matrix</loc>
   </url>
   <url>
@@ -10238,6 +10298,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/zillow</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zip</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/ziprecruiter</loc>
@@ -10304,6 +10367,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/adspirer-ads-agent</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/adspirer-advertising-agent</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/agent-sdk-dev</loc>
@@ -10430,6 +10496,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/aws-amplify</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/aws-continuum</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/aws-core</loc>
@@ -10916,6 +10985,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/frontend-design</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/fullenrich</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/fullstory</loc>
@@ -11512,6 +11584,9 @@
     <loc>https://claude.com/marketplace/plugins/rill</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/plugins/ringcentral</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/plugins/riskified-beacon-integration</loc>
   </url>
   <url>
@@ -11825,6 +11900,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/wealthbox</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/weinc</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/wiley-scholar-gateway</loc>
