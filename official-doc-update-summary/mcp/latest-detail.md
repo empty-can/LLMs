@@ -1,292 +1,235 @@
 ---
-対象期間: 2026年11月17日 〜 2026年11月18日
-作成日: 2026-11-18
+対象期間: 2026年11月18日 〜 2026年11月19日
+作成日: 2026-11-19
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、入力の 2 ファイルとも差分がありました（`llms-full.txt` は追加 938 行・削除 429 行で、そのうち 309 行ずつは SEP 2 ページの収録位置の移動、`llms.txt` は追加 2 行）。MCP Inspector の負荷テストを解説するページが新しく加わり、Build an MCP server のサンプルはツールの失敗をエラーとして返す形に改められました。
+今回の対象期間の取り込みは 1 回で、新規ページが 1 件（SEP-3415: Events Extension、1,284 行）加わり、既存ページの変更は SEP の索引ページ 1 件だけでした。MCP クライアントが外部のシステムで起きた出来事を購読し、ユーザーがいないときでもエージェントが反応できるようにする Events 拡張の SEP が、Final の状態で収録されています。
 
 主要なものを以下に挙げます。
 
-1. MCP Inspector の負荷テストを 1 ページにまとめた Load testing が加わった。Web client・CLI・mcpdo の 3 つの入口から同じエンジンで負荷をかける方法と、要約の各フィールド、シナリオ、段階的な負荷、しきい値とベースライン比較による CI のゲートなどを説明している
-2. CLI client・mcpdo connection client・Configuration and flags の負荷テストの記述が Load testing への案内に置き換わり、CLI client には「Load testing a tool」の節と、終了コード `130`（中断）の行が加わった
-3. Web client に、Web バックエンドが保持しているセッションを一覧して終了させる Active sessions の節と、Tools 画面の Load test ボタンの説明が加わった
-4. Build an MCP server で、天気サーバーのサンプルが取得の失敗を `ToolError` や `isError` でエラーとして返すようになったほか、州コードの大文字化、C# の .NET 10 への引き上げ、Spring AI の stdio の指定などが直った
-5. 仕様 2026-07-28 で、`_meta` の予約キーの表に `io.modelcontextprotocol/serverInfo` の行が加わり、例のリクエストに必須の `_meta` フィールドが入り、拡張を広告するクライアントの例が `_meta` の形になった。`_meta` 節を指すリンク 17 か所のアンカーも `#_meta` に直った
+1. SEP-3415（Events Extension）が Final の状態で加わった。サーバーは `events/list` で購読できるイベントの種類を示し、クライアントは名前と引数で購読して、`{eventId, name, timestamp, data, cursor}` の形のイベントを受け取る
+2. 配信方式は poll（`events/poll`）・push（`events/stream`）・webhook（`events/subscribe`）の 3 つで、イベントの種類ごとに対応する方式を示し、どれも必須ではない
+3. webhook では、クライアントが渡す `whsec_` 形式の秘密鍵による Standard Webhooks の署名、期限（TTL）付きの購読、配信を始める前のエンドポイントの確認、SSRF 対策を定めている
+4. サーバーが決める不透明なカーソルで切断後に再開でき、イベントが飛んだことは `truncated: true` で知らせる。順序と配信の保証は購読ごとの範囲にとどめている
+5. 汎用のエラーコード 5 つ（`-32023`〜`-32027`。本文では採択までの暫定の番号）を求め、Streamable HTTP ではイベント名を `Mcp-Name` ヘッダーに入れる
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**MCP Inspector の負荷テストを解説する Load testing のページが新設された**](#1-mcp-inspector-の負荷テストを解説する-load-testing-のページが新設された):  
-  `docs/2026-07-28/tools/inspector/load-testing`（412 行・見出し 17 個）が本文と索引に加わった。Inspector の接続をそのまま使ってツールを繰り返し同時に呼び、レイテンシとエラー率の要約を得る機能を、Web client・CLI・mcpdo の 3 つの入口に分けて説明している。負荷テスト自体は base の時点から CLI client などに書かれていたが、シナリオ（`--load-scenario`）、段階的な負荷（`--load-steps` / `--load-ramp`）、open loop、ベースライン比較（`--load-baseline`）、セッションの churn、通知の fan-out、複数の生成プロセス（`--load-workers`）などのフラグは、base の `llms-full.txt` には出てこなかった。
-2. [**CLI と mcpdo と設定のページの負荷テストの記述が Load testing に集約された**](#2-cli-と-mcpdo-と設定のページの負荷テストの記述が-load-testing-に集約された):  
-  CLI client に「Load testing a tool」の節が新設され、Exit codes の表では `10` の説明がしきい値とベースラインの両方に広がり、`130`（Ctrl+C か SIGTERM による中断）の行が加わった。CLI client の CI gates、mcpdo connection client の Addressing a connection、Configuration and flags の Load test の行は、フラグを列挙する代わりに Load testing のページを指すようになった。mcpdo connection client には「Load testing」の節が、MCP Inspector の Where to go next には Load testing のカードが加わった。
-3. [**Web client にセッションを一覧して終了させる Active sessions の節が加わった**](#3-web-client-にセッションを一覧して終了させる-active-sessions-の節が加わった):  
-  Web バックエンドは接続をセッションとして保持し、タブを閉じたり再読み込みしたりしても 60 秒は残す。ヘッダーの Active sessions ボタンから、すべてのタブのセッションを状態（This tab / Attached / Detached / Closed）付きで一覧し、Terminate で終了させられる（stdio サーバーのプロセスも終わる）。一覧と終了のルートは `GET /api/mcp/sessions` と `DELETE /api/mcp/sessions/<id>`。Tools の節には、Load test ボタンを説明する「Load testing」の小節が加わった。
-4. [**Build an MCP server のサンプルがツールの失敗をエラーとして返すようになった**](#4-build-an-mcp-server-のサンプルがツールの失敗をエラーとして返すようになった):  
-  天気サーバーを作るチュートリアル（追加 44 行・削除 27 行）で、データを取得できなかったときの返し方が、エラー文の文字列を普通の結果として返す形から、エラーとして返す形に変わった。Python は `ToolError` を送出し、TypeScript・Kotlin・Go は結果に `isError` を付ける。ほかに、州コードの大文字化（Python・Kotlin・C#）、TypeScript の警報 API の URL、C# の .NET 10 への引き上げと `--prerelease` の削除、Java（Spring AI）の Windows 向けの設定の stdio の指定などが直った。
-5. [**仕様 2026-07-28 の例と表がリクエストごとのメタデータの規則に揃った**](#5-仕様-2026-07-28-の例と表がリクエストごとのメタデータの規則に揃った):  
-  Base Protocol の Overview（`basic/index`）で、`_meta` の予約キーの表に `io.modelcontextprotocol/serverInfo` の行が加わり、OpenTelemetry のトレースコンテキストの例に必須の `_meta` フィールドが入った。Versioning and Compatibility では、MCP Apps 拡張を広告するクライアントの例が `capabilities` から `_meta` の `io.modelcontextprotocol/clientCapabilities` の形になった。Streamable HTTP の HTTP リクエストの例 3 つには `Host` と `Accept` の行が加わった。`_meta` 節を指すリンクは 13 ページの 17 か所でアンカーが `#meta` から `#_meta` になった。
+1. [**外部の出来事を購読する Events 拡張の SEP-3415 が Final で加わった**](#1-外部の出来事を購読する-events-拡張の-sep-3415-が-final-で加わった):  
+  Extensions Track の SEP-3415（Events Extension、作成 2026年10月05日）が Final の状態で新規ページとして加わった。Slack のメッセージ、GitHub への push、PagerDuty のインシデントのような外部のシステムでの出来事を MCP クライアントが購読し、ユーザーがいなくてもエージェントが反応できるようにする拡張で、識別子は `io.modelcontextprotocol/events`。サーバーは `events/list` でイベントの種類ごとに、購読の引数の `inputSchema`、届けるデータの `payloadSchema`、対応する配信方式を示す。プロトコルのリビジョン `2026-07-28` 以降を対象とする。
+2. [**配信方式は poll と push と webhook の 3 つでどれも必須ではない**](#2-配信方式は-poll-と-push-と-webhook-の-3-つでどれも必須ではない):  
+  poll は `events/poll` を繰り返す要求・応答型で、最初の `null` のカーソルで購読が始まり、サーバーはプロトコル上の状態を持たない。push は購読ごとに長く開いておく `events/stream` リクエストで、イベントを `notifications/events/event` の通知で届け、サーバーはハートビートを送らなければならない（MUST）。webhook は `events/subscribe` で `https` のコールバック URL を登録する。イベントの種類はこのうち 1 つ以上を `delivery` に挙げ、どれも必須ではない。
+3. [**webhook は署名と TTL とエンドポイントの確認で守られる**](#3-webhook-は署名と-ttl-とエンドポイントの確認で守られる):  
+  webhook の配信は Standard Webhooks のプロファイルで、署名の秘密鍵（`whsec_` 形式）はクライアントが必ず渡し、サーバーは生成しない。購読には TTL があり、クライアントが `ttlMs` を提案してサーバーが `refreshBefore` で期限を与える（クライアントが `ttlMs: null` を求めた場合に限り、`null` で期限なしを与えられる）。サーバーは、エンドポイントに受け取る意思があることを 4 つの方法のいずれかで確かめるまで配信を始めてはならず（MUST NOT）、コールバック URL の検証は配信の時点でも行い、リダイレクトをたどらない。webhook の購読には認証済みの主体（principal）が要る。
+4. [**カーソルで再開でき欠落は truncated で知らせる**](#4-カーソルで再開でき欠落は-truncated-で知らせる):  
+  カーソルはサーバーが管理する不透明な文字列で、切断やクラッシュのあとにクライアントがそこから再開できる。再生（replay）に対応するかはイベントの種類ごとに任意で、対応しない種類では `cursor: null` を返してよい（MAY）。`maxAgeMs` で再生の範囲を時間で絞れ、サーバーがクライアントのカーソルより後ろから配信を始めたときは `truncated: true` で知らせる。順序はプロトコルとしては保証せず、poll と push では購読の中での順序、webhook ではベストエフォートとしている。
+5. [**汎用のエラーコード 5 つとルーティング用のヘッダーが盛り込まれた**](#5-汎用のエラーコード-5-つとルーティング用のヘッダーが盛り込まれた):  
+  `NotFound`（`-32023`）・`Forbidden`（`-32024`）・`ResourceExhausted`（`-32025`）・`Unsupported`（`-32026`）・`CallbackEndpointError`（`-32027`）の 5 つを、イベントに限らない汎用のコードとして求めている。番号は、採択の時点で割り当て済みのコードが `-32020`〜`-32022` だけであることを前提にした、採択までの暫定のもの。Streamable HTTP では、`events/list` 以外の 4 つのリクエストでイベント名を `Mcp-Name` ヘッダーに入れなければならない（MUST）。
 <!-- light:highlight-list:end -->
 
-## 1. MCP Inspector の負荷テストを解説する Load testing のページが新設された
+## 1. 外部の出来事を購読する Events 拡張の SEP-3415 が Final で加わった
 
-今回の対象期間の取り込みは 1 回で、入力の 2 ファイルとも差分がありました。本文 `llms-full.txt` は追加 938 行・削除 429 行で、総行数は 45,539 行から 46,048 行に、収録ページ数は 160 件から 161 件（`examples` が 2 回収録されているため、URL としては 159 件から 160 件）になりました。索引 `llms.txt` は追加 2 行で、エントリ数は 360 件から 362 件になっています（軽微な更新の「その他」参照）。
+今回の取り込みは 1 回で、差分は索引 `llms.txt` の追加 1 行と、本文 `llms-full.txt` の追加 1,286 行・削除 1 行です。`llms-full.txt` の総行数は 46,048 行から 47,333 行に、収録ページ数は 161 件から 162 件（`examples` が 2 回収録されているため、URL としては 160 件から 161 件）に、`llms.txt` のエントリ数は 362 件から 363 件になりました。追加行のうち 1,284 行は新規ページの SEP-3415 で、残りは SEP の索引ページ（追加 2 行・削除 1 行）です。既存のページで変わったのはこの索引ページだけです。
 
-`llms-full.txt` の差分の内訳は次のとおりです。
+**SEP-3415 は、MCP に「イベント」を加える Extensions Track の SEP です。** 作成は 2026年10月05日、Status は Final で、著者とスポンサーはいずれも Peter Alexander 氏（[@poita](https://github.com/poita)）です。他の Final の SEP と同じく、冒頭には「Final に達した SEP は採択時の設計の歴史的な記録で、確定後のプロトコルの変更は反映されない」という注記があります。拡張の識別子は `io.modelcontextprotocol/events` で、プロトコルのリビジョン `2026-07-28` 以降を対象とします（リクエストごとのクライアントの機能宣言、`server/discover`、`subscriptions/listen` に依存するため）。この拡張が定める結果はすべて標準の `Result` で、`resultType: "complete"` を持ちます。
 
-| 内訳 | 追加 | 削除 | 扱い |
-|---|---|---|---|
-| Load testing（新規ページ） | 412 | 0 | 新規追加（このハイライト） |
-| SEP-1303 と SEP-1319 の収録位置の移動 | 309 | 309 | 軽微な更新（その他）。本文の変更なし |
-| ファイル先頭の前置き | 4 | 0 | 軽微な更新（その他） |
-| 既存の 34 ページの本文 | 213 | 120 | 大幅更新 1 件・軽微な更新 33 件 |
-| 計 | 938 | 429 | |
+**機能の交渉**: サーバーは `server/discover` が返す capabilities の `extensions` に `io.modelcontextprotocol/events` を置いて対応を示します。設定オブジェクトのメンバーは `listChanged`（真偽値・省略可・既定は `false`）の 1 つで、`true` ならイベントの種類が変わったときに `notifications/events/list_changed` を送ります。クライアントは、リクエストの `_meta` の `io.modelcontextprotocol/clientCapabilities` に、空の設定オブジェクトで同じ識別子を宣言してよい（MAY）とされています。`events/*` のリクエストはすべてクライアントから送るもので、拡張を広告していないサーバーに送ってはならず（MUST NOT）、対応していないサーバーは `-32601`（Method not found）を返します。
 
-本文が変わった既存のページのうち、変更が 5 行以上のものは次の 14 件です。
+**イベントの種類（`events/list`）**: 各種類は `name`・`description`・`delivery`・`inputSchema`・`payloadSchema`（と任意の `_meta`）を持ちます。`inputSchema` は購読の引数の JSON Schema で、引数はイベントを絞り込むフィルタ、データを加工する変換、そのほかサーバーが決める設定のいずれでもよく、ツールの `inputSchema` と `arguments` の組に倣っています。購読は作成元の `events/list` の応答より長く生きうるため、サーバーはスキーマを追加の形で変えるべき（SHOULD）で、互換性を壊す変更は新しいイベント名で公開し、移行期間のあいだ旧名と並べて提供すべきとされています。種類の一覧の変化を知らせる `notifications/events/list_changed` は、コアの `list_changed` 通知と同じく `subscriptions/listen` のストリームで、クライアントがフィルタの `eventsListChanged` で求めた場合にだけ届きます。
 
-| ページ | パス | 行数 | 追加 | 削除 | 扱い |
-|---|---|---|---|---|---|
-| Build an MCP server | `docs/2026-07-28/develop/build-server` | 3,057 → 3,074 | 44 | 27 | 大幅更新（ハイライト 4） |
-| Build an MCP client | `docs/2026-07-28/develop/build-client` | 2,933 → 2,925 | 19 | 27 | 軽微な更新 |
-| Web client | `docs/2026-07-28/tools/inspector/web` | 177 → 212 | 37 | 2 | 軽微な更新（ハイライト 3） |
-| Connect to local MCP servers | `docs/2026-07-28/develop/connect-local-servers` | 269 → 274 | 15 | 10 | 軽微な更新 |
-| CLI client | `docs/2026-07-28/tools/inspector/cli` | 255 → 268 | 16 | 3 | 軽微な更新（ハイライト 2） |
-| Versioning and Compatibility | `specification/2026-07-28/basic/versioning` | 182 → 185 | 11 | 8 | 軽微な更新（ハイライト 5） |
-| mcpdo connection client | `docs/2026-07-28/tools/inspector/mcpdo` | 179 → 190 | 12 | 1 | 軽微な更新（ハイライト 2） |
-| Resources | `specification/2026-07-28/server/resources` | 435 → 435 | 6 | 6 | 軽微な更新 |
-| Overview（Base Protocol） | `specification/2026-07-28/basic/index` | 498 → 505 | 8 | 1 | 軽微な更新（ハイライト 5） |
-| Schema Reference | `specification/2026-07-28/schema` | 1,574 → 1,574 | 4 | 4 | 軽微な更新 |
-| Streamable HTTP | `specification/2026-07-28/basic/transports/streamable-http` | 731 → 737 | 6 | 0 | 軽微な更新（ハイライト 5） |
-| Local Server Security | `docs/2026-07-28/tutorials/security/local-server-security` | 440 → 440 | 3 | 3 | 軽微な更新 |
-| Caching | `specification/2026-07-28/server/utilities/caching` | 178 → 178 | 3 | 3 | 軽微な更新 |
-| MCP Inspector | `docs/2026-07-28/tools/inspector` | 165 → 170 | 5 | 0 | 軽微な更新（ハイライト 2） |
+**届くイベント（`EventOccurrence`）**:
 
-残りの 20 ページは、それぞれ追加・削除とも 2 行以下で、合わせて追加 24 行・削除 25 行です。行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。SEP-1303（202 行）と SEP-1319（107 行）は、行単位の差分では追加・削除とも 202 行と 107 行に数えられますが、309 行がそのまま別の位置へ移っただけで、本文は 1 行も変わっていません。
-
-新しいページは Load testing（`docs/2026-07-28/tools/inspector/load-testing`）で、索引の説明文は「Call a tool, or a weighted mix of tools, resources and prompts, repeatedly and concurrently from the web client, the CLI or mcpdo, and read the latency and error-rate summary」です。Inspector は自分の接続を 1 つサーバーに向けて呼び続けられるので、接続のトランスポート・ヘッダー・OAuth を別のスクリプトで組み直さずに、同時アクセスや持続的なトラフィックのもとでのサーバーの挙動を確かめられる、と始まります。1 つのエンジンを 3 つのフロントエンドから使うため、設定とその既定値、要約のフィールドの意味はどこでも同じです。
-
-| 入口 | 始め方 |
-|---|---|
-| Web client | Tools 画面のツールにある **Load test** ボタン |
-| CLI | `--method tools/call --load`（接続・実行・切断を 1 回で行う） |
-| mcpdo | 開いている接続に対する `tools/call --load`（デーモンの中で動く） |
-
-節ごとの内容は次のとおりです。
-
-- **In the web client**: ツールのフォームに入っている引数で呼び出す。パネルで同時実行数・レート・時間か回数・ウォームアップを指定するか、**Steps** で段階的な負荷を指定する。実行はバックエンドではなくブラウザで行われる（調べている接続はタブの側にあるため）ので、レイテンシにはブラウザとバックエンドの間の往復と、モニタリングのサイドバーへの記録が含まれる。サーバーだけを測るにはサイドバーを閉じる
-- **From the command line**: 基本のフラグは `--load`・`--load-concurrency`（既定 10）・`--load-duration`（`--load-requests` が無いときの既定は 10 秒）・`--load-requests`・`--load-rate`（既定は無制限）・`--load-progress`・`--load-interval`・`--load-warmup`。組み合わせられないフラグの指定は、エンベロープの `code` が `load_flag_conflict` で終了コード `1`
-- **The summary**: JSON の要約の各フィールドの説明。`toolErrors`（`isError: true` の結果）と `errors`（結果が返らなかった呼び出し）を分けて数え、`latencyMs` は成功した呼び出し、`errorLatencyMs` は失敗した呼び出しだけを対象にする。パーセンタイルは p50・p90・p95・p99・p999
-- **Watching a run / Saving every call**: 進捗の行、時系列（`intervals`）、ウォームアップ。CLI の `--output` は、測定した呼び出しを 1 件 1 行の NDJSON で書き出す
-- **Varying the arguments / Scenarios**: 引数の値の中のプレースホルダ（`{{seq}}`・`{{worker}}`・`{{uuid}}`・`{{rand:<min>-<max>}}`）と、引数の行を NDJSON で与える `--load-args-file`。`--load-scenario` は `tools/call`・`resources/read`・`prompts/get` を重み付きで混ぜる。選び方は smooth weighted round-robin で、ランダムではない
-- **Stepped and ramped load / Open loop**: `--load-steps` と `--load-ramp` で、同時実行数かレート（`--load-step-by` で選ぶ）を段階ごとに上げる。`--load-open-loop` は、空いているワーカーが無いときに枠を捨てずに待たせ、その待ち時間もレイテンシに含める
-- **When a run fails or stops**: 50 回続けて例外になるか、1 秒間例外だけが続くと、早めに止まる（`stoppedEarly` の `reason` は `consecutive_errors`）。1 回目の Ctrl+C か SIGTERM は、完了した分の要約を出して `130` で終わる
-- **Thresholds / Comparing against a baseline**: `--load-max-error-rate`・`--load-max-p50`・`--load-max-p95`・`--load-max-p99`・`--load-min-throughput` のどれかを破ると `10` で終わる。`--load-baseline` に保存した要約を渡すと、成功した呼び出しの p50・p99・`okThroughput` とエラー率を比べ、`--load-max-regression` の幅を超えて悪化していれば `10`（`load_regression`）で終わる
-- **Multiple sessions / Session churn / Notification fan-out / Multiple generator processes**: `--load-connections` で独立した複数の接続に呼び出しを分け、`--load-churn` で接続と切断を繰り返し、`--load-subscribe` で `notifications/resources/updated` の配信を測り、CLI の `--load-workers` で複数の生成プロセスに分ける。2 つ以上の接続を使う `--load-connections`、`--load-churn`、`--load-workers`、2 つ以上の購読者を使う fan-out は、HTTP と SSE のサーバーに限られる（stdio では接続ごとに別のサーバープロセスが起動するため）
-- **On an mcpdo connection**: `--output` と `--load-workers` 以外のフラグが使える。実行はデーモンの中で行われ、Ctrl+C では実行中の呼び出しを取り消し、要約は出さない
-
-負荷テストの機能そのものは、base の時点から CLI client の CI gates（`--load`・`--load-concurrency`・`--load-connections`・`--load-duration`・`--load-requests`・`--load-rate`・`--load-max-error-rate`・`--load-max-p99`）と終了コード `10`、mcpdo connection client の Addressing a connection、Configuration and flags の CLI-only flags の Load test の行に書かれていました。今回はそれが専用のページにまとめられ、記載も広がっています。上で挙げたフラグのうち、`--load-scenario`・`--load-steps`・`--load-ramp`・`--load-open-loop`・`--load-baseline`・`--load-churn`・`--load-subscribe`・`--load-workers`・`--load-warmup`・`--load-args-file`・`--load-max-p50`・`--load-max-p95`・`--load-min-throughput` などは、base の `llms-full.txt` には出てきません。Web client の Load test ボタンも、base には記載がありませんでした。
-
-- [Load testing - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/load-testing)
-- [MCP Inspector - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector#where-to-go-next)
-
-## 2. CLI と mcpdo と設定のページの負荷テストの記述が Load testing に集約された
-
-負荷テストに触れていた既存の 4 ページが、新しい Load testing のページを指すように書き換わりました。
-
-**CLI client**（追加 16 行・削除 3 行）
-
-- Methods の表で、`tools/call` の行の注記の欄（base では空）に「`--load` で繰り返し呼ぶ（Load testing を参照）」が入った
-- Probing MCP Apps と Exit codes and error envelopes の間に「Load testing a tool」の節が新設された。`--load` は 1 つのツール（またはツール・リソース・プロンプトの重み付きの組み合わせ）を繰り返し同時に呼び、結果の代わりにレイテンシとエラー率の要約を出すこと、p99 が 250 ms を超えたらジョブを失敗させる例、完了した実行はエラー率にかかわらず `0` で終わり、しきい値かベースラインを設定したときだけ違反で `10` になること、Ctrl+C では完了した分の要約を出して `130` で終わること、が書かれている
-- Exit codes and error envelopes の表で、`10` の説明が「`--load-max-error-rate` か `--load-max-p99` のしきい値を破った」から「しきい値か、ベースラインの許容幅を破った」になり、エンベロープの `code` の例に `load_regression` が加わった。また、`130`（`--load` の実行が Ctrl+C か SIGTERM で中断された。`code` は `interrupted`。完了した分の要約を先に出す）の行が加わった
-- Recipes の CI gates で、`--load-max-error-rate` と `--load-max-p99` の項目が、`--load-max-error-rate`・`--load-max-p50`・`--load-max-p95`・`--load-max-p99`・`--load-min-throughput` と、`--load-baseline` と `--load-max-regression` の組を挙げる短い説明になり、Load testing の Thresholds と Comparing against a baseline を指すようになった。base でこの項目に書かれていた `--load` 自体の説明（`--load-duration`・`--load-requests`・`--load-concurrency`・`--load-connections`・`--load-rate` とその既定値）はここからなくなり、Load testing の From the command line と Multiple sessions の節に書かれている
-
-**mcpdo connection client**（追加 12 行・削除 1 行）
-
-- Addressing a connection で、`tools/call` が CLI の `--load` 系のフラグを受け付けることを述べた段落（8 つのフラグの列挙と、`--load-connections` は保存済みの資格情報だけで追加のセッションを開くこと、など）が、「`tools/call --load` は接続を通じてツールの負荷テストを行う。Load testing を参照」の 1 文になった
-- Tasks と Output の間に「Load testing」の節が新設された。`tools/call --load` は CLI の負荷テストのモードを開いている接続に対して動かすもので、フラグ・既定値・しきい値・要約のフィールドは CLI と同じであること、実行はデーモンの中で行われるので同じ接続へのあとのコマンドは終わるまで待つこと、Ctrl+C は実行中の呼び出しを取り消して要約を出さないこと、が書かれ、詳しくは Load testing の On an mcpdo connection を指す
-
-**Configuration and flags**（追加 1 行・削除 1 行）: CLI-only flags の表の Load test の行が、8 つのフラグの列挙（参照先は CLI client の CI gates）から、「`--load` と、実行の形を決め結果を判定する `--load-*` のフラグ（`--load-concurrency`・`--load-duration`・`--load-rate`・`--load-scenario`・`--load-max-p99` など）」になり、参照先が Load testing になりました。
-
-**MCP Inspector**（追加 5 行）: Where to go next のカードに、mcpdo connection client と Security の間に Load testing が加わりました。説明は「Concurrent and sustained load from the web client, the CLI, or mcpdo, with CI thresholds and baselines.」です。
-
-- [CLI client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#load-testing-a-tool)
-- [CLI client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#exit-codes-and-error-envelopes)
-- [mcpdo connection client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#load-testing)
-
-## 3. Web client にセッションを一覧して終了させる Active sessions の節が加わった
-
-Web client（追加 37 行・削除 2 行）に、2 つの記載が加わりました。
-
-**Active sessions**（The tab bar と Servers の間に新設）
-
-- Web バックエンドは各接続をセッションとして保持しており、セッションはそれを開いたタブより長く残ることがある。タブを閉じたり再読み込みしたりすると、バックエンドはセッションを 60 秒保持し（再読み込みや OAuth のリダイレクトのあとに引き継げるように）、その後に閉じる。stdio サーバーのプロセスもそこで終わる
-- **Active Sessions** は、すべてのタブのセッションを一覧するもので、タブより長く残ったセッションや、サーバーがクラッシュしたセッションを見つけ、Inspector を再起動せずに終わらせるためにある。ヘッダーの、切断ボタンと **Client settings** の間にある **Active sessions** ボタンで開く
-- 各行には、サーバーとセッション ID、トランスポート、状態、作成時刻、最後にタブがつながった時刻（`now` か `never`）、タブが受け取るのを待っているイベントの数が出る。状態は次の 4 つ
-
-| 状態 | 意味 |
-|---|---|
-| This tab | このタブが使っているセッション（Attached も表示される） |
-| Attached | いまタブがつながっている |
-| Detached | つながっているタブが無い。タブがつなぎ直すか、バックエンドがセッションを閉じるまで、イベントはたまっていく |
-| Closed | セッションのトランスポートが終わっている（終了またはクラッシュした stdio サーバーのプロセスなど） |
-
-- **Terminate** はセッションの接続を閉じ（stdio サーバーのプロセスも終わる）、一覧から外す。まだつながっているタブには、接続が終了されたことが伝わる。更新ボタンで一覧を読み直せる
-- 一覧と終了はバックエンドのルート `GET /api/mcp/sessions` と `DELETE /api/mcp/sessions/<id>` で行い、ほかの `/api` のルートと同じく、セッショントークンが要る
-- ボタン、一覧、終了後の一覧の 3 枚のスクリーンショットが付いている
-
-**Tools の Load testing**
-
-- Tools の節のスクリーンショットが差し替わり、説明文が「ツールの呼び出しとその結果」から「必須の引数（city と units）を入れ、実行か負荷テストを始められる状態のフォーム」になった
-- 「Load testing」の小節が加わった。ツールの **Execute Tool** の隣にある **Load test** ボタンでパネルを開き、そのタブの接続を使ってツール（または貼り付けたシナリオ）を繰り返し同時に呼び、レイテンシとエラー率の要約を表示する。詳しくは Load testing の In the web client を指す
-
-- [Web client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#active-sessions)
-- [Web client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#load-testing)
-
-## 4. Build an MCP server のサンプルがツールの失敗をエラーとして返すようになった
-
-Build an MCP server は、天気予報と気象警報を返すサーバーを 8 つの言語（Python・TypeScript・Java・Kotlin・C#・Ruby・Rust・Go）のタブで作るチュートリアルです。今回の変更は追加 44 行・削除 27 行（計 71 行）で、Ruby を除く 7 つのタブと、タブの後ろの Test with commands が変わりました。
-
-もっとも大きいのは、天気の API からデータを取得できなかったときの返し方です。base では、失敗を知らせる文字列を普通のツールの結果として返していましたが、今回はエラーとして返すようになりました。
-
-| 言語 | base | 今回 |
+| フィールド | 必須 | 内容 |
 |---|---|---|
-| Python | `return "Unable to fetch ..."` のように文字列を返す | `ToolError` を送出する（`mcp.server.mcpserver.exceptions` から import）。予報の期間が空のときも `ToolError` |
-| TypeScript | `content` だけの結果を返す | 5 つのエラーの結果に `isError: true` を付ける |
-| Kotlin | 引数が足りないとき、`content` だけの結果を返す | 2 つの結果に `isError = true` を付ける |
-| Go | `Content` だけの `CallToolResult` を返す | 5 つの結果に `IsError: true` を付ける |
+| `eventId` | はい | 上流のイベントの安定した識別子。購読の中での重複排除に使う |
+| `name` | はい | イベントの種類の名前 |
+| `timestamp` | はい | 出来事が起きた時刻（ISO 8601） |
+| `data` | はい | `payloadSchema` に従うデータ |
+| `cursor` | いいえ | このイベントの後の購読の位置。push と webhook だけで、poll では応答の側に置く。再生に対応しない種類では `null` |
+| `_meta` | いいえ | プロトコルと拡張のメタデータ用。`payloadSchema` の対象外 |
 
-Python と Go の警報の取得の失敗のメッセージは、「Unable to fetch alerts or no alerts found.」から「Unable to fetch alerts.」になりました。警報が 1 件も無いときは、これまでどおり別のメッセージ（Python は「No active alerts for this state.」）を返します。
+`eventId` は、上流に安定した識別子（Stripe の `evt_*`、GitHub の配信 GUID、Kafka のオフセット、Gmail のメッセージ ID など）があればそれを使うべき（SHOULD）とされ、webhook と poll のように別の経路で同じ出来事が届いても重複として除けます。重複排除の範囲は購読（`name` と `arguments`）ごとで、同じ `eventId` が 2 つの購読に届くのは重複ではありません。
 
-言語ごとのそのほかの変更は次のとおりです。
+**購読の状態はクライアントが持ちます。** サーバー上の購読を一覧するメソッドは無く、クライアントが自分の購読の一覧を管理し、webhook の冪等な `events/subscribe` や、保存したカーソルからの poll・push の再開で、いつでもサーバー側の状態を作り直せます。
 
-- **Python**: `httpx2.AsyncClient` に `follow_redirects=True` を付けた。警報の URL で、州コードを `state.upper()` で大文字にするようになった
-- **TypeScript**: `package.json` の `build` スクリプトの `chmod 755 build/index.js` が、`node -e "require('fs').chmodSync('build/index.js', '755')"` になった（Build an MCP client も同じ）。警報の URL が `/alerts?area=` から `/alerts/active?area=` になった。気温の表示で `period.temperature || "Unknown"` が `??` になった（`??` は `0` をそのまま残す）
-- **Java（Spring AI）**: Gradle の依存関係の書き方が `implementation platform("...")` から `implementation "..."` になった。`MethodToolCallbackProvider` の説明で、`@Tools` が「`@Tool` methods」になった。Windows 向けの Claude for Desktop の設定で、`-Dspring.ai.mcp.server.transport=STDIO` が `-Dspring.ai.mcp.server.stdio=true` になり、jar のパスから余分な `weather\\` が外れた（macOS/Linux 向けの設定は base の時点で `stdio=true`）。設定の説明のサーバー名は「my-weather-server」から設定と同じ「spring-ai-mcp-weather」に、起動コマンドは `-Dspring.ai.mcp.server.stdio=true` 付きになった。Java クライアントで動かす例でも同じ指定が `args` に入り、緯度・経度は文字列から数値になった
-- **Kotlin**: 警報の URL で、州コードを `uppercase()` で大文字にするようになった
-- **C#**: Prerequisite knowledge と System requirements の .NET が 8 から 10 になった（ダウンロードのリンクも `dotnet/10.0`）。`dotnet add package ModelContextProtocol` から `--prerelease` が外れた。警報の URL で、州コードを `ToUpperInvariant()` で大文字にするようになった。Claude for Desktop の設定の説明の起動コマンドが、`dotnet run /ABSOLUTE/PATH/TO/PROJECT` から、設定と同じ `dotnet run --project /ABSOLUTE/PATH/TO/PROJECT --no-build` になった
-- **Rust**: `get_info` の説明で、`server_info` を設定する意味が「`initialize` の応答でサーバー自身の名前とバージョンを返す」から「`rmcp` クレートの名前とバージョンではなく、サーバー自身のものを報告させる」になった
-- **共通（Test with commands）**: 「`weather` servers listed」が「your weather server listed」になった
+**Working Group と育成の場**: 拡張は Triggers & Events Working Group が所有し、Extension Maintainer はその Lead（現在は Clare Liguori 氏と Peter Alexander 氏）とされています。拡張は `experimental-ext-triggers-events` リポジトリで育成（incubate）されており、本文には「この SEP が採択されたら、仕様は SEP-2133 のとおり公式の拡張リポジトリで公開される」とあります。なお、収録されている「Tasks and Events Charter」（今回は変更なし）の Changelog によると、この WG は 2026年10月16日 に Tasks and Events WG へ改称されており、SEP が張る WG の charter へのリンク（`/community/triggers-events/charter`）は、公式サイトでは現在の `community/working-groups/tasks-events` へ転送されます。同じ charter の Active Work Items では、「SEP: Events in MCP v1 RFC」が Ideating のまま据え置かれています。
 
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-tool-execution)
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-tool-execution-2)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#abstract)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#capability-negotiation)
 
-## 5. 仕様 2026-07-28 の例と表がリクエストごとのメタデータの規則に揃った
+## 2. 配信方式は poll と push と webhook の 3 つでどれも必須ではない
 
-仕様 2026-07-28 のページで、`_meta` に関わる表・例・リンクが直りました。
+イベントの種類は、対応する配信方式を `delivery` に `"poll"`・`"push"`・`"webhook"` の空でない部分集合として挙げます。どの方式も必須ではなく、挙げられた方式をどれも使えないクライアントは、その種類を購読できません。方式を選んでループを回すのはクライアントの SDK で、モデルには届いたイベントだけが見えます。
 
-- **Overview（`specification/2026-07-28/basic/index`）の `_meta`**: 予約キーの表に `io.modelcontextprotocol/serverInfo`（Server name and version。Defined in は Per-response protocol fields）の行が加わった。Per-response protocol fields の段落と表（サーバーはすべての結果の `_meta` に `serverInfo` を含めるべき、とするもの）は base の時点からあり、予約キーの表にだけ載っていなかった。また、OpenTelemetry のトレースコンテキストの非規範的な例（`tools/call` のリクエスト）の `_meta` に、`traceparent` に加えて `io.modelcontextprotocol/protocolVersion`・`io.modelcontextprotocol/clientInfo`・`io.modelcontextprotocol/clientCapabilities` が入った
-- **Versioning and Compatibility の Extension Negotiation**: MCP Apps 拡張（`io.modelcontextprotocol/ui`）を広告するクライアントの例が、`capabilities` の下に `roots` と `extensions` を置く形から、`_meta` の `io.modelcontextprotocol/clientCapabilities` の下に `extensions` を置く形になった（`roots` は例から外れた）。Tasks 拡張の例の前置きは、「An example of Tasks extension」から「`server/discover` の結果で Tasks 拡張を広告するサーバーの例」になった。例そのものは変わっていない
-- **Streamable HTTP**: Standard Request Headers の 2 つと Schema Extension の 1 つ、計 3 つの HTTP リクエストの例に、`Host: example.com` と `Accept: application/json, text/event-stream` の行が加わった
-- **Architecture の Capability Negotiation**: クライアントとサーバーが「リクエストごとに」機能を宣言する、という文から「on each request」が外れた。続く文のとおり、クライアントは毎回のリクエストの `_meta` で、サーバーは `server/discover` への応答で、機能を宣言する
-- **`_meta` 節へのリンク**: 13 ページの 17 か所で、`basic/index` の `_meta` 節を指すリンクのアンカーが `#meta` から `#_meta` になった（Extensions Overview の 1 か所は `specification/draft/basic/index` を指す）。公式サイトの HTML でのこの節の id は `_meta` で、書き換え後のアンカーと一致する。同じように、Tools の Security Considerations にある `$ref` の解決の要件へのリンクは `#ref-resolution` から `#\$ref-resolution` に、Resources の Reading Resources にある Common URI Schemes へのリンクは `#https%3A%2F%2F` から `#https//` になった（HTML の id はそれぞれ `$ref-resolution` と `https//`）
+| 方式 | 購読の始め方 | 終わらせ方 | サーバーの状態 |
+|---|---|---|---|
+| poll | 購読ごとに `events/poll` を繰り返す。別の購読手続きは無く、最初の `null` のカーソルで始まる | 呼ぶのをやめる | プロトコル上は持たない |
+| push | 購読ごとに長く開いておく `events/stream` リクエスト | リクエストを閉じるか取り消す | リクエストが開いている間だけ |
+| webhook | `events/subscribe` でコールバック URL を登録し、期限までに呼び直して延長する | `events/unsubscribe` か、延長をやめて期限切れにする | 購読ごとに期限（TTL）付きで保持 |
 
-アンカーが変わった 13 ページは、Versioning（`docs/2026-07-28/learn/versioning`）、Debugging、Multi Round-Trip Requests、Transports の Overview、stdio、Versioning and Compatibility（2 か所）、Schema Reference（4 か所）、Prompts、Resources、Tools、Completion、Pagination、Extensions Overview です。
+**poll（`events/poll`）**: 1 回のリクエストは 1 つの購読を運び、購読が複数あれば購読ごとにループを回します。リクエストは `name`・`arguments`・`cursor` と、任意の `maxAgeMs`・`maxEvents` で、応答は `events`・`cursor`・`truncated`・`hasMore`・`nextPollMs` です。`hasMore` が `true` なら `nextPollMs` を無視してすぐに次を呼ぶべき（SHOULD）で、`false` なら `nextPollMs` だけ待ちます。`nextPollMs` はサーバーの推奨で、クライアントはそれより間隔を空けてもよく、誤動作するサーバーに短い間隔で呼ばされないよう、設定できる下限（既定 1000 ms）を設けるべき（SHOULD）とされています。空の `events` は「何も起きていない」ことを表し、これが通常の場合だとしています。
 
-- [Overview - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta)
-- [Versioning and Compatibility - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning#extension-negotiation)
-- [Streamable HTTP - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#standard-request-headers)
+**push（`events/stream`）**: Streamable HTTP では SSE の応答を返す POST、stdio では stdin に書くリクエストで、イベントは JSON-RPC の通知として届きます。サーバーは最初に `notifications/events/active`（カーソル・`truncated`・与えるハートビートの間隔）で購読を確認し、その後 `notifications/events/event` でイベントを届けます。一時的な失敗は `notifications/events/error` で知らせて購読は続き、購読を終わらせるのは `notifications/events/terminated` だけです。どの通知も `params._meta["io.modelcontextprotocol/subscriptionId"]` に元の `events/stream` の JSON-RPC の `id` を持つので、stdout を共有する stdio でも複数のストリームを振り分けられます。取り消しは、Streamable HTTP ではリクエストのストリームを中断し、stdio では `notifications/cancelled` を送ります。
+
+- **ハートビート**: サーバーは push のストリームで定期的に `notifications/events/heartbeat` を送らなければならない（MUST）。これにはサーバーが確認済みの位置の `cursor` が入り、該当するイベントが無くてもクライアントのカーソルが進む。SSE のコメント形式（`: keepalive`）はカーソルを運べないので使わない
+- **間隔**: クライアントが `heartbeatMs` で提案し、サーバーが `notifications/events/active` で与える値が優先される。提案が無ければサーバーが決め、推奨の既定は 30 秒。与えられた間隔の 3 倍のあいだ何も届かなければ、クライアントはストリームが切れたものとしてカーソルを持って接続し直すべき（SHOULD）
+- **同時のストリーム**: 購読ごとに 1 本で、HTTP/1.1 では 1 本が TCP 接続を 1 つ使うため、購読の多いクライアントは事実上 HTTP/2 の多重化に頼る。サーバーの SDK は、同時リクエスト数の一般的な上限から `events/stream` を除外しなければならない（MUST）
+
+webhook の詳細はハイライト 3 で扱います。
+
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#delivery-modes)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#poll-based-delivery)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#push-based-delivery)
+
+## 3. webhook は署名と TTL とエンドポイントの確認で守られる
+
+webhook は、長く開いておく接続（push）や頻繁な poll が難しいリモートのサーバー向けの方式で、サーバーはクライアントが渡したコールバック URL へイベントを POST します。コールバック先はクライアント自身でなくてもよく、webhook を受けて poll や push でクライアントに渡すフォワードプロキシを置く構成が、よくある形として挙げられています。
+
+**購読（`events/subscribe`）**: リクエストは `name`・`arguments`・`delivery`（`mode`・`url`・`secret`）・`cursor`・`maxAgeMs`・`ttlMs` で、応答は `id`・`refreshBefore`・`cursor`・`truncated` です。同じ購読キーで呼び直すと TTL が延び、変更できるフィールドが更新されます（冪等）。延長の応答には、配信の状況を示す `deliveryStatus`（`active`・`lastDeliveryAt`・`lastError` など）を含めてよい（MAY）とされています。
+
+- **購読キー**: `(principal, delivery.url, name, arguments)` の 4 つで、どれも購読の間は変えられない。`events/subscribe` と `events/unsubscribe` は認証済みの主体で呼ばなければならず（MUST）、主体の無い呼び出しは `Forbidden` で拒否する。認証の無い MCP サーバーは poll と push を提供できるが、webhook は提供できない
+- **`id`**: サーバーがキーから決定的に導く値で、配信の振り分けにだけ使う。すべての POST の `X-MCP-Subscription-Id` ヘッダーに入るが、どのメソッドの入力としても受け付けず、知っていても何の権限にもならない
+- **秘密鍵**: `delivery.secret` は必須（REQUIRED）で、`whsec_` の後に 24〜64 バイトの乱数の base64 を続けた Standard Webhooks の形式でなければならない。サーバーはそれ以外を `InvalidParams` で拒否し、自分では生成しない。鍵の更新はクライアントが延長の際に新しい値を渡して行い、サーバーは短い猶予の間、新旧の両方で署名すべき（SHOULD）
+
+**TTL**: クライアントは `ttlMs` で寿命を提案し（省略はサーバーの既定、`null` は期限なしの要求）、サーバーが `refreshBefore`（ISO 8601 の時刻、または `null`）で期限を与えます。与える期限は提案以下であるべき（SHOULD）ですが、短すぎる提案をサーバーの最小値まで引き上げることは認められています（MAY）。`refreshBefore: null`（期限なし）は、クライアントが `ttlMs: null` を提案した場合にしか返してはならず（MUST NOT）、期限なしを与えたサーバーは再起動をまたいで購読を保持しなければなりません（MUST）。有限の期限については、数分から 1 日程度でほとんどの配備をまかなえるとしています。
+
+**配信**: POST には Standard Webhooks の `webhook-id`・`webhook-timestamp`・`webhook-signature` と、MCP 独自のヘッダーとしては唯一の `X-MCP-Subscription-Id` が付きます。署名は `HMAC-SHA256(secret, webhook-id + "." + webhook-timestamp + "." + body)` を base64 にして `v1,` を前置したもので、受信側は受け取ったままの本文のバイト列で計算しなければなりません（MUST）。受信側は処理の前に署名を検証しなければならず（MUST）、`webhook-timestamp` が 5 分より古い配信は拒否すべき（SHOULD）とされています。
+
+- **再試行**: `2xx` 以外の応答には、イベントごとに独立して指数バックオフで再試行する。回数と期間の両方に上限を設けるべき（SHOULD）で、例として「3〜5 回を 10〜15 分以内」が挙がっている。受信側が再試行を望まないときは `410 Gone` を返し、サーバーはそれを再試行しない失敗として扱わなければならない（MUST）
+- **本文のカーソル**: 配信の本文の `cursor` は、それ以前のイベントがすべて受け付けられたか見切られた位置（安全に保存できる水位線）で、イベント自身の位置ではない。そのため配信が順不同で届いても、クライアントが危険なカーソルを保存することはない
+- **制御用の本文**: イベントのほかに、`type` を持つ制御用の本文 `gap`（カーソルの欠落を知らせる）・`terminated`（購読の終了）・`verification`（エンドポイントの確認）の 3 種類を POST する
+
+**エンドポイントの確認**: クライアントが渡す HMAC の秘密鍵で偽の配信は見抜けますが、攻撃者が被害者の URL を自分の鍵で購読させれば、被害者は POST を浴び続けます。そこでサーバーは、エンドポイントに受け取る意思があることを次のいずれかで確かめるまで、そのコールバック URL への配信を始めてはなりません（MUST NOT）。
+
+1. 一度きりの短命な `challenge` を載せた `verification` の本文を POST し、エンドポイントが `2xx` の本文でそれを返す
+2. サーバーに設定した許可リスト（allowlist）に URL が合う
+3. サーバー自身の仕組み（ダッシュボードでの登録と確認など）で URL を事前に確認済み
+4. コールバック URL の `https` のオリジンが `/.well-known/mcp-webhook-receiver.json` を公開し、受け付けるパスの接頭辞を宣言している
+
+確認の結果は `(principal, url)` ごとに保持されます。
+
+**その他の安全策**: コールバック URL は `https://` でなければならず（MUST）、それ以外は `InvalidParams` で拒否します。SSRF を防ぐため、サーバーはコールバック URL を検証しなければならず（MUST）、解決した IP が IANA の特殊用途アドレスのレジストリに照らしてグローバルにルーティングできないものは拒否すべきです（SHOULD）。DNS rebinding を防ぐため、この検証は購読時だけでなく配信時にも行わなければならず（MUST）、配信のリクエストは HTTP のリダイレクトをたどってはなりません（MUST NOT）。`deliveryStatus.lastError` は 6 つの決まった分類（`connection_refused`・`timeout`・`tls_error`・`http_4xx`・`http_5xx`・`challenge_failed`）の文字列でなければならず、エンドポイントの応答の本文やヘッダーを含めてはなりません（MUST NOT）。任意で、ed25519 の非対称鍵による署名（`v1a,`）を HMAC の署名に添えてよく（MAY）、検証用の公開鍵はサーバーの Server Card で公開します（この置き場所は ext-server-card#55 に依存）。
+
+**購読の解除（`events/unsubscribe`）**: 購読は延長をやめれば期限切れになるので、解除は正しさのためには必須ではなく、サーバーの資源をすぐに解放して配信を止めるためのものです。期限なしの購読では、クライアントから片付ける手段はこれだけです。
+
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#webhook-based-delivery)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#subscription-ttl)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#webhook-security)
+
+## 4. カーソルで再開でき欠落は truncated で知らせる
+
+**カーソル**はサーバーが管理する不透明な文字列で、イベントの流れの中の位置を表します。どの方式でも `cursor: null` を渡すと「今から」の意味になり、過去のイベントは再生されません。`cursor` フィールドが無いことは、明示的な `null` と同じに扱わなければなりません（MUST）。
+
+- **再生は種類ごとに任意**: 上流が push だけで履歴を持たない場合などは、サーバーはどの配信でも `cursor: null` を返してよい（MAY）。受け取ったクライアントはそれを保存したり、そこから再生しようとしたりしてはならず（MUST NOT）、切断中のイベントは取り戻せないものとして受け入れる。サーバーは種類ごとに一貫させるべき（SHOULD）とされる
+- **イベントが無くてもカーソルが進む**: 上流の保持期間からカーソルが外れないよう、poll は空の結果でも、push はハートビートで、webhook は延長の応答で `cursor` を返す
+- **`maxAgeMs` による再生の下限**: 3 つの方式とも、`cursor` と並べて任意の `maxAgeMs`（ミリ秒）を受け付ける。サーバーは「渡された `cursor`」と「現在 − `maxAgeMs`」の遅いほうから再生を始める。たとえば 1 週間オフラインだったホストも、`maxAgeMs: 300000` を付ければ直近 5 分ぶんだけを受け取れる。再生の範囲を件数で区切る仕組み（「最新の N 件」）は設けていない
+
+**欠落と `truncated`**: `truncated: true` は、サーバーがクライアントのカーソルより後ろの位置から配信を始めた（イベントが飛んだ）ことを示す唯一の合図で、原因（上流の保持期間切れ、`maxAgeMs` の下限、サーバー自身の再生の上限）は区別しません。サーバーは配信できる位置に戻して新しいカーソルとともに返し、そのまま続けます。クライアントはこれを受けて接続し直したり購読し直したりはせず、欠落がありうるものとして扱い、必要ならツールで正しい状態を取り直すべき（SHOULD）とされています。
+
+| 方式 | `truncated` が現れる場所 |
+|---|---|
+| poll | 結果の本文。JSON-RPC のエラーにはしない |
+| push | `notifications/events/active`。最初と、途中で欠落が起きたときに送り、同じストリームで配信を続ける |
+| webhook | 購読・延長の応答。延長の合間に欠落を見つけたときは `gap` の本文を POST する |
+
+**購読の終了**: 主体のアクセス権が取り消されたときや、イベントの種類が削除されたり互換性を壊す形で変わったりしたとき、サーバーは購読を終わらせます。合図は、push では `notifications/events/terminated`、poll では次の `events/poll` への JSON-RPC のエラー、webhook では署名付きの `terminated` の本文で、どれも同じ形の `error` を持ちます。種類の削除では `NotFound`、互換性を壊す変更では `Unsupported` を使い、アクセス権は変わっていないので `Forbidden` にはしません。この場合、クライアントの SDK は認可の失敗とは扱わず、`events/list` を取り直して購読し直します。
+
+**順序と配信の保証**: この拡張は、イベントの順序、ちょうど 1 回の配信、トランザクションの一貫性を、プロトコルとしては保証しません。用意するのは、再開のためのカーソル、購読の中での重複排除のための `eventId`、購読ごとの順序（poll と push はサーバーが生み出した順。webhook はイベントごとに再試行されるためベストエフォート）、そして上流が永続的でクライアントが最後のカーソルから再開する場合の「少なくとも 1 回」の配信です。カーソルで辿れる履歴が上流に無く、受け取ったイベントを `server.emit()` で流すだけの種類（emit-only）は、サーバーの再起動をまたぐと「高々 1 回」になります。購読をまたいだ順序は、どの方式でも保証されません。
+
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#cursor-lifecycle)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#ordering-and-delivery-guarantees)
+
+## 5. 汎用のエラーコード 5 つとルーティング用のヘッダーが盛り込まれた
+
+**エラー処理**: SEP-3415 が使うエラーは次の 6 つで、`InvalidParams` 以外の 5 つが新しいコードです。
+
+| 名前 | コード | 意味 |
+|---|---|---|
+| `InvalidParams` | `-32602` | リクエストが静的に不正。引数が `inputSchema` に合わない、`delivery.url` が不正か `https` でない、`delivery.secret` が正しい `whsec_` の値でない。標準の JSON-RPC のコード |
+| `NotFound` | `-32023` | 参照先が無い。未知のイベント名や、`events/unsubscribe` でキーに合う購読が無い場合。`data.kind`（`"event"` か `"subscription"`）で区別してよい |
+| `Forbidden` | `-32024` | 認証済みの主体に、このイベントと引数の組み合わせが許されていない、またはアクセス権が取り消された |
+| `ResourceExhausted` | `-32025` | サーバーの上限や割り当てに達した。`data.limit` がその名前（例: `"subscriptions"`） |
+| `Unsupported` | `-32026` | 形式は正しいが、求めた機能やオプション（イベントの種類が提供しない配信方式など）に対応していない |
+| `CallbackEndpointError` | `-32027` | クライアントが渡したコールバックのエンドポイントが確認に失敗したか、到達できなかった（webhook だけ）。`data.reason` は `lastError` の分類のいずれか |
+
+新しい 5 つはイベント専用ではなく、MCP 全体で使い回せる汎用のコードとして名付けられ、詳細は型付きの `data` で伝えます。Rationale によると、以前の草案ではイベント専用のコードを 7 つ作っていました。コードの割り当てについては、コア仕様が JSON-RPC の実装定義の範囲を分けており、`-32000`〜`-32019` は実装に任せて仕様では定義せず、`-32020`〜`-32099` は仕様が順に割り当てる、と説明しています。SEP-3415 はその次の 5 つを求めるもので、表の番号は、採択の時点で割り当て済みのコードが `-32020`〜`-32022` だけであることを前提にした、採択までの暫定のものとされています。新しいコードを割り当てるか、`InvalidParams` に型付きの `data` を付ける形にまとめるかは、Open Questions にも挙がっています。
+
+**Streamable HTTP のルーティング用ヘッダー**: `events/poll`・`events/stream`・`events/subscribe`・`events/unsubscribe` を Streamable HTTP で送るとき、クライアントは `Mcp-Name` ヘッダー（SEP-2243 で定義）に `params.name`（イベント名）を入れなければなりません（MUST）。コアのプロトコルが `tools/call` や `prompts/get` に使うのと同じ扱いで、中継やロードバランサーが本文を解析せずにイベントの種類で振り分けや流量制限をできるようにするためです。`params.name` を持たない `events/list` には `Mcp-Name` を付けません。また、サーバーはイベントの種類の `inputSchema` のプロパティに、ツールの引数と同じ `x-mcp-header` の注釈を付けてよく（MAY）、Streamable HTTP のクライアントは、値のある注釈付きの引数ごとに `Mcp-Param-{Name}` ヘッダーを付けなければなりません（MUST）。ヘッダーが本文と合わなければ、サーバーは HTTP `400 Bad Request` と `HeaderMismatch`（`-32020`）で拒否します。
+
+**予約**: `events/` のメソッドの接頭辞と `notifications/events/` の通知の接頭辞、`io.modelcontextprotocol/events` のラベル、`subscriptions/listen` の通知フィルタの `eventsListChanged` フィールド、HTTP ヘッダーの `X-MCP-Subscription-Id` と well-known のパス `/.well-known/mcp-webhook-receiver.json` が、この拡張のために予約されています。
+
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#error-handling)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#streamable-http-routing-headers)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#reservations)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Load testing**](#1-load-testing) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/load-testing)):  
-  MCP Inspector の負荷テストを、Web client・CLI・mcpdo の 3 つの入口と、要約のフィールド・シナリオ・段階的な負荷・しきい値とベースライン比較・複数のセッションなどの節で説明する 412 行のページ（詳細はハイライト 1 参照）。
+- [**SEP-3415: Events Extension**](#1-sep-3415-events-extension) ([MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension)):  
+  MCP クライアントが外部のシステムの出来事を購読するための Events 拡張を定める Extensions Track の SEP（Final、作成 2026年10月05日、1,284 行）。索引 `llms.txt` にもエントリが加わった（詳細はハイライト 1〜5 参照）。
 <!-- light:new-pages:end -->
 
-## 1. Load testing
+## 1. SEP-3415: Events Extension
 
-`docs/2026-07-28/tools/inspector/load-testing` に置かれた 412 行のページで、見出しは 17 個（すべて `##`）です。索引 `llms.txt` には、`docs/2026-07-28/` 版と `docs/draft/` 版の 2 つのエントリが、どちらも mcpdo connection client と Configuration and flags の間に加わりました。本文 `llms-full.txt` に収録されたのは `docs/2026-07-28/` 版だけで、パスの順どおり Configuration and flags と mcpdo connection client の間に入っています。
+SEP-3415 は 1,284 行のページで、タイトルを除く見出しは 62 個（`##` が 10・`###` が 30・`####` が 22）です。Abstract・Motivation・Specification（Extension Identifier から Reservations まで 16 の節）・Rationale・Backward Compatibility・Security Implications・Reference Implementation・Open Questions と、付録の Appendix A（SDK の指針）・Appendix B（GitHub を例にした通しの例）から成ります。本文 `llms-full.txt` ではファイルの末尾（それまで最後だった SEP-3398 の後ろ）に、索引 `llms.txt` では SEP-3392 と SEP-3398 の間に、SEP の索引ページの表では先頭の行に置かれています。仕様の中身はハイライト 1〜5 で扱ったので、ここではそれ以外の要点をまとめます。
 
-本文は、Web client・CLI・mcpdo の 3 つの入口から同じエンジンを使うことを表で示したあと、In the web client、From the command line、The summary と続き、Watching a run から On an mcpdo connection までの節で、フラグのグループごとに使い方と制約を説明しています。Web client・CLI client・mcpdo connection client・MCP Inspector・Configuration and flags の各ページから、このページへのリンクが張られました（詳細はハイライト 1〜3 参照）。
+**動機（Motivation）**: MCP は要求駆動で、誰も尋ねていないときに起きること（新着メール、リポジトリへの push、本番のインシデントなど）にエージェントが応じる必要が増えているのに、サーバーが「何を監視でき、どの引数で、何が届くか」を示す標準の方法がありません。既存の通知は、URI やリストが変わったことを伝えるだけで引数もデータも持たず、開いた `subscriptions/listen` のストリームでしか届かず、カーソルが無いので切断中の出来事は失われる、と説明しています。また、接続を保てないステートレスなサーバー、公開のエンドポイントを持てない NAT の内側のクライアント、poll すべきでない電池やコストに敏感なクライアントと、イベントを必要とする配備がばらばらなので、配信方式を 3 つ定めたとしています。SEP-1686（Tasks）が将来の検討事項として webhook 形式の完了通知を挙げていたことにも触れています。
 
-- [Load testing - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/load-testing)
+**設計の根拠（Rationale）**: 主な判断は次のとおりです。
+
+- 配信方式を 3 つにするのは「1 つのことに 1 つのやり方」という MCP の通常の姿勢に反し、仕様と SDK の面がおよそ 3 倍になるが、どれを外しても実際の利用者を取り残すため、その費用を払う。1 つの方式だけを定めて残りをプロキシで合成する案は退けた
+- push は `subscriptions/listen` のフィルタ（Tasks 拡張の `taskIds` のような形）ではなく、専用の `events/stream` にした。購読ごとに引数・カーソル・確認・欠落の合図・終了のエラーがあり、共有のストリームに載せると項目ごとのエラーの振り分けや部分的な失敗が戻ってくるため
+- `events/poll` と `events/stream` は 1 リクエストに 1 購読で、まとめ送りは HTTP/2 の多重化などトランスポートに任せる
+- リソースの購読を拡張するのではなく、新しい `events/*` のプリミティブにした
+- プロトコルとしてのフロー制御は設けない。ボトルネックは LLM の推論で、TCP のフロー制御、サーバーによる頻度の制御、クライアント側の優先度付けで足りるとする。push で古いカーソルから再接続したときの大量の再生は、既知の課題として挙げている
+- webhook は Standard Webhooks をプロファイルとして採用し、既製の検証ライブラリを使えるようにした
+
+**既存の仕組みとの関係と対象外**: `notifications/resources/updated` は変えず、イベントとツールはアプリケーションの層で組み合わせ（イベントを受けたエージェントがツールを呼ぶなど）、イベントを受けてモデルを呼ぶかどうかはクライアントが決めます。SEP-2495（Event-Driven Tool Invocation）とは補い合う関係としています。この版で対象外とするのは、購読より前からの再生、個々のメッセージキュー（SQS・MQTT・Kafka・Pub/Sub など）との結び付け、引数の複雑な問い合わせ言語、サーバーをまたぐイベントの振り分け、イベントに結び付いたプロンプト、配信の保証、イベントのスキーマのバージョン管理の 7 つです。
+
+**後方互換性**: 拡張は追加だけで、既存のメッセージは変えません。リビジョン `2025-11-25` 以前では定義されません。この SEP に先立つ設計の試作はトップレベルの `events` capability を広告しており、少なくとも 1 つの配備済みのクライアントがそれを読むが、そのキーはこの拡張の一部ではない、と明記しています。
+
+**セキュリティ**: Threat model の表は 14 の脅威（イベントのデータを通じたプロンプトインジェクション、SSRF と DNS rebinding、被害者の URL を購読させる反射・増幅型の DDoS、配信の偽造、秘密鍵の漏洩、テナントをまたいだ購読の改ざんなど）と、それぞれへの対策を挙げています。イベントのデータはツールの結果と同じ注意で扱わなければならず（MUST）、サーバーはデータを最小限（送り主・件名・メッセージ ID のような仕分けに足る項目）に保つべき（SHOULD）とされています。認可は 3 段階で、購読時（呼び出しが認証されていれば権限を確かめなければならない。MUST）、配信時（定期的に確かめ直すべき。SHOULD）、行動時（イベントを受け取っても行動の権限にはならず、エージェントの応答は通常の MCP の認可を通る）です。
+
+**参照実装（Reference Implementation）**: 次の 4 つが挙がっています。公式 TypeScript SDK の [typescript-sdk#3209](https://github.com/modelcontextprotocol/typescript-sdk/pull/3209)（サーバーとクライアントの両方を、3 つの配信方式すべてについて、実験的な `ext/events` のサブパスで実装。レビュー中）、Python SDK をフォークせずにその上で `events/list`・`events/subscribe`・署名付きの webhook 配信を加えた `mcp-webhook-events`（`modelcontextprotocol` の組織の外のリポジトリ）とその相互運用の報告、レビューを受け付けている conformance のスイート（[conformance#521](https://github.com/modelcontextprotocol/conformance/pull/521) のサーバーの 5 シナリオと、その上に積んだ [conformance#541](https://github.com/modelcontextprotocol/conformance/pull/541) のクライアントの 4 シナリオ）、stdio での再起動からの回復についての報告です。
+
+**未解決の問い（Open Questions）**: 6 つあり、クライアントの SDK がイベントをエージェントのフレームワークにどう見せるか、リソースの購読と `list_changed` の通知をイベントとして表し直すか、1 つの購読で複数のイベント名を 1 つのカーソルで扱えるようにするか（採用すると通信上の互換性が壊れる）、タスクの状態の変化をイベントとして出すか、エラーコードを新しく割り当てるか、ストリームの生存確認をコアのプロトコルへ移すか、です。
+
+**付録**: Appendix A（規範ではない SDK の指針）は、サーバーの作者が「カーソル以降の変化を調べる」関数を 1 つ書けば SDK が 3 つの方式すべての配信を受け持つ形を示し、Python の擬似コードで、`@server.event`、`server.emit()` による一斉配信（購読ごとの `match` と `transform` のフック）と特定の購読への配信、カーソルで辿れる履歴が上流に無い種類のためのメモリ上のリングバッファ（`emit_only=True`）、購読の追加と削除のフック（`on_subscribe` と `on_unsubscribe`）、poll の購読をリース（`poll_subscription_ttl`）として扱う方法などを説明しています。クライアントの SDK は、使える方式のうち webhook・push・poll の順に選び、どれも使えなければ `NoCompatibleDeliveryMode` を送出するとしています。Appendix B は、GitHub の API を包む MCP サーバーが、GitHub のリポジトリの webhook で受けたプルリクエストの出来事を MCP の webhook でフォワードプロキシへ届け、プロキシが poll か push でクライアントに渡す構成を、シーケンス図で通しで示しています（図の Redis は例示で、規範ではない）。
+
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#motivation)
+- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#rationale)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Build an MCP server**](#1-build-an-mcp-server) ([MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server)):  
-  天気サーバーのサンプルで、取得の失敗を `ToolError` や `isError` でエラーとして返すようになり、州コードの大文字化、C# の .NET 10 への引き上げ、Spring AI の stdio の指定などが直った（追加 44 行・削除 27 行。詳細はハイライト 4 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページで差分が出たのは SEP の索引ページ（追加 2 行・削除 1 行）だけで、「軽微な更新」で扱います。
 <!-- light:updated-pages:end -->
-
-## 1. Build an MCP server
-
-`docs/2026-07-28/develop/build-server` の更新で、行数は 3,057 行から 3,074 行になりました。8 つの言語のタブのうち Ruby を除く 7 つと、タブの後ろの Test with commands が変わっています。
-
-中心は、天気の API からデータを取得できなかったときに、ツールが結果をエラーとして返すようにしたことで、Python は `ToolError` を送出し、TypeScript・Kotlin・Go は結果に `isError` を付けます。あわせて、各言語のサンプルの細かな点（州コードの大文字化、警報の URL、Gradle の依存関係の書き方、Claude for Desktop の設定とその説明の食い違いなど）が直り、C# の前提は .NET 10 になりました（詳細はハイライト 4 参照）。
-
-- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#implementing-tool-execution)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-既存のページで本文が変わったのは、Build an MCP server を除いて 33 件です。ほかに、SEP 2 ページの収録位置の移動、`llms-full.txt` の先頭の前置き、索引 `llms.txt` の 2 エントリの追加がありました。
-
-**新機能**
-
-- Web client に、Web バックエンドが保持しているセッションを一覧して終了させる Active sessions の節が加わった（詳細はハイライト 3 参照） — [Web client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#active-sessions)
-- Web client の Tools に、Load test ボタンを説明する Load testing の小節が加わり、スクリーンショットとその説明文が差し替わった（詳細はハイライト 3 参照） — [Web client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web#load-testing)
-
-**機能改善**
-
-- CLI client に「Load testing a tool」の節が加わり、Methods の表の `tools/call` の行に `--load` の注記が入った（詳細はハイライト 2 参照） — [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#load-testing-a-tool)
-- CLI client の Exit codes の表で、`10` の説明がしきい値とベースラインの両方に広がり、`130`（`--load` の実行の中断）の行が加わった（詳細はハイライト 2 参照） — [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#exit-codes-and-error-envelopes)
-- CLI client の CI gates で、負荷テストのしきい値の項目が、5 つのしきい値のフラグとベースライン比較を挙げて Load testing を指す説明になった（詳細はハイライト 2 参照） — [CLI client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli#ci-gates)
-- mcpdo connection client の Addressing a connection の `--load` の段落が Load testing への案内の 1 文になり、「Load testing」の節が新設された（詳細はハイライト 2 参照） — [mcpdo connection client](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/mcpdo#load-testing)
-- Configuration and flags の CLI-only flags の表で、Load test の行がフラグの列挙から代表的なフラグの例に変わり、参照先が Load testing になった（詳細はハイライト 2 参照） — [Configuration and flags](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration#cli-only-flags)
-- MCP Inspector の Where to go next に、Load testing のカードが加わった（詳細はハイライト 2 参照） — [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector#where-to-go-next)
-- Build an MCP client で、Python・TypeScript・Kotlin・Ruby・Rust のサンプルが使うモデルが `claude-opus-5` から `claude-haiku-5-5` になった。C# のサンプルも `claude-haiku-5-5` を指定する（追加 19 行・削除 27 行で、50 行に届かないため軽微な更新に分類） — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#imports-and-setup)
-- Build an MCP client の C# のサンプルで、パッケージが `Anthropic.SDK` から `Anthropic` に替わり（`using Anthropic;`）、クライアントを `new AnthropicClient(new() { ApiKey = ... }).AsIChatClient("claude-haiku-5-5")` で作るようになった。モデルの指定は `ChatOptions` の `ModelId` から `AsIChatClient` の引数に移った — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#query-processing-logic-4)
-- Build an MCP client の C# で、System Requirements の .NET が 8.0 から 10.0 になり、`dotnet add package ModelContextProtocol` から `--prerelease` が外れた — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#setting-up-your-environment-5)
-- Build an MCP client の C# の Key Components Explained の Query Processing で、「入力をサーバーに送り、サーバーが処理して応答を返す」という説明が、「入力を Claude に送り、Claude がツールを求めたらクライアントがサーバーで呼び出して結果を Claude に返し、Claude の応答を表示する」になった。Running the Client の、チャットでできることの一覧からは「See tool executions」が外れた — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#3-query-processing-2)
-- Build an MCP client の TypeScript で、`build` スクリプトの `chmod` が Node の `chmodSync` になり、Main Entry Point の使い方の表示が `node index.ts` から `node build/index.js` になった — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#main-entry-point-2)
-- Build an MCP client の Java で、System Requirements の「npx package manager」が「npm」になり、`npm install -g npx` を実行する手順が、`npx` を含む npm を入れる 1 行になった — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#setting-up-your-environment-3)
-- Build an MCP client の Python の Key Components Explained の Query Processing で、「Maintains conversation context」が「Starts a new conversation for each query」になった — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#3-query-processing)
-- Connect to local MCP servers の Troubleshooting で、Windows のログを見るコマンドが `type "%APPDATA%\Claude\logs\mcp*.log"` から PowerShell の書き方の `type "$env:AppData\Claude\logs\mcp*.log"` になった — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#troubleshooting)
-- Connect to local MCP servers の Troubleshooting の「ENOENT error and `${APPDATA}` in paths on Windows」で、設定例が `brave-search` サーバーの断片から、`mcpServers` で囲んだ `filesystem` サーバーの設定（Desktop と Downloads のパスを渡し、`env` に `APPDATA` を置く）になった — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#troubleshooting)
-- Connect to local MCP servers の Next Steps の「Explore other servers」のカードで、リンク先が GitHub の `modelcontextprotocol/servers` から MCP Registry（`https://registry.modelcontextprotocol.io/`）になり、説明が「MCP Registry に公開されたサーバーを見る」になった — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#next-steps)
-- Connect to remote MCP Servers の Next Steps の「Explore available servers」のカードも、リンク先が MCP Registry になり、説明が同じ文になった — [Connect to remote MCP Servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-remote-servers#next-steps)
-- Overview（Base Protocol）の `_meta` で、予約キーの表に `io.modelcontextprotocol/serverInfo` の行が加わり、トレースコンテキストの例に必須の `_meta` フィールドが入った（詳細はハイライト 5 参照） — [Overview](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta)
-- Versioning and Compatibility の Extension Negotiation で、拡張を広告するクライアントの例が `_meta` の `io.modelcontextprotocol/clientCapabilities` の形になり、Tasks 拡張の例が `server/discover` の結果だと明記された（詳細はハイライト 5 参照） — [Versioning and Compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning#extension-negotiation)
-- Streamable HTTP の HTTP リクエストの例 3 つに、`Host` と `Accept` の行が加わった（詳細はハイライト 5 参照） — [Streamable HTTP](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#standard-request-headers)
-- Architecture の Capability Negotiation で、機能を「リクエストごとに」宣言する、という文から「on each request」が外れた（詳細はハイライト 5 参照） — [Architecture](https://modelcontextprotocol.io/specification/2026-07-28/architecture/index#capability-negotiation)
-- Sampling の Creating Messages のリクエストの例から、`"includeContext": "thisServer"` が外れた。同じページは、`includeContext` の値 `"thisServer"` と `"allServers"` を非推奨とし、サーバーはこれらを使うのを避けるべき（SHOULD）としている — [Sampling](https://modelcontextprotocol.io/specification/2026-07-28/client/sampling#creating-messages)
-- Pagination の Request Format の例で、`cursor` が `eyJwYWdlIjogMn0=`（`{"page": 2}`）から `eyJwYWdlIjogM30=`（`{"page": 3}`）になり、直前の Response Format の例の `nextCursor` と同じ値になった — [Pagination](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/pagination#request-format)
-- Authorization（仕様）の Step-Up Authorization Flow の手順 4 が、「新しい認可で元のリクエストを数回まで再試行し、恒久的な認可の失敗として扱う」から、「数回まで再試行し、それでも失敗したら恒久的な認可の失敗として扱う」になった — [Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/index#step-up-authorization-flow)
-- Key Changes の Minor changes の 6 番目（リソースが見つからないときのエラーコードを `-32002` から `-32602` に変える）に、SEP-2164 へのリンクが付いた — [Key Changes](https://modelcontextprotocol.io/specification/2026-07-28/changelog#minor-changes)
+今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（SEP-3415）のほかに、次の変更がありました。
 
 **その他**
 
-- 13 ページの 17 か所で、`_meta` 節を指すリンクのアンカーが `#meta` から `#_meta` になった。Tools の `$ref` の解決へのリンクは `#\$ref-resolution` に、Resources の Common URI Schemes へのリンクは `#https//` になった（詳細はハイライト 5 参照） — [Overview](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta)
-- Inspector の Recipes の Hosting on a network で、「Two further caveats」が「Three further caveats」になった。続く一覧は base の時点から 3 項目（3 つ目は IPv6 リテラルでは MCP Apps が表示できないこと）で、数の書き間違いの訂正 — [Recipes](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/recipes#hosting-on-a-network)
-- Local Server Security の冒頭の段落と Next Steps の Security Best Practices のカードで、「session hijacking」が「state handle hijacking」になった。Security Best Practices の見出し「State Handle Hijacking」に合わせた語 — [Local Server Security](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security)
-- Security Best Practices の Local MCP Server Compromise の Mitigation で、「MCP servers intending for their servers to be run locally」が「MCP server developers intending ...」になった — [Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#mitigation-5)
-- Specification（仕様のトップ）の Features で、Elicitation の説明が「Server-initiated requests for additional information from users」から「Server requests for ...」になった — [Specification](https://modelcontextprotocol.io/specification/2026-07-28/index#features)
-- Overview（Base Protocol）の Error Responses で、「due a malformed request」が「due to a malformed request」になった — [Overview](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#error-responses)
-- Authorization（仕様）の Token Handling で、「a HTTP 401」が「an HTTP 401」になった — [Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/index#token-handling)
-- Resources の Capabilities で、`subscribe` の説明の `subscriptions/listen` と `resourceSubscriptions` がコード表記になり、余分な空白が外れた — [Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#capabilities)
-- Resources の Custom URI Schemes で、「in to account」が「into account」になった — [Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#custom-uri-schemes)
-- Caching の Cacheable Model で、`ttlMs` と `cacheScope` の前のカンマのあとに空白が入った — [Caching](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching#cacheable-model)
-- Caching の Security Considerations で、「initial requests authorization context」が「initial request's authorization context」になり、文末の句読点が整った — [Caching](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching#security-considerations)
-- Multi Round-Trip Requests の Basic Workflow のシーケンス図で、再試行への応答の型が `ToolCallResult` から `CallToolResult` になった — [Multi Round-Trip Requests](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr#basic-workflow)
-- Elicitation の URL Mode Flow のシーケンス図で、`tools/call(id: 2, Accept Response, requestState))` の余分な閉じ括弧が外れた — [Elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#url-mode-flow)
-- SEP-1303: Input Validation Errors as Tool Execution Errors（202 行）と SEP-1319: Decouple Request Payload from RPC Methods Definition（107 行）の 2 ページで、本文 `llms-full.txt` での収録位置が、SEP-1302 の直後（SEP-414 の前）から、Roadmap の直後（SEP-1330 の前）へ移った。移った 309 行は 1 行も変わっておらず、行単位の差分では追加・削除とも 309 行に数えられるが、本文の変更ではない。索引 `llms.txt` での位置（SEP-1302 と SEP-1330 の間）も変わっていない — [SEP-1303](https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors) / [SEP-1319](https://modelcontextprotocol.io/seps/1319-decouple-request-payload-from-rpc-methods-definiti)
-- 本文 `llms-full.txt` の先頭に、`# Model Context Protocol` の見出しと、「このファイルは非常に大きく、途中で切れることがある。内容の索引は `https://modelcontextprotocol.io/llms.txt` を参照」という引用の 1 行からなる、空行を含めて 4 行の前置きが加わった。最初のページ（Build an MCP client）はその後ろから始まる
-- 索引 `llms.txt` に、Load testing のエントリが `docs/2026-07-28/` 版と `docs/draft/` 版の 2 件加わった（どちらも mcpdo connection client と Configuration and flags の間）。エントリ数は 360 件から 362 件（一意の URL も 362 件）、ファイルは 365 行から 367 行になった（末尾に改行が無いため、改行の数では 364 から 366） — [Load testing](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/load-testing)
+- Specification Enhancement Proposals (SEPs) の索引ページで、Summary の Final を 44 件から 45 件にし、並びを Accepted・Final の順から Final・Accepted の順に変えた。All SEPs の表の先頭（SEP-3398 の前）に SEP-3415 の行（Events Extension・Final・Extensions Track・作成 2026年10月05日）を追加。表は 46 行（Final 45・Accepted 1）で、Summary の件数と一致する — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index#all-seps)
+- 索引 `llms.txt` の SEP の一覧で、SEP-3392: Extension Lifecycle の次（SEP-3398: Release Cycle Updates の前）に SEP-3415: Events Extension のエントリを追加。エントリ数は 362 件から 363 件（一意の URL も 363 件）、ファイルは 367 行から 368 行になった（末尾に改行が無いため、改行の数では 366 から 367） — [SEP-3415: Events Extension](https://modelcontextprotocol.io/seps/3415-events-extension)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-17.md](./archives/latest/2026-11-17.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-17.md](./archives/latest-detail/2026-11-17.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-18.md](./archives/latest/2026-11-18.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-18.md](./archives/latest-detail/2026-11-18.md)
 
 <!--
-base_commit: ab0340993aa5987d27a891141698d57dc355b88b
-head_commit: 831f1678213f7b2708b300fbfd4e73aa7b6ac427
-generated_at_full: 2026-11-19T15:40:10+09:00
+base_commit: 831f1678213f7b2708b300fbfd4e73aa7b6ac427
+head_commit: 2864b8c8e49e5201a3575b16751cc5caf78f4b1c
+generated_at_full: 2026-11-20T15:41:02+09:00
 -->
