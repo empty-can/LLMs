@@ -1,60 +1,68 @@
 ---
-対象期間: 2026年11月18日 〜 2026年11月19日
-作成日: 2026-11-19
+対象期間: 2026年11月19日 〜 2026年11月20日
+作成日: 2026-11-20
 ---
 
 # MCP 公式ドキュメント更新サマリ
 
 ```markdown
-今回の対象期間の取り込みは 1 回で、新規ページが 1 件（SEP-3415: Events Extension、1,284 行）加わり、既存ページの変更は SEP の索引ページ 1 件だけでした。MCP クライアントが外部のシステムで起きた出来事を購読し、ユーザーがいないときでもエージェントが反応できるようにする Events 拡張の SEP が、Final の状態で収録されています。
+今回の対象期間の取り込みは 1 回で、新規ページが 1 件（Events 拡張の概要ページ）加わり、既存ページは 5 件で本文が変わりました。前回 SEP-3415 として収録された Events 拡張が、Beta の公式の拡張として拡張の一覧と対応表に載り、Financial Services Interest Group の憲章を書き直す提案も収録されています。
 
 主要なものを以下に挙げます。
 
-1. SEP-3415（Events Extension）が Final の状態で加わった。サーバーは `events/list` で購読できるイベントの種類を示し、クライアントは名前と引数で購読して、`{eventId, name, timestamp, data, cursor}` の形のイベントを受け取る
-2. 配信方式は poll（`events/poll`）・push（`events/stream`）・webhook（`events/subscribe`）の 3 つで、イベントの種類ごとに対応する方式を示し、どれも必須ではない
-3. webhook では、クライアントが渡す `whsec_` 形式の秘密鍵による Standard Webhooks の署名、期限（TTL）付きの購読、配信を始める前のエンドポイントの確認、SSRF 対策を定めている
-4. サーバーが決める不透明なカーソルで切断後に再開でき、イベントが飛んだことは `truncated: true` で知らせる。順序と配信の保証は購読ごとの範囲にとどめている
-5. 汎用のエラーコード 5 つ（`-32023`〜`-32027`。本文では採択までの暫定の番号）を求め、Streamable HTTP ではイベント名を `Mcp-Name` ヘッダーに入れる
+1. Events 拡張の概要ページが加わり、拡張の一覧に Beta の公式の拡張として載った。仕様は `ext-events` リポジトリにあり、配信方式は poll・push・webhook の 3 つ
+2. 拡張の対応表（Extension Support Matrix）に Events の列が加わり、ChatGPT が Partial（webhook の配信だけ）とされた
+3. Financial Services IG の憲章を、まず既存の MCP の仕組みで足りるかを確かめ、残った課題は WG へ持ち込む方針に書き直す提案が載った。会合は月 1 回になる（Core Maintainer の承認が条件）
+4. SEP-3415 と Tasks and Events WG の憲章が Events 拡張の公開に追従した。Extension Maintainer は 4 人になり、WG の作業項目では Ideating だった Events の SEP の行が Final の SEP-3415 に置き換わった
 ```
 
 ## ハイライト
 
-1. [**外部の出来事を購読する Events 拡張の SEP-3415 が Final で加わった**](./latest-detail.md#1-外部の出来事を購読する-events-拡張の-sep-3415-が-final-で加わった):  
-  Extensions Track の SEP-3415（Events Extension、作成 2026年10月05日）が Final の状態で新規ページとして加わった。Slack のメッセージ、GitHub への push、PagerDuty のインシデントのような外部のシステムでの出来事を MCP クライアントが購読し、ユーザーがいなくてもエージェントが反応できるようにする拡張で、識別子は `io.modelcontextprotocol/events`。サーバーは `events/list` でイベントの種類ごとに、購読の引数の `inputSchema`、届けるデータの `payloadSchema`、対応する配信方式を示す。プロトコルのリビジョン `2026-07-28` 以降を対象とする。
-2. [**配信方式は poll と push と webhook の 3 つでどれも必須ではない**](./latest-detail.md#2-配信方式は-poll-と-push-と-webhook-の-3-つでどれも必須ではない):  
-  poll は `events/poll` を繰り返す要求・応答型で、最初の `null` のカーソルで購読が始まり、サーバーはプロトコル上の状態を持たない。push は購読ごとに長く開いておく `events/stream` リクエストで、イベントを `notifications/events/event` の通知で届け、サーバーはハートビートを送らなければならない（MUST）。webhook は `events/subscribe` で `https` のコールバック URL を登録する。イベントの種類はこのうち 1 つ以上を `delivery` に挙げ、どれも必須ではない。
-3. [**webhook は署名と TTL とエンドポイントの確認で守られる**](./latest-detail.md#3-webhook-は署名と-ttl-とエンドポイントの確認で守られる):  
-  webhook の配信は Standard Webhooks のプロファイルで、署名の秘密鍵（`whsec_` 形式）はクライアントが必ず渡し、サーバーは生成しない。購読には TTL があり、クライアントが `ttlMs` を提案してサーバーが `refreshBefore` で期限を与える（クライアントが `ttlMs: null` を求めた場合に限り、`null` で期限なしを与えられる）。サーバーは、エンドポイントに受け取る意思があることを 4 つの方法のいずれかで確かめるまで配信を始めてはならず（MUST NOT）、コールバック URL の検証は配信の時点でも行い、リダイレクトをたどらない。webhook の購読には認証済みの主体（principal）が要る。
-4. [**カーソルで再開でき欠落は truncated で知らせる**](./latest-detail.md#4-カーソルで再開でき欠落は-truncated-で知らせる):  
-  カーソルはサーバーが管理する不透明な文字列で、切断やクラッシュのあとにクライアントがそこから再開できる。再生（replay）に対応するかはイベントの種類ごとに任意で、対応しない種類では `cursor: null` を返してよい（MAY）。`maxAgeMs` で再生の範囲を時間で絞れ、サーバーがクライアントのカーソルより後ろから配信を始めたときは `truncated: true` で知らせる。順序はプロトコルとしては保証せず、poll と push では購読の中での順序、webhook ではベストエフォートとしている。
-5. [**汎用のエラーコード 5 つとルーティング用のヘッダーが盛り込まれた**](./latest-detail.md#5-汎用のエラーコード-5-つとルーティング用のヘッダーが盛り込まれた):  
-  `NotFound`（`-32023`）・`Forbidden`（`-32024`）・`ResourceExhausted`（`-32025`）・`Unsupported`（`-32026`）・`CallbackEndpointError`（`-32027`）の 5 つを、イベントに限らない汎用のコードとして求めている。番号は、採択の時点で割り当て済みのコードが `-32020`〜`-32022` だけであることを前提にした、採択までの暫定のもの。Streamable HTTP では、`events/list` 以外の 4 つのリクエストでイベント名を `Mcp-Name` ヘッダーに入れなければならない（MUST）。
+1. [**Events 拡張の概要ページが加わり公式の拡張として一覧に載った**](./latest-detail.md#1-events-拡張の概要ページが加わり公式の拡張として一覧に載った):  
+  新しいページ Events（`extensions/events/overview`、248 行）が加わり、索引 `llms.txt` にもエントリが入った。ページは、公式の Events 拡張（`io.modelcontextprotocol/events`）の仕様一式が `ext-events` リポジトリにあり、SEP-3415 は Final、拡張は Beta で、Tasks and Events Working Group が保守している、と始まる。Extensions Overview の公式の拡張リポジトリの一覧にも「MCP Events」の小節が加わり、Stage は「Beta, destination not yet stated」とされた。概要ページは、既存の通知では足りない理由、6 段階の流れ、3 つの配信方式、カーソルと配信の保証、セキュリティモデル、クライアントとサーバーの実装の手引きをまとめている。
+2. [**拡張の対応表に Events の列が加わり ChatGPT が Partial になった**](./latest-detail.md#2-拡張の対応表に-events-の列が加わり-chatgpt-が-partial-になった):  
+  Extension Support Matrix の Extension overview の表に Events の行が、Support matrix の表の右端に Events の列が加わった。`llms-full.txt` で読める Events の対応は ChatGPT の `Partial`（OpenAI の MCP Events の解説へのリンク付き）だけ。新しい注記は、Events の Partial が webhook の配信だけへの対応を意味し、チェックの付いたクライアントは poll・push・webhook のすべてに対応すること、これらの実装のほとんどは SEP-3415 が Final になる前のもので草案の仕様に沿っていることを述べている。
+3. [**Financial Services IG の憲章を問題の発見と WG への橋渡しを軸に改める提案が載った**](./latest-detail.md#3-financial-services-ig-の憲章を問題の発見と-wg-への橋渡しを軸に改める提案が載った):  
+  Financial Services Charter（追加 67 行・削除 66 行）で、使命・対象範囲・関連グループ・運営・議題が書き直された。既定の進め方は、既存の MCP の仕組みと公開できる業界のパターンで問題に対処できるかを先に確かめ、残ったプロトコルの欠落を適切な WG へ持ち込むことになり、標準化トラックのプロトコル変更を FSIG が単独で受け持つこと（SEP を単独でスポンサーすることを含む）が対象外に加わった。会合は 2 週に 1 回から月 1 回（最長 60 分）になった。Changelog に加わった 2026年11月20日 の行は、これを Core Maintainer の承認を条件とする提案としている。
+4. [**SEP-3415 と Tasks and Events WG の憲章が Events 拡張の公開に追従した**](./latest-detail.md#4-sep-3415-と-tasks-and-events-wg-の憲章が-events-拡張の公開に追従した):  
+  SEP-3415 では、拡張を所有する WG の名前とリンク先が Tasks and Events Working Group（`community/working-groups/tasks-events`）になり、Extension Maintainer に Luca Chang 氏と Caitie McCaffrey 氏が加わって 4 人になった。「採択されたら公式の拡張リポジトリで公開される」という記述は、仕様は `ext-events` の `specification/beta/events/` で公開されている、という記述に変わった。Tasks and Events Charter では、Resources に `ext-events` と SEP-3415 へのリンクが加わり、Active Work Items の「SEP: Events in MCP v1 RFC」（Ideating）の行が SEP-3415（Final）の行に置き換わった。
 
 ## 新規追加されたページ
 
-- [**SEP-3415: Events Extension**](./latest-detail.md#1-sep-3415-events-extension) ([MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension)):  
-  MCP クライアントが外部のシステムの出来事を購読するための Events 拡張を定める Extensions Track の SEP（Final、作成 2026年10月05日、1,284 行）。索引 `llms.txt` にもエントリが加わった（詳細はハイライト 1〜5 参照）。
+- [**Events**](./latest-detail.md#1-events) ([MCP Docs](https://modelcontextprotocol.io/extensions/events/overview)):  
+  公式の Events 拡張（`io.modelcontextprotocol/events`）の概要ページ（248 行）。既存の通知では足りない理由、6 段階の流れ、poll・push・webhook の配信方式、使いどころ、カーソルと配信の保証、セキュリティモデル、クライアントとサーバーの実装の手引きをまとめている。索引 `llms.txt` にもエントリが加わった（位置づけはハイライト 1 参照）。
 
 ## 大幅に更新されたページ
 
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページで差分が出たのは SEP の索引ページ（追加 2 行・削除 1 行）だけで、「軽微な更新」で扱います。
+- [**Financial Services Charter**](./latest-detail.md#1-financial-services-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)):  
+  Financial Services Interest Group の憲章（122 行から 123 行、追加 67 行・削除 66 行）。使命・対象範囲・関連グループ・運営・議題が書き直され、会合は月 1 回になり、議題の表は例示の問いの表になった。Changelog は、この変更を Core Maintainer の承認を条件とする提案としている（使命・対象範囲・関連グループはハイライト 3 参照）。
 
 ## 軽微な更新
 
-今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（SEP-3415）のほかに、次の変更がありました。
+今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（Events）と大幅更新（Financial Services Charter）のほかに、次の変更がありました。
+
+**新機能**
+
+- Extensions Overview の「Official Extension Repositories」の節に、`ext-events` リポジトリと Events 拡張（Stage は「Beta, destination not yet stated」）を載せた「MCP Events」の小節を追加（詳細はハイライト 1 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#mcp-events)
+- Extension Support Matrix の 2 つの表に Events の行と列を加え、Events の Partial の意味を述べる注記を追加（詳細はハイライト 2 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+
+**機能改善**
+
+- SEP-3415: Events Extension で、拡張を所有する WG の名前とリンク先、Extension Maintainer（4 人に）、仕様の公開先（`ext-events` の `specification/beta/events/`）を更新（詳細はハイライト 4 参照） — [SEP-3415: Events Extension](https://modelcontextprotocol.io/seps/3415-events-extension#working-group-and-extension-maintainers)
+- Tasks and Events Charter の Resources に Events の拡張リポジトリと仕様へのリンクを加え、Active Work Items の Events の SEP の行を SEP-3415（Final）に差し替え（詳細はハイライト 4 参照） — [Tasks and Events Charter](https://modelcontextprotocol.io/community/working-groups/tasks-events#active-work-items)
 
 **その他**
 
-- Specification Enhancement Proposals (SEPs) の索引ページで、Summary の Final を 44 件から 45 件にし、並びを Accepted・Final の順から Final・Accepted の順に変えた。All SEPs の表の先頭（SEP-3398 の前）に SEP-3415 の行（Events Extension・Final・Extensions Track・作成 2026年10月05日）を追加。表は 46 行（Final 45・Accepted 1）で、Summary の件数と一致する — [Specification Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/seps/index#all-seps)
-- 索引 `llms.txt` の SEP の一覧で、SEP-3392: Extension Lifecycle の次（SEP-3398: Release Cycle Updates の前）に SEP-3415: Events Extension のエントリを追加。エントリ数は 362 件から 363 件（一意の URL も 363 件）、ファイルは 367 行から 368 行になった（末尾に改行が無いため、改行の数では 366 から 367） — [SEP-3415: Events Extension](https://modelcontextprotocol.io/seps/3415-events-extension)
+- 索引 `llms.txt` で、`extensions/` のエントリの末尾（Skills の次、The MCP Registry の前）に Events のエントリ（説明文「Subscribe to events in upstream systems and react when they happen」）を追加。エントリ数は 363 件から 364 件（一意の URL も 364 件）、ファイルは 368 行から 369 行になった（末尾に改行が無いため、改行の数では 367 から 368） — [Events](https://modelcontextprotocol.io/extensions/events/overview)
+- SEP-1302: Formalize Working Groups and Interest Groups in MCP Governance（248 行）の、本文 `llms-full.txt` での収録位置が、SEP-1046 の直後（SEP-414 の前）から、Roadmap の直後（SEP-1303 の前）へ移った。移った 248 行は 1 行も変わっておらず、既定の行単位の差分では周りの 76 行を巻き込んで追加・削除とも 324 行に数えられるが（`git diff --histogram` では 248 行ずつ）、本文の変更ではない。索引 `llms.txt` での位置（SEP-1046 と SEP-1303 の間）も変わっていない。2026年11月18日のサマリで扱った SEP-1303 と SEP-1319 の移動と同じく、Roadmap の後ろへの移動 — [SEP-1302: Formalize Working Groups and Interest Groups in MCP Governance](https://modelcontextprotocol.io/seps/1302-formalize-working-groups-and-interest-groups-in-mc)
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-18.md](./archives/latest/2026-11-18.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-18.md](./archives/latest-detail/2026-11-18.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-19.md](./archives/latest/2026-11-19.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-19.md](./archives/latest-detail/2026-11-19.md)
 
 <!--
-base_commit: 831f1678213f7b2708b300fbfd4e73aa7b6ac427
-head_commit: 2864b8c8e49e5201a3575b16751cc5caf78f4b1c
-generated_at_full: 2026-11-20T15:41:02+09:00
+base_commit: 2864b8c8e49e5201a3575b16751cc5caf78f4b1c
+head_commit: 5f51174830a6109f6c27c1eeae6dd98de6f65dde
+generated_at_full: 2026-11-21T15:39:58+09:00
 -->
