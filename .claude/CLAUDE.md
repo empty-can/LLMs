@@ -189,9 +189,12 @@ git tag -a anchor/2026-06-06 980975cf497b0cce6847425a0787fccd839be1ae -m "BASE-A
 git tag -a anchor/2026-06-21 1a7d39cab3539583157847db90f343550a8fe42e -m "BASE-C: cc-relative-info v1.2 出典 [75] の版境界の基準"
 git tag -a anchor/2026-08-19 32e6ee3566896a4f0a120a5c98b667aea98b22c6 -m "BASE-B: cc-relative-info v1.2 出典 [76]-[97] の基準"
 git tag -a anchor/2026-09-13 f42c3bbc7514f65d9b93da10d594de373927552d -m "BASE-D: cc-relative-info v1.2 出典 [98]-[104] の基準"
+git tag -a anchor/2026-11-21 5f51174830a6109f6c27c1eeae6dd98de6f65dde -m "cc-relative-info reports_v2.1 の出典の単一基準"
 ```
 
-いずれも `empty-can/cc-relative-info` の `claude-dir-sharing-governance/reports/01.配布・統制方針調査/結論・構成案_ポータブルな.claude共有_v1.2.md` が引用元。同文書はこれらを BASE-A / BASE-B / BASE-C と呼ぶ。
+`anchor/2026-06-06`〜`anchor/2026-09-13` の 4 本は、いずれも `empty-can/cc-relative-info` の `claude-dir-sharing-governance/reports/01.配布・統制方針調査/結論・構成案_ポータブルな.claude共有_v1.2.md` が引用元。同文書はこれらを BASE-A / BASE-B / BASE-C / BASE-D と呼ぶ（BASE-D は同フォルダの v2.0 と `settings宣言場所・スコープ別有効性_v1.0.md` も基準にしている）。
+
+`anchor/2026-11-21` の引用元は、同リポジトリの `claude-dir-sharing-governance/reports_v2.1/` 配下の文書（2026-11-21 時点で執筆中。`01.配布・統制方針/結論・構成案.md` と `settings宣言場所・スコープ別有効性.md` から着手）。
 
 対象ファイルはいずれも `official-llms-txts/code.claude.com/docs/llms-full.txt`。
 
@@ -201,6 +204,7 @@ git tag -a anchor/2026-09-13 f42c3bbc7514f65d9b93da10d594de373927552d -m "BASE-D
 | `anchor/2026-06-21` | `1a7d39cab3539583157847db90f343550a8fe42e` | 定期取り込み（v2.1.178+ 反映・65,371 行） | `c7c620cb201328ba440f97a45624929b5b3684ac` | `[75]` の版境界（BASE-C・行番号で参照） |
 | `anchor/2026-08-19` | `32e6ee3566896a4f0a120a5c98b667aea98b22c6` | 定期取り込み（CLI v2.1.235 相当・84,016 行） | `f6f26436ea1725abdbd042c99ddda9f545107ef4` | `[76]`〜`[97]`（BASE-B・見出し＋行番号で参照） |
 | `anchor/2026-09-13` | `f42c3bbc7514f65d9b93da10d594de373927552d` | 定期取り込み（CLI v2.1.269 相当・96,349 行） | `26ddc6534ed2f96e147cd77a1b8acfddba986ce2` | `[98]`〜`[104]`（BASE-D・行番号＋見出しで参照） |
+| `anchor/2026-11-21` | `5f51174830a6109f6c27c1eeae6dd98de6f65dde` | 定期取り込み（CLI v2.1.330 相当・130,625 行） | `b992c5797122b5fccf36c9b5be64037eaa290a80` | `reports_v2.1/` 配下の文書の全出典（単一基準・行番号で参照） |
 
 > blob ハッシュは**内容だけから決まる**（リポジトリ・パス・commit に非依存）ため、`git cat-file -p <blob>` で「照合に使っているファイルが確かにこの断面か」を独立に検証できる。
 
