@@ -2239,6 +2239,9 @@
     <loc>https://claude.com/de/resources/articles/how-brex-improves-code-quality-and-productivity-with-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/de/resources/articles/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace</loc>
+  </url>
+  <url>
     <loc>https://claude.com/de/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
@@ -2792,6 +2795,9 @@
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/how-brex-improves-code-quality-and-productivity-with-claude-code</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/es/resources/articles/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace</loc>
   </url>
   <url>
     <loc>https://claude.com/es/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
@@ -3784,6 +3790,9 @@
     <loc>https://claude.com/fr/resources/articles/how-brex-improves-code-quality-and-productivity-with-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/fr/resources/articles/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace</loc>
+  </url>
+  <url>
     <loc>https://claude.com/fr/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
@@ -4340,6 +4349,9 @@
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/how-brex-improves-code-quality-and-productivity-with-claude-code</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/it/resources/articles/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace</loc>
   </url>
   <url>
     <loc>https://claude.com/it/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
@@ -5348,6 +5360,9 @@
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/how-brex-improves-code-quality-and-productivity-with-claude-code</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/ja/resources/articles/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace</loc>
   </url>
   <url>
     <loc>https://claude.com/ja/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
@@ -6442,6 +6457,9 @@
     <loc>https://claude.com/ko/resources/articles/how-brex-improves-code-quality-and-productivity-with-claude-code</loc>
   </url>
   <url>
+    <loc>https://claude.com/ko/resources/articles/how-coderabbit-power-digital-and-thoughtspot-scale-with-snowflake-and-vercel-on-claude-marketplace</loc>
+  </url>
+  <url>
     <loc>https://claude.com/ko/resources/articles/how-comcast-booz-allen-use-claude-mythos-to-secure-their-codebases</loc>
   </url>
   <url>
@@ -7123,6 +7141,9 @@
     <loc>https://claude.com/marketplace/connectors/base44</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/beautiful-ai-v2</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/beehiiv</loc>
   </url>
   <url>
@@ -7280,6 +7301,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/cafeteria</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/caffeine</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/caisey</loc>
@@ -7756,6 +7780,9 @@
     <loc>https://claude.com/marketplace/connectors/drafts</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/dragonboat</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/drata</loc>
   </url>
   <url>
@@ -8167,6 +8194,9 @@
     <loc>https://claude.com/marketplace/connectors/harness-mcp-server</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/harvest-mcp</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/harvey</loc>
   </url>
   <url>
@@ -8435,6 +8465,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/klue</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/kolena</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/kpler</loc>
@@ -9163,6 +9196,9 @@
     <loc>https://claude.com/marketplace/connectors/pinegap</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/pinelabs-one</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/pipedrive-mcp</loc>
   </url>
   <url>
@@ -9200,6 +9236,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/ploy</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/plus-ai-mcp</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pocket-capture</loc>
@@ -10162,6 +10201,9 @@
     <loc>https://claude.com/marketplace/connectors/voluum</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/voyado-customer-engagement</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/vuetify-mcp</loc>
   </url>
   <url>
@@ -10330,7 +10372,46 @@
     <loc>https://claude.com/marketplace/connectors/zoho-show</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/zohoanalytics</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohobilling</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohobooks</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohocrm</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohodesk</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohoinvoice</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohomail</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohopagesense</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohoprojects</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohosign</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohosprints</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zohoworkdrive</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/zomato</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zoom-canvas</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/zoom-for-claude</loc>

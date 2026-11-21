@@ -270,6 +270,7 @@
 - [Enterprise-Managed Authorization](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization.md): Centralized access control for MCP in enterprise environments via identity providers
 - [Tasks](https://modelcontextprotocol.io/extensions/tasks/overview.md): Asynchronous task execution for long-running MCP operations
 - [Skills](https://modelcontextprotocol.io/extensions/skills/overview.md): Discover and read Agent Skills from MCP servers
+- [Events](https://modelcontextprotocol.io/extensions/events/overview.md): Subscribe to events in upstream systems and react when they happen
 - [The MCP Registry](https://modelcontextprotocol.io/registry/about.md)
 - [Quickstart: Publish an MCP Server to the MCP Registry](https://modelcontextprotocol.io/registry/quickstart.md)
 - [Frequently Asked Questions](https://modelcontextprotocol.io/registry/faq.md)

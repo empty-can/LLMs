@@ -24313,28 +24313,33 @@ This matrix shows which MCP clients support each [official extension](/extension
 | [OAuth Client Credentials](/extensions/auth/oauth-client-credentials) | `io.modelcontextprotocol/oauth-client-credentials` | Machine-to-machine auth without interactive user login |
 | [Enterprise-Managed Authorization](/extensions/auth/enterprise-managed-authorization) | `io.modelcontextprotocol/enterprise-managed-authorization` | Centralized access control via enterprise IdP |
 | [Skills over MCP](/extensions/skills/overview) | `io.modelcontextprotocol/skills` | Discover skills and read their instructions and supporting files |
+| [Events](/extensions/events/overview) | `io.modelcontextprotocol/events` | Subscribe to upstream events and receive them by poll, push or webhook |
 
 ## Support matrix
 
-| Client | [MCP Apps](/extensions/apps/overview) | [OAuth Client Credentials](/extensions/auth/oauth-client-credentials) | [Enterprise Auth](/extensions/auth/enterprise-managed-authorization) | [Skills](/extensions/skills/overview) | [Tasks](/extensions/tasks/overview) |
-| - | :-: | :-: | :-: | :-: | :-: |
-| [Claude (web)](https://claude.ai) | | | | | |
-| [Claude Desktop](https://claude.ai/download) | | | | | |
-| [Claude Code](https://claude.com/claude-code) | | | | | |
-| [VS Code GitHub Copilot](https://code.visualstudio.com/) | | | | | |
-| [Microsoft 365 Copilot](https://www.microsoft.com/microsoft-365-copilot) | | | | | |
-| [Goose](https://block.github.io/goose/) | | | | | |
-| [Postman](https://postman.com) | | | | | |
-| [MCPJam](https://www.mcpjam.com/) | | | | | |
-| [ChatGPT](https://chatgpt.com/) | | | | [Partial](https://developers.openai.com/plugins/build/mcp-server#import-skills-from-the-mcp-server) | |
-| [Cursor](https://cursor.com/) | | | | | |
-| [Archestra.AI](https://www.archestra.ai/) | | | | | |
-| [PostHog Code](https://posthog.com/code/) | | | | | |
-| [Kiro Crew](https://kiro.dev/crew/) | | | | | |
-| [fast-agent](https://github.com/evalstate/fast-agent) | | | | [Partial](https://github.com/evalstate/fast-agent/blob/main/docs/docs/mcp/skills-over-mcp.md) | |
-| [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | [Partial](https://github.com/modelcontextprotocol/inspector/blob/main/docs/mcp-app-review.md) | | | [Partial](https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md#skill-verification---verify) | |
-| [mcpc MCP CLI](https://github.com/apify/mcpc) | | | | | |
-| [Glean](https://www.glean.com/) | | | | | |
+| Client | [MCP Apps](/extensions/apps/overview) | [OAuth Client Credentials](/extensions/auth/oauth-client-credentials) | [Enterprise Auth](/extensions/auth/enterprise-managed-authorization) | [Skills](/extensions/skills/overview) | [Tasks](/extensions/tasks/overview) | [Events](/extensions/events/overview) |
+| - | :-: | :-: | :-: | :-: | :-: | :-: |
+| [Claude (web)](https://claude.ai) | | | | | | |
+| [Claude Desktop](https://claude.ai/download) | | | | | | |
+| [Claude Code](https://claude.com/claude-code) | | | | | | |
+| [VS Code GitHub Copilot](https://code.visualstudio.com/) | | | | | | |
+| [Microsoft 365 Copilot](https://www.microsoft.com/microsoft-365-copilot) | | | | | | |
+| [Goose](https://block.github.io/goose/) | | | | | | |
+| [Postman](https://postman.com) | | | | | | |
+| [MCPJam](https://www.mcpjam.com/) | | | | | | |
+| [ChatGPT](https://chatgpt.com/) | | | | [Partial](https://developers.openai.com/plugins/build/mcp-server#import-skills-from-the-mcp-server) | | [Partial](https://developers.openai.com/plugins/build/mcp-events) |
+| [Cursor](https://cursor.com/) | | | | | | |
+| [Archestra.AI](https://www.archestra.ai/) | | | | | | |
+| [PostHog Code](https://posthog.com/code/) | | | | | | |
+| [Kiro Crew](https://kiro.dev/crew/) | | | | | | |
+| [fast-agent](https://github.com/evalstate/fast-agent) | | | | [Partial](https://github.com/evalstate/fast-agent/blob/main/docs/docs/mcp/skills-over-mcp.md) | | |
+| [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | [Partial](https://github.com/modelcontextprotocol/inspector/blob/main/docs/mcp-app-review.md) | | | [Partial](https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md#skill-verification---verify) | | |
+| [mcpc MCP CLI](https://github.com/apify/mcpc) | | | | | | |
+| [Glean](https://www.glean.com/) | | | | | | |
+
+> [!NOTE]
+>
+> Events support marked **Partial** means webhook delivery only. Clients marked with a check support poll, push and webhook delivery. Most of these implementations predate SEP-3415 reaching Final and track the draft specification.
 
 > [!NOTE]
 >
@@ -24350,6 +24355,254 @@ If you're building an MCP client and want to implement extension support:
 4. Submit a pull request to update this matrix
 
 See [Extensions Overview](/extensions/overview#negotiation) for details on the capability negotiation mechanism.
+
+
+# Events
+Source: https://modelcontextprotocol.io/extensions/events/overview
+
+Subscribe to events in upstream systems and react when they happen
+
+The [ext-events repository](https://github.com/modelcontextprotocol/ext-events)
+contains the full specification for the official Events extension
+(`io.modelcontextprotocol/events`). [SEP-3415](/seps/3415-events-extension) is
+Final, and the extension is in Beta. The
+[Tasks and Events Working Group](/community/working-groups/tasks-events)
+maintains it.
+
+> [card] [modelcontextprotocol/ext-events](https://github.com/modelcontextprotocol/ext-events)
+>
+> Full specification and documentation for MCP Events.
+
+MCP is request-driven: a user or a model asks, and a server answers. Agents
+increasingly need to act on things that happen when nobody is asking, such as a
+new email, a push to a repository or a production incident. MCP Events lets a
+client subscribe to these upstream events, with arguments, and have an agent
+react when they occur, even when no user is present.
+
+## Why not existing notifications?
+
+MCP already has notifications such as `notifications/resources/updated` and the
+`list_changed` family. They don't cover this use case:
+
+* **No parameters or payload.** A notification says that a URI or a list
+  changed. It can't express "a P1 incident was created for service X", because
+  there are no subscription arguments, no payload schema and no payload.
+* **A live connection is required.** Notifications arrive only on an open
+  `subscriptions/listen` stream. A client that isn't connected receives nothing.
+* **No resumption.** There is no cursor, so anything that happens during a
+  disconnect is lost, and the client can't tell that it missed anything.
+
+The deployments that need events also differ. A serverless server can't hold a
+connection per subscriber, a client behind NAT can't receive a callback, and a
+cost-sensitive client shouldn't poll. That's why Events defines three delivery
+modes, and a server picks the ones that fit each event type.
+
+## How Events work
+
+1. **Capability negotiation.** The server advertises
+   `io.modelcontextprotocol/events` in its `server/discover` capabilities. The
+   client may declare the same identifier in its per-request capabilities.
+
+2. **Discovery.** The client calls `events/list`. Each event type has a `name`,
+   an `inputSchema` for subscription arguments, a `payloadSchema` for the data
+   it delivers, and the `delivery` modes it supports.
+
+3. **Subscription.** The client subscribes with an event name and arguments,
+   using one of the modes the event type lists. A `null` cursor means "start
+   from now".
+
+4. **Delivery.** Each event arrives as an occurrence:
+   `{eventId, name, timestamp, data, cursor}`. The client stores the cursor
+   after each delivery.
+
+5. **Resumption.** After a disconnect or a restart, the client resubscribes
+   with its stored cursor. If the server can't serve from that position, it
+   says so with `truncated: true`, so the client knows that events were skipped.
+
+6. **Reaction.** The client SDK hands each event to the agent runtime, which
+   decides how to react, for example by starting a new agent turn.
+
+```mermaid theme={null}
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Client->>Server: events/list
+    Server-->>Client: event types (name, inputSchema, payloadSchema, delivery)
+
+    Client->>Server: events/poll {name, arguments, cursor: null}
+    Server-->>Client: {events: [], cursor, nextPollMs}
+
+    Note over Client: Wait nextPollMs
+
+    Client->>Server: events/poll {name, arguments, cursor}
+    Server-->>Client: {events: [occurrence], cursor, nextPollMs}
+
+    Note over Client: Hand the event to the agent runtime
+```
+
+## Delivery modes
+
+None of the three modes is mandatory. An event type lists any non-empty subset
+of them, and the client SDK picks one it can use.
+
+| Mode | Method | How it works | Good fit for |
+| - | - | - | - |
+| **Poll** | `events/poll` | The client asks for new events at the interval the server recommends. The server holds no per-client state. | Stateless and serverless servers, simple clients |
+| **Push** | `events/stream` | The client holds a long-lived request open, and the server delivers events on it as notifications. | Local (stdio) servers, clients that stay connected |
+| **Webhook** | `events/subscribe` | The client registers an `https` callback URL, and the server POSTs signed events to it under a renewable TTL. | Remote servers, clients that can't hold a connection |
+
+SDKs typically prefer webhook when the client has a callback endpoint, then
+push, then poll. A client can override the choice per subscription.
+
+## When to use Events
+
+Events are a good fit when your use case involves:
+
+**Reacting to upstream activity.** New messages, repository pushes, payments,
+incidents or calendar changes that an agent should act on.
+
+**Unattended agents.** Background agents that run when no user is present and
+need to be woken by something happening.
+
+**Filtered streams.** Subscriptions that narrow a large stream with arguments,
+such as "P1 incidents for service X" or "email from this sender".
+
+If the client is waiting for the result of a long-running operation it started
+itself, use [Tasks](/extensions/tasks/overview) instead.
+
+## Cursors and delivery guarantees
+
+Cursors are opaque, server-defined positions in the event stream. They make
+delivery at-least-once when the upstream is durable and the client resumes from
+its last cursor.
+
+* **Replay is optional per event type.** A server returns `cursor: null` for an
+  event type that has no addressable history. The client then always starts
+  from now, and accepts that events during a gap can't be recovered.
+* **Bounded replay.** A client can pass `maxAgeMs` with a stale cursor, so that
+  a host that was offline for a week gets at most, say, the last five minutes.
+* **Deduplication.** `eventId` is stable for an upstream event, so a client can
+  discard duplicates within a subscription.
+* **Ordering.** Poll and push deliver events in order within a subscription.
+  Webhook ordering is best-effort, and the `timestamp` field orders events.
+
+The client owns its list of subscriptions. There is no server method that lists
+them, and the client can rebuild server-side state at any time.
+
+## Security model
+
+* **Payloads are untrusted data.** Event payloads come from external systems
+  and can carry prompt injection. Treat them like tool results, and sanitize or
+  sandbox them before they reach a model.
+* **Minimal payloads.** Servers should send enough to identify and triage an
+  event, such as a sender, subject and ID, and let the client fetch full content
+  with tools.
+* **Authorization at every step.** The server checks permission at subscribe
+  time, re-checks at delivery time, and terminates the subscription if access is
+  revoked. Receiving an event never authorizes the agent to act: its follow-up
+  tool calls go through normal MCP authorization.
+* **Webhook hardening.** Deliveries are signed with
+  [Standard Webhooks](https://www.standardwebhooks.com/) HMAC signatures.
+  Callback URLs must be `https`, the server verifies an endpoint before it
+  delivers to it, and it validates destination IPs to prevent SSRF.
+
+## Implementation guide
+
+### For MCP clients
+
+**1. Declare support**
+
+Include the extension in the per-request capabilities you send:
+
+```jsonc theme={null}
+{
+  "params": {
+    // Other fields...
+    "_meta": {
+      "io.modelcontextprotocol/clientCapabilities": {
+        "extensions": {
+          "io.modelcontextprotocol/events": {},
+        },
+      },
+    },
+  },
+}
+```
+
+Don't send `events/*` requests to a server that hasn't advertised the extension.
+
+**2. Discover and subscribe**
+
+Call `events/list`, validate subscription arguments against each event type's
+`inputSchema`, and pick a delivery mode from its `delivery` list.
+
+**3. Persist cursors**
+
+Store the latest cursor for each subscription durably, and resume from it after
+a restart. Treat `truncated: true` as a possible gap, and re-read authoritative
+state with tools if it matters.
+
+**4. Deliver events safely**
+
+Deduplicate by `eventId`, and treat payloads as untrusted before passing them
+to a model.
+
+### For MCP servers
+
+**1. Advertise support**
+
+Include the extension in your `server/discover` capabilities. Set `listChanged`
+if you send `notifications/events/list_changed`:
+
+```jsonc theme={null}
+{
+  "result": {
+    // Other fields...
+    "capabilities": {
+      "extensions": {
+        "io.modelcontextprotocol/events": {
+          "listChanged": true,
+        },
+      },
+    },
+  },
+}
+```
+
+**2. Describe event types**
+
+Return each event type from `events/list` with its `inputSchema`,
+`payloadSchema` and supported `delivery` modes. Evolve schemas additively, and
+publish a breaking change under a new event name.
+
+**3. Use upstream identifiers**
+
+Use the upstream system's stable event ID as `eventId`, and encode the upstream
+position in the cursor, so that clients can resume and deduplicate.
+
+**4. Check authorization**
+
+Verify that the principal may subscribe with the given arguments, and terminate
+subscriptions when access is revoked.
+
+## Client support
+
+> [!NOTE]
+>
+> MCP Events is an extension to the [core MCP specification](/specification/latest).
+> It requires protocol revision `2026-07-28` or later.
+
+See the [client matrix](/extensions/client-matrix) for extension support across
+clients. Events requires explicit opt-in from both client and server.
+
+## Specification
+
+The Events extension is specified in the
+[ext-events repository](https://github.com/modelcontextprotocol/ext-events). It
+uses the standard MCP [extension negotiation](/extensions/overview#negotiation)
+mechanism. For the design rationale, see
+[SEP-3415](/seps/3415-events-extension).
 
 
 # Extensions Overview
@@ -24443,6 +24696,16 @@ See the [Skills overview](/extensions/skills/overview) to get started and the
 | Extension | Stage | Description |
 | - | - | - |
 | [Server Cards](/seps/2127-mcp-server-cards) | Beta, destination not yet stated | Lets clients discover a server's metadata before connecting to it. |
+
+### MCP Events
+
+> [card] [modelcontextprotocol/ext-events](https://github.com/modelcontextprotocol/ext-events)
+>
+> Subscriptions to events in upstream systems.
+
+| Extension | Stage | Description |
+| - | - | - |
+| [Events](/extensions/events/overview) | Beta, destination not yet stated | Subscribe to upstream events and receive them by polling, push or webhook. |
 
 ## Experimental Extensions
 
@@ -28050,254 +28313,6 @@ This change is fully backward compatible. It introduces a new authorization flow
 The specification refers to the existing OAuth security guidance.
 
 
-# SEP-1302: Formalize Working Groups and Interest Groups in MCP Governance
-Source: https://modelcontextprotocol.io/seps/1302-formalize-working-groups-and-interest-groups-in-mc
-
-Formalize Working Groups and Interest Groups in MCP Governance
-
-Final
-
-Standards Track
-
-> [!NOTE]
->
-> This SEP has reached Final status and is preserved as a historical record of
-> the design as accepted. Changes made to the protocol after finalization are
-> not reflected here. Refer to the [current
-> specification](/specification/latest) and its changelog for authoritative
-> requirements.
-
-| Field | Value |
-| - | - |
-| **SEP** | 1302 |
-| **Title** | Formalize Working Groups and Interest Groups in MCP Governance |
-| **Status** | Final |
-| **Type** | Standards Track |
-| **Created** | 2025-08-05 |
-| **Author(s)** | tadasant |
-| **Sponsor** | None |
-| **PR** | [#1302](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1302) |
-
-***
-
-## Abstract
-
-*A short (\~200 word) description of the technical issue being addressed.*
-
-In [SEP-994](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1002), we introduced a notion of “Working Groups” and “Interest Groups” that facilitate MCP sub-communities for discussion and collaboration. This SEP aims to formally define those two terms: what they are meant to achieve, how groups can be created, how they are governed, and how they can be retired.
-
-Interest Groups work to define *problems* that MCP should solve by facilitating *discussions*, while Working Groups push forward specific *solutions* by collaboratively producing *deliverables* (in the form of SEPs or community-owned implementations of the specification). Interest Group input is a welcome (but not required) justification for creation of a Working Group. Interest Group or Working Group input is collectively a welcome (but not required) input into a SEP.
-
-## Motivation
-
-*The motivation should clearly explain why the existing protocol specification is inadequate to address the problem that the SEP solves.*
-
-The community has already been self-organizing into several disparate systems for these collaborative groups:
-
-* The Steering group has had a long-standing practice of managing a handful of collaborative groups through Discord channels (e.g. security, auth, agents). See [bottom of MAINTAINERS.md](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md).
-* The “CWG Discord” has had a [semi-formal process](https://github.com/modelcontextprotocol-community/working-groups) for pushing equivalent grassroots initiatives, mostly in pursuit of creating artifacts for SEP consideration (e.g. hosting, UI, tool-interfaces, search-tools)
-
-With SEP-994 resulting in the merging of the Discord communities, we have a need to:
-
-* Merge the existing initiatives into one unified approach, so when we reference “working group” or “interest group”, everyone knows what that means and what kind of weight the reference might carry
-* Standardize a process around the creation (and eventual retirement) of such groups
-* Properly distinguish between “working” and “interest” groups; the CWG experience has shown two very different motivations for starting a group worth treating with different expectations and lifecycle. Put succinctly, “interest” groups are about brainstorming possible *problems*, and “working” groups are about pushing forward specific *solutions*.
-
-These groups exist to:
-
-* **Facilitate high signal spaces for discussion** such that those opting into notifications and meetings feel most content is relevant to them and they can meaningfully contribute their experience and learn from others
-* **Create norms, expectations, and single points of involved leadership** around making collaborative progress towards concrete deliverables that help evolve MCP
-
-It will also form the foundation for cross-group initiatives, such as maintaining a calendar of live meetings.
-
-## Specification
-
-*The technical specification should describe the syntax and semantics of any new protocol feature. The specification should be detailed enough to allow competing, interoperable implementations. A PR with the changes to the specification should be provided.*
-
-### Interest Groups (IG) \[Problems]
-
-**Goal**: facilitate discussion and knowledge-sharing among MCP community members with similar interests surrounding some MCP sub-topic or context. The focus is on collecting *problems* that may or may not be worth solving with SEPs or other community artifacts.
-
-**Expectations**:
-
-* At least one substantive thread / conversation per month
-* AND/OR a live meeting attended by 3+ unaffiliated individuals
-
-**Examples**:
-
-* Security in MCP (currently: #security)
-* Auth in MCP (currently: #auth)
-* Using MCP in an internal enterprise setting (currently: #enterprise-wg)
-* Tooling and practices surrounding hosting MCP servers (currently: #hosting-wg)
-* Tooling and practices surrounding implementing MCP clients (currently: #client-implementors)
-
-**Lifecycle**:
-
-* Creation begins by filling out a template in #wg-ig-group-creation Discord channel
-* A community moderator will review and call for a vote in the (private) #community-moderators Discord channel. Majority positive vote by members over a 72h period approves creation of the group. Can be reversed at any time (e.g. after more input comes in). Core and lead maintainers can veto.
-* Facilitator(s) and Maintainer(s) responsible for organizing IG into meeting expectations
-  * Facilitator is an informal role responsible for shepherding or speaking for a group
-  * Maintainer is an official representative from the MCP steering group (not required for every group to have this)
-* IG is retired only when community moderators or core+ maintainers decide it is not meeting expectations
-  * This means successful IG’s will live on in perpetuity
-
-**Creation Template**:
-
-* Facilitator(s)
-* Maintainer(s) (optional)
-* Flag potential overlap with other IG’s
-* How this IG differentiates itself from the related IG’s
-* First topic you want to discuss
-
-There is no requirement to be part of an IG to start a WG, or even to start a SEP. However, forming consensus in IG’s to support justifying the creation of a WG is often a good idea. Similarly, citing IG or WG support of a SEP helps the SEP as well.
-
-### Working Groups (WG) \[Solutions]
-
-**Goal**: facilitate MCP community collaboration on a specific SEP, themed series of SEPs, or officially endorsed Project.
-
-**Expectations**:
-
-* Minimum monthly progress towards at least one SEP or spec-related implementation OR holds maintenance responsibilities for a Project
-* Facilitator(s) is/are responsible for fielding status update requests by community moderators or maintainers
-
-**Examples**:
-
-* Registry
-* Inspector
-* Tool Filtering
-* Server Identity
-
-**Lifecycle**:
-
-* Creation begins by filling out a template in #wg-ig-group-creation Discord channel
-* A community moderator will review and call for a vote in the (private) #community-moderators Discord channel. Majority positive vote by members over a 72h period approves creation of the group. Can be reversed at any time (e.g. after more input comes in). Core and lead maintainers can veto.
-* Facilitator(s) and Maintainer(s) responsible for organizing WG into meeting expectations
-  * Facilitator is an informal role responsible for shepherding or speaking for a group
-  * Maintainer is an official representative from the MCP steering group (not required for every group to have this)
-* WG is retired when either:
-  * Community moderators or core+ maintainers decide it is not meeting expectations
-  * The WG does not have a WIP Issue/PR for at least a month, or has completed all Issues/PRs it intends to pursue.
-
-**Creation Template**:
-
-* Facilitator(s)
-* Maintainer(s) (optional)
-* Explanation of interest/use cases (ideally from an IG but can come from anywhere)
-* First Issue/PR/SEP you intend to procure
-
-### WG/IG Facilitators
-
-A “Facilitator” role in a WG or IG does *not* result in a [maintainership role](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md) across the MCP organization. It is an informal role into which anyone can self-nominate, responsible for helping shepherd discussions and collaboration within the group.
-
-Core Maintainers reserve the right to modify the list of Facilitators and Maintainers for any WG/IG at any time.
-
-PR for the changes to our documentation we'd want to enact this SEP: [https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1350](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1350)
-
-## Rationale
-
-*The rationale explains why particular design decisions were made. It should describe alternate designs that were considered and related work. The rationale should provide evidence of consensus within the community and discuss important objections or concerns raised during discussion.*
-
-The design above comes from experience in facilitating the creation of + observing the behavior of informal “Community Working Groups” in the CWG Discord, and leading one of / participating in / observing the “Steering Committee Working Groups”. While the Steering WG’s were usually informally created by Lead Maintainers, the CWG Discord had a lightweight WG-creation process that involved similar steps to the proposal above (community members would propose WG’s in #working-group-ideation, and moderators would create channels from that collaboration).
-
-As precedent, the WG and IG concepts here are similar to W3C’s notion of [Working Groups](https://www.w3.org/groups/wg/) and [Interest Groups](https://www.w3.org/groups/ig/).
-
-### Considerations
-
-In proposing the WG/IG design, we took the following into consideration:
-
-#### Clear on-ramp for community involvement
-
-A very common question for folks looking to invest in the MCP ecosystem is, "how do I get involved?"
-
-These IG and WG abstractions help provide an elegant on-ramp:
-
-1. Join the Discord, follow the conversation in IGs relevant to you. Attend live calls. Participate.
-2. Offer to facilitate calls. Contribute your use cases in SEP proposals and other work.
-3. When you're comfortable contributing to deliverables, jump in to contribute to WG work.
-4. Do this for a period of time, get noticed by WG maintainers to get nominated as a new maintainer.
-
-#### Minimal changes to existing governance structure
-
-We did not want this change to introduce new elections, appointments, or other notions of leadership. We leverage community moderators to thumbs-up creation of new groups, allow core maintainers to veto, maintainership status stays unchanged, and the notion of "facilitator" is new but self-nominated, so does not introduce any new governance processes.
-
-#### Alignment with current status quo
-
-There is a clear "migration" path for the existing "CWG" working groups and Steering working groups - just a matter of sorting out what is "working" vs. "interest", but functionally this proposal stays out of the way of changing anything that has been working within each group's existing structure.
-
-#### Nature of requests for gathering spaces
-
-It has been clear from the requests to CWG that some groups form with a motivation to collaborate on some deliverable (e.g. `search-tools`), and others form due to common interests and a want for sub-community but not yet specific deliverables (e.g. `enterprise`). Hence, we separate the motivations into Working Groups vs. Interest Groups.
-
-#### Potential for overlap in scope
-
-In the requests for new group spaces, it is sometimes non-obvious why a new one needs to exist. For example, the stated motivation for `enterprise` at times sounded like it may just be another flavor of `hosting`. We ultimately settled on a distinction that made it clear one was not a direct subset of the other, but the concern of making clear boundaries between groups (and letting community moderators / maintainers centralize the decision-making around "what are the right layers of abstraction") is what led to the questions in the creation templates around e.g. "flag potential overlap with other IG’s".
-
-#### Path to retiring stale groups
-
-Many working groups in the old CWG and Steering models have gone stale since creation. They serve no real purpose and should be retired. For this, we introduce the formal concept of facilitators and optional maintainers in groups; and the community moderator right to retire them. By having at least informal leadership in place per group, a moderator can easily make the decision to retire a group if everyone is in agreement to proceed.
-
-### Alternatives Considered
-
-#### Hierarchy between IGs and WGs
-
-We considered *requiring* that WGs be owned or spawned by a "sponsor" IG, for the purpose of more clearly exhibiting a progression of ideas to the community; but decided against this requiring to avoid adding a new layer of governance and alignment with how the less formal groups works today.
-
-#### A single WG concept (instead of both WG and IG)
-
-There has been regular tension in both CWG and the Steering group around the question of "is XYZ really a working group? how will maintainership work?" By making IG's explicitly discussion-oriented and maintainership involvement optional, we create a space to drive those discussions without requiring some formal expectation of deliverables like we might in a well-defined WG.
-
-#### Free-for-all WG/IG creation process
-
-While very community-driven, the concern of group overlap would quickly fragment the conversations and collaboration to an untenable level; we need a centralized point of discernment here.
-
-## Backward Compatibility
-
-*All SEPs that introduce backward incompatibilities must include a section describing these incompatibilities and their severity. The SEP must explain how the author proposes to deal with these incompatibilities.*
-
-There is no major change suggested in the day to day of existing groups - the expectations laid out of IGs and WGs are easily met by existing active groups as long as they keep doing as they are doing.
-
-A migration path for all groups is laid out below.
-
-## Reference Implementation
-
-*The reference implementation must be completed before any SEP is given status “Final”, but it need not be completed before the SEP is accepted. While there is merit to the approach of reaching consensus on the specification and rationale before writing code, the principle of “rough consensus and running code” is still useful when it comes to resolving many discussions of protocol details.*
-
-The below is the suggested migration path for each group. "Migration" just involves acknowledgement of this SEP and the expectations of each group, plus methodology for possible eventual retirement (or immediate retirement, in some cases).
-
-After this SEP is approved, we can ping each of the groups to confirm they are on board with the migration plan.
-
-### Steering Working Groups
-
-* All official SDK groups --> Working Groups
-* Registry --> Working Group
-* Documentation --> Working Group
-* Inspector --> Working Group
-* Auth --> Interest Group + some WGs: client-registration, improve-devx, profiles, tool-scopes
-* Agents --> Working Group \[Long Running / Async Tool Calls; unless we want an Agents IG on top of that?]
-* Connection Lifetime --> Retire
-* Streaming --> Retire
-* Spec Compliance --> Retire (good idea but stale; would be good for someone to spearhead a new Working Group)
-* Security --> Interest Group (perhaps with Security Best Practices WG?)
-* Transports --> Interest Group
-* Server Identity --> Working Group
-* Governance --> Working Group (or Retire if no more work here?)
-
-### Community Working Groups
-
-* agent-comms --> Retire
-* enterprise --> Interest Group (request a proposal to start)
-* hosting --> Interest Group (request a proposal to start)
-* load-balancing --> Retire
-* model-awareness --> Working Group (request a proposal to start)
-* search-tools (tool-filtering) --> Working Group
-* server-identity --> merge with Steering equivalent
-* security --> merge with Steering equivalent
-* server-identity --> merge with Steering equivalent
-* tool-interfaces --> Retire
-* ui --> Interest Group
-* schema-validation --> Retire (same as Steering equivalent)
-
-
 # SEP-414: Document OpenTelemetry Trace Context Propagation Conventions
 Source: https://modelcontextprotocol.io/seps/414-request-meta
 
@@ -30659,66 +30674,61 @@ Charter for the MCP Financial Services Interest Group.
 
 ## Mission Statement
 
-The Financial Services Interest Group brings together stakeholders from regulated financial
-institutions to identify where MCP needs to adapt for compliance, auditability, and risk-controlled
-deployment. It gathers use cases and requirements from the financial sector, develops and validates
-domain-specific extensions, and scopes problems with broad applicability into [SEPs](/community/sep-guidelines)
-or Working Groups so that innovations proven in regulated environments can benefit the wider MCP
-ecosystem.
+The Financial Services Interest Group (FSIG) brings together participants from regulated financial institutions to identify shared MCP
+adoption and interoperability problems, exchange implementation experience, and connect those needs to existing protocol capabilities and
+community work. Its default approach is to first identify how existing MCP primitives and publicly shareable industry patterns address a
+problem, then bring any unresolved protocol gap to the appropriate Working Group (WG). Where no WG covers a widely acknowledged problem with
+a clear potential deliverable, FSIG helps gather cross-community interest and contributors to propose a WG through [MCP group governance](/community/working-interest-groups#forming-a-group).
+
+FSIG may discuss and recommend potential solutions, and collaborate with relevant Working Groups to prototype approaches, including
+exploratory finance-specific extensions.
 
 ## Scope
 
 ### In Scope
 
-* **Compliance and auditability**: requirements for tamper-evident, portable records of what a tool
-  call did, under what authority, and against which policy, so that MCP interactions can satisfy
-  regulatory audit and incident-review obligations
-* **Data lineage and provenance**: source attribution, citation, and consent metadata for data
-  surfaced through MCP, so that downstream consumers can establish where information came from and
-  on what basis it may be used
-* **Guardrails and attestation**: verification frameworks and cryptographic attestations that let a
-  regulated institution gain assurance about server identity, tool behavior, and the integrity of
-  responses before acting on them
-* **Policy enforcement**: declarative policies for tool usage and data handling, and the points at
-  which they are enforced, so that institutions can encode regulatory and internal-control
-  constraints as machine-checkable rules
-* **Finance-specific extensions**: developing, maintaining, and gathering implementation experience
-  on MCP extensions that address the above in the FSIG repository, including reference
-  implementations and conformance testing
-* **Interoperability across institutions**: common patterns and standards that allow regulated
-  institutions to interoperate without each reinventing compliance plumbing
-* **SEP promotion**: identifying extensions with applicability beyond financial services and
-  shepherding them toward the core specification with core-maintainer sponsorship
-* **Regulatory liaison**: translating constraints from regulators and industry bodies into concrete
-  technical requirements and input for other groups
+* **Auditability and operational control**. Identify what a financial institution needs to know about an MCP tool call to review an action or investigate an incident.
+* **Data lineage and citation**. Identify how clients can trace financial data returned through MCP to its source and preserve citations when presenting it.
+* **Data handling**. Examine what information a client needs when a tool result contains data subject to usage or redistribution restrictions.
+* **Problem discovery and shared implementation experience**: collecting cross-institution use cases, documenting common constraints, and
+  sharing public examples of how existing MCP primitives and complementary implementation patterns can be combined within the current spec
+* **Solution exploration**: discussing and, where useful, prototyping possible approaches or experimental extensions to test feasibility
+  and clarify requirements, without treating FSIG as the default owner of standards-track deliverables
+* **Interoperability across institutions**: identifying reusable patterns and gaps while avoiding institution-specific prescriptions or
+  duplicative protocol development
+* **WG collaboration and referrals**: connecting unresolved problems, evidence and interested participants to existing WGs responsible for
+  the relevant technical scope
+* **New WG incubation**: when a broadly relevant gap has no existing WG, gathering cross-IG and wider community interest, potential
+  contributors and a clear problem statement to support a proposed WG under the [group formation
+  rules](/community/working-interest-groups#forming-a-group)
+* **SEP input**: contributing problem statements, use cases, implementation experience and draft proposals in collaboration with relevant
+  WGs
 
 ### Out of Scope
 
-* **Competitively sensitive or non-public business information**: pricing, costs, margins, customer
-  lists, market segmentation, and competitive strategy, per the [MCP Antitrust Policy](/community/antitrust)
-* **General security threat modeling**: MCP-wide attack-surface analysis belongs to the
-  [Security IG](/community/interest-groups/security). This group provides financial-sector requirements as
-  input and consumes its threat models
-* **Authorization protocol mechanics**: OAuth flows, scopes, client registration, and token handling
-  belong to the [Authorization IG](/community/interest-groups/auth)
-* **Product-specific compliance guides**: step-by-step configuration for an individual host
-  application, cloud platform, or institution is documentation for that product rather than protocol
-  work
-* **Non-technical business discussions**: legal interpretation, procurement, and commercial terms
+* **Independent ownership of standards-track protocol changes**: FSIG does not independently sponsor SEPs or substitute for a WG's
+  delegated technical decision-making and delivery role; exploratory solutions and extensions may inform WG work
+* **Competitively sensitive or non-public business information**: pricing, costs, margins, customer lists, market segmentation, and
+  competitive strategy, per the [MCP Antitrust Policy](/community/antitrust)
+* **General security threat modeling**: MCP-wide attack-surface analysis belongs to the [Security IG](/community/interest-groups/security).
+  This group provides financial-sector requirements as input and consumes its threat models
+* **Authorization protocol mechanics**: OAuth flows, scopes, client registration, and token handling belong to the [Authorization
+  IG](/community/interest-groups/auth)
+* **Product-specific compliance guides**: step-by-step configuration for an individual host application, cloud platform, or institution is
+  documentation for that product rather than protocol work
+* **Legal, regulatory, and commercial advice or coordination**: legal interpretation, regulatory policy positions, procurement, commercial
+  terms, and engagement with regulators or industry bodies on their behalf
 
 ### Related Groups
 
-* **[Security IG](/community/interest-groups/security)**: attestation, auditability, and guardrails are
-  shared concerns; the FSIG supplies regulated-deployment requirements and consumes the IG's threat
-  models
-* **[Authorization IG](/community/interest-groups/auth)**: identity and access control for sensitive
-  financial data sit at the boundary between the two groups
-* **[Tool Annotations IG](/community/interest-groups/tool-annotations)**: trust and sensitivity annotations
-  are directly relevant to financial tool exposure; the FSIG provides requirements as input
-* **[Interceptors WG](/community/working-groups/interceptors)**: interceptors are a primary enforcement point
-  for the policy and guardrail requirements surfaced here
-* **[Registry WG](/community/working-groups/registry)**: server provenance and publishing metadata intersect
-  with financial supply-chain and admission concerns
+* FSIG shares financial-sector incident review use cases with the [Security IG](/community/interest-groups/security) and draws on its threat models.
+* **[Authorization IG](/community/interest-groups/auth)**: identity and access control for sensitive financial data sit at the boundary
+  between the two groups
+* **[Tool Annotations IG](/community/interest-groups/tool-annotations)**: trust and sensitivity annotations are directly relevant to
+  financial tool exposure; the FSIG provides requirements as input
+* FSIG brings use cases involving the observation of tool calls to the [Interceptors WG](/community/working-groups/interceptors).
+* **[Registry WG](/community/working-groups/registry)**: server provenance and publishing metadata intersect with financial supply-chain
+  and admission concerns
 
 ## Leadership
 
@@ -30735,38 +30745,44 @@ ecosystem.
 | Kengo Arao | Bloomberg | [@KengoA](https://github.com/KengoA) | *TBD* | Participant |
 | King Yew Choo | True Primary | [@kychooo](https://github.com/kychooo) | kychooo | Participant |
 
-Open to anyone. Join the `#financial-services-ig` channel on the
-[MCP Contributors Discord](/community/communication#discord). Calls are open and no approval is
-required to attend or contribute. The group especially welcomes contributors from regulated
-institutions who can bring real-world deployment constraints and help drive proposals forward.
+Open to anyone. Join the `#financial-services-ig` channel on the [MCP Contributors Discord](/community/communication#discord). Calls are
+open and no approval is required to attend or contribute. The group especially welcomes contributors from regulated institutions who can
+bring real-world deployment constraints and help drive proposals forward.
 
 ## Operations
 
-| Meeting | Frequency | Duration | Purpose |
-| - | - | - | - |
-| Working Session | Every 2 weeks | 60 min | Use-case review, extension and proposal work, SEP scoping |
+FSIG meets **monthly, for up to 60 minutes** initially, as an open industry forum for sharing common problems, exchanging experience with
+existing MCP capabilities, and helping participants find relevant Working Groups and opportunities to contribute. Facilitators may revisit
+the cadence if recurring topics, sustained interest, or the volume of proposed agenda items warrants more frequent meetings.
 
-Meetings are held 16:00–17:00 London (BST/GMT). An agenda is shared in `#financial-services-ig`
-ahead of each call, and notes with decisions and action items are published afterwards.
+Meetings use a lightweight, community-driven agenda, not fixed time allocations. Recurring prompts may include introductions and ways to get
+involved, shared problems, existing approaches using MCP primitives, relevant WG/IG work, and follow-ups. Facilitators invite agenda
+suggestions in a thread in `#financial-services-ig` ahead of each meeting; anyone can reply with topics or questions. The discussion remains
+free-flowing, with Facilitators helping route detailed technical work to WGs.
+
+The agenda or a link to it is posted in the GitHub Discussions Meeting Notes category before the meeting, and notes are published to that
+discussion within 48 hours, as required by [MCP meeting governance](/community/working-interest-groups#meetings-and-channels). Calendar
+entries are published at least seven days ahead, meetings are open to all, and the Code of Conduct and Antitrust Policy apply. This
+Discord-first agenda workflow follows the approaches used by the [Security IG](/community/interest-groups/security) and [Authorization IG](/community/interest-groups/auth).
 
 Discord: [#financial-services-ig](https://discord.gg/6CSzBmMkjX)
 
 ## Discussion Topics
 
-The following items form the IG's current agenda. This list is not exhaustive and will evolve as the
-group identifies new areas of interest.
+The following are illustrative examples of topics relevant to MCP adoption in financial services, not predefined deliverables. This list is
+not exhaustive and will evolve based on community interest.
 
-| Item | Name | Status | Champion |
-| - | - | - | - |
-| — | Regulatory audit & attestation: portable, verifiable event/claim models | Open | — |
-| — | Data lineage & citation: provenance, consent metadata, source attribution | Open | — |
-| — | Guardrails & security: verification frameworks and cryptographic attestations | Open | — |
-| — | Policy enforcement: declarative policies for tool usage and data handling | Open | — |
+| Topic | Illustrative discussion question |
+| - | - |
+| **Auditability and operational control** | If a connection drops after an order is submitted, what can the client establish about the outcome? |
+| **Data lineage and citation** | Can a reader trace a reported figure to the filing and reporting period it came from? |
+| **Data handling** | When a result combines licensed market data with a public filing, can the client tell which data the restriction applies to? |
 
 ## Changelog
 
 | Date | Change |
 | - | - |
+| 2026-11-20 | Proposed clarification of problem-first scope, existing-solution discovery and WG-led escalation; subject to Core Maintainer approval |
 | 2026-06-25 | Initial charter |
 
 
@@ -32992,6 +33008,10 @@ Meetings are published at
   [modelcontextprotocol/ext-tasks](https://github.com/modelcontextprotocol/ext-tasks)
 * Tasks specification:
   [SEP-2663: Tasks Extension](/seps/2663-tasks-extension)
+* Events extension repository:
+  [modelcontextprotocol/ext-events](https://github.com/modelcontextprotocol/ext-events)
+* Events specification:
+  [SEP-3415: Events Extension](/seps/3415-events-extension)
 
 ## Deliverables & Success Metrics
 
@@ -33000,7 +33020,7 @@ Meetings are published at
 | Item | Status | Target Date | Champion |
 | - | - | - | - |
 | Tasks stabilization and core protocol promotion | In Progress | | [@LucaButBoring](https://github.com/LucaButBoring) |
-| SEP: Events in MCP v1 RFC | Ideating | End April | TBD |
+| [SEP-3415: Events Extension](/seps/3415-events-extension) | Final | | [@poita](https://github.com/poita) |
 | Reference implementation in Tier-1 SDKs | — | End April | TBD |
 
 ### Success Criteria
@@ -33422,6 +33442,254 @@ Every priority area above has a Working Group behind it or forming around it, an
 * **Propose or comment on a SEP**: read the [SEP guidelines](/community/sep-guidelines), then open one or weigh in.
 * **Start an experimental extension**: [SEP-2133](/seps/2133-extensions) lets any WG or IG experiment in an `experimental-ext-` repository before a formal SEP.
 * **Contribute directly**: the [contributing guide](/community/contributing) covers the specification, SDKs, and tooling.
+
+
+# SEP-1302: Formalize Working Groups and Interest Groups in MCP Governance
+Source: https://modelcontextprotocol.io/seps/1302-formalize-working-groups-and-interest-groups-in-mc
+
+Formalize Working Groups and Interest Groups in MCP Governance
+
+Final
+
+Standards Track
+
+> [!NOTE]
+>
+> This SEP has reached Final status and is preserved as a historical record of
+> the design as accepted. Changes made to the protocol after finalization are
+> not reflected here. Refer to the [current
+> specification](/specification/latest) and its changelog for authoritative
+> requirements.
+
+| Field | Value |
+| - | - |
+| **SEP** | 1302 |
+| **Title** | Formalize Working Groups and Interest Groups in MCP Governance |
+| **Status** | Final |
+| **Type** | Standards Track |
+| **Created** | 2025-08-05 |
+| **Author(s)** | tadasant |
+| **Sponsor** | None |
+| **PR** | [#1302](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1302) |
+
+***
+
+## Abstract
+
+*A short (\~200 word) description of the technical issue being addressed.*
+
+In [SEP-994](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1002), we introduced a notion of “Working Groups” and “Interest Groups” that facilitate MCP sub-communities for discussion and collaboration. This SEP aims to formally define those two terms: what they are meant to achieve, how groups can be created, how they are governed, and how they can be retired.
+
+Interest Groups work to define *problems* that MCP should solve by facilitating *discussions*, while Working Groups push forward specific *solutions* by collaboratively producing *deliverables* (in the form of SEPs or community-owned implementations of the specification). Interest Group input is a welcome (but not required) justification for creation of a Working Group. Interest Group or Working Group input is collectively a welcome (but not required) input into a SEP.
+
+## Motivation
+
+*The motivation should clearly explain why the existing protocol specification is inadequate to address the problem that the SEP solves.*
+
+The community has already been self-organizing into several disparate systems for these collaborative groups:
+
+* The Steering group has had a long-standing practice of managing a handful of collaborative groups through Discord channels (e.g. security, auth, agents). See [bottom of MAINTAINERS.md](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md).
+* The “CWG Discord” has had a [semi-formal process](https://github.com/modelcontextprotocol-community/working-groups) for pushing equivalent grassroots initiatives, mostly in pursuit of creating artifacts for SEP consideration (e.g. hosting, UI, tool-interfaces, search-tools)
+
+With SEP-994 resulting in the merging of the Discord communities, we have a need to:
+
+* Merge the existing initiatives into one unified approach, so when we reference “working group” or “interest group”, everyone knows what that means and what kind of weight the reference might carry
+* Standardize a process around the creation (and eventual retirement) of such groups
+* Properly distinguish between “working” and “interest” groups; the CWG experience has shown two very different motivations for starting a group worth treating with different expectations and lifecycle. Put succinctly, “interest” groups are about brainstorming possible *problems*, and “working” groups are about pushing forward specific *solutions*.
+
+These groups exist to:
+
+* **Facilitate high signal spaces for discussion** such that those opting into notifications and meetings feel most content is relevant to them and they can meaningfully contribute their experience and learn from others
+* **Create norms, expectations, and single points of involved leadership** around making collaborative progress towards concrete deliverables that help evolve MCP
+
+It will also form the foundation for cross-group initiatives, such as maintaining a calendar of live meetings.
+
+## Specification
+
+*The technical specification should describe the syntax and semantics of any new protocol feature. The specification should be detailed enough to allow competing, interoperable implementations. A PR with the changes to the specification should be provided.*
+
+### Interest Groups (IG) \[Problems]
+
+**Goal**: facilitate discussion and knowledge-sharing among MCP community members with similar interests surrounding some MCP sub-topic or context. The focus is on collecting *problems* that may or may not be worth solving with SEPs or other community artifacts.
+
+**Expectations**:
+
+* At least one substantive thread / conversation per month
+* AND/OR a live meeting attended by 3+ unaffiliated individuals
+
+**Examples**:
+
+* Security in MCP (currently: #security)
+* Auth in MCP (currently: #auth)
+* Using MCP in an internal enterprise setting (currently: #enterprise-wg)
+* Tooling and practices surrounding hosting MCP servers (currently: #hosting-wg)
+* Tooling and practices surrounding implementing MCP clients (currently: #client-implementors)
+
+**Lifecycle**:
+
+* Creation begins by filling out a template in #wg-ig-group-creation Discord channel
+* A community moderator will review and call for a vote in the (private) #community-moderators Discord channel. Majority positive vote by members over a 72h period approves creation of the group. Can be reversed at any time (e.g. after more input comes in). Core and lead maintainers can veto.
+* Facilitator(s) and Maintainer(s) responsible for organizing IG into meeting expectations
+  * Facilitator is an informal role responsible for shepherding or speaking for a group
+  * Maintainer is an official representative from the MCP steering group (not required for every group to have this)
+* IG is retired only when community moderators or core+ maintainers decide it is not meeting expectations
+  * This means successful IG’s will live on in perpetuity
+
+**Creation Template**:
+
+* Facilitator(s)
+* Maintainer(s) (optional)
+* Flag potential overlap with other IG’s
+* How this IG differentiates itself from the related IG’s
+* First topic you want to discuss
+
+There is no requirement to be part of an IG to start a WG, or even to start a SEP. However, forming consensus in IG’s to support justifying the creation of a WG is often a good idea. Similarly, citing IG or WG support of a SEP helps the SEP as well.
+
+### Working Groups (WG) \[Solutions]
+
+**Goal**: facilitate MCP community collaboration on a specific SEP, themed series of SEPs, or officially endorsed Project.
+
+**Expectations**:
+
+* Minimum monthly progress towards at least one SEP or spec-related implementation OR holds maintenance responsibilities for a Project
+* Facilitator(s) is/are responsible for fielding status update requests by community moderators or maintainers
+
+**Examples**:
+
+* Registry
+* Inspector
+* Tool Filtering
+* Server Identity
+
+**Lifecycle**:
+
+* Creation begins by filling out a template in #wg-ig-group-creation Discord channel
+* A community moderator will review and call for a vote in the (private) #community-moderators Discord channel. Majority positive vote by members over a 72h period approves creation of the group. Can be reversed at any time (e.g. after more input comes in). Core and lead maintainers can veto.
+* Facilitator(s) and Maintainer(s) responsible for organizing WG into meeting expectations
+  * Facilitator is an informal role responsible for shepherding or speaking for a group
+  * Maintainer is an official representative from the MCP steering group (not required for every group to have this)
+* WG is retired when either:
+  * Community moderators or core+ maintainers decide it is not meeting expectations
+  * The WG does not have a WIP Issue/PR for at least a month, or has completed all Issues/PRs it intends to pursue.
+
+**Creation Template**:
+
+* Facilitator(s)
+* Maintainer(s) (optional)
+* Explanation of interest/use cases (ideally from an IG but can come from anywhere)
+* First Issue/PR/SEP you intend to procure
+
+### WG/IG Facilitators
+
+A “Facilitator” role in a WG or IG does *not* result in a [maintainership role](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md) across the MCP organization. It is an informal role into which anyone can self-nominate, responsible for helping shepherd discussions and collaboration within the group.
+
+Core Maintainers reserve the right to modify the list of Facilitators and Maintainers for any WG/IG at any time.
+
+PR for the changes to our documentation we'd want to enact this SEP: [https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1350](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1350)
+
+## Rationale
+
+*The rationale explains why particular design decisions were made. It should describe alternate designs that were considered and related work. The rationale should provide evidence of consensus within the community and discuss important objections or concerns raised during discussion.*
+
+The design above comes from experience in facilitating the creation of + observing the behavior of informal “Community Working Groups” in the CWG Discord, and leading one of / participating in / observing the “Steering Committee Working Groups”. While the Steering WG’s were usually informally created by Lead Maintainers, the CWG Discord had a lightweight WG-creation process that involved similar steps to the proposal above (community members would propose WG’s in #working-group-ideation, and moderators would create channels from that collaboration).
+
+As precedent, the WG and IG concepts here are similar to W3C’s notion of [Working Groups](https://www.w3.org/groups/wg/) and [Interest Groups](https://www.w3.org/groups/ig/).
+
+### Considerations
+
+In proposing the WG/IG design, we took the following into consideration:
+
+#### Clear on-ramp for community involvement
+
+A very common question for folks looking to invest in the MCP ecosystem is, "how do I get involved?"
+
+These IG and WG abstractions help provide an elegant on-ramp:
+
+1. Join the Discord, follow the conversation in IGs relevant to you. Attend live calls. Participate.
+2. Offer to facilitate calls. Contribute your use cases in SEP proposals and other work.
+3. When you're comfortable contributing to deliverables, jump in to contribute to WG work.
+4. Do this for a period of time, get noticed by WG maintainers to get nominated as a new maintainer.
+
+#### Minimal changes to existing governance structure
+
+We did not want this change to introduce new elections, appointments, or other notions of leadership. We leverage community moderators to thumbs-up creation of new groups, allow core maintainers to veto, maintainership status stays unchanged, and the notion of "facilitator" is new but self-nominated, so does not introduce any new governance processes.
+
+#### Alignment with current status quo
+
+There is a clear "migration" path for the existing "CWG" working groups and Steering working groups - just a matter of sorting out what is "working" vs. "interest", but functionally this proposal stays out of the way of changing anything that has been working within each group's existing structure.
+
+#### Nature of requests for gathering spaces
+
+It has been clear from the requests to CWG that some groups form with a motivation to collaborate on some deliverable (e.g. `search-tools`), and others form due to common interests and a want for sub-community but not yet specific deliverables (e.g. `enterprise`). Hence, we separate the motivations into Working Groups vs. Interest Groups.
+
+#### Potential for overlap in scope
+
+In the requests for new group spaces, it is sometimes non-obvious why a new one needs to exist. For example, the stated motivation for `enterprise` at times sounded like it may just be another flavor of `hosting`. We ultimately settled on a distinction that made it clear one was not a direct subset of the other, but the concern of making clear boundaries between groups (and letting community moderators / maintainers centralize the decision-making around "what are the right layers of abstraction") is what led to the questions in the creation templates around e.g. "flag potential overlap with other IG’s".
+
+#### Path to retiring stale groups
+
+Many working groups in the old CWG and Steering models have gone stale since creation. They serve no real purpose and should be retired. For this, we introduce the formal concept of facilitators and optional maintainers in groups; and the community moderator right to retire them. By having at least informal leadership in place per group, a moderator can easily make the decision to retire a group if everyone is in agreement to proceed.
+
+### Alternatives Considered
+
+#### Hierarchy between IGs and WGs
+
+We considered *requiring* that WGs be owned or spawned by a "sponsor" IG, for the purpose of more clearly exhibiting a progression of ideas to the community; but decided against this requiring to avoid adding a new layer of governance and alignment with how the less formal groups works today.
+
+#### A single WG concept (instead of both WG and IG)
+
+There has been regular tension in both CWG and the Steering group around the question of "is XYZ really a working group? how will maintainership work?" By making IG's explicitly discussion-oriented and maintainership involvement optional, we create a space to drive those discussions without requiring some formal expectation of deliverables like we might in a well-defined WG.
+
+#### Free-for-all WG/IG creation process
+
+While very community-driven, the concern of group overlap would quickly fragment the conversations and collaboration to an untenable level; we need a centralized point of discernment here.
+
+## Backward Compatibility
+
+*All SEPs that introduce backward incompatibilities must include a section describing these incompatibilities and their severity. The SEP must explain how the author proposes to deal with these incompatibilities.*
+
+There is no major change suggested in the day to day of existing groups - the expectations laid out of IGs and WGs are easily met by existing active groups as long as they keep doing as they are doing.
+
+A migration path for all groups is laid out below.
+
+## Reference Implementation
+
+*The reference implementation must be completed before any SEP is given status “Final”, but it need not be completed before the SEP is accepted. While there is merit to the approach of reaching consensus on the specification and rationale before writing code, the principle of “rough consensus and running code” is still useful when it comes to resolving many discussions of protocol details.*
+
+The below is the suggested migration path for each group. "Migration" just involves acknowledgement of this SEP and the expectations of each group, plus methodology for possible eventual retirement (or immediate retirement, in some cases).
+
+After this SEP is approved, we can ping each of the groups to confirm they are on board with the migration plan.
+
+### Steering Working Groups
+
+* All official SDK groups --> Working Groups
+* Registry --> Working Group
+* Documentation --> Working Group
+* Inspector --> Working Group
+* Auth --> Interest Group + some WGs: client-registration, improve-devx, profiles, tool-scopes
+* Agents --> Working Group \[Long Running / Async Tool Calls; unless we want an Agents IG on top of that?]
+* Connection Lifetime --> Retire
+* Streaming --> Retire
+* Spec Compliance --> Retire (good idea but stale; would be good for someone to spearhead a new Working Group)
+* Security --> Interest Group (perhaps with Security Best Practices WG?)
+* Transports --> Interest Group
+* Server Identity --> Working Group
+* Governance --> Working Group (or Retire if no more work here?)
+
+### Community Working Groups
+
+* agent-comms --> Retire
+* enterprise --> Interest Group (request a proposal to start)
+* hosting --> Interest Group (request a proposal to start)
+* load-balancing --> Retire
+* model-awareness --> Working Group (request a proposal to start)
+* search-tools (tool-filtering) --> Working Group
+* server-identity --> merge with Steering equivalent
+* security --> merge with Steering equivalent
+* server-identity --> merge with Steering equivalent
+* tool-interfaces --> Retire
+* ui --> Interest Group
+* schema-validation --> Retire (same as Steering equivalent)
 
 
 # SEP-1303: Input Validation Errors as Tool Execution Errors
@@ -46099,7 +46367,7 @@ The notifications MCP already has do not cover this.
 
 The deployments that need events are also disjoint. A stateless or serverless server cannot hold a connection per subscriber. A client behind NAT has no public endpoint to receive a callback. A battery- or cost-sensitive client should not poll. A single delivery mechanism strands at least one of these, which is why this extension defines three (see [Rationale](#rationale)).
 
-[SEP-1686](./1686-tasks.md) listed webhook-style completion notifications as a future consideration for Tasks. The [Triggers & Events Working Group](https://modelcontextprotocol.io/community/triggers-events/charter) was chartered to define that mechanism in general form: how a server tells a client that something happened, with a defined subscription lifecycle, delivery semantics and ordering guarantees that hold across transports. This SEP is that definition.
+[SEP-1686](./1686-tasks.md) listed webhook-style completion notifications as a future consideration for Tasks. The Triggers & Events Working Group, now the [Tasks and Events Working Group](https://modelcontextprotocol.io/community/working-groups/tasks-events), was chartered to define that mechanism in general form: how a server tells a client that something happened, with a defined subscription lifecycle, delivery semantics and ordering guarantees that hold across transports. This SEP is that definition.
 
 ## Specification
 
@@ -46116,9 +46384,9 @@ This extension is identified as `io.modelcontextprotocol/events`.
 
 ### Working Group and Extension Maintainers
 
-The extension is owned by the [Triggers & Events Working Group](https://modelcontextprotocol.io/community/triggers-events/charter). Its Extension Maintainers are the Working Group leads, currently Clare Liguori (@clareliguori) and Peter Alexander (@poita).
+The extension is owned by the [Tasks and Events Working Group](https://modelcontextprotocol.io/community/working-groups/tasks-events). Its Extension Maintainers are the Working Group leads, currently Clare Liguori (@clareliguori), Peter Alexander (@poita), Luca Chang (@LucaButBoring) and Caitie McCaffrey (@CaitieM20).
 
-The extension is incubated in [`experimental-ext-triggers-events`](https://github.com/modelcontextprotocol/experimental-ext-triggers-events). When this SEP is accepted, the specification is published in an official extension repository as [SEP-2133](./2133-extensions.md) describes.
+The extension is incubated in [`experimental-ext-triggers-events`](https://github.com/modelcontextprotocol/experimental-ext-triggers-events). The specification is published in the official extension repository [`ext-events`](https://github.com/modelcontextprotocol/ext-events), under `specification/beta/events/`, as [SEP-2133](./2133-extensions.md) and [SEP-3392](./3392-extension-lifecycle.md) describe.
 
 ### Capability Negotiation
 
