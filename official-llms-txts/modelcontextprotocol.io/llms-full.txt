@@ -24336,6 +24336,7 @@ This matrix shows which MCP clients support each [official extension](/extension
 | [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | [Partial](https://github.com/modelcontextprotocol/inspector/blob/main/docs/mcp-app-review.md) | | | [Partial](https://github.com/modelcontextprotocol/inspector/blob/main/clients/cli/README.md#skill-verification---verify) | | |
 | [mcpc MCP CLI](https://github.com/apify/mcpc) | | | | | | |
 | [Glean](https://www.glean.com/) | | | | | | |
+| [mcp-use](https://github.com/mcp-use/mcp-use) | | | | | | |
 
 > [!NOTE]
 >
@@ -29696,9 +29697,9 @@ This page sets out the project's communication channels, when a channel may be p
 
 | Channel | Use it for |
 | - | - |
-| [Discord](https://discord.gg/6CSzBmMkjX) | Real-time coordination among contributors, including working group, interest group and SDK discussion |
+| [Discord](https://discord.gg/modelcontextprotocol) | Real-time coordination among contributors, including working group, interest group and SDK discussion |
 | [Meeting calendar](https://meet.modelcontextprotocol.io/) | Open group and maintainer meetings. For how meetings run, see [Meetings and channels](/community/working-interest-groups#meetings-and-channels) |
-| [GitHub Discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions) | Ideas, feature requests with rationale, questions, roadmap discussion, announcements and releases, and meeting agendas and notes (Meeting Notes category) |
+| [GitHub Discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions) | Meeting agendas and notes, in the Meeting Notes categories, and announcements. Only people with write access to this repository can open a discussion. Ideas, feature requests and questions start on Discord |
 | [GitHub Issues](https://github.com/modelcontextprotocol/modelcontextprotocol/issues) | Reproducible bugs, scoped documentation tasks, and CI and release tasks, filed through the issue forms. [SEPs](/community/sep-guidelines) are pull requests to `seps/`, not issues |
 | [Security advisories](/community/policies#reporting-a-vulnerability) | Vulnerabilities. Never post one in a public channel |
 
@@ -29706,7 +29707,7 @@ Each SDK and project repository has its own issue tracker and Discord channel. M
 
 ## Discord
 
-The [MCP Contributor Discord](https://discord.gg/6CSzBmMkjX) is for people working on the protocol and its projects, and is where discussion of the protocol and its design starts. It is not a support channel: report a reproducible bug as an issue on the repository it affects, and start from the documentation for questions about using MCP. Do not market products or services on the server, and mention vendors only as examples relevant to the specification.
+The [MCP Contributor Discord](https://discord.gg/modelcontextprotocol) is for people working on the protocol and its projects, and is where discussion of the protocol and its design starts. It is not a support channel: report a reproducible bug as an issue on the repository it affects, and start from the documentation for questions about using MCP. Do not market products or services on the server, and mention vendors only as examples relevant to the specification.
 
 Channels are named `#general` for project-wide discussion, `#<name>-wg` and `#<name>-ig` for each working group and interest group, and `#<lang>-sdk-dev` for each SDK. Other projects have a channel such as `#inspector-dev`. Propose a new group in `#wg-ig-group-creation`. Responses are best-effort.
 
@@ -30236,7 +30237,7 @@ All maintainers are expected to have a strong bias towards MCP's design philosop
 
 ### Communication Channels
 
-Technical governance is facilitated through a shared [Discord server](https://discord.gg/6CSzBmMkjX) for all maintainers. Each maintainer group can choose additional communication channels, but all decisions and their supporting discussions must be recorded and made transparently available on the Discord server.
+Technical governance is facilitated through a shared [Discord server](https://discord.gg/modelcontextprotocol) for all maintainers. Each maintainer group can choose additional communication channels, but all decisions and their supporting discussions must be recorded and made transparently available on the Discord server.
 
 ### Roles
 
@@ -30291,7 +30292,7 @@ The Core Maintainer group meets on a bi-weekly basis to discuss proposals and th
 
 ### Public Chat
 
-The MCP project maintains a [public Discord server](https://discord.gg/6CSzBmMkjX) with open chats for interest groups. The MCP project may have private channels for certain communications.
+The MCP project maintains a [public Discord server](https://discord.gg/modelcontextprotocol) with open chats for interest groups. The MCP project may have private channels for certain communications.
 
 ## Nominating, Confirming, and Removing Maintainers
 
@@ -30765,7 +30766,7 @@ discussion within 48 hours, as required by [MCP meeting governance](/community/w
 entries are published at least seven days ahead, meetings are open to all, and the Code of Conduct and Antitrust Policy apply. This
 Discord-first agenda workflow follows the approaches used by the [Security IG](/community/interest-groups/security) and [Authorization IG](/community/interest-groups/auth).
 
-Discord: [#financial-services-ig](https://discord.gg/6CSzBmMkjX)
+Discord: [#financial-services-ig](https://discord.gg/modelcontextprotocol)
 
 ## Discussion Topics
 
@@ -33149,7 +33150,7 @@ Current WG Members are listed in the upstream
 The WG holds a regular weekly meeting, with the current time and joining details listed
 at [meet.modelcontextprotocol.io](https://meet.modelcontextprotocol.io). Topics are
 discussed asynchronously in `#transports-wg` on the
-[MCP Discord](https://discord.gg/6CSzBmMkjX).
+[MCP Discord](https://discord.gg/modelcontextprotocol).
 
 Work follows a problem-first workflow:
 
@@ -33332,7 +33333,7 @@ A working group is formed when a widely acknowledged problem needs coordinated w
 
 ### Interest group
 
-Fill out the creation template in the `#wg-ig-group-creation` channel on [Discord](https://discord.gg/6CSzBmMkjX). A Core Maintainer reviews the proposal, and the group and its Facilitators need the same sponsorship. Once sponsored, the Facilitators organize the group and submit a charter the same way, with the file under `docs/community/interest-groups/`.
+Fill out the creation template in the `#wg-ig-group-creation` channel on [Discord](https://discord.gg/modelcontextprotocol). A Core Maintainer reviews the proposal, and the group and its Facilitators need the same sponsorship. Once sponsored, the Facilitators organize the group and submit a charter the same way, with the file under `docs/community/interest-groups/`.
 
 ## Amending or retiring a group
 
@@ -38650,7 +38651,7 @@ with the Core Maintainers in a core maintainer meeting.
 
 **Interest Group Formation:**
 
-* Fill out the creation template in the `#wg-ig-group-creation` channel on [Discord](https://discord.gg/6CSzBmMkjX)
+* Fill out the creation template in the `#wg-ig-group-creation` channel on [Discord](https://discord.gg/modelcontextprotocol)
 * A Core Maintainer reviews the proposal; the IG and its Facilitator(s) must be sponsored by at least two Core Maintainers or one Lead Maintainer
 * Once sponsored, the Facilitator(s) organize the IG and create a charter
 
