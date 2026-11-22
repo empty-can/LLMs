@@ -1,296 +1,130 @@
 ---
-対象期間: 2026年11月19日 〜 2026年11月20日
-作成日: 2026-11-20
+対象期間: 2026年11月20日 〜 2026年11月21日
+作成日: 2026-11-21
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、新規ページが 1 件（Events 拡張の概要ページ）加わり、既存ページは 5 件で本文が変わりました。前回 SEP-3415 として収録された Events 拡張が、Beta の公式の拡張として拡張の一覧と対応表に載り、Financial Services Interest Group の憲章を書き直す提案も収録されています。
+今回の対象期間の取り込みは 1 回で、差分は本文 `llms-full.txt` の 7 ページで計 19 行（追加 10 行・削除 9 行）にとどまり、索引 `llms.txt` は変わりませんでした。コミュニティの連絡手段の案内で GitHub Discussions の用途が絞られ、Discord の招待リンクが差し替えられたほか、拡張の対応表にクライアントが 1 つ加わっています。
 
 主要なものを以下に挙げます。
 
-1. Events 拡張の概要ページが加わり、拡張の一覧に Beta の公式の拡張として載った。仕様は `ext-events` リポジトリにあり、配信方式は poll・push・webhook の 3 つ
-2. 拡張の対応表（Extension Support Matrix）に Events の列が加わり、ChatGPT が Partial（webhook の配信だけ）とされた
-3. Financial Services IG の憲章を、まず既存の MCP の仕組みで足りるかを確かめ、残った課題は WG へ持ち込む方針に書き直す提案が載った。会合は月 1 回になる（Core Maintainer の承認が条件）
-4. SEP-3415 と Tasks and Events WG の憲章が Events 拡張の公開に追従した。Extension Maintainer は 4 人になり、WG の作業項目では Ideating だった Events の SEP の行が Final の SEP-3415 に置き換わった
+1. Communication ページの連絡手段の表で、GitHub Discussions の用途が会合の議題・議事録と告知に絞られた。ディスカッションを開けるのはこのリポジトリの書き込み権限を持つ人だけで、アイデア・機能の要望・質問は Discord から始める
+2. Discord の招待リンクが、6 ページの 8 か所で `discord.gg/6CSzBmMkjX` から `discord.gg/modelcontextprotocol` に差し替えられた
+3. Extension Support Matrix の対応表にクライアント mcp-use の行が加わり、クライアントは 18 になった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Events 拡張の概要ページが加わり公式の拡張として一覧に載った**](#1-events-拡張の概要ページが加わり公式の拡張として一覧に載った):  
-  新しいページ Events（`extensions/events/overview`、248 行）が加わり、索引 `llms.txt` にもエントリが入った。ページは、公式の Events 拡張（`io.modelcontextprotocol/events`）の仕様一式が `ext-events` リポジトリにあり、SEP-3415 は Final、拡張は Beta で、Tasks and Events Working Group が保守している、と始まる。Extensions Overview の公式の拡張リポジトリの一覧にも「MCP Events」の小節が加わり、Stage は「Beta, destination not yet stated」とされた。概要ページは、既存の通知では足りない理由、6 段階の流れ、3 つの配信方式、カーソルと配信の保証、セキュリティモデル、クライアントとサーバーの実装の手引きをまとめている。
-2. [**拡張の対応表に Events の列が加わり ChatGPT が Partial になった**](#2-拡張の対応表に-events-の列が加わり-chatgpt-が-partial-になった):  
-  Extension Support Matrix の Extension overview の表に Events の行が、Support matrix の表の右端に Events の列が加わった。`llms-full.txt` で読める Events の対応は ChatGPT の `Partial`（OpenAI の MCP Events の解説へのリンク付き）だけ。新しい注記は、Events の Partial が webhook の配信だけへの対応を意味し、チェックの付いたクライアントは poll・push・webhook のすべてに対応すること、これらの実装のほとんどは SEP-3415 が Final になる前のもので草案の仕様に沿っていることを述べている。
-3. [**Financial Services IG の憲章を問題の発見と WG への橋渡しを軸に改める提案が載った**](#3-financial-services-ig-の憲章を問題の発見と-wg-への橋渡しを軸に改める提案が載った):  
-  Financial Services Charter（追加 67 行・削除 66 行）で、使命・対象範囲・関連グループ・運営・議題が書き直された。既定の進め方は、既存の MCP の仕組みと公開できる業界のパターンで問題に対処できるかを先に確かめ、残ったプロトコルの欠落を適切な WG へ持ち込むことになり、標準化トラックのプロトコル変更を FSIG が単独で受け持つこと（SEP を単独でスポンサーすることを含む）が対象外に加わった。会合は 2 週に 1 回から月 1 回（最長 60 分）になった。Changelog に加わった 2026年11月20日 の行は、これを Core Maintainer の承認を条件とする提案としている。
-4. [**SEP-3415 と Tasks and Events WG の憲章が Events 拡張の公開に追従した**](#4-sep-3415-と-tasks-and-events-wg-の憲章が-events-拡張の公開に追従した):  
-  SEP-3415 では、拡張を所有する WG の名前とリンク先が Tasks and Events Working Group（`community/working-groups/tasks-events`）になり、Extension Maintainer に Luca Chang 氏と Caitie McCaffrey 氏が加わって 4 人になった。「採択されたら公式の拡張リポジトリで公開される」という記述は、仕様は `ext-events` の `specification/beta/events/` で公開されている、という記述に変わった。Tasks and Events Charter では、Resources に `ext-events` と SEP-3415 へのリンクが加わり、Active Work Items の「SEP: Events in MCP v1 RFC」（Ideating）の行が SEP-3415（Final）の行に置き換わった。
+1. [**Communication で GitHub Discussions の用途が会合の記録と告知に絞られた**](#1-communication-で-github-discussions-の用途が会合の記録と告知に絞られた):  
+  連絡手段を定める Communication ページの Channels の表で、GitHub Discussions の行の用途が書き換わった。旧版は「アイデア、根拠を添えた機能の要望、質問、ロードマップの議論、告知とリリース、会合の議題と議事録（Meeting Notes のカテゴリ）」だった。新版は「会合の議題と議事録（Meeting Notes のカテゴリ群）と告知」で、ディスカッションを開けるのはこのリポジトリの書き込み権限を持つ人だけであること、アイデア・機能の要望・質問は Discord から始めることが明記された。
+2. [**Discord の招待リンクが 6 ページ 8 か所で差し替えられた**](#2-discord-の招待リンクが-6-ページ-8-か所で差し替えられた):  
+  Communication・Governance and Stewardship・Financial Services Charter・Transports Charter・Working Groups and Interest Groups・SEP-2149 の 6 ページで、Discord サーバーへの招待リンク計 8 か所が `https://discord.gg/6CSzBmMkjX` から `https://discord.gg/modelcontextprotocol` に変わった。`llms-full.txt` に旧リンクは残っていない。チャンネルを直接指す `discord.com/channels/…` 形式の 7 つのリンクは変わっていない。
+3. [**拡張の対応表に mcp-use の行が加わった**](#3-拡張の対応表に-mcp-use-の行が加わった):  
+  Extension Support Matrix の Support matrix の表の末尾に、クライアント mcp-use（リンク先は GitHub の `mcp-use/mcp-use`）の行が加わり、クライアントの行は 17 から 18 になった。`llms-full.txt` ではこの行の 6 つのセルはすべて空だが、この表では対応を示すチェックマークが出力されないため、どの拡張に対応するかは `llms-full.txt` からは読み取れない。
 <!-- light:highlight-list:end -->
 
-## 1. Events 拡張の概要ページが加わり公式の拡張として一覧に載った
+## 1. Communication で GitHub Discussions の用途が会合の記録と告知に絞られた
 
-今回の対象期間の取り込みは 1 回で、入力の 2 ファイルとも差分がありました。本文 `llms-full.txt` は追加 681 行・削除 413 行で、総行数は 47,333 行から 47,601 行に、収録ページ数は 162 件から 163 件（`examples` が 2 回収録されているため、URL としては 161 件から 162 件）になりました。索引 `llms.txt` は追加 1 行で、エントリ数は 363 件から 364 件になっています（軽微な更新の「その他」参照）。
+今回の対象期間の取り込みは 1 回で、差分が出たのは本文 `llms-full.txt` だけでした（追加 10 行・削除 9 行）。総行数は 47,601 行から 47,602 行になり、収録ページ数（163 件。`examples` が 2 回収録されているため、URL としては 162 件）は変わっていません。索引 `llms.txt` には差分がありません（エントリ 364 件のまま）。変更のあった 7 ページはいずれも 50 行未満の変更で、軽微な更新に当たります。
 
-`llms-full.txt` の差分の内訳は次のとおりです。行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。
-
-| 内訳 | 行数 | 追加 | 削除 | 扱い |
+| ページ | 行数 | 追加 | 削除 | 主な変更 |
 |---|---|---|---|---|
-| Events（新規ページ） | — → 248 | 248 | 0 | 新規追加（このハイライト） |
-| Financial Services Charter | 122 → 123 | 67 | 66 | 大幅更新（ハイライト 3） |
-| Extension Support Matrix | 58 → 63 | 24 | 19 | 軽微な更新（ハイライト 2） |
-| Extensions Overview | 296 → 306 | 10 | 0 | 軽微な更新（このハイライト） |
-| Tasks and Events Charter | 115 → 119 | 5 | 1 | 軽微な更新（ハイライト 4） |
-| SEP-3415: Events Extension | 1,284 → 1,284 | 3 | 3 | 軽微な更新（ハイライト 4） |
-| SEP-1302 の収録位置の移動 | 248 → 248 | 324 | 324 | 軽微な更新（その他）。本文の変更なし |
-| 計 | | 681 | 413 | |
+| Communication | 34 → 34 | 3 | 3 | GitHub Discussions の行の書き換え（このハイライト）、Discord の招待リンク 2 か所（ハイライト 2） |
+| Governance and Stewardship | 130 → 130 | 2 | 2 | Discord の招待リンク 2 か所（ハイライト 2） |
+| Financial Services Charter | 123 → 123 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
+| Transports Charter | 151 → 151 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
+| Working Groups and Interest Groups | 151 → 151 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
+| SEP-2149: MCP Group Governance and Charter Template | 438 → 438 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
+| Extension Support Matrix | 63 → 64 | 1 | 0 | mcp-use の行の追加（ハイライト 3） |
+| 計 | | 10 | 9 | |
 
-SEP-1302 の 248 行は 1 行も変わっておらず、別の位置へ移っただけです。既定のアルゴリズムの行単位の差分では、この移動に周りのページの 76 行が巻き込まれて、追加・削除とも 324 行に数えられます（`git diff --histogram` で取ると 248 行ずつ）。
+行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。
 
-新しいページは Events（`extensions/events/overview`）で、索引の説明文は「Subscribe to events in upstream systems and react when they happen」です。本文 `llms-full.txt` では Extension Support Matrix と Extensions Overview の間に、索引 `llms.txt` では `extensions/` のエントリの末尾（Skills の後、The MCP Registry の前）に置かれています。
+**Communication（`community/communication`）**: プロジェクトの連絡手段、非公開にしてよい場合、決定の記録先を定めたページです。冒頭の Channels の表は、Discord・Meeting calendar・GitHub Discussions・GitHub Issues・Security advisories の 5 つの手段と、それぞれの用途を並べています。このうち GitHub Discussions の行の用途が、次のように書き換わりました。
 
-ページは冒頭で、公式の Events 拡張（`io.modelcontextprotocol/events`）の仕様一式が [ext-events](https://github.com/modelcontextprotocol/ext-events) リポジトリにあり、SEP-3415 は Final、拡張は Beta で、[Tasks and Events Working Group](https://modelcontextprotocol.io/community/working-groups/tasks-events) が保守している、と位置づけを述べます。続けて、MCP は要求駆動（ユーザーかモデルが尋ね、サーバーが答える）だが、新着のメール、リポジトリへの push、本番のインシデントのように、誰も尋ねていないときに起きることにエージェントが応じる必要が増えている、と背景を説明します。Events は、クライアントがこうした上流の出来事を引数付きで購読し、ユーザーがいないときでもエージェントが反応できるようにするもの、としています。仕様の本体は `ext-events` リポジトリに、設計の根拠は SEP-3415 に委ねる、という構成の概要ページです。各節の内容は「新規追加されたページ」で扱います。
+| | 用途（原文） |
+|---|---|
+| 旧 | Ideas, feature requests with rationale, questions, roadmap discussion, announcements and releases, and meeting agendas and notes (Meeting Notes category) |
+| 新 | Meeting agendas and notes, in the Meeting Notes categories, and announcements. Only people with write access to this repository can open a discussion. Ideas, feature requests and questions start on Discord |
 
-**Extensions Overview（追加 10 行）**: 「Official Extension Repositories」の節の末尾（MCP Server Cards の後、Experimental Extensions の前）に「MCP Events」の小節が加わりました。`ext-events` リポジトリのカード（説明は「Subscriptions to events in upstream systems.」）と、次の 1 行の表から成ります。
+- **用途**: 会合の議題と議事録、告知（announcements）の 2 つになった。会合の記録の置き場所は、旧版の単数の「Meeting Notes category」から、複数形の「Meeting Notes categories」になっている
+- **開ける人の制限（新設）**: ディスカッションを開けるのは、このリポジトリ（リンク先の `modelcontextprotocol/modelcontextprotocol`）の書き込み権限を持つ人だけと明記された
+- **Discord への振り分け（新設）**: アイデア・機能の要望・質問は Discord から始める、とされた。旧版の用途にあったロードマップの議論とリリース（「announcements and releases」の releases）は、新版の行には挙がっていない
 
-| Extension | Stage | Description |
-|---|---|---|
-| Events | Beta, destination not yet stated | Subscribe to upstream events and receive them by polling, push or webhook. |
+Discord の行の用途（コントリビューターどうしのリアルタイムの調整。WG・IG・SDK の議論を含む）は、招待リンクのほかは変わっていません。表の直後の段落（各 SDK とプロジェクトのリポジトリはそれぞれ課題の管理と Discord のチャンネルを持ち、ほとんどは Discussions を無効にして Issues を使う。このリポジトリと registry が主な例外）と、Decision records の節（技術や統治の決定に向かう Discord の議論は GitHub Discussion へ移さなければならず、決定は `notes` ラベルの Discussion か SEP のプルリクエストに記録する）も変わっていません。
 
-Stage は Skills over MCP・MCP Server Cards と同じ「Beta, destination not yet stated」で、MCP Tasks の「Beta, to Core」とは違い、行き先はまだ示されていません。
+- [Communication - MCP Docs](https://modelcontextprotocol.io/community/communication#channels)
 
-- [Events - MCP Docs](https://modelcontextprotocol.io/extensions/events/overview#how-events-work)
-- [Extensions Overview - MCP Docs](https://modelcontextprotocol.io/extensions/overview#mcp-events)
+## 2. Discord の招待リンクが 6 ページ 8 か所で差し替えられた
 
-## 2. 拡張の対応表に Events の列が加わり ChatGPT が Partial になった
+本文中の Discord サーバーへの招待リンク 8 か所が、すべて `https://discord.gg/6CSzBmMkjX` から `https://discord.gg/modelcontextprotocol` に変わりました。リンクの文言と前後の文は変わっておらず、head の `llms-full.txt` に旧リンクは残っていません。
 
-Extension Support Matrix（58 行から 63 行、追加 24 行・削除 19 行）で、Events が 2 つの表に加わり、注記が 1 つ増えました。
+| ページ | 箇所 |
+|---|---|
+| Communication | Channels の表の Discord の行と、Discord の節の冒頭の「MCP Contributor Discord」（2 か所） |
+| Governance and Stewardship | Technical Governance の Communication Channels の、メンテナー全員で共有する Discord サーバーと、Communication の Public Chat の、公開の Discord サーバー（2 か所） |
+| Financial Services Charter | Operations の末尾の `#financial-services-ig` のリンク |
+| Transports Charter | Operations の、`#transports-wg` で非同期に議論するとした文の「MCP Discord」 |
+| Working Groups and Interest Groups | Forming a group の Interest group の、`#wg-ig-group-creation` のチャンネルがある Discord |
+| SEP-2149: MCP Group Governance and Charter Template | Specification の 1.9 Lifecycle の Interest Group Formation の、同じく `#wg-ig-group-creation` のチャンネルがある Discord |
 
-- **Extension overview の表**: 末尾に Events の行（識別子 `io.modelcontextprotocol/events`、説明「Subscribe to upstream events and receive them by poll, push or webhook」）が加わり、5 行になった
-- **Support matrix の表**: 右端（Tasks の列の後ろ）に Events の列が加わり、17 のクライアントの行すべてでセルが 1 つ増えた。`llms-full.txt` で Events の列に値があるのは ChatGPT の `Partial` だけで、リンク先は OpenAI の開発者向けドキュメントの MCP Events のページ（`developers.openai.com/plugins/build/mcp-events`）
-- **新しい注記**: 表の直後（Auth 拡張についての既存の注記の前）に加わった。Events の対応が `Partial` とあるのは webhook の配信だけに対応することを意味し、チェックの付いたクライアントは poll・push・webhook の 3 つの配信に対応する。また、これらの実装のほとんどは SEP-3415 が Final になる前に作られたもので、草案の仕様に沿っている、としている
+Financial Services Charter の `#financial-services-ig` のリンクは、チャンネルではなくサーバーの招待リンクを指しているため、これも新しい招待リンクに変わりました。一方、チャンネルを直接指す `discord.com/channels/…` 形式のリンク 7 つ（`#auth-ig`・`#scientific-computing-ig`・`#security-ig`・`#tool-annotations-ig`・`#progressive-disclosure-wg`・`#server-card-wg`・`#skills-over-mcp-wg`）は変わっていません。
 
-なお、2026年10月20日のサマリで書いたとおり、`llms-full.txt` の書式が変わってから、この表では対応を示すチェックマークが出力されていません。空のセルが非対応を意味するとは限らず、`llms-full.txt` から読み取れるのはリンク付きの `Partial` だけです。
+- [Communication - MCP Docs](https://modelcontextprotocol.io/community/communication#discord)
+- [Governance and Stewardship - MCP Docs](https://modelcontextprotocol.io/community/governance#public-chat)
+
+## 3. 拡張の対応表に mcp-use の行が加わった
+
+Extension Support Matrix（63 行から 64 行、追加 1 行）の Support matrix の表で、末尾（Glean の後）にクライアント mcp-use の行が加わり、クライアントの行は 17 から 18 になりました。リンク先は GitHub の `mcp-use/mcp-use` リポジトリです。
+
+`llms-full.txt` では、この行の 6 つのセル（MCP Apps・OAuth Client Credentials・Enterprise Auth・Skills・Tasks・Events）はすべて空です。2026年10月20日のサマリで書いたとおり、`llms-full.txt` の書式が変わってから、この表では対応を示すチェックマークが出力されていません。空のセルが非対応を意味するとは限らず、mcp-use がどの拡張に対応するかは `llms-full.txt` からは読み取れません。Extension overview の表と、Support matrix の表の後の 2 つの注記は変わっていません。
 
 - [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
-- [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#extension-overview)
-
-## 3. Financial Services IG の憲章を問題の発見と WG への橋渡しを軸に改める提案が載った
-
-Financial Services Charter（122 行から 123 行、追加 67 行・削除 66 行）は、Financial Services Interest Group（FSIG）の憲章です。Group Type と Leadership（Facilitator は Bloomberg の Sambhav Kothari 氏と Saxo Bank の Peder Holdgaard Pedersen 氏）、Membership の表は変わらず、使命・対象範囲・関連グループ・運営・議題が書き直されました。Changelog に加わった 2026年11月20日 の行は「Proposed clarification of problem-first scope, existing-solution discovery and WG-led escalation; subject to Core Maintainer approval」です。問題を先に据えた対象範囲、既存の解決策の発見、WG が主導するエスカレーション（解決できない問題を WG へ上げること）を明確にする提案であり、Core Maintainer の承認を条件とする、という位置づけです。ここでは使命・対象範囲・関連グループを扱い、運営と議題は「大幅に更新されたページ」で扱います。
-
-**使命（Mission Statement）**: 旧版は、規制下の金融機関の関係者を集め、コンプライアンス・監査可能性・リスクを管理した導入のために MCP がどこを適応させるべきかを特定し、金融の領域に特化した拡張を開発・検証し、広く当てはまる問題を SEP や WG へつなげる、としていました。新版は、規制下の金融機関の参加者が、MCP の導入と相互運用で共通する問題を特定し、実装の経験を交換し、そのニーズを既存のプロトコルの機能やコミュニティの作業へつなげる場、としています。
-
-- **既定の進め方**: 既存の MCP のプリミティブと、公開して共有できる業界のパターンで問題に対処できるかをまず確かめ、解決しないプロトコルの欠落を適切な WG へ持ち込む
-- **WG が無い場合**: 広く認められた問題に明確な成果物の見込みがあるのに、それを扱う WG が無いときは、MCP のグループの統治の手続きで WG を提案できるよう、コミュニティをまたいで関心と貢献者を集める
-- **2 段落目（新設）**: FSIG は解決策を議論・推奨してよく、関係する WG と協力して、探索的な金融向けの拡張を含む試作をしてよい
-
-**対象範囲（In Scope）**: 8 項目がすべて書き直されて 9 項目になり、名前がそのまま残ったのは Interoperability across institutions だけです。新版の 9 項目は次のとおりです。
-
-- **Auditability and operational control**: 操作を見直したりインシデントを調べたりするために、金融機関が MCP のツール呼び出しについて何を知る必要があるかを特定する
-- **Data lineage and citation**: MCP で返った金融データをクライアントが出どころまで辿り、表示するときに出典を保てるようにする方法を特定する
-- **Data handling**: ツールの結果に利用や再配布の制限のあるデータが含まれるとき、クライアントに何の情報が要るかを調べる
-- **Problem discovery and shared implementation experience**: 機関をまたいだユースケースを集め、共通の制約を文書にし、既存の MCP のプリミティブと補完的な実装パターンを今の仕様の中で組み合わせる公開の例を共有する
-- **Solution exploration**: 実現性を試し要件を明確にするために、取りうる方法や実験的な拡張を議論し、役に立つなら試作する。ただし FSIG を標準化トラックの成果物の既定の持ち主とはしない
-- **Interoperability across institutions**: 機関ごとの決めつけや重複したプロトコル開発を避けつつ、再利用できるパターンと欠落を見つける
-- **WG collaboration and referrals**: 未解決の問題・根拠・関心のある参加者を、該当する技術の範囲を受け持つ既存の WG へつなぐ
-- **New WG incubation**: 広く関わる欠落を扱う WG が無いとき、IG をまたいだ広いコミュニティの関心、貢献者の候補、明確な問題の記述を集め、グループの結成の規則に沿った WG の提案を支える
-- **SEP input**: 関係する WG と協力して、問題の記述・ユースケース・実装の経験・提案の草案を出す
-
-旧版の項目のうち、Guardrails and attestation（検証の枠組みと暗号学的な証明）、Policy enforcement（ツールの使用とデータの扱いについての宣言的なポリシー）、Finance-specific extensions（FSIG のリポジトリで拡張を開発・保守すること。参照実装と適合性試験を含む）、SEP promotion（金融以外にも当てはまる拡張を、Core Maintainer のスポンサーのもとでコア仕様へ導くこと）、Regulatory liaison（規制当局や業界団体の制約を具体的な技術要件に落とすこと）に当たる項目は、新版にはありません。旧版の Compliance and auditability と Data lineage and provenance に近いのは、新版の Auditability and operational control と Data lineage and citation です。
-
-**対象外（Out of Scope）**: 5 項目から 6 項目になりました。
-
-- **追加**: 先頭に Independent ownership of standards-track protocol changes が加わった。FSIG は SEP を単独でスポンサーせず、WG に委ねられた技術的な意思決定と成果物の提供の役割を肩代わりしない。探索的な解決策や拡張が WG の作業の参考になることはある、としている
-- **書き直し**: 旧版の Non-technical business discussions（法的な解釈、調達、商取引の条件）が Legal, regulatory, and commercial advice or coordination になり、規制についての方針の立場と、誰かに代わって規制当局や業界団体と関わることが加わった
-- **折り返しだけの変更**: 残りの 4 項目（競争上機微な情報や非公開の事業情報、MCP 全体の脅威モデリング、認可のプロトコルの仕組み、製品ごとのコンプライアンスの手引き）は、行の折り返しが変わっただけで内容は同じ
-
-**関連グループ（Related Groups）**: 5 つのうち 2 つの記述が変わりました。
-
-- **Security IG**: 旧版の「証明・監査可能性・ガードレールが共通の関心事で、FSIG は規制下の配備の要件を出し、IG の脅威モデルを使う」が、「FSIG は金融のインシデントの見直しのユースケースを Security IG と共有し、その脅威モデルを参考にする」になった
-- **Interceptors WG**: 旧版の「インターセプターは、ここで出るポリシーとガードレールの要件の主な執行点」が、「FSIG はツール呼び出しの観察に関わるユースケースを Interceptors WG へ持ち込む」になった
-- Authorization IG・Tool Annotations IG・Registry WG の 3 つは、行の折り返しが変わっただけ
-
-- [Financial Services Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services#mission-statement)
-- [Financial Services Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services#in-scope)
-- [Financial Services Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services#out-of-scope)
-
-## 4. SEP-3415 と Tasks and Events WG の憲章が Events 拡張の公開に追従した
-
-前回取り込んだ SEP-3415: Events Extension（1,284 行のまま、Status は Final のまま）で 3 行が書き換わり、WG の名前、Extension Maintainer、仕様の公開先が今の状態に合わせられました。前回のサマリで触れた 2 点、つまり SEP が張る WG の charter へのリンクが旧名の `/community/triggers-events/charter` のままだったことと、Tasks and Events Charter の Active Work Items で Events の SEP が Ideating のまま据え置かれていたことは、今回どちらも解消しています。
-
-**SEP-3415 で書き換わった 3 か所**:
-
-- **Motivation**: 「Triggers & Events Working Group（リンク先は `community/triggers-events/charter`）が、その仕組みを一般的な形で定めるために設けられた」という文が、「Triggers & Events Working Group（現在の Tasks and Events Working Group）が…」になり、リンクは新しい名前の側（`community/working-groups/tasks-events`）に付いた
-- **Working Group and Extension Maintainers（Specification の節）**: 拡張の所有者のリンクが Tasks and Events Working Group（`community/working-groups/tasks-events`）になった。Extension Maintainer（WG の Lead）は、Clare Liguori 氏（@clareliguori）と Peter Alexander 氏（@poita）の 2 人から、Luca Chang 氏（@LucaButBoring）と Caitie McCaffrey 氏（@CaitieM20）を加えた 4 人になった。4 人は Tasks and Events Charter の Lead の 4 人と一致する
-- **同じ節の育成（incubation）の記述**: 拡張が `experimental-ext-triggers-events` で育成されているという文は残った。続く「この SEP が採択されたら、仕様は SEP-2133 のとおり公式の拡張リポジトリで公開される」は、「仕様は公式の拡張リポジトリ `ext-events` の `specification/beta/events/` で、SEP-2133 と SEP-3392 のとおり公開されている」になった
-
-**Tasks and Events Charter（115 行から 119 行、追加 5 行・削除 1 行）**:
-
-- **Resources**: Tasks specification の後に、Events extension repository（`modelcontextprotocol/ext-events`）と Events specification（SEP-3415: Events Extension）の 2 項目が加わった。Incubation repository（`experimental-ext-triggers-events`）の項目はそのまま
-- **Active Work Items**: 「SEP: Events in MCP v1 RFC」（Status は Ideating、Target Date は End April、Champion は TBD）の行が、SEP-3415: Events Extension へのリンクの行（Status は Final、Target Date は空欄、Champion は @poita）に置き換わった。ほかの 2 行（Tasks の安定化とコアのプロトコルへの昇格、Tier 1 の SDK での参照実装）と、Success Criteria、Changelog は変わっていない
-
-- [SEP-3415: Events Extension - MCP Docs](https://modelcontextprotocol.io/seps/3415-events-extension#working-group-and-extension-maintainers)
-- [Tasks and Events Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/tasks-events#active-work-items)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Events**](#1-events) ([MCP Docs](https://modelcontextprotocol.io/extensions/events/overview)):  
-  公式の Events 拡張（`io.modelcontextprotocol/events`）の概要ページ（248 行）。既存の通知では足りない理由、6 段階の流れ、poll・push・webhook の配信方式、使いどころ、カーソルと配信の保証、セキュリティモデル、クライアントとサーバーの実装の手引きをまとめている。索引 `llms.txt` にもエントリが加わった（位置づけはハイライト 1 参照）。
+今回の対象期間に新たに追加されたページはありません。本文 `llms-full.txt` の収録ページ数（163 件。URL としては 162 件）と、索引 `llms.txt`（エントリ 364 件）は前回と同じです。
 <!-- light:new-pages:end -->
-
-## 1. Events
-
-Events は 248 行のページで、タイトルを除く見出しは 11 個（`##` が 9・`###` が 2）です。`ext-events` リポジトリのカード、mermaid のシーケンス図 1 つ、表 1 つ、JSON の例 2 つ、注記 1 つを含みます。各節の要点は次のとおりです。
-
-**既存の通知では足りない理由（Why not existing notifications?）**: MCP には `notifications/resources/updated` や `list_changed` の系統の通知がありますが、この用途には次の 3 点で足りないとしています。
-
-- **引数もデータも無い**: 通知は URI やリストが変わったことを伝えるだけで、「サービス X で P1 のインシデントが作られた」のようなことは表せない。購読の引数も、データのスキーマも、データ自体も無いため
-- **接続が開いている必要がある**: 通知は開いている `subscriptions/listen` のストリームにしか届かず、接続していないクライアントには何も届かない
-- **再開できない**: カーソルが無いので、切断中に起きたことは失われ、クライアントは何かを取りこぼしたことにも気づけない
-
-あわせて、イベントを必要とする配備はさまざまだとしています。サーバーレスのサーバーは購読者ごとに接続を保てず、NAT の内側のクライアントはコールバックを受けられず、コストに敏感なクライアントは poll すべきではありません。そのため Events は配信方式を 3 つ定め、サーバーがイベントの種類ごとに合うものを選びます。
-
-**仕組み（How Events work）**: 次の 6 段階で説明しています。
-
-1. **機能の交渉**: サーバーは `server/discover` の capabilities で `io.modelcontextprotocol/events` を広告し、クライアントはリクエストごとの capabilities で同じ識別子を宣言してよい
-2. **発見**: クライアントが `events/list` を呼ぶ。各イベントの種類は `name`、購読の引数の `inputSchema`、届けるデータの `payloadSchema`、対応する `delivery` の方式を持つ
-3. **購読**: イベント名と引数で、その種類が挙げる方式の 1 つを使って購読する。`null` のカーソルは「今から」を意味する
-4. **配信**: 各イベントは `{eventId, name, timestamp, data, cursor}` の形で届き、クライアントは配信のたびにカーソルを保存する
-5. **再開**: 切断や再起動のあと、保存したカーソルで購読し直す。サーバーがその位置から配信できないときは `truncated: true` で知らせるので、クライアントはイベントが飛んだことを知れる
-6. **反応**: クライアントの SDK が各イベントをエージェントのランタイムに渡し、ランタイムが、新しいエージェントのターンを始めるなどの反応を決める
-
-シーケンス図は poll の流れを示しています。`events/list` で種類を得たあと、`cursor: null` で `events/poll` を呼んで空の `events` と `cursor`・`nextPollMs` を受け取り、`nextPollMs` だけ待って次の `events/poll` でイベントを受け取り、それをエージェントのランタイムに渡します。
-
-**配信方式（Delivery modes）**: どの方式も必須ではなく、イベントの種類は 3 つのうち空でない任意の組み合わせを挙げ、クライアントの SDK が使えるものを選びます。
-
-| 方式 | メソッド | 仕組み | 向いている場面 |
-|---|---|---|---|
-| Poll | `events/poll` | サーバーが勧める間隔で、クライアントが新しいイベントを尋ねる。サーバーはクライアントごとの状態を持たない | ステートレスやサーバーレスのサーバー、単純なクライアント |
-| Push | `events/stream` | クライアントが長く開いておくリクエストに、サーバーが通知としてイベントを届ける | ローカル（stdio）のサーバー、接続を保ち続けるクライアント |
-| Webhook | `events/subscribe` | クライアントが `https` のコールバック URL を登録し、サーバーが更新できる TTL のもとで、署名付きのイベントを POST する | リモートのサーバー、接続を保てないクライアント |
-
-SDK はふつう、クライアントにコールバックのエンドポイントがあれば webhook を、次に push を、その次に poll を選び、クライアントは購読ごとにこの選択を上書きできます。
-
-**使いどころ（When to use Events）**: 次の 3 つを挙げています。
-
-- **上流の動きへの反応**: 新着のメッセージ、リポジトリへの push、支払い、インシデント、カレンダーの変更など、エージェントが応じるべきもの
-- **無人のエージェント**: ユーザーがいないときに動き、何かが起きたことで起こされる必要があるバックグラウンドのエージェント
-- **絞り込んだ流れ**: 「サービス X の P1 のインシデント」「この送り主からのメール」のように、大きな流れを引数で絞り込む購読
-
-クライアントが自分で始めた長時間の処理の結果を待つ場合は、Events ではなく [Tasks](https://modelcontextprotocol.io/extensions/tasks/overview) を使うよう案内しています。
-
-**カーソルと配信の保証（Cursors and delivery guarantees）**: カーソルは、サーバーが決めるイベントの流れの中の不透明な位置です。上流が永続的で、クライアントが最後のカーソルから再開する場合に、配信は「少なくとも 1 回」になります。
-
-- **再生は種類ごとに任意**: 辿れる履歴の無い種類では、サーバーは `cursor: null` を返す。クライアントは常に「今から」始め、途切れていた間のイベントは取り戻せないものとして受け入れる
-- **再生の範囲の制限**: 古いカーソルに `maxAgeMs` を添えられるので、1 週間オフラインだったホストでも、たとえば直近 5 分ぶんだけを受け取れる
-- **重複排除**: `eventId` は上流のイベントに対して安定しているので、クライアントは購読の中で重複を捨てられる
-- **順序**: poll と push は購読の中で順に届ける。webhook の順序はベストエフォートで、`timestamp` のフィールドで順序を付ける
-
-購読の一覧はクライアントが持ちます。サーバーには購読を一覧するメソッドが無く、クライアントはいつでもサーバー側の状態を作り直せます。
-
-**セキュリティモデル（Security model）**:
-
-- **データは信頼できない**: イベントのデータは外部のシステムから来て、プロンプトインジェクションを含みうる。ツールの結果と同じように扱い、モデルに届く前に無害化するかサンドボックスに入れる
-- **データは最小限に**: サーバーは送り主・件名・ID のように、イベントを特定して仕分けるのに足るものを送り、全文はクライアントがツールで取りに行く
-- **各段階での認可**: サーバーは購読時に権限を確かめ、配信時に確かめ直し、アクセス権が取り消されたら購読を終わらせる。イベントを受け取ってもエージェントが行動する権限にはならず、続くツール呼び出しは通常の MCP の認可を通る
-- **webhook の堅牢化**: 配信には [Standard Webhooks](https://www.standardwebhooks.com/) の HMAC の署名を付ける。コールバック URL は `https` でなければならず、サーバーはエンドポイントを確かめてから配信を始め、SSRF を防ぐために宛先の IP を検証する
-
-**実装の手引き（Implementation guide）**: クライアントとサーバーのそれぞれに 4 つの手順を挙げています。
-
-- **MCP クライアント**
-  - **対応の宣言**: 送るリクエストごとの capabilities（`_meta` の `io.modelcontextprotocol/clientCapabilities` の `extensions`）に `io.modelcontextprotocol/events` を入れる（JSON の例あり）。拡張を広告していないサーバーには `events/*` のリクエストを送らない
-  - **発見と購読**: `events/list` を呼び、購読の引数を各種類の `inputSchema` で検証し、`delivery` の一覧から配信方式を選ぶ
-  - **カーソルの保存**: 購読ごとに最新のカーソルを永続的に保存し、再起動後はそこから再開する。`truncated: true` は欠落がありうるものとして扱い、重要ならツールで正しい状態を読み直す
-  - **安全な受け渡し**: `eventId` で重複を除き、データはモデルに渡す前に信頼できないものとして扱う
-- **MCP サーバー**
-  - **対応の広告**: `server/discover` の capabilities に拡張を入れる。`notifications/events/list_changed` を送るなら `listChanged` を設定する（JSON の例あり）
-  - **イベントの種類の記述**: `events/list` で、各種類を `inputSchema`・`payloadSchema`・対応する `delivery` の方式とともに返す。スキーマは追加の形で変え、互換性を壊す変更は新しいイベント名で公開する
-  - **上流の識別子の利用**: 上流のシステムの安定したイベント ID を `eventId` に使い、上流の位置をカーソルに入れて、クライアントが再開と重複排除をできるようにする
-  - **認可の確認**: 主体（principal）が与えられた引数で購読してよいかを確かめ、アクセス権が取り消されたら購読を終わらせる
-
-**クライアントの対応と仕様（Client support / Specification）**: Events はコアの MCP 仕様の拡張で、プロトコルのリビジョン `2026-07-28` 以降を要する、と注記しています。クライアントごとの対応は Extension Support Matrix を参照するよう案内し（ハイライト 2 参照）、Events はクライアントとサーバーの双方が明示的にオプトインして初めて使われる、としています。最後の節は、仕様は `ext-events` リポジトリにあり、標準の拡張の交渉の仕組みを使い、設計の根拠は SEP-3415 にある、と示しています。
-
-- [Events - MCP Docs](https://modelcontextprotocol.io/extensions/events/overview#why-not-existing-notifications)
-- [Events - MCP Docs](https://modelcontextprotocol.io/extensions/events/overview#delivery-modes)
-- [Events - MCP Docs](https://modelcontextprotocol.io/extensions/events/overview#cursors-and-delivery-guarantees)
-- [Events - MCP Docs](https://modelcontextprotocol.io/extensions/events/overview#security-model)
-- [Events - MCP Docs](https://modelcontextprotocol.io/extensions/events/overview#implementation-guide)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Financial Services Charter**](#1-financial-services-charter) ([MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services)):  
-  Financial Services Interest Group の憲章（122 行から 123 行、追加 67 行・削除 66 行）。使命・対象範囲・関連グループ・運営・議題が書き直され、会合は月 1 回になり、議題の表は例示の問いの表になった。Changelog は、この変更を Core Maintainer の承認を条件とする提案としている（使命・対象範囲・関連グループはハイライト 3 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。本文の変更は 7 ページで計 19 行（追加 10 行・削除 9 行）で、1 ページあたり最大 6 行（Communication）にとどまり、すべて軽微な更新に当たります（ハイライト 1 参照）。
 <!-- light:updated-pages:end -->
-
-## 1. Financial Services Charter
-
-節ごとの変更は次のとおりです。
-
-| 節 | 変更 |
-|---|---|
-| Group Type | 変更なし（Interest Group） |
-| Mission Statement | 1 段落を書き直し、段落を 1 つ追加して 2 段落に（ハイライト 3） |
-| In Scope | 8 項目を書き直して 9 項目に（ハイライト 3） |
-| Out of Scope | 1 項目を追加、1 項目を書き直し、4 項目は行の折り返しだけ変更（ハイライト 3） |
-| Related Groups | 5 項目のうち 2 項目を書き直し、3 項目は行の折り返しだけ変更（ハイライト 3） |
-| Leadership | 変更なし |
-| Membership | 表は変更なし。参加の案内の段落は行の折り返しだけ変更 |
-| Operations | 会合の表と開催時刻の記述を削り、3 段落の説明に |
-| Discussion Topics | 4 項目の議題の表を、3 項目の例示の問いの表に |
-| Changelog | 2026年11月20日 の行を追加 |
-
-**運営（Operations）**: 旧版は、会合の表（Working Session、2 週ごと、60 分、目的はユースケースの検討・拡張と提案の作業・SEP の範囲決め）と、「ロンドン時間（BST/GMT）の 16:00〜17:00 に開き、議題は事前に `#financial-services-ig` で共有し、決定事項と作業項目を含む議事録を後で公開する」という記述でした。新版では表と時刻が無くなり、次の 3 段落になっています。
-
-- **頻度**: 当面は**月 1 回、最長 60 分**で、共通の問題を共有し、既存の MCP の機能についての経験を交換し、参加者が関係する WG や貢献の機会を見つけるのを助ける、開かれた業界のフォーラムとする。繰り返し出る話題や関心の高まり、議題の提案の量によっては、Facilitator が頻度を見直してよい
-- **議題の進め方**: 決まった時間配分ではない、軽量でコミュニティ主導の議題とする。自己紹介と参加の方法、共通の問題、MCP のプリミティブによる既存の方法、関係する WG・IG の作業、フォローアップなどを繰り返し取り上げうる。Facilitator が各回の前に `#financial-services-ig` のスレッドで議題の提案を募り、誰でも話題や質問を返せる。議論は自由に進め、詳しい技術の作業は Facilitator が WG へ回す
-- **公開と規則**: 議題（かそのリンク）は会合の前に GitHub Discussions の Meeting Notes のカテゴリに載せ、議事録は会合から 48 時間以内に同じディスカッションへ公開する（MCP の会合の統治の要件による）。カレンダーの予定は 7 日以上前に公開し、会合は誰でも参加でき、行動規範と反トラストのポリシーが適用される。この Discord を起点にした議題の進め方は、Security IG と Authorization IG のやり方に倣ったもの
-
-**議題（Discussion Topics）**: 旧版は「IG の現在の議題」として、4 項目の表（規制のための監査と証明、データの系譜と出典、ガードレールとセキュリティ、ポリシーの執行。いずれも Status は Open、Champion は `—`）を載せていました。新版は「あらかじめ決めた成果物ではなく、金融での MCP の導入に関わる話題の例」として、話題と例示の問いの 3 行の表になっています。3 つの話題は、新しい In Scope の最初の 3 項目と同じ名前です。
-
-| 話題 | 例示の問い |
-|---|---|
-| Auditability and operational control | 注文を出したあとに接続が切れたら、クライアントは結果について何を確かめられるか |
-| Data lineage and citation | 報告された数値を、その出どころの提出書類と報告期間まで辿れるか |
-| Data handling | ライセンスを受けた市場データと公開の提出書類を組み合わせた結果で、制限がどのデータにかかるかをクライアントが見分けられるか |
-
-- [Financial Services Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services#operations)
-- [Financial Services Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services#discussion-topics)
-- [Financial Services Charter - MCP Docs](https://modelcontextprotocol.io/community/interest-groups/financial-services#changelog)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（Events）と大幅更新（Financial Services Charter）のほかに、次の変更がありました。
-
-**新機能**
-
-- Extensions Overview の「Official Extension Repositories」の節に、`ext-events` リポジトリと Events 拡張（Stage は「Beta, destination not yet stated」）を載せた「MCP Events」の小節を追加（詳細はハイライト 1 参照） — [Extensions Overview](https://modelcontextprotocol.io/extensions/overview#mcp-events)
-- Extension Support Matrix の 2 つの表に Events の行と列を加え、Events の Partial の意味を述べる注記を追加（詳細はハイライト 2 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+今回差分が出たファイルは `llms-full.txt` の 1 件で（`llms.txt` は変更なし）、7 ページに次の変更がありました。
 
 **機能改善**
 
-- SEP-3415: Events Extension で、拡張を所有する WG の名前とリンク先、Extension Maintainer（4 人に）、仕様の公開先（`ext-events` の `specification/beta/events/`）を更新（詳細はハイライト 4 参照） — [SEP-3415: Events Extension](https://modelcontextprotocol.io/seps/3415-events-extension#working-group-and-extension-maintainers)
-- Tasks and Events Charter の Resources に Events の拡張リポジトリと仕様へのリンクを加え、Active Work Items の Events の SEP の行を SEP-3415（Final）に差し替え（詳細はハイライト 4 参照） — [Tasks and Events Charter](https://modelcontextprotocol.io/community/working-groups/tasks-events#active-work-items)
+- Communication の Channels の表で、GitHub Discussions の用途を会合の議題・議事録と告知に絞り、ディスカッションを開けるのは書き込み権限を持つ人だけであること、アイデア・機能の要望・質問は Discord から始めることを明記した（詳細はハイライト 1 参照） — [Communication](https://modelcontextprotocol.io/community/communication#channels)
+- Extension Support Matrix の Support matrix の表に、クライアント mcp-use の行を追加した（詳細はハイライト 3 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
 
 **その他**
 
-- 索引 `llms.txt` で、`extensions/` のエントリの末尾（Skills の次、The MCP Registry の前）に Events のエントリ（説明文「Subscribe to events in upstream systems and react when they happen」）を追加。エントリ数は 363 件から 364 件（一意の URL も 364 件）、ファイルは 368 行から 369 行になった（末尾に改行が無いため、改行の数では 367 から 368） — [Events](https://modelcontextprotocol.io/extensions/events/overview)
-- SEP-1302: Formalize Working Groups and Interest Groups in MCP Governance（248 行）の、本文 `llms-full.txt` での収録位置が、SEP-1046 の直後（SEP-414 の前）から、Roadmap の直後（SEP-1303 の前）へ移った。移った 248 行は 1 行も変わっておらず、既定の行単位の差分では周りの 76 行を巻き込んで追加・削除とも 324 行に数えられるが（`git diff --histogram` では 248 行ずつ）、本文の変更ではない。索引 `llms.txt` での位置（SEP-1046 と SEP-1303 の間）も変わっていない。2026年11月18日のサマリで扱った SEP-1303 と SEP-1319 の移動と同じく、Roadmap の後ろへの移動 — [SEP-1302: Formalize Working Groups and Interest Groups in MCP Governance](https://modelcontextprotocol.io/seps/1302-formalize-working-groups-and-interest-groups-in-mc)
+- Communication の Channels の表の Discord の行と、Discord の節の「MCP Contributor Discord」のリンクを、新しい招待リンク `discord.gg/modelcontextprotocol` に変更した（詳細はハイライト 2 参照） — [Communication](https://modelcontextprotocol.io/community/communication#discord)
+- Governance and Stewardship の Communication Channels と Public Chat の Discord サーバーのリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Governance and Stewardship](https://modelcontextprotocol.io/community/governance#communication-channels)
+- Financial Services Charter の Operations の `#financial-services-ig` のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Financial Services Charter](https://modelcontextprotocol.io/community/interest-groups/financial-services#operations)
+- Transports Charter の Operations の「MCP Discord」のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Transports Charter](https://modelcontextprotocol.io/community/working-groups/transports#operations)
+- Working Groups and Interest Groups の Forming a group の Interest group の Discord のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#interest-group)
+- SEP-2149: MCP Group Governance and Charter Template の 1.9 Lifecycle（Interest Group Formation）の Discord のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [SEP-2149: MCP Group Governance and Charter Template](https://modelcontextprotocol.io/seps/2149-working-group-charter-template#1-9-lifecycle)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-19.md](./archives/latest/2026-11-19.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-19.md](./archives/latest-detail/2026-11-19.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-20.md](./archives/latest/2026-11-20.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-20.md](./archives/latest-detail/2026-11-20.md)
 
 <!--
-base_commit: 2864b8c8e49e5201a3575b16751cc5caf78f4b1c
-head_commit: 5f51174830a6109f6c27c1eeae6dd98de6f65dde
-generated_at_full: 2026-11-21T15:39:58+09:00
+base_commit: 5f51174830a6109f6c27c1eeae6dd98de6f65dde
+head_commit: 3279a161e968357548276a7baa091d6d6f481473
+generated_at_full: 2026-11-22T15:23:29+09:00
 -->
