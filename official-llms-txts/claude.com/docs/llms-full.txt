@@ -27799,7 +27799,7 @@ Cowork runs the shell commands that Claude issues inside a dedicated virtual mac
 * **Hardware virtualization.** Turn on hardware virtualization in each device's firmware (Intel VT-x or AMD-V on x64 devices).
 * **Service logon right.** If your security baseline manages the **Log on as a service** right through Group Policy or MDM, include the built-in `NT VIRTUAL MACHINE\Virtual Machines` group (SID `S-1-5-83-0`), and keep it out of **Deny log on as a service**. To check a device and change the policy, follow [Windows security policy blocks the Cowork workspace](/docs/third-party/claude-desktop/installation#windows-security-policy-blocks-the-cowork-workspace) in the Claude Desktop documentation.
 * **Uncompressed application data.** Leave `%LOCALAPPDATA%\Claude-3p` out of NTFS compression and Encrypting File System (EFS) policies, which can keep the virtual machine from starting.
-* **Virtual desktops.** On virtual desktop infrastructure, the Windows desktops themselves run as virtual machines, so the app's virtual machine can start only where the hosting platform exposes nested virtualization to them. Run the readiness check on one desktop in each pool, and make Cowork and Advanced file analysis in Chat available to virtual desktop users only where the check passes.
+* **Virtual desktops.** On virtual desktop infrastructure, the Windows desktops themselves run as virtual machines, so the app's virtual machine can start only where the hosting platform exposes nested virtualization to them. Run the readiness check on one desktop in each pool, and make Cowork and Advanced file analysis in Chat available to virtual desktop users only where the check passes. On desktops that reset when users sign out, also [keep each user's Windows profile](/docs/third-party/claude-desktop/data-storage#virtual-desktops).
 
 ### If some devices are not ready for Cowork
 
@@ -47934,6 +47934,10 @@ The logs directory contains `main.log` (application and configuration-validation
 
 Separately from the application-data directory, Claude Desktop writes live artifacts (interactive pages) and scheduled-task results to `~/Claude/` in your home directory, or `~/Documents/Claude/` on legacy installs. This folder is intended for you to browse directly and is not removed when you delete the application-data directory. To back up a user's data, copy every location listed under [Copy the data to the new device](#copy-the-data-to-the-new-device).
 
+### Virtual desktops
+
+On Windows virtual desktops that reset when users sign out, keep each user's whole Windows profile, including `%LOCALAPPDATA%`, from one sign-in to the next, for example with a profile container. Roaming profiles alone aren't enough, because by default they leave out `%LOCALAPPDATA%`. FSLogix profile containers aren't enough where the data is at the `Packages` path above, for example on Windows 10 or Windows Server 2022, because FSLogix doesn't keep the package's `LocalCache` folder. Users lose data that isn't kept, such as chats, Cowork tasks, memory, designs, and slide decks.
+
 ### Data shared with standard Claude Desktop
 
 Unless you [restrict a device to one deployment mode](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode), a user can switch, in the same OS user account, between Claude Desktop on 3P and standard Claude Desktop, where users sign in to claude.ai. On a device where you haven't turned on the [migration to Claude Enterprise](/docs/third-party/claude-desktop/move-to-claude-enterprise), the two modes handle the user's data as follows:
@@ -49812,23 +49816,31 @@ If you manage this configuration from the Enterprise Admin Console, and develope
 
 **2. Configure your gateway to validate the token**
 
-Tell your gateway to accept the bearer token only if it was issued by your tenant **for this application**. In LiteLLM that looks like:
+Tell your gateway to accept the bearer token only if it was issued by your tenant **for this application**.
+
+In LiteLLM, this setup requires a LiteLLM Enterprise license, a database, and a master key. For the full configuration, see LiteLLM's [JWT-based Auth](https://docs.litellm.ai/docs/proxy/token_auth) guide. Merge these settings into your LiteLLM `config.yaml`:
 
 ```yaml theme={null}
+environment_variables:
+  JWT_PUBLIC_KEY_URL: https://login.microsoftonline.com/YOUR_TENANT_ID/discovery/v2.0/keys
+  JWT_AUDIENCE: YOUR_CLIENT_ID
+  JWT_ISSUER: https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0
+
 general_settings:
+  enable_jwt_auth: true
   litellm_jwtauth:
-    public_key_url: https://login.microsoftonline.com/YOUR_TENANT_ID/discovery/v2.0/keys
-    audience: YOUR_CLIENT_ID
     user_id_jwt_field: oid
 ```
 
-Replace `YOUR_TENANT_ID` and `YOUR_CLIENT_ID` with the values from step 1.
+Replace `YOUR_TENANT_ID` and `YOUR_CLIENT_ID` with the values from step 1. Set `JWT_ISSUER` to the `iss` claim of the token your gateway receives. By default the app sends an ID token, and its `iss` is the **Issuer URL** you enter in the next step.
+
+LiteLLM rejects a user who has no LiteLLM user record. Create each record with the user's `oid` value as its user ID. To create records automatically at first sign-in, see [Map users at the gateway](#map-users-at-the-gateway).
 
 > [!WARNING]
 >
-> The `audience` line is required. Without it, your gateway accepts tokens issued to any application in your tenant, not just this one.
+> The `JWT_AUDIENCE` line is required. Without it, your gateway accepts tokens issued to any application in your tenant, not just this one.
 
-For Kong, Envoy, or Azure API Management, configure the equivalent JWT validation policy with the same JWKS URL and audience.
+For Kong, Envoy, or Azure API Management, configure the equivalent JWT validation policy with the same JWKS URL, audience, and issuer.
 
 **3. Configure in the app**
 
@@ -49864,7 +49876,7 @@ The [second redirect URI for Claude Code in the terminal](/docs/third-party/clau
 >
 > Use the **issuer** value, not the **Metadata URI**. Okta's admin console shows the metadata URI (ending in `/.well-known/openid-configuration`) prominently — that is the discovery document the app fetches *from* the issuer, not the issuer itself. If you are unsure, open the metadata URI in a browser and copy the `"issuer"` field from the JSON response. For a custom Okta authorization server the issuer is `https://YOUR_ORG.okta.com/oauth2/AUTH_SERVER_ID`.
 
-Point your gateway's JWT validation at `https://YOUR_ORG.okta.com/oauth2/v1/keys` with `audience` set to the Okta client ID.
+Point your gateway's JWT validation at `https://YOUR_ORG.okta.com/oauth2/v1/keys`, or for a custom authorization server, at the `jwks_uri` value from its metadata document. Set the audience to the Okta client ID and the issuer to your **Issuer URL**. In LiteLLM, also set `user_id_jwt_field` to `sub`.
 
 #### Map users at the gateway
 
@@ -49877,14 +49889,17 @@ Key the gateway's user record on the provider's immutable user ID rather than em
 | Entra ID | `oid` |
 | Okta and most other OIDC providers | `sub` |
 
-If your gateway has no existing user records to preserve, the simplest setup is to auto-provision on first sign-in. For LiteLLM, extend the validation block from step 2:
+If your gateway has no existing user records to preserve, the simplest setup is to auto-provision on first sign-in. For LiteLLM, add `user_email_jwt_field` and `user_id_upsert` to the validation block from step 2. With the values from [Using Okta instead](#using-okta-instead), the block looks like this:
 
 ```yaml theme={null}
+environment_variables:
+  JWT_PUBLIC_KEY_URL: https://YOUR_ORG.okta.com/oauth2/v1/keys
+  JWT_AUDIENCE: YOUR_CLIENT_ID
+  JWT_ISSUER: https://YOUR_ORG.okta.com
+
 general_settings:
   enable_jwt_auth: true
   litellm_jwtauth:
-    public_key_url: https://YOUR_ORG.okta.com/oauth2/v1/keys
-    audience: YOUR_CLIENT_ID
     user_id_jwt_field: sub          # use "oid" for Entra ID
     user_email_jwt_field: email
     user_id_upsert: true
@@ -51003,7 +51018,7 @@ Check these on Windows devices before rollout:
 * **Apps from outside the Microsoft Store**: make sure Windows policy allows trusted app packages to install from outside the Microsoft Store. If your security baseline configures **Allow all trusted apps to install** (the `ApplicationManagement/AllowAllTrustedApps` policy), set it to enabled. Windows Developer Mode isn't required. If provisioning the `.msix` package fails with error `0x80073CFF`, check this policy.
 * **Log on as a service**: Cowork's virtual machine runs under an account in the built-in `NT VIRTUAL MACHINE\Virtual Machines` group, and that group needs the **Log on as a service** user right. If your organization assigns that right through Group Policy or MDM, see [Windows security policy blocks the Cowork workspace](#windows-security-policy-blocks-the-cowork-workspace).
 * **Hooks**: a [hook](https://code.claude.com/docs/en/hooks) command written for Bash needs Git for Windows on the device. If your Windows devices have hooks in plugins or in Claude Code managed settings, see [Hooks on Windows devices without Git for Windows](/docs/third-party/claude-desktop/extensions#hooks-on-windows-devices-without-git-for-windows).
-* **Virtual desktops**: on virtual desktop infrastructure, Windows itself runs in a virtual machine, so Cowork's virtual machine starts only where the hosting platform exposes nested virtualization to that virtual machine. Run the [readiness check](#check-device-readiness) on one desktop in each pool.
+* **Virtual desktops**: on virtual desktop infrastructure, Windows itself runs in a virtual machine, so Cowork's virtual machine starts only where the hosting platform exposes nested virtualization to that virtual machine. Run the [readiness check](#check-device-readiness) on one desktop in each pool. On desktops that reset when users sign out, also [keep each user's Windows profile](/docs/third-party/claude-desktop/data-storage#virtual-desktops).
 
 With [Unified Claude](/docs/third-party/claude-desktop/unified-claude) on, a message sent from the home screen starts a Cowork session on a device that can run Cowork. On a device that can't run Cowork's virtual machine, the message starts a Chat conversation.
 
