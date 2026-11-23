@@ -1,99 +1,125 @@
 ---
-対象期間: 2026年11月20日 〜 2026年11月21日
-作成日: 2026-11-21
+対象期間: 2026年11月21日 〜 2026年11月22日
+作成日: 2026-11-22
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-**今回は、Claude の代わりに Web ページを読む組み込みのサブエージェント `web-fetch` が `tools-reference` に載り、同じページの WebFetch の節が、ドメインの許可・ブロックと、うまくいかないときの対処の表を中心に組み直されました。`sub-agents`・`hooks`・`permission-modes` にも `web-fetch` の例外が書き加えられています**。新規ページ・新着情報（whats-new）のページはなく、changelog も `llms.txt` も変わっていません。`llms-full.txt` では 205 ページのうち 8 ページの内容が変わりました。生の差分は 242 行（追加 163・削除 79）で、50 行以上変わったのは `tools-reference`（127 行）と `sub-agents`（69 行）の 2 ページです。総行数は 130,625 行から 130,709 行に増えました。
+**今回は、`claude-projects` で Projects の画面と設定の名前が改められ（「Library」が「Context」タブに、スレッドの既定の effort が high から medium に）、`code-mode` に OpenTelemetry と併用するための要件と h3 が加わりました。クラウドセッションでリポジトリの `.claude/settings.json` のプラグインが読み込まれない、という記述が 7 ページから外れ、`setup` にはカスタムランチャーの h4 が 2 つできています**。新規ページ・新着情報（whats-new）のページはなく、changelog も `llms.txt` も変わっていません。`llms-full.txt` では 205 ページのうち 45 ページの内容が変わりました。生の差分は 350 行（追加 210・削除 140）で、50 行以上変わったのは `claude-projects`（81 行）の 1 ページです。総行数は 130,709 行から 130,779 行に増えました。
 
 主要なものを以下に挙げます。
 
-1. 組み込みのサブエージェント `web-fetch` が `tools-reference` の新しい h3 に載った。claude.ai のアカウントでサインインした v2.1.287 以降のセッションで使え、Claude は Agent ツールでこのサブエージェントに URL と質問を渡してページを読ませる。動くモデル・ルールとフックの効き方・オフにする方法の h4 もある
-2. `tools-reference` の WebFetch の節が組み直され、ドメインの許可・ブロック・オフの表と、フェッチでプロンプトが出る・失敗する・WebFetch がないときの 15 行の対処の表ができた
-3. auto モードの分類器が終わったサブエージェントの作業を確かめるのは、エージェントチームのチームメイト以外のサブエージェント、と明記された。`web-fetch` は条件を満たすと最初の 2 つの確認を省いて `dontAsk` モードで始まる
+1. Projects で、**Library** が **Context** タブに、スレッドのモデルと effort の 2 つの設定が **Threads** に、会話の 2 つの設定が **Coordinator** になった。新しいプロジェクトのスレッドの既定の effort は high から medium になり、設定の **Plugins** の行が外れ、**Pause** と **Restart Claude** は **Advanced** へ移った
+2. Code Mode は、フィーチャーフラグの取得をオフにしていても、OpenTelemetry のイベントとメトリクスをオンにしていても、v2.1.329 以降なら使える、と要件に載った。トレースはどの版でもオフにする。コードが呼んだツールのイベントの見分け方の h3 もできた
+3. クラウドセッションはリポジトリの `.claude/settings.json` が宣言するプラグインを読み込まない、という記述が 7 ページから外れた。残ったのは、Anthropic がホストする環境ではリポジトリが宣言するマーケットプレイスを追加しない、という記述
+4. `setup` の「Auto-updates」に h4「Custom launchers」「Restore the managed launcher」ができ、管理されたランチャーに戻す手順が、ランチャーを消して `claude update` を実行するやり方から、インストール済みの版へのシンボリックリンクを作る 4 つの手順になった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**組み込みの web-fetch サブエージェントが載った**](#1-組み込みの-web-fetch-サブエージェントが載った):  
-  `tools-reference` に h3「The web-fetch subagent」と 3 つの h4 ができ、Claude のために Web ページを読むサブエージェントの使える条件・見分け方・動くモデル・ルールとフックの効き方・オフにする方法が載りました。`sub-agents` の組み込みのサブエージェントの表と、`hooks`・`permission-modes`・`agent-sdk/python` にも、このサブエージェントの扱いが加わっています
-2. [**WebFetch の節が許可・ブロック・対処の表に組み直された**](#2-webfetch-の節が許可ブロック対処の表に組み直された):  
-  `tools-reference` の「WebFetch tool behavior」が書き直され、h3「WebFetch availability」だけだった下位の見出しが 5 つの h3 になりました。サブドメインを許す `WebFetch(domain:*.example.com)` の行や、`Ctrl+O` で Claude が尋ねたことと答えを見る方法、現象ごとの対処の表が載っています
-3. [**auto モードの分類器がサブエージェントを確かめる範囲が明記された**](#3-auto-モードの分類器がサブエージェントを確かめる範囲が明記された):  
-  `permission-modes` の「How auto mode handles subagents」で、3 つの確認は Claude が Agent ツールで始めたサブエージェントが対象で、終わったときの確認はエージェントチームのチームメイトには当てはまらない、と明記されました。`web-fetch` が最初の 2 つの確認を省く条件も加わっています
+1. [**Projects の画面と設定の名前が改められた**](#1-projects-の画面と設定の名前が改められた):  
+  `claude-projects` で、ファイルを置く **Library** が **Context** タブに、スレッドのモデルと effort の設定が **Threads** に、会話のモデルの設定が **Coordinator** になりました。新しいプロジェクトのスレッドの既定の effort は medium になり、設定の **Plugins** の行が外れ、**Pause** と **Restart Claude** は **Advanced** に移っています
+2. [**Code Mode を OpenTelemetry と併用する要件と h3 が加わった**](#2-code-mode-を-opentelemetry-と併用する要件と-h3-が加わった):  
+  `code-mode` の要件に、フィーチャーフラグの取得がオフでも、OpenTelemetry のイベントとメトリクスがオンでも、v2.1.329 以降なら使える、という行が加わり、起動できない設定の例から OpenTelemetry と `DISABLE_TELEMETRY` が外れました。h3「Monitor Code Mode with OpenTelemetry」は、コードが呼んだツールのイベントの見分け方を述べます
+3. [**クラウドセッションとリポジトリのプラグインの記述が外れた**](#3-クラウドセッションとリポジトリのプラグインの記述が外れた):  
+  クラウドセッションはリポジトリの `.claude/settings.json` が宣言するプラグインを読み込まない、という記述が、`cloud-environments`・`plugins/install`・`desktop`・`security-guidance`・`skills`・`settings`・`claude-projects` から外れました。`cloud-environments` の表の行は、Anthropic がホストする環境ではマーケットプレイスを追加しない、という行に絞られています
+4. [**カスタムランチャーの h4 と、管理されたランチャーに戻す手順ができた**](#4-カスタムランチャーの-h4-と管理されたランチャーに戻す手順ができた):  
+  `setup` の「Auto-updates」の下に h4「Custom launchers」「Restore the managed launcher」ができました。管理されたランチャーに戻すには、`ls` でインストール済みの版を確かめ、`ln -sfn` でその版へのシンボリックリンクを `~/.local/bin/claude` に作り、`claude doctor` で警告が消えたことを確かめます
 <!-- light:highlight-list:end -->
 
-## 1. 組み込みの web-fetch サブエージェントが載った
+## 1. Projects の画面と設定の名前が改められた
 
-**`tools-reference` に h3「The web-fetch subagent」（id は `#web-fetch-subagent`）ができました。** `web-fetch` は、Claude のために Web ページを読む、Claude Code に組み込まれたサブエージェントです。Claude はページが要ると、Agent ツールで `web-fetch` に URL とページについての質問を渡し、サブエージェントが WebFetch を呼んでページを読み、答えを Claude に返します。
+**`claude-projects` で、プロジェクトの画面の部品と「Project settings」の項目の名前が改められました。** 変わった名前と置き場所は次のとおりです。
 
-- **使える条件**: claude.ai のアカウントでサインインし、Claude Code が v2.1.287 以降なら、セッションでこのサブエージェントを使える。使えないときは Claude が自分で WebFetch を呼び、Claude Code がバックグラウンドのタスクに使うモデルがページを読む。サブエージェントがオフになる構成として、自分でオフにしたとき、v2.1.330 以降で LLM ゲートウェイ経由で接続するとき、Amazon Bedrock や `DISABLE_TELEMETRY` を設定したときのように Claude Code がフィーチャーフラグを取得しないときが挙がっている
-- **見分け方**: ターミナルでは、許可のプロンプトの題が `Fetch · from the web-fetch agent` になり、`Received` で始まる行は `Received 87 bytes` のようにサイズだけを示す。VS Code では **Agent** の行、Desktop アプリと claude.ai/code ではサブエージェントのペインを開く行として出る。`claude -p` と Agent SDK では、`system/init` のイベントの `agents` に `web-fetch` が載り、`tools` に `WebFetch` が載らない
-- **h4「Which model the web-fetch subagent runs on」**: 既定では `haiku` のモデルエイリアスが指すモデルで動く。`availableModels` の許可リストがそのモデルを外しているなど、そのモデルを使えなければ、サブエージェントを始めた会話と同じモデルで動く。自分で選ぶなら、`sub-agents` の「Run every subagent on one model」に従う
-- **h4「Rules, hooks, and CLAUDE.md with the web-fetch subagent」**: `WebFetch` の権限のルールと、`WebFetch` に合う `PreToolUse`・`PostToolUse` のフックは、このサブエージェントが取るページにも効く。表は 4 つの場合を挙げる
-  - CLAUDE.md の指示でフェッチするページを決めているなら、サブエージェントは組織の managed のものも含めて CLAUDE.md なしで始まるので、`WebFetch` の権限のルールで絞る
-  - `SubagentStart`・`SubagentStop` のフックは、managed settings で定義したものだけがこのサブエージェントで動くので、ほかの設定ファイルでは `WebFetch` に合う `PreToolUse`・`PostToolUse` のフックを使う
-  - `WebFetch` の結果を解析する `PostToolUse` のフックは、サブエージェントでは結果がページのテキスト、Claude が自分で WebFetch を呼ぶと Claude の質問への答えになるので、両方を扱う
-  - `Agent` の呼び出しを止める `PreToolUse` のフックがあると、Claude がサブエージェントを Agent ツールで始めるのでページが取れない。この場合はサブエージェントをオフにする
-- **h4「Turn off the web-fetch subagent」**: 設定ファイル（組織全体なら managed settings）の `permissions.deny` に `Agent(web-fetch)` を加える。確かめるには、新しいセッションでページを取らせ、上の見分け方の印が出ないことを見る。`system/init` のイベントでは `tools` に `WebFetch` が戻り、`agents` には `web-fetch` が残る。組織が `allowManagedPermissionRulesOnly` を設定していれば、自分の設定ファイルの deny のルールは無視されるので、管理者に managed settings へ加えてもらう
+- **Context タブ**: スレッドが作ったファイルと、追加したファイルとフォルダーを見る場所が、Overview のペインの **Library** から **Context** タブ（**Threads** のタブの隣）になった。ファイルとフォルダーを後から加えるのも、**Library** の **Add** から **Context** タブの **Add context** になった。この名前は「When to use a project」「Send work and read results」「Decide which repositories to add」「Add files and folders」と、プロジェクトが持つ文脈の表にも及んでいる
+- **Overview のペインの開き方**: 閉じたペインを開き直すのが、プロジェクトのヘッダーの **Threads** のボタンから、プロジェクトの右上のサイドパネルのボタンになった。スレッドがあなたを待っているときにドットが付くのは、ペインを閉じている間のそのボタンで、ブラウザでもそのボタンのドットを見る。ペインの **Threads** は「ビュー」から「タブ」と呼ばれるようになり、スレッドを開くのも **Threads** のタブの行からになった
+- **スケジュールされたタスク**: ペインで開くのが、ヘッダーの **⋯** のメニューから、タブの後ろの **+** からになった
+- **Project settings の開き方**: プロジェクトのヘッダーの **⋯** のメニューの **Settings** から、ヘッダーの歯車からになった（プロジェクトのサイドバーのメニューの **Settings** からも開ける、という点は変わらない）
+- **モデルと effort**: **General** の **Thread model** と **Thread effort** が **Threads**（新しいスレッドのモデルと effort を決める）に、**Coordinator model** と **Coordinator effort** が **Coordinator**（プロジェクトの会話の Claude のモデルを決める）になった。**Coordinator** の説明と設定の表の行からは effort の語が外れたが、新しいプロジェクトは会話を low の effort で動かす、という記述は残っている
+- **スレッドの既定の effort**: 新しいプロジェクトはすべてのスレッドを Opus の high の effort で動かす、から medium の effort で動かす、になった。「Your first batch」からは、それがプランを最も速く使う、という部分が外れた
+- **Advanced**: **Restart Claude** と **Pause** が **General** から **Advanced** に移り、**Archive** と **Delete** は **General** の下に残った。「Claude hasn't responded」で再起動するのも **Project settings > Advanced** からになった
+- **自動で続ける設定**: **Auto-continue when usage limits reset** が **Continue threads automatically when usage limits reset** になった。使用量の上限で止まったスレッドへの対処の段落からは、メッセージに出る時刻に続けないように、という部分と、見ているスレッドだけでなく、という部分が外れた
+- **Usage**: 設定の表と「See and reduce a project's usage」で、トークンの使用量を見られるのが「スレッドごとと、モデルごと」から「スレッドごと」になった。使用量を下げる方法も、「スレッド・会話・その両方で、小さいモデルか低い effort を選ぶ」から「小さいモデルを選ぶか、スレッドの effort を下げる」になった
 
-ほかのページにも、このサブエージェントの扱いが書き加えられました。
+プラグインの扱いも変わりました（ハイライト 3）。設定の表から **Plugins** のタブの行が、リポジトリから読み込むものの表から `.claude/settings.json` で有効にしたプラグインの行が外れ、スレッドにプラグインを入れるには、claude.ai のアカウントで有効にすると、Claude が用意したスケジュールされたタスクを除いてクラウドのスレッドがそれを読み込む、となりました。**Project settings** の変更が実行中のスレッドではなく新しいスレッドに届くものからも、プラグインが外れています。
 
-- **`sub-agents`**: 「Built-in subagents」の Other のタブの表に `web-fetch` の行（モデルは Haiku か、Haiku を使えなければ始めた会話のモデル。このサブエージェントを使うセッションで Claude が Web ページを読むときに使う）が加わった。「Available tools」には、`web-fetch` でページを読むセッションでは、メインの会話・フォーク・チームメイトが自分の `WebFetch` のツールを持たず、Claude が Agent ツールで始めるほかのサブエージェントは自分で `WebFetch` を呼べる、という注記が加わった。ほかの 5 か所でも `web-fetch` が例外として挙がっている（下の「大幅に更新されたページ」の 2）
-- **`hooks`**: 「SubagentStart」と「SubagentStop」に、`web-fetch` には managed settings の `SubagentStart`・`SubagentStop` のフックだけが動き、ほかの場所に置くフックなら、代わりに `WebFetch` に合う `PreToolUse`（SubagentStart の代わり）か `PostToolUse`（SubagentStop の代わり）のフックを使う、という注記が加わった
-- **`permission-modes`**: auto モードの分類器の確認を省く条件（ハイライト 3）
-- **`agent-sdk/python`**: WebFetch の出力の `result` の注釈が、「内容にプロンプトを当てた処理済みの結果」から「プロンプトへの答えか、ページのテキスト」になった
+ほかに、次の文が加わったり外れたりしました。
 
-changelog には `web-fetch` の語は出てきません（base・head とも 0 件）。
+- **メモリーがオフのとき（加わった）**: claude.ai の設定でメモリーがオフなら、Claude はプロジェクトのメモリーを読むことも保存することもできない。そこでオンにし、Claude を再起動して新しいスレッドを始める
+- **前提条件**: **Projects** の画面が **New project** か **Get started** を示すか確かめる、が **New project** だけになり、ボタンが **Get started** なら、それを選び、一覧に出る既存の claude.ai のプロジェクトをアップグレードするかアーカイブする、という文が外れた
+- **プランの使い方**: プロジェクトはほかの Claude Code のセッションと同じプランの上限を使い、より速く使う、が「プロジェクトは 1 つのセッションよりプランを速く使う」になった。「Usage and cost」の、プロジェクトの使用量はほかのセッションと同じ上限に数えられ、プロジェクトが自分で上限を越えて使うことはない、という段落と、使用量のクレジットはスレッドがあなたに代わってオンにすることはできない、という文が外れた
+- **共有**: 「Limitations」の、プロジェクトもそのスレッドもほかのユーザーと共有できず、スレッドのトランスクリプトにはほかのクラウドセッションにある共有のオプションがない、が「プロジェクトをほかのユーザーと共有できない」になった
 
-- [ツールリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference#web-fetch-subagent)
-- [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference#web-fetch-subagent)
-- [カスタムサブエージェントの作成 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/sub-agents#built-in-subagents)
-- [Create custom subagents - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#built-in-subagents)
+日本語版のこのページは、確かめた時点では **Library** や **⋯** のメニューの書き方のままで、今回の内容になっていませんでした。
 
-## 2. WebFetch の節が許可・ブロック・対処の表に組み直された
+- [Let Claude coordinate ongoing work with Projects - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-projects#project-settings-reference)
+- [Let Claude coordinate ongoing work with Projects - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-projects#see-what-needs-you-in-overview)
 
-**`tools-reference` の「WebFetch tool behavior」が書き直され、h3「WebFetch availability」だけだった下位の見出しが、「Allow a domain」「Block a site or turn WebFetch off」「When a fetch prompts, fails, or WebFetch is missing」「The web-fetch subagent」「Identify WebFetch requests to your site」の 5 つの h3 になりました。** 3 つ目は HTML の id が `#webfetch-availability` のままなので、「WebFetch availability」を改称したものです。冒頭の段落は、Claude は Web ページで何かを調べるのに WebFetch を使い、URL はユーザーからも Claude（たとえば WebSearch の結果）からも来る、ほとんどのページで Claude は全文を見ず、ページについて質問し、別のモデルの呼び出しがページを読んで答えを返す、という説明になりました。
+## 2. Code Mode を OpenTelemetry と併用する要件と h3 が加わった
 
-- **Allow a domain**: ターミナルと VS Code のセッションは既定で auto モードで始まり、auto モードでは `ask` のルールに合うドメインを除いてフェッチの前にプロンプトが出ない。代わりに分類器がフェッチを確かめ、止めることがある。Manual と `acceptEdits` のモードでは許可を求める。前もって許可するには、設定ファイルに allow のルールを加えるか、プロンプトで **Yes, and don't ask again for `<domain>`** を選ぶ。`/permissions` でルールと、そのルールがどの設定から来るかを確かめられる。ルールの表は、1 つのドメインなら `WebFetch(domain:example.com)`、そのサブドメインなら `WebFetch(domain:*.example.com)`、すべてのサイトなら `WebFetch` か `WebFetch(domain:*)`（違いは `permissions` の「Allow or deny every fetch」）。`domain:` の allow のルールがあれば、サンドボックスの中の Bash のコマンドもそのドメインに届く（サンドボックスのロックがルールを無視させる場合を除く）
-- **Block a site or turn WebFetch off**: ドメインを止めるなら `deny`、プロンプトを求めるなら `ask` に `WebFetch(domain:...)` のルールを加える。WebFetch をオフにするなら `deny` に `WebFetch` を加えるか、`CLAUDE_CODE_DISABLE_WEB_FETCH` を `1` にする。組織全体に当てはめるなら managed settings に置く。サンドボックスの外で Bash が許されていれば、Claude は `curl` や `wget` などでどの URL にも届く、という注意もある
-- **When a fetch prompts, fails, or WebFetch is missing**: Claude の返答は、Claude が尋ねなかったページの内容を落とすことがあり、ターミナルでは `Ctrl+O` で Claude が尋ねたことと受け取った答えを見られる。続く 15 行の表が、気づいた現象ごとの対処を挙げる。これまでの箇条書きと段落にあった、localhost とドットのないホスト名の拒否・100,000 文字の上限・15 分のキャッシュ・5 分の期限・別のホストへのリダイレクト・ドメインの安全性チェック・サンドボックスの `allowedDomains`・事前承認のドメイン・claude.ai のアーティファクトのリンク・組織のポリシーの説明は、この表の行に移った
-- **Identify WebFetch requests to your site**: `Claude-User` で始まる `User-Agent` と、HTML より Markdown を好む `Accept` のヘッダーの説明（これまでの本文の文がそのままこの h3 に移った）
+**`code-mode` の「Requirements」に「Telemetry settings」の行が加わりました。** フィーチャーフラグの取得をオフにして、または OpenTelemetry のイベントとメトリクスをオンにして Code Mode を使うには v2.1.329 以降が要り、トレース（beta）はどの版でもオフにしておく、という行です。同じ節の、Code Mode を起動できない設定の例は、「API キーのヘルパー、OpenTelemetry のエクスポート、`DISABLE_TELEMETRY`」から「API キーのヘルパー」だけになりました。changelog の v2.1.329 には、OpenTelemetry のイベントとメトリクスがオンのまま Code Mode をオンにできるようになり、コードが呼ぶツールごとにイベントが送られ、トレースは引き続き Code Mode をオフにする、という項目と、テレメトリー・必須でない通信・フィーチャーフラグがオフでも Code Mode が起動するようになった、という項目があります。
 
-対処の表で新しく載った説明には、次のものがあります。
+**「Try Code Mode」の下に h3「Monitor Code Mode with OpenTelemetry」ができました。** OpenTelemetry のイベントを集めていれば、Claude が書いたコードの中のツールの呼び出しについても、`Bash` のようにいつものツールの名前で `tool_decision` と `tool_result` のイベントが届く、とし、次の 3 点を挙げます。
 
-- **長いページ**: `web-fetch` サブエージェントは約 48,000 文字までのページを全文読み、Claude が WebFetch を呼ぶと最初の 100,000 文字を読む（次の部分を取らせるのに v2.1.290 以降が要る、という点はこれまでと同じ）
-- **リダイレクト**: ホストが `www.` を足すか外す以上に変わると、WebFetch は新しい URL を返し、ページの内容は返さない
-- **クラウドのセッション**: ネットワークがドメインを止めていれば、allow のルールに加えて、クラウドの環境のネットワークアクセスにもドメインを加える
-- **auto モード**: プロンプトなしにフェッチが止められたら、ドメインの allow のルールを加えるか、分類器が止めたものなら、ターミナルの `/permissions` の **Recently blocked** のタブで承認して Claude に再試行させる
-- **`claude -p` と Agent SDK**: これらは Manual モードで始まり、承認の要る呼び出しは拒まれるので、allow のルールを加えるか auto モードで始める
-- **自分の設定のルールが効かない**: 組織が `allowManagedPermissionRulesOnly` を設定していると無視されるので、管理者に managed settings へ加えてもらう
-- **どのページも取れない**: `/status` の `Organization configuration` の行に `HIPAA` があれば WebFetch はオフ（`Organization policy` の行がポリシーを読めなかったと報告して web fetch を名指すときの説明は、これまでの段落から移ったもの）
+- **コードからの呼び出しを見分ける**: `tool_use_id` が `repl_` か `toolu_cc_` で始まるものに絞る。コードを動かす `REPL` のツールには、どちらの接頭辞も持たない自分のイベントがある
+- **分類器の判定を読む**: auto モードで、分類器のコードのレビューが覆った呼び出しには `classifier_verdict` がない。判定は、その呼び出しの `request_id` を持つ `REPL` のツールの `tool_decision` のイベントを探す。1 つより多く見つかったときは、どのコードが呼び出したかはイベントからはわからない
+- **秘密をバックエンドに送らない**: コードは、ファイルの中のトークンのような値を読んで別の呼び出しに渡せる。バックエンドがその値を受け取るべきでなければ、`OTEL_LOG_TOOL_DETAILS` を設定しない
 
-一方、これまでの本文にあって、新しい節に見当たらない説明もあります。HTTP の URL を HTTPS に上げる、Markdown への変換は設定できない、許可のプロンプトの 3 つの選択肢（**Yes** はこのフェッチだけを許す、など）、明示の `WebFetch(domain:...)` のルールが事前承認のドメインより優先する、という文（表は、プロンプトを求めるなら `ask` のルールを加える、と述べる）、抽出の段階で API が混んでいれば間を置いて再試行する、Team か Enterprise の claude.ai のアカウントで組織のポリシーを `api.anthropic.com` から取得する、セッションの外では `claude doctor` が同じ行を出す、などです。キャッシュの長さ・ダウンロードの期限・WebFetch をオフにする変数が要る版（v2.1.233・v2.1.268・v2.1.285）もこの節から外れましたが、`env-vars` の各変数の行には残っています。
+「Code Mode doesn't start」の表も改められました。
 
-- [ツールリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference#allow-a-domain)
-- [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference#allow-a-domain)
-- [ツールリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference#webfetch-availability)
-- [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference#webfetch-availability)
+- **加わった行**: `Anthropic has turned it off for now`（Claude Code を更新するか、後でまた始める）と、`OpenTelemetry tracing is on`（トレースなしで済むなら `CLAUDE_CODE_ENHANCED_TELEMETRY_BETA`・`ENABLE_ENHANCED_TELEMETRY_BETA`・`ENABLE_BETA_TRACING_DETAILED` を外す）
+- **`it needs settings that Claude Code downloads from Anthropic`**: Claude Code を更新して要件の「Telemetry settings」を満たす、が先に来て、今の版のままでいるならフィーチャーフラグの取得をオフにする変数（`DISABLE_TELEMETRY` など）を外す、となった
+- **`OpenTelemetry is on`**: イベントとメトリクスをオンのままにするなら Claude Code を更新して要件を満たす、が先に来て、今の版のままでいるなら `CLAUDE_CODE_ENABLE_TELEMETRY` と `ENABLE_BETA_TRACING_DETAILED` を外す、となった
 
-## 3. auto モードの分類器がサブエージェントを確かめる範囲が明記された
+ほかのページも合わせて変わりました。
 
-**`permission-modes` の「How auto mode handles subagents」（アコーディオン）で、分類器がサブエージェントの作業を 3 つの時点で確かめるのは、Claude が Agent ツールでサブエージェントを始めたとき、と明記されました。** 3 つ目の、サブエージェントの作業と最終の報告を親が読む前に確かめる時点も、「サブエージェントが終わると」から「エージェントチームのチームメイト以外のサブエージェントが終わると」になりました。分類器が作業か報告を指摘したとき、または別の API の安全性チェックがレビューを拒んだときは、報告にセキュリティの警告を前に付けて届け、分類器を使えないときは、作業を確かめるよう促すメモ付きで届ける、という説明は、別の段落に分かれて残っています。
+- **`monitoring-usage`**: 「Tool result event」と「Tool decision event」の `request_id` が、ツールの呼び出しを含んだ API の応答に加えて、呼び出しをした Code Mode のコードを含んだ応答の id も指すようになった。「Tool decision event」の `classifier_verdict` がない場合の一覧に、Code Mode で分類器のコードのレビューがその呼び出しを覆ったとき、が加わった
+- **`env-vars`**: 「Features that need feature-flag fetching」の、取得をオフにするとできないことの一覧から、Code Mode をオンにする、が外れた
 
-新しい段落は、`web-fetch` サブエージェントについて、`WebFetch(domain:...)` の allow のルールか事前承認のドメインがタスクのすべての URL を覆っていれば、Claude Code は最初の 2 つの確認（始める前のタスクの説明の評価と、実行中の各アクションの評価）を省くことがある、とします。そのときサブエージェントは `dontAsk` モードで始まるので、承認の要るほかのフェッチは拒まれます。3 つ目の確認は引き続き動きます。
+日本語版の `code-mode`・`monitoring-usage` と、`env-vars` のこの一覧は、確かめた時点では今回の内容になっていませんでした（`code-mode` の日本語版には新しい h3 の id がまだありません）。
 
-`sub-agents` の「Permission modes」でも、メインの会話が auto モードのときの説明が 2 つの段落に分かれ、Claude が Agent ツールで始めたサブエージェントが終わると、分類器が報告を届ける前にその作業と最終の報告も確かめ、このレビューはエージェントチームのチームメイト以外のサブエージェントに対して動く、となりました。
+- [Run tool calls from code with Code Mode - Claude Code Docs (English)](https://code.claude.com/docs/en/code-mode#monitor-code-mode-with-opentelemetry)
+- [Run tool calls from code with Code Mode - Claude Code Docs (English)](https://code.claude.com/docs/en/code-mode#requirements)
+- [Monitoring - Claude Code Docs (English)](https://code.claude.com/docs/en/monitoring-usage#tool-decision-event)
 
-- [権限モードを選択する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/permission-modes#how-auto-mode-evaluates-actions)
-- [Choose a permission mode - Claude Code Docs (English)](https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions)
-- [カスタムサブエージェントの作成 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/sub-agents#permission-modes)
-- [Create custom subagents - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#permission-modes)
+## 3. クラウドセッションとリポジトリのプラグインの記述が外れた
+
+**クラウドセッションはリポジトリの `.claude/settings.json` が宣言する（`enabledPlugins` で有効にする）プラグインを読み込まない、という記述が、次の 7 ページから外れました。**
+
+- **`cloud-environments`**: 「What carries over from your setup」の表の「Plugins and marketplaces declared in your repo's `.claude/settings.json`」の行（クラウドセッションは、リポジトリが `enabledPlugins` で有効にするプラグインを、`extraKnownMarketplaces` に挙げるマーケットプレイスのものも含めてインストールしない）が、「Marketplaces declared in your repo's `.claude/settings.json`」の行になった。「Available in cloud sessions」の列は「No」から「No, in an Anthropic-hosted environment」になり、説明は、セッションはリポジトリが `extraKnownMarketplaces` に挙げるマーケットプレイスを追加せず、セルフホストの環境なら、どのリポジトリの設定が当てはまるかを見る、となった
+- **`plugins/install`**: 「Install a plugin」のクラウドセッションのタブの注記で、読み込まないプラグインが「自分のマシンにインストールしたものと、リポジトリの `.claude/settings.json` が有効にするもの」から「ユーザーかローカルのスコープでインストールしたもの」になった（`llms-full.txt` に 2 回載っているページで、両方とも同じように変わった）
+- **`desktop`**: 「Install plugins」の段落が注記（NOTE）になり、デスクトップアプリからインストールしたプラグインがクラウドセッションで使えない、が「ユーザーのアカウント向けかローカルだけでインストールしたもの」に絞られ、リポジトリの `.claude/settings.json` が宣言するプラグインもインストールしない、という文が外れた
+- **`security-guidance`**: 「Install the plugin」のクラウドセッションの項目で、読み込まないのが「ユーザーの設定と、リポジトリの `.claude/settings.json` のプラグイン」から「ユーザーの設定のプラグイン」になった
+- **`skills`**: 「Use skills in Cowork and cloud sessions」で、クラウドセッションで読み込まないのが「リポジトリの `.claude/settings.json` が宣言するプラグインと、ユーザーの設定だけで有効にしたプラグイン」から後者だけになった
+- **`settings`**: 「Settings in cloud sessions」で、複数のリポジトリのセッションが読む `enabledPlugins` と `extraKnownMarketplaces` について、「その 2 つのキーが宣言するマーケットプレイスとプラグインは読み込まれない」が「リポジトリが宣言するマーケットプレイスは追加されない」になった
+- **`claude-projects`**: リポジトリから読み込むものの表の `.claude/settings.json` で有効にしたプラグインの行と、スレッドにプラグインを入れる項目の、リポジトリが宣言するプラグインはクラウドのスレッドで読み込まれない、という文が外れた（ハイライト 1）
+
+マーケットプレイスについては、`plugins/loading` の「Plugins shared through a repository」で、`extraKnownMarketplaces` のマーケットプレイスを追加しないのが「クラウドセッション」から「Anthropic がホストするクラウドセッション」になり、`plugins/org` の「When each surface applies the plugin keys」のクラウドセッションの行のリンク先が、「Install a plugin」のクラウドセッションのタブから `cloud-environments` の「What carries over from your setup」になりました。
+
+head の `llms-full.txt` には、リポジトリの `enabledPlugins` のプラグインがクラウドセッションで読み込まれる、と明言する文はありません。ユーザーの設定だけで有効にしたプラグインが持ち越されない、という表の行は残っています。
+
+- [クラウド環境を設定する - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/cloud-environments#what-carries-over-from-your-setup)
+- [Configure cloud environments - Claude Code Docs (English)](https://code.claude.com/docs/en/cloud-environments#what-carries-over-from-your-setup)
+- [プラグインのインストールと管理 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/plugins/install#install-a-plugin)
+- [Install and manage plugins - Claude Code Docs (English)](https://code.claude.com/docs/en/plugins/install#install-a-plugin)
+
+## 4. カスタムランチャーの h4 と、管理されたランチャーに戻す手順ができた
+
+**`setup` の「Update Claude Code」の h3「Auto-updates」の下に、h4「Custom launchers」と「Restore the managed launcher」ができました。** これまで「Auto-updates」の本文にあったカスタムランチャーの 3 つの段落のうち、2 つが「Custom launchers」に移り、管理を戻す方法の 1 文は「Restore the managed launcher」の手順に置き換わりました。
+
+- **Custom launchers**: macOS と Linux では、ネイティブインストーラーが `~/.local/bin/claude` のランチャーを `~/.local/share/claude/versions/` へのシンボリックリンクとして管理する。それを自分のスクリプトに置き換えると、自動更新と `claude update` の後もそのスクリプトは残り、新しい版は `versions/` の下に入るが、動くのはランチャーが起動する版のまま。カスタムランチャーでは、ランチャーがどの版を要るか判断できないので、Claude Code はインストールした版をすべてディスクに残す。`claude doctor` は、ランチャーが `was not created by the native installer` と報告する。これまでの「自分のスクリプトかシンボリックリンク」は「自分のスクリプト」になった
+- **Restore the managed launcher**: Claude Code に `~/.local/bin/claude` を管理させ直すには、カスタムランチャーをインストール済みの版へのシンボリックリンクに置き換える。手順は、(1) ランチャーを残したければ別のフォルダーにコピーする（3 で上書きされる）、(2) `ls ~/.local/share/claude/versions/` でインストール済みの版を一覧する、(3) 一覧の版の番号を `VERSION` に入れて `ln -sfn ~/.local/share/claude/versions/VERSION ~/.local/bin/claude` を実行する、(4) `claude doctor` を実行し、ランチャーの警告が消えたことを確かめる、の 4 つ。これまでは、`~/.local/bin/claude` を消して `claude update` を実行する、という 1 文だった
+
+同じページの「Install on network storage」では、古い版の削除の段落が 2 つに分かれ、カスタムランチャーへのリンクが `#auto-updates` から `#custom-launchers` になりました。`troubleshoot-install` の「Check for conflicting installations」の注記も、自分で作ったスクリプトかシンボリックリンクはカスタムランチャーで自動更新が残す、から、自分のランチャーを置いたなら「Custom launchers」を見る、になりました。
+
+- [高度なセットアップ - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/setup#restore-the-managed-launcher)
+- [Advanced setup - Claude Code Docs (English)](https://code.claude.com/docs/en/setup#restore-the-managed-launcher)
+- [高度なセットアップ - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/setup#custom-launchers)
+- [Advanced setup - Claude Code Docs (English)](https://code.claude.com/docs/en/setup#custom-launchers)
 
 ## 新規追加されたページ
 
@@ -104,86 +130,89 @@ changelog には `web-fetch` の語は出てきません（base・head とも 0 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-- [**Tools reference**](#1-tools-reference) ([日本語](https://code.claude.com/docs/ja/tools-reference#webfetch-tool-behavior) / [English](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior)):  
-  127 行（追加 99・削除 28）が変わりました。ほとんどは「WebFetch tool behavior」の書き直しと `web-fetch` サブエージェントの h3 で（詳細はハイライト 1・2 参照）、ほかに Agent ツール・バックグラウンドのコマンド・Monitor・WebSearch の節から 1 文ずつが外れました
-- [**Create custom subagents**](#2-create-custom-subagents) ([日本語](https://code.claude.com/docs/ja/sub-agents#restrict-which-tools-a-subagent-can-use) / [English](https://code.claude.com/docs/en/sub-agents#restrict-which-tools-a-subagent-can-use)):  
-  69 行（追加 35・削除 34）が変わりました。`web-fetch` を例外として挙げる記述が 7 か所に加わり、`tools` で Edit と Write を外しても Bash でファイルを変えられる、という注意が 2 か所に入りました。残りの多くは、節の導入や補足の文を外す推敲です
+- [**Let Claude coordinate ongoing work with Projects**](#1-let-claude-coordinate-ongoing-work-with-projects) ([English](https://code.claude.com/docs/en/claude-projects#project-settings-reference)):  
+  81 行（追加 40・削除 41）が変わりました。ほとんどは画面の部品と設定の項目の名前と置き場所の変化で（詳細はハイライト 1 参照）、ほかにプラグインの扱い（ハイライト 3）と、メモリーがオフのときの文、外れた文があります
 <!-- light:updated-pages:end -->
 
-**行数の数え方**: `llms-full.txt` の生の差分のハンクを、追加行は head 側、削除行は base 側の `Source:` 行でページに振り分けた値です。ページの並びは変わっておらず、ページ単位の合計は生の差分（追加 163・削除 79）と一致します。大幅更新の 2 ページに次いで多いのは `hooks` の 28 行（追加 18・削除 10）で、ほかの 5 ページはどれも 8 行以下です。changelog は変わっていません。
+**行数の数え方**: `llms-full.txt` の生の差分のハンクを、追加行は head 側、削除行は base 側の `Source:` 行でページに振り分けた値です。ページの並びは変わっておらず、ページ単位の合計は生の差分（追加 210・削除 140）と一致します。大幅更新の `claude-projects` に次いで多いのは `setup` の 46 行（追加 34・削除 12）ですが、そのうち 10 行は `theme={null}` の重なりの書式の変化で（下の「その他」）、内容の変化は 36 行です。その次は `statusline` の 18 行、`code-mode` の 17 行で、ほかのページはどれも 16 行以下です。`plugins/install` は `llms-full.txt` に 2 回載っていて、両方が同じように変わったので、8 行（追加 4・削除 4）は 1 か所あたり 4 行の 2 倍です。changelog は変わっていません。
 
-## 1. Tools reference
+## 1. Let Claude coordinate ongoing work with Projects
 
-**`tools-reference` は 127 行（追加 99・削除 28）が変わりました。** ほとんどは「WebFetch tool behavior」の節で、h3「WebFetch availability」だけだった下位の見出しが、5 つの h3 と、h3「The web-fetch subagent」の下の 3 つの h4 になりました（内容はハイライト 1・2）。見出しの文字列としては 8 つ加わり 1 つ外れましたが、「When a fetch prompts, fails, or WebFetch is missing」が「WebFetch availability」の id を引き継いでいるので、7 つの追加と 1 つの改称です。
+**`claude-projects` は 81 行（追加 40・削除 41）が変わりました。** 見出しの増減はありません。
 
-ほかの節では、次の文が外れました。
+- **画面の部品の名前と置き場所**: **Library** から **Context** タブへ、ヘッダーの **⋯** のメニューから歯車とタブの後ろの **+** へ、Overview のペインを開くボタンがヘッダーの **Threads** のボタンから右上のサイドパネルのボタンへ（ハイライト 1）
+- **設定の項目**: **Threads** と **Coordinator**、スレッドの既定の effort が medium に、**Restart Claude** と **Pause** が **Advanced** に、**Continue threads automatically when usage limits reset**、**Usage** がスレッドごとだけに（ハイライト 1）
+- **プラグイン**: 設定の **Plugins** の行と、リポジトリの `.claude/settings.json` のプラグインの行が外れ、claude.ai のアカウントで有効にしたプラグインをクラウドのスレッドが読み込む、となった（ハイライト 3）
+- **加わった文**: メモリーがオフのときの対処（ハイライト 1）
+- **外れた文**: **Get started** のボタンの扱い、プランの上限を越えて使わない、スレッドが使用量のクレジットをオンにできない、スレッドのトランスクリプトの共有（ハイライト 1）
 
-- **「Agent tool behavior」**: サブエージェントが `maxTurns` の上限に達すると、Claude Code は返す結果を部分的な出力と印し、Claude はサブエージェントを再開して続けられる
-- **「Foreground commands that move to the background」**: バックグラウンドへ移ったコマンドの時間の上限は移った時点から数え、フォアグラウンドのサブエージェントの移ったコマンドは、そのサブエージェントの実行が終わると止まる
-- **「Monitor tool」**: 同じセッションで作業を続けられ、出来事が届くと Claude が割り込む
-- **「WebSearch tool behavior」**: 1 回の呼び出しで最大 8 回の検索をする、という文から、結果を返す前に内部で検索を絞り込む、という部分
-
-- [ツールリファレンス - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/tools-reference#webfetch-tool-behavior)
-- [Tools reference - Claude Code Docs (English)](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior)
-
-## 2. Create custom subagents
-
-**`sub-agents` は 69 行（追加 35・削除 34）が変わりました。** 見出しの増減はありません。
-
-- **`web-fetch` の例外（7 か所）**: 「Built-in subagents」の Other のタブの表の行と「Available tools」の注記（ハイライト 1）に加え、次の 5 か所で `web-fetch` が例外として挙がった
-  - 「When an allowlist blocks a subagent model」: 許可リストがモデルを止めたときに代わりのモデルを選ぶ順は、`web-fetch` 以外のサブエージェントのもの、となった
-  - 「Project-level hooks for subagent events」: 節の末尾で、フックの設定の形式とともに、例外として `web-fetch` サブエージェントを見るよう案内する
-  - 「Which subagents run in the background」: 何も設定しなければ、メインの会話から Claude が始める `web-fetch` 以外のサブエージェントはバックグラウンドで始まる
-  - 「What loads at startup」: CLAUDE.md を読み込まない組み込みのエージェントが、Explore と Plan から Explore・Plan・`web-fetch` になった
-  - 「Turn fork mode off」（id は `#turn-fork-mode-on-or-off`）: fork モードの間、手元のターミナル・VS Code・デスクトップのセッションで Claude が待てないのは、`web-fetch` 以外のサブエージェント、となった
-- **Bash でファイルを変えられる**: 「Restrict which tools a subagent can use」の、Read・Grep・Glob・Bash だけを許す例の説明が、「ファイルの編集も書き込みも MCP のツールもできない」から「Edit・Write・MCP のツールはないが、Bash でファイルを変えられる」になった。「Code reviewer」の例の説明も、「コードを変えずにレビューする読み取り専用のサブエージェント」から「Edit と Write のツールなしでコードをレビューするサブエージェント。Bash でファイルを変えることはできる」になった
-- **auto モード**: 「Permission modes」の auto モードの説明（ハイライト 3）
-- **言い方の変化**: frontmatter の `background` で、既定でバックグラウンドで始まるのが「Claude がメインの会話から始めるサブエージェント」から「Claude がメインの会話から始めるカスタムのサブエージェント」になった。「Define hooks for subagents」で、サブエージェントの中でも効くのが「設定ファイル・managed policy の設定・プラグインのフック」から「それらのツールのイベントのフック」になった。「Project-level hooks for subagent events」の例は、片付けのスクリプトを「どのサブエージェントが止まっても」から「サブエージェントが止まると」動かす、となった
-- **外れた文**
-  - 「Built-in subagents」: Explore と Plan 以外の組み込みのサブエージェントとカスタムのサブエージェントは CLAUDE.md と git status を読み込み、カスタムのサブエージェントは `omitClaudeMd` で CLAUDE.md なしに始められる、という文と、Other のタブの、これらは普通は自動で呼ばれるので直接使う必要はない、という文
-  - 「Define hooks for subagents」: `settings.json` の項目の、`SubagentStart` と `SubagentStop` はサブエージェントが始まるときと終わるときに発火する、という部分
-  - 「Hooks in subagent frontmatter」: これらのフックはそのサブエージェントが動く間だけ動き、終わると片付けられる、という文と、サブエージェントとして呼ばれると frontmatter の `Stop` のフックは自動で `SubagentStop` のイベントに変わる、という文（後者は、同じページのイベントの表の `Stop` の行に「実行時に `SubagentStop` に変わる」として残っている）
-  - 「API errors in subagents」: 応答が途中で切れ、その部分の応答にテキストがありツールの呼び出しがなければ、Claude Code はサブエージェントに続けるよう促す、という段落（`errors` の同じ説明は残っている）
-  - 「Concurrent subagent limit」: 2 つの上限がそれぞれの変数を持つ、という冒頭の段落。セッションを通じたサブエージェントの総数に上限はない、という文は節の末尾へ移った
-  - 「What loads at startup」: 組み込みのエージェントは決まったプロンプトを持つ、という文と、git status を省くのは Explore と Plan だけ、という文（同じ節の Git status の項目の、Explore と Plan はいずれにせよ省く、という記述は残っている）
-  - 「Database query validator」: フックは標準入力で JSON を受け取り、Bash のコマンドは `tool_input.command` にあり、終了コード 2 で操作を止めてエラーのメッセージを Claude に返す、という説明
-  - そのほか、節の導入や例の補足の文が外れた（「Built-in subagents」の末尾、「Quickstart: create your first subagent」「Configure subagents」「Scope MCP servers to a subagent」「Persistent memory tips」「Run parallel research」「Fork the current conversation」「Debugger」「Data scientist」）
-
-- [カスタムサブエージェントの作成 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/sub-agents#restrict-which-tools-a-subagent-can-use)
-- [Create custom subagents - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#restrict-which-tools-a-subagent-can-use)
-- [カスタムサブエージェントの作成 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/sub-agents#which-subagents-run-in-the-background)
-- [Create custom subagents - Claude Code Docs (English)](https://code.claude.com/docs/en/sub-agents#which-subagents-run-in-the-background)
+- [Let Claude coordinate ongoing work with Projects - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-projects#project-settings-reference)
+- [Let Claude coordinate ongoing work with Projects - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-projects#choose-models-and-let-claude-manage-context)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の差分は **2 ファイル**（`llms-full.txt`・見出しマップ）で、`llms.txt` は変わっていません。`llms-full.txt` では、205 ページのうち **8 ページ**の内容が変わりました。大幅更新の 2 ページを除く **6 ページ**（`hooks`・`permission-modes`・`env-vars`・`vs-code`・`agent-sdk/hooks`・`agent-sdk/python`）を以下にまとめます。changelog は変わっておらず（収録 446 リリース、先頭は v2.1.330）、新着情報（whats-new）のページもありません。
+今回の差分は **2 ファイル**（`llms-full.txt`・見出しマップ）で、`llms.txt` は変わっていません。`llms-full.txt` では、205 ページのうち **45 ページ**の内容が変わりました。大幅更新の `claude-projects` を除く **44 ページ**を以下にまとめます。changelog は変わっておらず（収録 446 リリース、先頭は v2.1.330）、新着情報（whats-new）のページもありません。
 
-`llms-full.txt` の総行数は **130,625 行から 130,709 行へ 84 行増え**ました（生の差分の差し引き 163 − 79 と一致）。`llms-full.txt` に 2 回載っているページ（`plugins/create`・`plugins/install`・`plugins/mods/overview`）は変わっていません。
+`llms-full.txt` の総行数は **130,709 行から 130,779 行へ 70 行増え**ました（生の差分の差し引き 210 − 140 と一致）。`llms-full.txt` に 2 回載っているページのうち、`plugins/install` は 2 か所とも変わり、`plugins/create` と `plugins/mods/overview` は変わっていません。
 
-コードフェンスの外の見出しは、行頭が `#` の見出しだけを数えると 6,188 から 6,195 へ、引用の中の見出しも数えると 6,199 から 6,206 へ、どちらも 7 増えました。すべて `tools-reference` の WebFetch の節の変化で、文字列としては h3 の「Allow a domain」「Block a site or turn WebFetch off」「When a fetch prompts, fails, or WebFetch is missing」「The web-fetch subagent」「Identify WebFetch requests to your site」と h4 の「Which model the web-fetch subagent runs on」「Rules, hooks, and CLAUDE.md with the web-fetch subagent」「Turn off the web-fetch subagent」の 8 つが加わり、h3「WebFetch availability」が外れました。HTML の id で見ると、「When a fetch prompts, fails, or WebFetch is missing」は「WebFetch availability」の改称です（ハイライト 2）。
+コードフェンスの外の見出しは、行頭が `#` の見出しだけを数えると 6,195 から 6,198 へ、引用の中の見出しも数えると 6,206 から 6,209 へ、どちらも 3 増えました。文字列としては、`code-mode` の h3「Monitor Code Mode with OpenTelemetry」、`setup` の h4「Custom launchers」「Restore the managed launcher」、`agent-view` の h3「A background session shows `Not logged in`」の 4 つが加わり、`agent-view` の h3「Dispatch fails with `Could not resolve authentication method`」が外れました。最後の 2 つは、HTML の id が旧見出しの `#dispatch-fails-with-could-not-resolve-authentication-method` のままなので、改称です。
 
 **新機能**
 
-- 組み込みの `web-fetch` サブエージェント（`tools-reference`・`sub-agents`・`hooks`・`permission-modes`・`agent-sdk/python`。詳細はハイライト 1 参照）
-- **`hooks` に `web-fetch` サブエージェントのフックの注記が載った**（「SubagentStart」「SubagentStop」）。`web-fetch` には managed settings で定義した `SubagentStart`・`SubagentStop` のフックだけが動きます。ほかの場所に置くフックなら、`SubagentStart` の代わりに `WebFetch` に合う `PreToolUse` のフックを、`SubagentStop` の代わりに `WebFetch` に合う `PostToolUse` のフックを使います — [日本語](https://code.claude.com/docs/ja/hooks#subagentstart) / [English](https://code.claude.com/docs/en/hooks#subagentstart)、[日本語](https://code.claude.com/docs/ja/hooks#subagentstop) / [English](https://code.claude.com/docs/en/hooks#subagentstop)
+- Code Mode を OpenTelemetry と併用する要件と、コードが呼んだツールのイベントの見分け方（`code-mode`・`monitoring-usage`・`env-vars`。詳細はハイライト 2 参照）
+- 管理されたランチャーに戻す手順（`setup`・`troubleshoot-install`。詳細はハイライト 4 参照）
+- **`CLAUDE_CODE_DISABLE_SHELL_HEAD_START` が載った**（`env-vars` の表）。セッションの最初の Bash のコマンドを Claude が書いている間、そのコマンドの許可のプロンプトより前にシェルの起動ファイルを走らせる先回りを、`1` でオフにします。v2.1.327 以降が要ります（changelog の v2.1.327 にも、最初の Bash のコマンドを速くするため、承認の前にシェルの起動ファイルが走ることがあり、拒んだときも走る、という項目があります） — [日本語](https://code.claude.com/docs/ja/env-vars#variables) / [English](https://code.claude.com/docs/en/env-vars#variables)
+- **Monitor の出力の型に `keptInSandboxByCheck` が加わった**（`agent-sdk/typescript` の「Monitor」）。`MonitorOutput` の型に、省略できる `keptInSandboxByCheck?: boolean;` のフィールドが載りました。説明の文はありません — [日本語](https://code.claude.com/docs/ja/agent-sdk/typescript#monitor-2) / [English](https://code.claude.com/docs/en/agent-sdk/typescript#monitor-2)
 
 **機能改善**
 
-- auto モードの分類器がサブエージェントを確かめる範囲と、`web-fetch` が最初の 2 つの確認を省く条件（`permission-modes`・`sub-agents`。詳細はハイライト 3 参照）
-- **WebFetch の結果の説明が改められた**（`agent-sdk/python` の「WebFetch」）。出力の `result` の注釈が、「内容にプロンプトを当てた処理済みの結果」から「プロンプトへの答えか、ページのテキスト」になりました。`web-fetch` サブエージェントが呼ぶと結果がページのテキストになる、というハイライト 1 の説明と対応します — [日本語](https://code.claude.com/docs/ja/agent-sdk/python#webfetch) / [English](https://code.claude.com/docs/en/agent-sdk/python#webfetch)
-- **`CLAUDE_CODE_FORK_SUBAGENT` の説明が改められた**（`env-vars`）。fork モードの間は手元のターミナル・VS Code・デスクトップのセッションで Claude がサブエージェントを待てない、という文が外れ、`0` にすると fork モードがオフになる（たとえば Claude にサブエージェントを待たせるため）、という書き方になりました。同じ表の `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` も、キャッシュに保つのが「取得した各 URL の応答」から「取得した各ページ」になっています — [日本語](https://code.claude.com/docs/ja/env-vars#variables) / [English](https://code.claude.com/docs/en/env-vars#variables)
-- **VS Code の Run in background のアクションの説明が改められた**（`vs-code` の「The Run in background action is missing under a subagent」）。VS Code で既定でこのアクションを出さないのが、「サブエージェント」から「ほとんどのサブエージェント」になりました — [日本語](https://code.claude.com/docs/ja/vs-code#the-run-in-background-action-is-missing-under-a-subagent) / [English](https://code.claude.com/docs/en/vs-code#the-run-in-background-action-is-missing-under-a-subagent)
+- クラウドセッションとリポジトリのプラグインの記述（`cloud-environments`・`plugins/install`・`desktop`・`security-guidance`・`skills`・`settings`・`plugins/loading`・`plugins/org`。詳細はハイライト 3 参照）
+- **バックグラウンドセッションの `Not logged in` の対処になった**（`agent-view` の「Troubleshooting」）。h3「Dispatch fails with `Could not resolve authentication method`」が「A background session shows `Not logged in`」になり、対話のセッションは認証できるのにバックグラウンドのセッションが `Not logged in` を示すなら、`/login` か API キーを確かめてスーパーバイザーを止める、となりました。止めてから約 1 分以内に `claude agents` を実行して新しいスーパーバイザーを始め（これまでは `claude agents` か `claude --bg`）、`CLAUDE_CODE_OAUTH_TOKEN` のような環境変数で認証するなら、その変数が設定されたシェルから実行します（これまでの例は `ANTHROPIC_API_KEY`）。その後に `claude respawn <id>` でセッションを再起動し、メッセージを送り直す、という手順が加わりました。ワーカーが認証情報を受け取れなかった、という原因の説明と、エラーリファレンスの `Could not resolve authentication method` のエントリへの案内は外れ、冒頭の文の `Not logged in` にエラーリファレンスの「Not logged in」のエントリへのリンクが付いています — [日本語](https://code.claude.com/docs/ja/agent-view#dispatch-fails-with-could-not-resolve-authentication-method) / [English](https://code.claude.com/docs/en/agent-view#dispatch-fails-with-could-not-resolve-authentication-method)
+- **`Could not resolve authentication method` の説明が絞られた**（`errors`）。バックグラウンドとクラウドのセッションはワーカーが認証情報なしで始まるとこのメッセージを示す、という文と、今の版ではワーカーのプロセスに認証情報がなかったことを意味する、という文が外れ、対話・`-p`・Agent SDK の実行で `Not logged in` が出て、この文字列がデバッグのログにあるなら、そのエントリに従う、という 1 文になりました — [日本語](https://code.claude.com/docs/ja/errors#could-not-resolve-authentication-method) / [English](https://code.claude.com/docs/en/errors#could-not-resolve-authentication-method)
+- **`-p` の実行での PermissionRequest のフックの説明が改められた**（`hooks`・`hooks-guide`・`headless`）。`hooks` の「PermissionRequest」から、プロンプトを示せないセッション（非対話のモードのバックグラウンドのサブエージェントなど）でもフックは動き、どのフックも決めなければ拒む、という文が外れ、`dontAsk` モードの外で、`--permission-prompt-tool` も `canUseTool` のコールバックもない `-p` の実行では、誰もプロンプトに答えられないので、PermissionRequest のフックのような何かが承認しない限り、プロンプトの出る呼び出しは拒まれる、という段落が加わりました。`hooks-guide` の「Limitations」も同じ趣旨に改められ、`headless` の「Turn off permission prompts in unattended runs」からは、ホストのない `-p` の実行ではこれらの要求はどちらにしても拒まれ、フラグは Claude に再試行しないよう伝える、という文が外れました — [English](https://code.claude.com/docs/en/hooks#permissionrequest)
+- **worktree のフックの説明が改められた**（`hooks`・`agent-sdk/hooks`）。`hooks` の「WorktreeRemove」で、フックが 0 で終わったときが、「worktree は削除されたとみなされ、フックがディレクトリを消したことを確かめる」から、「worktree のディレクトリが残っていれば自分で消す。Claude Code は git にフォールバックしない」になり、「WorktreeRemove input」の、フックの終了コードが結果を決める、という文が外れました。`agent-sdk/hooks` の表の `WorktreeCreate` の行は、きっかけが「Git の worktree が作られた」から「Claude Code が worktree を要し、git の代わりにフックがそれを作る」に、使い道が「隔離した作業場所を追う」から「worktree を作り、そのパスを `hookSpecificOutput.worktreePath` で返す」になりました。`WorktreeCreate` のコールバックは `hookSpecificOutput.worktreePath` を返さなければならない、という文が加わり、タイムアウトしたときは worktree の作成がエラーで失敗する、と分けて書かれ、`onFailure: "block"` でタイムアウトが止めるイベントから `WorktreeCreate` が外れています — [English](https://code.claude.com/docs/en/hooks#worktreeremove)、[日本語](https://code.claude.com/docs/ja/agent-sdk/hooks#hook-timeout) / [English](https://code.claude.com/docs/en/agent-sdk/hooks#hook-timeout)
+- **ステータスラインを端末の幅に合わせる説明が書き直された**（`statusline` の「Size output to the terminal」）。Claude Code は幅を `COLUMNS`、高さを `LINES` の環境変数でスクリプトに渡し、スクリプトを実行するたびに両方を更新する、`stty size` のように端末に直接尋ねる呼び出しは、スクリプトが端末につながっていないので失敗しうる、となりました。行が `…` で切られないように、端末より 4 列以上狭くする（Claude Code が両側に足す余白のため）、という説明と、`max_width=$((COLUMNS - 4))` の Bash の例（80 列の端末なら 76）、`padding` を設定していればその 2 倍も引く、📁 のような絵文字は 2 列と数える、という説明が加わっています。これまでは、`tput cols` や言語の側の幅の検出ではスクリプトの中から端末の大きさを読めない、と書かれていました。同じページの「Notifications share the status line row」の、狭い端末では通知がステータスラインの出力を切ることがある、は、通知がステータスラインの隣に収まらなければ下の行に移る、になりました — [English](https://code.claude.com/docs/en/statusline#size-output-to-the-terminal)
+- **`current_usage` が `null` になる時の書き方が改められた**（`statusline` の「Context window fields」）。セッションの最初の API の呼び出しの前は `null`、から、会話に API の応答があるまでは `null`、になりました — [日本語](https://code.claude.com/docs/ja/statusline#context-window-fields) / [English](https://code.claude.com/docs/en/statusline#context-window-fields)
+- **ultracode のキーワードを避ける方法が増えた**（`workflows` の「Dismiss or turn off the keyword」）。ワークフローを頼まずに `ultracode` の語を使う方法が 3 つの項目になりました。打つときに語をバッククォートで囲む（加わった方法）、ターミナルでハイライトされたら語の直後で Backspace を押すか `Alt+W` を押す、すべてのプロンプトで **Ultracode keyword trigger** を `/config` でオフにする、です。macOS の `Option+W` は、Option を Meta として使う設定のときのキーだ、と書かれました（これまでは macOS なら `Option+W`、Windows と Linux なら `Alt+W`） — [English](https://code.claude.com/docs/en/workflows#dismiss-or-turn-off-the-keyword)
+- **Claude apps gateway の説明が改められた**（`claude-apps-gateway-config`・`claude-apps-gateway`・`claude-apps-gateway-deploy`・`claude-apps-gateway-on-gcp`）
+  - 「Extended context in Claude Desktop」の「Start users on the 1M option」（`modelPrefer1mContext: true` で、まだモデルを選んでいないユーザーは最初のモデルの 1M の選択肢で始まる）が「Show only the 1M option」になり、`desktop` のブロックの `modelPrefer1mContext` を `true` にする、メンバーのマシンに Claude Desktop 2.31226.0 以降が要る、となりました。例の説明も、カスタムのエイリアスとその `[1m]` の変種を挙げ、両方をアプリケーションの推論プロファイルへ送り、`modelPrefer1mContext` を設定する、になりました — [日本語](https://code.claude.com/docs/ja/claude-apps-gateway-config#extended-context-in-claude-desktop) / [English](https://code.claude.com/docs/en/claude-apps-gateway-config#extended-context-in-claude-desktop)
+  - 「HTTP tuning」で、私的なアドレスの範囲（IPv4 の `10.0.0.0/8`・`172.16.0.0/12`・`192.168.0.0/16`・`100.64.0.0/10`・`127.0.0.0/8` と IPv6 の `::1/128`・`fc00::/7`）が、起動時の警告が勧めるものとしてではなく、ネットワークの外のクライアントを拒むには `allow_cidrs` にこれらを設定する、という指示として載りました。起動時の警告の項目（ループバックに結び `trusted_proxies` も `public_url` も設定しなければ出ない、という条件を含む）は外れ、`allow_cidrs` が空の間の動きは、プロセスごとに 1 回の警告と `access.public_client` の監査イベント、公開とみなさないリンクローカルのアドレス、チェックしないヘルスプローブの 3 つの項目になりました — [日本語](https://code.claude.com/docs/ja/claude-apps-gateway-config#http-tuning) / [English](https://code.claude.com/docs/en/claude-apps-gateway-config#http-tuning)
+  - `claude-apps-gateway-deploy` の「Write operational logs as JSON」に、ゲートウェイは起動するたびに、ネットワークの構成にかかわらず公開のインターネットに出さないよう促す `WARNING` の行を 1 つ書き、隠すには `CLAUDE_GATEWAY_LOG_LEVEL=error` を設定する（コレクターには `ERROR` の行だけが届く）、という段落が加わりました。`claude-apps-gateway` のクイックスタートでも、`allow_cidrs` が空だという警告の説明が、起動時のバナーが毎回私的なネットワークに置くよう促す、という説明になりました（changelog の v2.1.329 にも、`allow_cidrs` が空の間の起動時の警告を、起動のたびの通知にした、という項目があります） — [日本語](https://code.claude.com/docs/ja/claude-apps-gateway-deploy#write-operational-logs-as-json) / [English](https://code.claude.com/docs/en/claude-apps-gateway-deploy#write-operational-logs-as-json)
+  - `claude-apps-gateway-on-gcp` の「Deploy the gateway」で、`gcloud sql instances create` に `--edition=enterprise` が加わり、内部の Ingress には `$REGION` のプロキシ専用のサブネットと、そこからゲートウェイの Pod の `8080` 番ポートへの通信を許すファイアウォールのルールが要る、という注記が加わりました — [日本語](https://code.claude.com/docs/ja/claude-apps-gateway-on-gcp#deploy-the-gateway) / [English](https://code.claude.com/docs/en/claude-apps-gateway-on-gcp#deploy-the-gateway)
+- **デスクトップアプリの MCP サーバーが WSL のセッションでも読み込まれる、と書かれた**（`desktop` の「MCP servers from the Claude Desktop chat app」）。`claude_desktop_config.json` のサーバーはチャットとローカルの Code タブの両方で使える、という文が、それらのサーバーは WSL のセッションでも読み込まれ（コネクターのないセッションを除く）、WSL のセッションでは Windows で動く、になりました — [日本語](https://code.claude.com/docs/ja/desktop#mcp-servers-from-the-claude-desktop-chat-app) / [English](https://code.claude.com/docs/en/desktop#mcp-servers-from-the-claude-desktop-chat-app)
+- **mod の背景でセッションの詳細のパネルが消えたときの戻し方が書かれた**（`desktop` の「Hide or show the session details panel」）。mod の背景（backdrop）が出てパネルが消えたら、**Show session rail** か **Activity panel** をクリックして戻す、という文が加わりました — [English](https://code.claude.com/docs/en/desktop#hide-or-show-the-session-details-panel)
+- **`-p`・Agent SDK・VS Code ではコネクターがプラグインのサーバーより上になる、と書かれた**（`mcp` の「Scope hierarchy and precedence」）。同じサーバーが複数の場所で定義されたときの優先の順の 5 番目の claude.ai のコネクターに、`claude -p`・Agent SDK・VS Code のセッションでは、コネクターがプラグインの提供するサーバーより上になる、という説明が付きました — [日本語](https://code.claude.com/docs/ja/mcp#scope-hierarchy-and-precedence) / [English](https://code.claude.com/docs/en/mcp#scope-hierarchy-and-precedence)
+- **Remote Control が自動で再接続しない場合が書かれた**（`remote-control`）。冒頭の「Survive interruptions」に、「Limitations」の場合を除いて、が付き、「Limitations」の対話のセッションの項目が、ターミナルに Remote Control の失敗が出るまでは再試行を続けて自分で再接続し、失敗が出たらネットワークが戻るのを待って、失敗の後に再接続する手順に従う、になりました（これまでは、障害が続く間ずっと再試行する） — [日本語](https://code.claude.com/docs/ja/remote-control#limitations) / [English](https://code.claude.com/docs/en/remote-control#limitations)
+- **`--settings` で設定できないキーが増えた**（`settings` の「Change a setting for one session」）。`--settings` はユーザーの設定ファイルが設定できるキーならどれも設定できる、という文が外れ、`Managed` と `Global config` のキーに加えて、`prependPlugins` のようなユーザーの設定のキーの一部も設定できない、となりました — [日本語](https://code.claude.com/docs/ja/settings#change-a-setting-for-one-session) / [English](https://code.claude.com/docs/en/settings#change-a-setting-for-one-session)
+- **権限の説明が改められた**（`permission-modes`）。「How auto mode evaluates actions」の分類器の判定の順（アコーディオン）で、allow のルールが即決する例外に、Manual・`acceptEdits`・`dontAsk` のモードでも、allow のルールに合う Claude in Chrome のアクションを分類器が確かめることがある、が加わりました。「Allow only pre-approved tools with dontAsk mode」では、`permissions.allow` のルールか PreToolUse のフックが承認した呼び出しが動く、が「ほとんどの呼び出しが動く」になりました — [日本語](https://code.claude.com/docs/ja/permission-modes#how-auto-mode-evaluates-actions) / [English](https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions)
+- **組織の mod の扱いの説明が改められた**（`plugins/mods/admin`）。`allowManagedModsOnly` の説明が「ユーザーが持ち込む mod のフックを動かさない」から「ユーザーの mod を拒む」に、対象の 1 つ目が「ユーザーがインストールしたプラグインの mod」から「ユーザーだけが有効にしたプラグインの mod」になりました。「Choose how much to allow」の表で、設定のフックはそのままにインストールした mod を動かさないには、managed settings で `allowManagedModsOnly` を設定し、mod を含むプラグインを有効にしない、となり（これまでは、自分の mod を配らない）、「Apply your plugin controls to mods」から、GitHub・git・URL・npm のソースからコピーした mod は組織のものとしてインストールしない限りユーザーのものとみなす、という文が外れました。「Install your organization's mods」では、managed の `enabledPlugins` で有効にしたプラグインも、条件を満たさないディレクトリのプラグインと同じくユーザーのものとみなされうる、という書き方になり、理由をデバッグのログで探す、となりました — [日本語](https://code.claude.com/docs/ja/plugins/mods/admin#stop-user-installed-mods-from-loading) / [English](https://code.claude.com/docs/en/plugins/mods/admin#stop-user-installed-mods-from-loading)
+- **Configure が出るのはマーケットプレイスのプラグイン、と書かれた**（`plugins/components`・`plugins/install`）。`/plugin` でバンドルした MCP サーバーの値を設定する **Configure** が、マーケットプレイスからのプラグインのもの、と限定されました（`plugins/install` は 2 か所とも） — [日本語](https://code.claude.com/docs/ja/plugins/install#manage-installed-plugins) / [English](https://code.claude.com/docs/en/plugins/install#manage-installed-plugins)
+- **プロキシの URL を起動時に確かめる説明が改められた**（`network-config` の「Verify your configuration」）。ほとんどの設定は読むときに確かめず、起動時に確かめるのはプロキシの URL だけ、という書き方と、`http://` のスキームがない値の例が外れ、シェルか `~/.claude/settings.json` のプロキシの URL を解析できなければ、直すべき変数を名指すエラーで起動を止める、となりました — [日本語](https://code.claude.com/docs/ja/network-config#verify-your-configuration) / [English](https://code.claude.com/docs/en/network-config#verify-your-configuration)
+- **`ExitWorktree` が許可を要する場合が書かれた**（`tools-reference` のツールの表）。許可の列が「No」から、v2.1.327 以降は、Claude Code が worktree を確かめられないか、プッシュしていないコミットや `git status` に出るファイルのような失われうる作業を見つけたときに、worktree を消すために「Yes」になりました（changelog の v2.1.327 にも、作業が残っているかもしれない worktree を消す前に尋ねるようにした、という項目があります） — [日本語](https://code.claude.com/docs/ja/tools-reference) / [English](https://code.claude.com/docs/en/tools-reference)
+- **TypeScript の Agent SDK の説明が加わった**（`agent-sdk/typescript`・`agent-sdk/troubleshooting`）。`AgentDefinition` の `mcpServers` に、`createSdkMcpServer()` のサーバーは `Options` の `mcpServers` に置き、このフィールドにサーバーのオブジェクトを渡すと、TypeScript の Agent SDK v0.3.327 以降はそれを無視して `CLAUDE_SDK_AGENT_IN_PROCESS_SERVER` の警告を出す、という説明が加わりました。`agent-sdk/troubleshooting` の表には、TypeScript で `option can't be sent to Claude Code` が出たら、メッセージが名指す `Options` のオプションを直す、という行が加わりました — [日本語](https://code.claude.com/docs/ja/agent-sdk/typescript#agentdefinition) / [English](https://code.claude.com/docs/en/agent-sdk/typescript#agentdefinition)、[日本語](https://code.claude.com/docs/ja/agent-sdk/troubleshooting) / [English](https://code.claude.com/docs/en/agent-sdk/troubleshooting)
+- **Chrome を使わずに 1 回だけ起動する方法が書かれた**（`chrome` の「Enable Chrome by default」）。設定をオンのままにして、1 つの CLI のセッションだけ Chrome なしで始めるには `claude --no-chrome` を実行する、という文が加わりました（`--no-chrome` のフラグは `cli-reference` にこれまでもあります）。「Get started in the CLI」からは、連携が動いていれば状態のパネルに "Status: Enabled" と "Extension: Installed" が出る、という文が外れています — [English](https://code.claude.com/docs/en/chrome#enable-chrome-by-default)
+- **Linux のデスクトップアプリの冒頭が改められた**（`desktop-linux`）。macOS と Windows と同じ Chat・Cowork・Claude Code の体験、が、Chat・Cowork・Claude Code が使え、デスクトップアプリの Claude Code には並列のセッション・差分のレビュー・ターミナルとエディター・アプリのプレビューがある、という書き方になり、Cowork に Cowork の要件へのリンクが付きました — [English](https://code.claude.com/docs/en/desktop-linux)
+
+**バグ修正**
+
+- **`/export` が既存のファイルを上書きしない、と書かれた**（`sessions`・`commands`）。`/export` にファイル名を渡したとき、v2.1.327 以降はそのファイルがすでにあってはならない（`commands` の表では、すでにあるファイルを拒む）、という説明が加わりました。changelog の v2.1.327 には、`/export` が既存のファイルを尋ねずに上書きしていたのを修正し、ダイアログは尋ね、`/export <name>` はファイルを残して `/export` を実行するよう言う、という項目があります。`sessions` の「Export and locate session data」からは、メッセージとツールの出力を読めるテキストにする、という部分が外れました — [日本語](https://code.claude.com/docs/ja/sessions#export-and-locate-session-data) / [English](https://code.claude.com/docs/en/sessions#export-and-locate-session-data)、[日本語](https://code.claude.com/docs/ja/commands#all-commands) / [English](https://code.claude.com/docs/en/commands#all-commands)
 
 **その他**
 
-- **`hooks` の外れた文**: 「Notification」の、`elicitation_dialog` と `elicitation_url_dialog` は `permission_prompt` と同じ 6 秒の待ちを共有し、ダイアログが出たときから数え、キーを打つたびに延びる、という文（約 6 秒入力がなければ、という部分は残っている）。「Notification input」の、デスクトップの通知の例は `terminalSequence` に頼る、という部分と、Notification のフックは通知を外部のサービスへ転送するような副作用のためのもの、という文。「SubagentStart input」の、起動時に入れたコピーはそのまま残り、サブエージェントのプロンプトのキャッシュを保つ、という文。「SubagentStop input」の、`agent_type` がマッチャーの絞り込みに使う値、という文と、フックはトランスクリプトのファイルを解析せずに最後の応答を読める、という部分。同じ節の決定制御の説明の、終了コード 2 で止めるフックは標準エラーのメッセージを同じように渡す、という文。「StopFailure」の、レート制限や認証の問題などの API のエラーで、という部分と、「StopFailure input」の、通知とログのためだけに動く、という文。「PostCompact input」の、圧縮の結果には影響できないが後続の作業はできる、という文 — [日本語](https://code.claude.com/docs/ja/hooks#subagentstop-input) / [English](https://code.claude.com/docs/en/hooks#subagentstop-input)
-- **言い方の変化**: `hooks` の「Notification」で、ほかのダイアログが出ている間に届いた要求も保つのが「同じ 6 秒のゲート」から「同じ 6 秒のタイミング」になり、「SubagentStop input」の、内部のエージェントでも SubagentStop が発火する、という段落は「すべての SubagentStop が Claude の始めたサブエージェントから来るわけではない」という前置きが外れた。`agent-sdk/hooks` の「Track subagent activity」の例は、要約をログに残すのが「サブエージェントが終わるたびに」から「サブエージェントが終わったときに」になった — [日本語](https://code.claude.com/docs/ja/agent-sdk/hooks#track-subagent-activity) / [English](https://code.claude.com/docs/en/agent-sdk/hooks#track-subagent-activity)
+- **`/usage` の行の名前**: `costs` の「Using the `/usage` command」と「Report spend at your contracted rates」で、`/usage` の Session の行の `Total cost` が `Estimated cost` になりました（例の出力と、組織の料金が効いているときに注記が付く行の説明の 3 か所） — [日本語](https://code.claude.com/docs/ja/costs#using-the-/usage-command) / [English](https://code.claude.com/docs/en/costs#using-the-/usage-command)
+- **フォームモードの例**: `mcp` の「Respond to MCP elicitation requests」のフォームモードの例が「ユーザー名とパスワードのプロンプト」から「プロジェクトの名前と期日」に、`hooks` の「Elicitation input」の例の `message` が `Please provide your credentials` から `Please provide your username` になりました — [English](https://code.claude.com/docs/en/mcp#respond-to-mcp-elicitation-requests)
+- **MessageDisplay の用途**: `hooks` の「MessageDisplay」の用途から、Claude の応答から API キーや内部のホスト名を伏せる、という項目が外れ、`agent-sdk/hooks` の表の用途も「表示するテキストを伏せるか整え直す」から「整え直す」になりました — [日本語](https://code.claude.com/docs/ja/hooks#messagedisplay) / [English](https://code.claude.com/docs/en/hooks#messagedisplay)
+- **PermissionDenied の書き方**: `hooks` の「PermissionDenied」で、きっかけが「auto モードがツールの呼び出しを拒んだとき」から「auto モードの分類器がツールの呼び出しを拒んだとき」になり、このフックは auto モードでだけ発火する、という部分が外れて、手動で拒んだとき・PreToolUse のフックが止めたとき・deny のルールに合ったときは動かない、という説明が別の段落になりました — [日本語](https://code.claude.com/docs/ja/hooks#permissiondenied) / [English](https://code.claude.com/docs/en/hooks#permissiondenied)
+- **マーケットプレイスの名前**: `plugins/overview` の「Tell Anthropic's marketplaces from third-party ones」と `plugins/security` の「Identify Anthropic's marketplaces by name」で、公式とコミュニティの名前を受け入れるのが `github.com/anthropics/` のリポジトリのマーケットプレイス「だけ」、の「だけ」が外れました。`plugins/security` では、だからサードパーティのマーケットプレイスは Anthropic のものを装えない、という部分と、冒頭の、マーケットプレイスの名前は誰がカタログを公開しているかを示す、という部分も外れています — [日本語](https://code.claude.com/docs/ja/plugins/security#marketplace-tiers) / [English](https://code.claude.com/docs/en/plugins/security#marketplace-tiers)
+- **外れた文**: `desktop` の「Ask a side question without derailing the session」の、デスクトップアプリはサイドチャットをディスクに保存しないので、アプリを閉じると戻れない、という文（同じ節の導入も、サイドチャットの回答は自動ではメインの会話に加わらない、という書き方になった）。`terminal-config` の「How Claude treats pasted text」の、貼り付けには自分が書いていない指示が含まれうるので、打ったメッセージが求める場合だけその指示に従うよう Claude に伝える、という文。`agent-sdk/typescript` の `prewarm()` の、Setup のフックにかかった時間を `initializeTimeoutMs` に数える、という段落。`agent-sdk/mcp` の「Error handling」の、セッションの途中で接続が切れると、という部分 — [日本語](https://code.claude.com/docs/ja/desktop#ask-a-side-question-without-derailing-the-session) / [English](https://code.claude.com/docs/en/desktop#ask-a-side-question-without-derailing-the-session)、[日本語](https://code.claude.com/docs/ja/terminal-config#how-claude-treats-pasted-text) / [English](https://code.claude.com/docs/en/terminal-config#how-claude-treats-pasted-text)
+- **言い方の変化**: `errors` の「No files were restored」で、ファイルを書けなかったときの対処が、**Restore code** を選んだ後にファイルを書けなかったら、と限定されました。`claude-apps-gateway` のクイックスタートの Compose ファイルのイメージのタグが `2.1.198` から `<version>` になりました。`google-vertex-ai` の「4. Configure Claude Code」の例で、`VERTEX_REGION_CLAUDE_HAIKU_4_5` と `VERTEX_REGION_CLAUDE_4_6_SONNET` の 2 つの `export` の行が `#` でコメントになりました — [日本語](https://code.claude.com/docs/ja/errors#no-files-were-restored) / [English](https://code.claude.com/docs/en/errors#no-files-were-restored)、[English](https://code.claude.com/docs/en/google-vertex-ai#4-configure-claude-code)
+- **書式の変化**: `setup` の「Install Claude Code」で、引用の中のコードフェンスの 5 つの開始行の `theme={null}` が 1 回から 19 回に重なりました（`setup` の生の差分 46 行のうち 10 行）。2026年11月20日のサマリで、14 回の重なりが 1 回に戻ったと書いた箇所です。内容の変更ではありません
 <!-- light:minor-updates:end -->
 
-見出しマップ（`en/claude_code_docs_map.md`）は、更新時刻が 2026年11月21日 00:18:19 UTC から 2026年11月21日 17:01:04 UTC に替わり、9 行が加わり 2 行が外れました（6,666 行から 6,673 行）。加わったのは `tools-reference` の WebFetch の節の 8 つの見出しと新しいスタンプで、外れたのは「WebFetch availability」と古いスタンプです。`llms-full.txt` の見出しの増減と一致し、今回、見出しマップにだけ先に載った見出しはありません。
+見出しマップ（`en/claude_code_docs_map.md`）は、更新時刻が 2026年11月21日 17:01:04 UTC から 2026年11月23日 05:28:13 UTC に替わり、5 行が加わり 2 行が外れました（6,673 行から 6,676 行）。加わったのは `setup` の 2 つの h4、`code-mode` の h3、`agent-view` の改称後の h3 と新しいスタンプで、外れたのは `agent-view` の旧見出しと古いスタンプです。`llms-full.txt` の見出しの増減と一致し、今回、見出しマップにだけ先に載った見出しはありません。
 
-**参考リンクについて**: 日本語版は、今回リンクを付けたページの HTML を取得し、新しい節の id があるか、今回の差分で出入りしたコードの字句（`web-fetch`・`WebFetch(domain:*.example.com)`・`Fetch · from the web-fetch agent`・`Received 87 bytes`・版の数字・リンク先のアンカーなど。base と head の `llms-full.txt` で数が違うものだけ）が英語版と同じだけあるかで、今回の内容になっているかを確かめました。地の文だけが変わった箇所（`tools-reference` の対処の表、`sub-agents` の Bash でファイルを変えられる、という注意と「Permission modes」、`permission-modes` のアコーディオン、`hooks` の外れた文、`env-vars`・`vs-code`・`agent-sdk/hooks` の言い方、`agent-sdk/python` のコードの注釈）は、該当する箇所の訳文で確かめています。今回リンクを付けたページは、すべて今回の内容になっていました。アンカーは英語版・日本語版の HTML の見出しの id で確かめました。`tools-reference` の「When a fetch prompts, fails, or WebFetch is missing」は旧見出しの id `#webfetch-availability` を、「The web-fetch subagent」は `#web-fetch-subagent` を持ちます。`permission-modes` の「How auto mode handles subagents」は見出しではなくアコーディオンなので、それを含む h3「How auto mode evaluates actions」にリンクしています。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
+**参考リンクについて**: 日本語版は、今回リンクを付けたページの HTML を取得し、新しい節の id があるか、今回の差分で出入りしたコードの字句（`ln -sfn`・`was not created by the native installer`・`CLAUDE_CODE_DISABLE_SHELL_HEAD_START`・`Estimated cost`・`2.31226.0`・`claude respawn <id>`・`hookSpecificOutput.worktreePath`・版の数字・リンク先のアンカーなど。base と head の `llms-full.txt` で数が違うものだけ）が英語版と同じだけあるかで、今回の内容になっているかを確かめました。地の文だけが変わった箇所は、該当する節の訳文で確かめています。日本語版がまだ今回の内容になっていなかった `claude-projects`・`code-mode`・`monitoring-usage`・`statusline` の「Size output to the terminal」・`workflows`・`chrome` の「Enable Chrome by default」・`desktop-linux`・`google-vertex-ai`・`desktop` の「Hide or show the session details panel」・`hooks` の「PermissionRequest」「WorktreeRemove」・`mcp` の「Respond to MCP elicitation requests」は、英語版だけにリンクしています。同じページでも節によって追従が違うことがあり（`hooks` の「MessageDisplay」「PermissionDenied」、`statusline` の「Context window fields」、`mcp` の「Scope hierarchy and precedence」、`desktop` のほかの節は今回の内容でした）、判定は節ごとです。アンカーは英語版・日本語版の HTML の見出しの id で確かめました。見出しの文字列の GFM スラッグと違う id を持つものがあり、`agent-view` の改称した見出しは旧見出しの id `#dispatch-fails-with-could-not-resolve-authentication-method`、`costs` の「Using the `/usage` command」は `#using-the-/usage-command`、`plugins/security` の「Identify Anthropic's marketplaces by name」は `#marketplace-tiers` です。`agent-sdk/typescript` には「Monitor」の見出しが入力の型と出力の型の 2 つあり、今回変わった出力の型（`MonitorOutput`）の側は `#monitor-2` です。`tools-reference` のツールの表と `agent-sdk/troubleshooting` の表、`desktop-linux` の冒頭は見出しの前にあるので、アンカーなしのページにリンクしています。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
 
 ## 新着情報
 
@@ -193,11 +222,11 @@ changelog には `web-fetch` の語は出てきません（base・head とも 0 
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-20.md](./archives/latest/2026-11-20.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-20.md](./archives/latest-detail/2026-11-20.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-21.md](./archives/latest/2026-11-21.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-21.md](./archives/latest-detail/2026-11-21.md)
 
 <!--
-base_commit: 5f51174830a6109f6c27c1eeae6dd98de6f65dde
-head_commit: 3279a161e968357548276a7baa091d6d6f481473
-generated_at_full: 2026-11-22T15:14:02+09:00
+base_commit: 3279a161e968357548276a7baa091d6d6f481473
+head_commit: 6a68e6de41597850d1e2183445a9fc2df1e65fdf
+generated_at_full: 2026-11-23T15:16:22+09:00
 -->
