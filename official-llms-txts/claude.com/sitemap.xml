@@ -6952,6 +6952,9 @@
     <loc>https://claude.com/marketplace/connectors/all-accor</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/allium</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/allo</loc>
   </url>
   <url>
@@ -7295,6 +7298,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/bubble-mcp</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/buffer</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/busycal</loc>
@@ -8236,6 +8242,9 @@
     <loc>https://claude.com/marketplace/connectors/honeycomb</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/horizon3-nodezero</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/hostinger-connector</loc>
   </url>
   <url>
@@ -8731,6 +8740,9 @@
     <loc>https://claude.com/marketplace/connectors/meko</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/melio</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/melon</loc>
   </url>
   <url>
@@ -8987,6 +8999,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/oilpriceapi-oil-gas-commodity-prices</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/okx-global-atk-simple</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/omega-point</loc>
@@ -9497,6 +9512,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/ringcentral-chat</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/ringcentral-phone</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/rippit</loc>
@@ -10198,6 +10216,9 @@
     <loc>https://claude.com/marketplace/connectors/vital-care-finder</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/voltn</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/voluum</loc>
   </url>
   <url>
@@ -10349,6 +10370,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/zite</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/zocdoc</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/zocks</loc>
@@ -11308,6 +11332,9 @@
     <loc>https://claude.com/marketplace/plugins/lusha-talent-sourcing</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/plugins/make</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/plugins/mapbox</loc>
   </url>
   <url>
@@ -12097,6 +12124,9 @@
     <loc>https://claude.com/product/claude-security</loc>
   </url>
   <url>
+    <loc>https://claude.com/product/claude-ship</loc>
+  </url>
+  <url>
     <loc>https://claude.com/product/code-review</loc>
   </url>
   <url>
@@ -12538,6 +12568,9 @@
     <loc>https://claude.com/resources/articles/eight-trends-defining-how-software-gets-built-in-2026</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/enterprise-guide-to-securing-coding-agents</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/enterprise-managed-auth</loc>
   </url>
   <url>
@@ -12730,6 +12763,9 @@
     <loc>https://claude.com/resources/articles/introducing-citations-api</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/introducing-claude-ship</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/introducing-dynamic-workflows-in-claude-code</loc>
   </url>
   <url>
@@ -12752,6 +12788,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/articles/key-benefits-transitioning-agentic-coding</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/articles/kpmg-todd-lohr-on-ai-when-your-data-is-also-your-clients-data</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/articles/linked-billing-on-claude-platform</loc>
@@ -12995,6 +13034,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/articles/your-thinking-partner</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/articles/zero-data-retention-with-enterprise-frontier-safeguards</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/articles/zero-trust-for-ai-agents</loc>

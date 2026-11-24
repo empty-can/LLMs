@@ -3811,7 +3811,7 @@ Where you add a plugin decides where it applies:
 
 * **All of Slack**: under **Claude's access**, select the **Skills and plugins** tab, click **Add**, pick the plugin or skill, and click **Add**. To limit it afterward, open its page from the same tab and use **Assign access**.
 * **Wherever a bundle applies**: on the bundle's page, under **What's in it**, click **Add** and choose **Plugin**.
-* **One workspace or channel**: on that place's page, under **Claude's access**, click **Add** and select **Plugin** or **Skill**, then pick the plugin or skill in the dialog and click **Add**. The dialog lists only the plugins and skills already on the **Skills and plugins** tab. For one that isn't on the tab yet, add it there and then limit it under **Assign access** on its page, or add a plugin to a bundle that applies to the place.
+* **One workspace or channel**: on that place's page, under **Claude's access**, click **Add** and select **Plugin** or **Skill**, then pick the plugin or skill in the dialog and click **Add**. The dialog lists the plugins and skills already on the **Skills and plugins** tab. An Owner can also search the rest of your organization's library from the dialog, and so can a [Claude Tag admin](/docs/claude-tag/admins/restrict-access#delegate-claude-tag-administration) whose [custom role](https://claude.ai/admin-settings/roles) sets **Libraries** to **Can view** or **Can manage**. Enter the plugin's or skill's name in the search box and look under **More from your organization's library**.
 * **Along with a connector**: when a connect form shows a checkbox to include the service's plugin, leave it selected to add that plugin with the credential.
 * **By a channel member**: a member can ask Claude to add a plugin available to your organization, in the channel or from the channel's [Configure page](/docs/claude-tag/users/good-habits#configure-claude-for-a-channel), unless **Channel member edits** is set to **Block**; see [Restrict who can set channel instructions](/docs/claude-tag/admins/attach-to-scope#restrict-who-can-set-channel-instructions). Claude proposes the change and adds the plugin only after someone in that channel selects **Confirm**.
 
@@ -3959,7 +3959,9 @@ A channel's own page lists the bundles a rule attaches there as rows in its **Cl
 
 To give a place one item without going through a bundle, open the **Slack** page or a workspace's or channel's page from the **Channels** tab, select **Add** under **Claude's access**, and choose **Connector**, **Repository**, **Plugin**, or **Skill**. The dialog opens on that kind's tab, and its **Connectors**, **Plugins**, **Skills**, and **Repositories** tabs switch between kinds. To let Claude reach a host without a credential in that place, choose **Domain** from the same menu, as [Add a domain](/docs/claude-tag/admins/add-connections#add-a-domain) describes.
 
-The dialog's **Connectors** tab lists the connectors already on the **Claude's connectors** tab of **Claude's access**, and below them, under **Connect new**, services you can connect for that place; see [Add a connector](/docs/claude-tag/admins/add-connections#add-a-connection). A credential connected from a workspace's or channel's page applies only in that place, and one connected from the **Slack** page applies everywhere. The dialog's **Plugins** and **Skills** tabs list only the plugins and skills already on the **Skills and plugins** tab of **Claude's access**.
+The dialog's **Connectors** tab lists the connectors already on the **Claude's connectors** tab of **Claude's access**, and below them, under **Connect new**, services you can connect for that place; see [Add a connector](/docs/claude-tag/admins/add-connections#add-a-connection). A credential connected from a workspace's or channel's page applies only in that place, and one connected from the **Slack** page applies everywhere.
+
+The dialog's **Plugins** and **Skills** tabs list the plugins and skills already on the **Skills and plugins** tab of **Claude's access**. On a workspace's or channel's page, an Owner can also search the rest of your organization's library from the dialog. For the steps and the role a Claude Tag admin needs, see [Attach plugins](/docs/claude-tag/admins/add-connections#attach-plugins).
 
 ### Check or remove what a place has
 
@@ -25130,11 +25132,11 @@ Select a project in the sidebar to start a new Cowork session with that project'
 
 A project folder that is reached through a symbolic link isn't mounted if the link sits inside another of the project's folders, or inside a folder that a Cowork task on your task list uses, and leads outside that folder. The session starts without it and the app tells you. Replace it in the project with the actual folder you want.
 
-You can't make hard links in a folder connected to a Cowork session, so `ln` without `-s` fails there. Copy the file instead. `cp -a` on a folder that holds hard-linked files reports an error, and the copy has only one name of each hard-linked file. Extracting an archive that holds hard links does the same. Use `cp -r`.
+You can't make hard links in a folder connected to a Cowork session, so `ln` without `-s`, `cp -l`, and `git clone --local` fail there. Copy the file instead, and clone without `--local`. `cp -a`, `rsync -H`, and `mv` from outside the folder report an error on a folder that holds hard-linked files, and the copy has only one name of each hard-linked file. Extracting an archive that holds hard links does the same. Use `cp -r`, or `rsync` without `-H`.
 
 [Dispatch](/docs/cowork/guide/dispatch) can also route background tasks into a project, so long-running work picks up the same folders, instructions, and memory.
 
-When you drag files or folders into a project, individual files are copied into the project's first folder and folders are mounted as additional project folders. A copied file never replaces a file that is already in that folder. A file or folder that is already inside one of the project's folders stays where it is and isn't copied or mounted. If the first folder already has a file with the same name, the copy is saved with a number added to its name, such as `notes (1).txt` for `notes.txt`. If that name and every numbered name up to `notes (19).txt` are already taken, the file isn't copied. Claude reads individual files up to 50 MB.
+When you drag files or folders into a project, individual files are copied into the project's first folder and folders are mounted as additional project folders. A copied file never replaces a file that is already in that folder. A file or folder that is already inside one of the project's folders stays where it is and isn't copied or mounted. If the first folder already has a file with the same name, the copy is saved with a number added to its name, such as `notes (1).txt` for `notes.txt`. If that name and every numbered name up to `notes (19).txt` are already taken, the file isn't copied. If some files or folders can't be added, the app names up to three and counts the rest. If one is a `\\server\share` path, none are added. Claude reads individual files up to 50 MB.
 
 Cowork asks for your permission each time you open a Microsoft Office or OpenDocument file that can contain macros, such as a `.docm`, `.xls`, or `.odt` file.
 
@@ -30586,14 +30588,14 @@ Send members these steps. Replace `<organization name>` with the
 organization's name as shown on claude.ai.
 
 A member whose add-in is already connected logs out first. Logging out
-[deletes their saved Outlook conversations](/docs/office-agents/data-storage#outlook-data-deleted-when-a-sign-in-ends).
+[deletes their saved Outlook conversations and writing style](/docs/office-agents/data-storage#outlook-data-deleted-when-a-sign-in-ends).
 
 You can start from this text:
 
 ```text wrap theme={null}
 Please sign in to <organization name> from the Claude add-in in Excel, PowerPoint, Word, or Outlook.
 
-1. Open the add-in. If it's already connected, select "Logout" from the "More options" menu, then "Sign out" if asked. Logging out deletes your saved Outlook conversations.
+1. Open the add-in. If it's already connected, select "Logout" from the "More options" menu, then "Sign out" if asked. Logging out deletes your saved Outlook conversations and writing style.
 2. Select "Log in". In the browser, select "Connect". If asked, pick the organization marked "Enterprise 3P".
 3. Check that the page shows "Authorizing for" with <organization name>. Only then select "Authorize".
    - If it shows something else, select "Switch organization", pick <organization name>, and select "Authorize".
@@ -30611,11 +30613,20 @@ supported MCP servers. The
 [collector](/docs/office-agents/opentelemetry#endpoint-requirements) and the
 servers must allow CORS too.
 
+The add-in doesn't use a server's "Default state". A server set to "Off" works
+like any other, and members can switch it off in the
+["Connectors" menu](/docs/office-agents/connectors-and-skills#connectors).
+
+To withhold a server from everyone, remove it in the console. To withhold it
+from a group, leave it out of the server list in that group's permission
+policy. Either step also withholds the server in Claude Desktop.
+
 * **When changes take effect**: a change usually reaches an add-in that's
   online within about 10 minutes. If it doesn't, ask the member to restart
   the Office app.
 * **After you change the connection**: ask members to select "Logout" and
-  sign in again. Logging out deletes their saved Outlook conversations.
+  sign in again. Logging out deletes their saved Outlook conversations and
+  writing style.
   A new gateway address or header applies without logging out if their
   token still works.
 * **To turn off sign-in**: turn off the switch and select "Save changes".
@@ -30686,7 +30697,7 @@ See the per-app guides for setup and feature details.
 # Data storage and retention
 Source: https://claude.com/docs/office-agents/data-storage
 
-Where Claude for M365 stores chat history, skills, and credentials on each user's device, why reinstalling or switching add-ins keeps that data, and how long it is kept.
+Where Claude for M365 stores chat history, skills, and credentials on each user's device, why reinstalling or switching add-ins keeps that data, how long it is kept, and why the add-in asks users to sign in again.
 
 Claude for M365 stores chat history, uploaded skills, connector registrations,
 and sign-in credentials on each user's own device, in the browser storage of
@@ -30866,6 +30877,40 @@ treat it as you would any other shared secret.
 > folder as a secret. It also holds the connector tokens from
 > `claude-mcp-gateways`, so deleting only its local storage folder does not
 > remove every credential. A rebuilt machine signs in again regardless.
+
+## When users have to sign in again
+
+A sign-in with a claude.ai account, including one to an organization that
+[manages the add-in from the Enterprise Admin Console](/docs/office-agents/admin-console),
+expires 27 to 30 days after the user signed in, however often they use the
+add-in. Users then sign in again. A sign-in can end sooner, for example when it
+is revoked, or when the user signs out in a task pane that shares the same
+storage.
+
+If the add-in asks users to sign in with their Claude account each time they
+open it or their browser, the browser or device is probably not keeping the
+storage that holds the sign-in. Check for these causes:
+
+* Blocked third-party storage: in Office on the web, where browsers treat the
+  add-in's [storage as third-party](#where-the-data-sits-on-macos), a browser
+  setting or policy that blocks third-party cookies or site data is likely to
+  stop the add-in from saving the sign-in.
+* Safari: in Office on the web, Safari is likely to drop the sign-in each time
+  it quits, because it keeps an embedded site's storage only until then.
+* Private browsing: in Office on the web, closing a private window is likely to
+  remove the sign-in.
+* Clearing on exit: a browser setting or policy that clears site data, or that
+  uses temporary profiles, is likely to remove it each time the browser closes.
+* Profile cleanup: on desktop, a virtual desktop that does not keep the user
+  profile, or cleanup that deletes Office's add-in storage, is likely to remove
+  it.
+
+To keep the sign-in in Office on the web, use a normal window in a browser
+other than Safari, with a profile that keeps site data and allows it for
+embedded sites.
+
+An Office app or Office account with
+[storage of its own](#sign-in-and-credentials) needs its own sign-in.
 
 ## Where the data sits on Windows
 
@@ -31054,7 +31099,7 @@ review to the paths that carry content off the endpoint.
 | Identifiers from Office on usage events | When the user is signed in to Office, usage events also carry the Entra ID tenant ID, the domain of the user's email address, and the hash described in [What chat history is keyed to](#what-chat-history-is-keyed-to). The hash is unsalted, so anyone who knows the user's Entra ID object ID can match it |
 | Error reports sent to Sentry, with a Claude account sign-in | The user's account ID, the type of error, where in the add-in's code it happened, the name of the tool that failed, and other details about what failed, such as IDs and counts. A report also lists the hosts the add-in contacted, which can include a connector's host, and the add-in pages visited before the error. Before sending a report, the add-in removes the error text, a failed tool's input, and the names of files, skills, and connectors from the fields known to carry them. The filter matches field names, so it does not remove such text from a field it does not name. Until November 2026, error reports also included the text of the error and those names, which could include conversation and document content |
 | Error reports sent to Sentry, in third-party platform deployments | Once the add-in has loaded the user's sign-in, each report holds only the type of error, where in the code it happened, the add-in's version, the Office app with its platform and version, the sign-in type, and the name of the built-in tool that failed. Reports sent before that point, such as those from the sign-in page, also include other details about what failed, the hosts the add-in contacted, and the add-in pages visited |
-| Diagnostic traces, logs, and metrics sent to Anthropic | Counts, durations, error types, the model, request IDs, the names of built-in tools, and a session ID. With a Claude account sign-in, traces also carry the organization ID. Before sending traces and logs, the add-in removes every field that is not on an allowlist, so they exclude conversation text, document contents, file names, and the names of your connectors and their tools. Before sending metrics, the add-in removes a list of fields that includes file names and connector names |
+| Diagnostic traces, logs, and metrics sent to Anthropic | Counts, durations, error types, the model, request IDs, the names of built-in tools, the Office app and its platform, and a session ID. Traces also carry the Office version and, with a Claude account sign-in, the organization ID. Before sending traces and logs, the add-in removes every field that is not on an allowlist, so they exclude conversation text, document contents, file names, and the names of your connectors and their tools. Before sending metrics, the add-in removes a list of fields that includes file names and connector names |
 | Telemetry sent to a custom OpenTelemetry collector you configure | A collector set in the claude.ai admin console, in the manifest, in Entra ID claims, or by your bootstrap endpoint receives the full audit trail, including prompt content and tool inputs and outputs. That path skips the allowlist filter by design. A collector named in an administrator-managed settings document, such as the one the Enterprise Admin Console delivers, receives only the kinds of content that document selects, and no conversation or tool content if it selects none. While a custom collector is set, traces and logs go only to that collector, and metrics still go to Anthropic. See [Audit and observability](/docs/office-agents/enterprise-readiness#audit-and-observability) |
 
 When you
@@ -34968,9 +35013,11 @@ model" or "Model unavailable". Check the cause for your connection path.
 
 Connecting doesn't show that Outlook will work: a model that Outlook doesn't
 support, such as Claude Sonnet 4.6, is enough to connect. If you use Outlook
-and enter a model ID, enter the ID of a model that Outlook supports. The
-example on that screen might not be one. If the add-in connects and Outlook
-has no model menu or its messages fail, see
+and enter a model ID, enter the ID of a model that Outlook supports and your
+gateway serves. The example that Outlook shows on the "Enter model name"
+screen is a supported model.
+
+If the add-in connects and Outlook has no model menu or its messages fail, see
 [Outlook messages fail or the model menu is missing](#outlook-messages-fail-or-the-model-menu-is-missing).
 
 ### Outlook messages fail or the model menu is missing
@@ -35006,19 +35053,38 @@ error in the chat pane depends on the HTTP status it returns.
 | 400 | Starts with "Something went wrong with your request." |
 | 401 | Starts with "Authentication failed." and tells the user to sign out and sign back in. Some gateways return this status when a key or team isn't allowed to call the model. Signing out doesn't help then, and it deletes saved Outlook conversations. |
 | 403 | Starts with "Access denied." On a gateway, the gateway's own message can follow. |
-| 404 | Names the model and says that it "isn't available in your organization's Claude setup." Settings has no model choice, so ask your IT team. |
+| 404 | Names the model and says that it "isn't available in your organization's Claude setup. Ask your administrator to enable it." |
 
-Other statuses, and some gateway messages, show other errors. If your
-gateway or Foundry resource doesn't serve the ID on the `model` line, or
-doesn't allow the user's token to call it, follow the steps for your
+Other statuses, and some gateway messages, show other errors.
+
+Outlook can add this sentence to the 400, 401, and 403 errors in the table:
+"If this keeps happening, tell your administrator that Claude for Outlook
+needs Opus 4.7 or later, or Sonnet 5 or later." All four errors in the table
+can also have a Learn more link, which opens
+[Model availability](/docs/office-agents/outlook#model-availability).
+
+The sentence or the link means that Outlook has a list of model IDs for the
+connection and accepts none of them. The list holds the Claude models that
+your gateway lists or the ID entered on the "Enter model name" screen. On
+Foundry direct, it holds the deployments that have a default name. This can
+happen even if you serve a supported model, because Outlook reads the model
+family and version from the ID. An error without the sentence or the link can
+have the same cause.
+
+If your gateway or Foundry resource doesn't serve the ID on the `model` line,
+or doesn't allow the user's token to call it, follow the steps for your
 connection path. They can also bring back the model menu when messages work
 without it.
 
 On Foundry direct and on gateways that use the `anthropic` format, the menu
-can also appear while the selected model fails, with the same errors. Choose
-another model in the menu. On Foundry direct, the menu shows what the add-in
-found when the user signed in, so a deployment removed since then stays in
-it until the user signs in again.
+can also appear while the selected model fails. The errors then start the
+same way, without the added sentence or the Learn more link. If the menu
+holds more than one model, the 404 error ends with "or choose another in the
+model menu." Choose another model in the menu.
+
+On Foundry direct, the menu shows what the add-in found when the user signed
+in, so a deployment removed since then stays in it until the user signs in
+again.
 
 #### Fix a gateway that uses the `anthropic` format
 
@@ -36142,7 +36208,7 @@ expense-reports/
 
 Selected file
 
-The manifest identifies the plugin to every app and to Anthropic's directory. Without any `plugin.json`, the directory accepts only a folder whose `skills/` directory holds at least one `<name>/SKILL.md`, and lists that plugin for Claude Code only, not for claude.ai or Cowork. To publish the plugin in Anthropic's directory you also need [a README and a license](/docs/plugins/pre-submission-checklist#readme-and-license); select those files in the tree to see what each needs.
+The manifest identifies the plugin to every app and to Anthropic's directory. The directory accepts a plugin only with its manifest at `.claude-plugin/plugin.json`. To publish the plugin in Anthropic's directory you also need [a README and a license](/docs/plugins/pre-submission-checklist#readme-and-license); select those files in the tree to see what each needs.
 
 Its `name` is the plugin's permanent identity: people install and refer to the plugin by this value, so make it specific to your product and never change it after release. Change `displayName` when you want a different label.
 
@@ -37003,7 +37069,7 @@ The repository and folder layout checks cover the plugin's location in the repos
 
 | What to do | [Result if you don't](#read-a-validation-result) | Title in the report, if it has one |
 | - | - | - |
-| Submit a folder that contains `.claude-plugin/plugin.json` | Blocks, except that a folder with no `plugin.json` anywhere and at least one `skills/<name>/SKILL.md` passes with a note and is listed for Claude Code only | |
+| Submit a folder that contains `.claude-plugin/plugin.json` | Blocks | **No plugin.json** |
 | Submit one plugin at a time. In a [marketplace repository](https://code.claude.com/docs/en/plugins/create-marketplace) with several plugins, validate and submit each plugin folder on its own. | Blocks | **Pick one plugin first**, when you select **Submit for review** |
 | Keep every file that a hook, an MCP server command, or a script uses inside the plugin folder, and point every component path in `plugin.json` inside it | Blocks for a `plugin.json` path that points outside the plugin folder, and for a path in a command or script that climbs out of it with `..` | **Path climbs out of the plugin** for a `plugin.json` path with `..`. **Command reaches above the plugin folder** for a path in a command or script. |
 | Commit regular files and folders for everything the plugin loads, not symbolic links, Git submodules, or Git LFS pointer files | Blocks where the plugin loads the entry. Warning elsewhere. | |
@@ -38294,7 +38360,7 @@ Open Claude Desktop and sign in on the standard sign-in screen with your work em
 
 **2. Restart when prompted**
 
-The app shows a dialog titled with your organization's name that reads "Your organization's Claude settings have changed. Restart to apply them." You can't dismiss the dialog. Click **Restart**, and the app relaunches in third-party mode with your configuration. An account that also belongs to another Claude organization sees a **Switch and restart** prompt instead, as described under [Users in more than one Claude organization](#users-in-more-than-one-claude-organization).
+The app shows a dialog titled with your organization's name that reads "Your organization's Claude settings have changed. Restart to apply them." You can't dismiss the dialog. Click **Restart**, and the app relaunches in third-party mode with your configuration. An account that also belongs to an organization that doesn't use the admin console sees a **Switch and restart** prompt instead, as described under [Users in more than one Claude organization](#users-in-more-than-one-claude-organization).
 
 **3. Sign in to the inference provider**
 
@@ -38322,9 +38388,15 @@ Without device management, you can [block other accounts in Claude Desktop](#blo
 
 ### Users in more than one Claude organization
 
-A user's Claude account can belong to your deployment's organization and to other Claude organizations, and the user can move between them in Claude Desktop. When such a user signs in, the app opens in their other organization and asks whether to switch to yours, with **Switch and restart** and **Not now** buttons. A user who chooses **Not now** or presses Esc isn't asked again on that device and can switch later by choosing your organization from the account menu. Each move into or out of your organization restarts the app, because third-party mode runs as a separate app configuration. To go back, the user chooses **Sign out** and signs in to Claude again after the restart. They can instead pick their other organization from the account menu, which also restarts the app and asks them to sign in.
+A user's Claude account can belong to your deployment's organization and to other Claude organizations, and the user can move between them in Claude Desktop. If a user also belongs to an organization that doesn't use the admin console, the app opens there when they sign in. It asks whether to switch to yours, with **Switch and restart** and **Not now** buttons. A user who chooses **Not now** or presses Esc isn't asked again on that device and can switch later by choosing your organization from the account menu. Switching from that organization to yours doesn't ask the user to sign in to Claude again.
 
-To remove **Not now**, turn on **Require this organization in Claude Desktop** under **Desktop sign-in** on the **Connection** page. Members who also belong to another organization then get the prompt the next time Claude Desktop starts or they sign in, and they can't dismiss it. While they are in your organization, the account menu lists another of their organizations only if that organization has the same setting on. Browsers are not affected.
+Users who move between organizations see the following:
+
+* **Restart**: each move into or out of your organization restarts the app, because third-party mode runs as a separate app configuration.
+* **Leaving your organization**: the user chooses **Sign out** and signs in to Claude again after the restart. They can instead pick another organization from the account menu, which also restarts the app and asks them to sign in to Claude. If that organization also uses the admin console, the app restarts again after the sign-in and opens it.
+* **Provider sign-in**: if users [sign in to your inference provider](#choose-how-users-authenticate-to-your-provider) in the app, choosing **Sign out** or another organization ends that sign-in. They sign in to the provider again each time they return to your organization, even if both organizations use the same provider. Quitting and reopening the app doesn't end the sign-in by itself.
+
+To remove **Not now**, turn on **Require this organization in Claude Desktop** under **Desktop sign-in** on the **Connection** page. The prompt then appears the next time Claude Desktop starts or the user signs in, and the user can't dismiss it. While they are in your organization, the account menu lists another of their organizations only if that organization has the same setting on. Browsers are not affected.
 
 On a device whose managed profile sets an inference provider or bootstrap keys, no prompt appears while the app is open on the profile's configuration. If the profile is complete, this setting doesn't remove the profile from the prompt, as described under [Devices with a managed profile](#devices-with-a-managed-profile).
 
@@ -38368,6 +38440,8 @@ With the [block](#block-other-accounts-in-claude-desktop) on, people can see the
 * **"Restricted by your admin"**: an organization that isn't allowed is unavailable in the menus that list organizations. Its tooltip starts with these words.
 * **"Couldn't switch to the required organization"**: the person's account was signed in to an organization that isn't allowed, and the app couldn't move it to an allowed organization that the account belongs to. The app tries again on its own. While the app tries, the page reads "Waiting to switch to the required organization". The person can also quit Claude Desktop and open it again, or log out and sign in again.
 * **"Organization not allowed on this computer"**: a Code session or a Cowork task tried to start in an organization that isn't allowed. On Claude Desktop 4.23118.0 and later versions before 6.6395.0, the app shows the general sign-in message "Couldn't verify your sign-in".
+
+While Claude Desktop runs on your configuration, people don't see these messages. Instead, the account menu leaves out their other organizations that aren't allowed. With your block on, the menu lists an allowed organization only if that organization has the [**Require this organization in Claude Desktop**](#users-in-more-than-one-claude-organization) switch on in its admin console.
 
 To allow an organization, add its ID to the **Allowed organizations** list under **Desktop sign-in** on the **Connection** page. Devices get the new list as described under [When devices get a change to the block](#when-devices-get-a-change-to-the-block).
 
@@ -38568,7 +38642,7 @@ If the value lists only other IDs, or the app can't read it, the app uses only t
 
 > [!WARNING]
 >
-> On a device that uses the admin console, adding one of these keys to a profile that sets only [app-behavior keys](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence) changes which settings apply. See [Which settings apply on a device with a managed profile](#which-settings-apply-on-a-device-with-a-managed-profile). With `deploymentMode` set to `3p` or `1p`, or `disableDeploymentModeChooser` set to `true`, the profile becomes the device's whole configuration, and the device stops using the admin console. To require members who also belong to another organization to switch to yours, leave such a profile as it is and turn on [**Require this organization in Claude Desktop**](#users-in-more-than-one-claude-organization).
+> On a device that uses the admin console, adding one of these keys to a profile that sets only [app-behavior keys](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence) changes which settings apply. See [Which settings apply on a device with a managed profile](#which-settings-apply-on-a-device-with-a-managed-profile). With `deploymentMode` set to `3p` or `1p`, or `disableDeploymentModeChooser` set to `true`, the profile becomes the device's whole configuration, and the device stops using the admin console. To keep users from dismissing the **Switch and restart** prompt, leave such a profile as it is and turn on [**Require this organization in Claude Desktop**](#users-in-more-than-one-claude-organization).
 
 ## Remove users or return to MDM
 
@@ -38717,6 +38791,7 @@ Ensure that:
 * You saved the **Connection** page under **Organization settings > Desktop 3P**
 * Your developers are members of your organization, like your Claude Desktop users
 * Your developers have Claude Code 2.1.330 or later, and the same version of the VS Code extension. Earlier versions either ignore the console or drop more of the computer's settings after a sign-in.
+* Developers on Claude Code's [`stable` release channel](https://code.claude.com/docs/en/setup#configure-release-channel) switch to `latest`, unless `stable` has reached that version. `stable` is about a week behind `latest`. Homebrew's `claude-code` cask and the apt, dnf, and apk install commands in Claude Code's docs use `stable`.
 * Your developers have access to your provider. The sign-in tells Claude Code where to send requests, but it doesn't give the developer access. With a cloud provider, each developer needs cloud credentials. With a gateway, each developer must be able to sign in to it.
 * If your **Connection** page uses a helper script, you [installed it for Claude Code in the terminal](/docs/third-party/claude-desktop/credential-helper#install-the-helper-for-claude-code-in-the-terminal). A script that works in Claude Desktop can fail in the terminal.
 * The developer's terminal can reach `api.anthropic.com` and `platform.claude.com`
@@ -38858,7 +38933,7 @@ You can start from this text:
 ```text wrap theme={null}
 We now manage Claude Code from our admin console. Please sign in on each computer you use.
 
-1. Install or update the claude command to 2.1.330 or later. If you use the VS Code extension, update it too.
+1. Install or update the claude command to 2.1.330 or later. If the update stops at an earlier version, switch to the latest release channel (https://code.claude.com/docs/en/setup#configure-release-channel). If you use the VS Code extension, update it too.
 2. <How to get credentials for our provider. How to set our proxy or certificate, if you need one.>
 3. In your terminal, run: claude auth login
 4. The browser may ask you to sign in with your email. Select <organization name> and click Authorize. If the browser shows a code, paste it into the terminal.
@@ -38967,7 +39042,7 @@ To require the sign-in, first turn on sign-in from Claude Code. If you removed y
 
 * **`forceLoginOrgUUID`**: makes the computer follow your console and refuse other organizations, as described in [Keep managed settings beside the console](#keep-managed-settings-beside-the-console). By itself, it doesn't require the sign-in. A developer who isn't signed in can still start a session on a cloud provider. Ask developers to remove their Anthropic API keys first, because Claude Code doesn't start a session that has one.
 * **`enforceAnthropicSignIn`**: a session on a cloud provider or a gateway starts only if the developer is signed in to your organization. Write `true` without quotation marks, or Claude Code doesn't start.
-* **`requiredMinimumVersion`**: blocks earlier versions, including the ones that ignore `enforceAnthropicSignIn`
+* **`requiredMinimumVersion`**: blocks earlier versions, including the ones that ignore `enforceAnthropicSignIn`. Developers on Claude Code's [`stable` release channel](https://code.claude.com/docs/en/setup#configure-release-channel) can't start Claude Code until that channel reaches this version. Move them to `latest` before you deploy this key.
 
 If you set a retention period under `HKCU` on Windows, add it to this file as `cleanupPeriodDays`. Claude Code ignores `HKCU` once the computer has managed settings.
 
@@ -39154,11 +39229,14 @@ When more than one credential is configured, the app uses the first one present 
 
 ## Set up AWS
 
-These steps are performed once per AWS organization, regardless of which authentication approach you chose. You need an AWS account with permission to manage Amazon Bedrock model access and IAM Identity Center.
+Perform these steps once, whichever authentication approach you chose. You need an AWS role that can use Amazon Bedrock, can manage IAM Identity Center, and has the AWS Marketplace permissions listed in [AWS's model access documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html#model-access-permissions).
 
 **1. Enable Claude models in Amazon Bedrock**
 
-In the [Amazon Bedrock console](https://console.aws.amazon.com/bedrock/), open **Model access** and request access to the Claude models you intend to deploy. Access is granted per region, so enable the models in the same region you will set as `inferenceBedrockRegion`.
+Use [AWS's list of models by region](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html#model-regions-anthropic) to confirm that AWS offers the Claude models you intend to deploy in the region you plan to set as [`inferenceBedrockRegion`](/docs/third-party/claude-desktop/configuration#inferencebedrockregion). Then enable those models in the AWS account that hosts Amazon Bedrock:
+
+* **Commercial AWS account**: in the [Amazon Bedrock console](https://console.aws.amazon.com/bedrock/) for that region, go to the **Model catalog**, select a Claude model, and submit the use case details if AWS asks for them. Then send one request to each model, for example from the console's playground. With that first request, you accept the model's end user license agreement, and AWS enables the model for everyone in the account. Your users don't need the AWS Marketplace permissions.
+* **AWS GovCloud (US) account**: enable the models in the linked commercial AWS account first, then in the GovCloud account, as described in [Access Amazon Bedrock foundation models in AWS GovCloud (US)](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html#model-access-govcloud) in the AWS documentation.
 
 **2. Create an IAM Identity Center permission set**
 
@@ -39196,7 +39274,7 @@ From the IAM Identity Center **Settings** page, note:
 
 * **AWS access portal URL**: of the form `https://d-xxxxxxxxxx.awsapps.com/start` (or your custom subdomain)
 * **Identity Center region**: the region where Identity Center is enabled, which may differ from your Amazon Bedrock region
-* **AWS account ID**: the 12-digit ID of the account where you enabled Amazon Bedrock
+* **AWS account ID**: the 12-digit ID of the AWS account that you assigned the permission set to
 * **Permission set name**: the name you gave the permission set above
 
 ## Prepare devices
@@ -39308,6 +39386,8 @@ With AWS set up and devices prepared, open the [in-app configuration window](/do
 | Bedrock service tier | *optional* | *optional* | *optional* |
 
 Under **Models**, add a **Model list** entry using the Amazon Bedrock inference-profile ID (optional for bearer-token or credential-helper auth, which auto-discover models; required otherwise), for example `us.anthropic.claude-sonnet-5`.
+
+In an AWS GovCloud (US) region (`us-gov-*`), use inference-profile IDs that start with `us-gov.` in place of `us.`. To allow the app through your firewall in these regions, see the FIPS endpoints on the **Amazon Bedrock** tab under [Inference provider](/docs/third-party/claude-desktop/telemetry#inference-provider).
 
 Then click **Export** to produce a `.mobileconfig` (macOS) or `.reg` (Windows) file for your MDM. See [Deploy with MDM](/docs/third-party/claude-desktop/mdm) for the export and deployment workflow.
 
@@ -40100,11 +40180,11 @@ A built-in entry names the bundled server in a `server` field, in place of the `
 
 ## How built-in servers behave
 
-All built-in servers share the same model:
+All built-in servers work the same way:
 
 * **Managed configuration only.** A built-in server activates only from a `managedMcpServers` entry. Users cannot add one themselves and cannot remove one you deploy.
 * **Sign-in on the device.** Where the server needs user credentials (Microsoft 365 and GitHub), the user signs in from the app, and tokens are stored encrypted on the device. **Disconnect** in connector settings signs the user out. The web search server has no user sign-in; you supply the search key in the entry.
-* **Tool approvals.** Each entry accepts the same per-tool [`toolPolicy`](/docs/third-party/claude-desktop/configuration#managedmcpservers) as any managed server. Without a policy, each call that Claude makes to a built-in write tool needs approval, and a small set of irreversible actions (sending mail or merging a pull request, for example) stays at ask or stricter no matter what the policy says.
+* **Tool approvals.** Each entry accepts the same per-tool [`toolPolicy`](/docs/third-party/claude-desktop/configuration#managedmcpservers) as any managed server. Without a policy, each call that Claude makes to a built-in write tool needs approval, and a small set of irreversible actions (sending mail or merging a pull request, for example) stays at the `ask` setting or a stricter one, no matter what the policy says.
 * **Versioned with the app.** Each built-in server requires a Claude Desktop version that includes it. On older versions, the server is missing from the **Add server** menu, **Test this connection** reports that it is not included, and a deployed entry is dropped. The fix is to upgrade Claude Desktop.
 
 
@@ -40226,9 +40306,9 @@ To use Anthropic's Claude API directly as the inference provider, set [`inferenc
 
 ## Choose an authentication approach
 
-There are three options. With neither a static key nor a credential helper configured, each user sees **Sign in with Claude Console** on first launch: the app opens the browser, the user signs in and selects a Claude Console (API) organization, and the app keeps that sign-in encrypted on the device and renews it as needed, without creating an API key. Usage is billed to that Console organization, and about a month after a user signs in, the app asks them to sign in again. Alternatively, place a static API key in the managed configuration as `inferenceAnthropicApiKey`, or, where static keys aren't permitted, set [`inferenceCredentialHelper`](/docs/third-party/claude-desktop/configuration#inferencecredentialhelper) to an executable that fetches a short-lived credential at runtime; see [Write a credential helper](/docs/third-party/claude-desktop/credential-helper). Browser sign-in reaches `platform.claude.com`, `hcaptcha.com`, and `*.hcaptcha.com` in addition to `api.anthropic.com`.
+There are three options. With neither a static key nor a credential helper configured, each user sees **Sign in with Claude Console** on first launch. The app opens the browser, and the user signs in and selects a Claude Console (API) organization. The app keeps that sign-in encrypted on the device and renews it as needed, without creating an API key. Usage is billed to that Console organization, and about a month after a user signs in, the app asks them to sign in again. Alternatively, place a static API key in the managed configuration as `inferenceAnthropicApiKey`, or, where static keys aren't permitted, set [`inferenceCredentialHelper`](/docs/third-party/claude-desktop/configuration#inferencecredentialhelper) to an executable that fetches a short-lived credential at runtime; see [Write a credential helper](/docs/third-party/claude-desktop/credential-helper). Browser sign-in reaches `platform.claude.com`, `hcaptcha.com`, and `*.hcaptcha.com` in addition to `api.anthropic.com`.
 
-Claude Desktop versions before 3.1623.0 created a personal API key in the Console organization when a user signed in with Claude Console, and the app doesn't delete those keys. A device that signed in that way and then updates to 3.1623.0 or later keeps using its key until you revoke the key in Claude Console or the user signs out. Where you [make `forceLoginOrgUUID` binding with `enforceConsoleSignInOrgList`](/docs/third-party/claude-desktop/admin-console#keep-a-device-on-its-managed-profile), the device also stops using the key. The device's next sign-in creates no key.
+Claude Desktop versions before 3.1623.0 created a personal API key in the Console organization when a user signed in with Claude Console, and the app doesn't delete those keys. A device that signed in that way and then updates to 3.1623.0 or later keeps using its key until you revoke the key in Claude Console or the user signs out. The device also stops using the key if you [set `enforceConsoleSignInOrgList` to `true`](/docs/third-party/claude-desktop/admin-console#keep-a-device-on-its-managed-profile). The device's next sign-in creates no key.
 
 [Code](/docs/third-party/claude-desktop/code) sessions also ask Anthropic for the Claude Code [server-managed settings](https://code.claude.com/docs/en/server-managed-settings) of the organization that owns the credential. See [Interaction with Claude Code's own managed settings](/docs/third-party/claude-desktop/code#interaction-with-claude-code%E2%80%99s-own-managed-settings) for how they combine with your Claude Desktop configuration.
 
@@ -40236,9 +40316,9 @@ Claude Desktop versions before 3.1623.0 created a personal API key in the Consol
 
 On a device with no Claude Desktop configuration, the standard sign-in screen in Claude Desktop 3.1623.1 or later also links to a screen titled **Use your Claude API account**. There a user can click **Sign in with Claude Console** or enter an API key, with no setup from you. In Claude Desktop 4.23118.0 or later, the sign-in screen doesn't show that link at a computer login where an organization [blocks other accounts](/docs/third-party/claude-desktop/admin-console#block-other-accounts-in-claude-desktop).
 
-Claude Desktop doesn't offer or accept that sign-in on a device where an [MDM profile or registry policy](/docs/third-party/claude-desktop/mdm#4-deploy-the-configuration), or the [root-owned configuration file on Linux](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file), manages the configuration. To confirm that a profile manages a device's configuration, check that the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration#open-the-configuration-window) (**Developer > Configure Third-Party Inference…**) opens read-only on that device. If the window is still editable, the profile doesn't manage the configuration, for example because it sets only [app-behavior keys](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence). A profile takes effect at the app's next launch, and until then a running app can still offer and accept the sign-in.
+Claude Desktop doesn't offer or accept the Claude API account sign-in on a device where an [MDM profile or registry policy](/docs/third-party/claude-desktop/mdm#4-deploy-the-configuration), or the [root-owned configuration file on Linux](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file), manages the configuration. To confirm that a profile manages a device's configuration, check that the [in-app configuration window](/docs/third-party/claude-desktop/in-app-configuration#open-the-configuration-window) (**Developer > Configure Third-Party Inference…**) opens read-only on that device. If the window is still editable, the profile doesn't manage the configuration, for example because it sets only [app-behavior keys](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence). A profile takes effect at the app's next launch, and until then a running app can still offer and accept the sign-in.
 
-On Claude Desktop 4.16336.0 or later, to stop the sign-in on devices that use standard Claude Desktop, set `deploymentMode` to `1p` in a managed profile, as described under [Restrict a device to one deployment mode](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode).
+On Claude Desktop 4.16336.0 or later, to stop the Claude API account sign-in on devices that use standard Claude Desktop, set `deploymentMode` to `1p` in a managed profile, as described under [Restrict a device to one deployment mode](/docs/third-party/claude-desktop/mdm#restrict-a-device-to-one-deployment-mode).
 
 Under a profile that manages the configuration, the app ignores any configuration that an earlier Claude API account sign-in saved. A profile can itself select the Claude API with no static key or credential helper. Users then sign in with **Sign in with Claude Console**, and each selects the Console organization that their usage is billed to, as described under [Choose an authentication approach](#choose-an-authentication-approach). A user who already signed in with Claude Console keeps that sign-in, and the Console organization they chose, until the app next asks them to sign in.
 
@@ -40510,7 +40590,7 @@ On a device that has the Claude Code CLI, run `claude auto-mode config` in a ter
 
 In [**Auto mode**](/docs/third-party/claude-desktop/configuration#automodeenabled), which Cowork shows as **Automatically approve**, a safety classifier reviews Claude's actions. Sessions [ask your model provider for a review first](https://code.claude.com/docs/en/permission-modes#server-side-classifier-review), except on a gateway where [server-side Auto mode checks](/docs/third-party/claude-desktop/gateway#auto-mode-checks) are off. When the provider doesn't review the session, Claude Code's built-in safety check does.
 
-The built-in safety check uses Claude Sonnet 5 by default, and [some sessions use a different model](https://code.claude.com/docs/en/permission-modes#default-classifier-model). The model you choose for it doesn't affect your provider's reviews.
+The built-in safety check uses Claude Sonnet 5 by default, and [some sessions use a different model](https://code.claude.com/docs/en/permission-modes#default-classifier-model). The check sends Claude Code's ID for Sonnet 5, such as `claude-sonnet-5` on a gateway or `us.anthropic.claude-sonnet-5` with your region's prefix on Amazon Bedrock. If you set [`inferenceModels`](/docs/third-party/claude-desktop/configuration#inferencemodels) without that exact ID, or if the check's first request in a session fails, the check can use the session's own model. To keep the check on one model, choose a model that your provider serves, such as Claude Sonnet 5. The model you choose doesn't affect your provider's reviews.
 
 Requires Claude Desktop 5.11492.0 or later. To choose the model for Cowork and Code sessions, set [`autoModeClassifierModel`](/docs/third-party/claude-desktop/configuration#automodeclassifiermodel) where your devices [get their configuration](/docs/third-party/claude-desktop/configuration-format#which-configuration-source-applies-on-a-device):
 
@@ -40530,7 +40610,7 @@ This example sets Claude Sonnet 4.6. Replace the IDs with your provider's:
 
 * **Use [your provider's ID](/docs/third-party/claude-desktop/models#model-list-and-default-model) for an Anthropic model that it serves.** Claude Desktop ignores a value that it can tell is something else, such as the Claude API's ID on Amazon Bedrock. If the provider refuses the ID, every action that the built-in safety check reviews is [blocked](https://code.claude.com/docs/en/errors#auto-mode-cannot-determine-the-safety-of-an-action).
 * **If you set [`inferenceModels`](/docs/third-party/claude-desktop/configuration#inferencemodels), also list the ID there and in any [permission policy](/docs/third-party/claude-desktop/admin-console#per-group-permission-policies) that narrows the model list.** A model that isn't listed doesn't take effect.
-* **Don't use Claude Opus 5, Sonnet 5.5, or Opus 5.5.** These models [can't do the review](https://code.claude.com/docs/en/permission-modes#classifier-model-not-reviewing).
+* **Don't use Claude Opus 5, Sonnet 5.5, or Opus 5.5.** Claude Code [ignores an ID that names one of these models](https://code.claude.com/docs/en/permission-modes#classifier-model-not-reviewing) and chooses the model as if you hadn't set this key.
 * **A weaker model may allow actions that the default would block**
 
 Check where your devices also set [`CLAUDE_CODE_AUTO_MODE_MODEL`](https://code.claude.com/docs/en/permission-modes#choose-the-classifier-model), Claude Code's environment variable for this model:
@@ -42371,7 +42451,7 @@ stringSince 5.11492.0
 >
 > Use your provider's ID for an Anthropic model. If you set `inferenceModels`, also list the ID there and in any group's model list. If your provider refuses the ID, the built-in safety check blocks every action it reviews.
 >
-> Don't use Claude Opus 5, Sonnet 5.5 or Opus 5.5: they can't do this review. Weaker models may allow what the default would block.
+> Don't use Claude Opus 5, Sonnet 5.5 or Opus 5.5: their IDs are ignored. Weaker models may allow what the default would block.
 
 ***
 
@@ -47022,7 +47102,7 @@ Check the endpoint URL, the supported authentication methods, and the token scop
 
 ## Local connector
 
-Claude Desktop includes a built-in copy of github-mcp-server and runs it as a local process when a `managedMcpServers` entry sets `server` to `github`. The server calls github.com, your GitHub Enterprise Cloud tenant on `ghe.com`, or your GitHub Enterprise Server instance, from the device. Behind a proxy, the server's calls follow the proxy that the app resolves for the host that serves the GitHub API. See [What is and is not routed](/docs/third-party/claude-desktop/network-proxy#what-is-and-is-not-routed).
+Claude Desktop includes a built-in copy of github-mcp-server and runs it as a local process when a `managedMcpServers` entry sets `server` to `github`. The server calls github.com, your GitHub Enterprise Cloud tenant on `ghe.com`, or your GitHub Enterprise Server instance, from the device. Behind a proxy, the server's calls go through the proxy that the app resolves for the host that serves the GitHub API. See [What is and is not routed](/docs/third-party/claude-desktop/network-proxy#what-is-and-is-not-routed).
 
 Users sign in to GitHub from the app through the OAuth device flow, so there are no personal access tokens to issue, distribute, or rotate. You register one OAuth app in your GitHub organization and ship its client ID in the entry; each user then authorizes their own sign-in.
 
@@ -47037,7 +47117,7 @@ In your GitHub organization, open **Settings → Developer settings → OAuth Ap
 3. After registering, select **Enable Device Flow** on the app's settings page and save. Sign-in fails without it.
 4. Note the app's **Client ID**. Do not create a client secret; the device flow does not use one, and Claude Desktop never asks for it.
 
-A GitHub App works in place of an OAuth app: put its client ID in the same field. Its permissions come from the app registration itself (the entry's `scope` field is ignored), it must be installed where users need access, and its user tokens expire after about eight hours, so users sign in again more often than with an OAuth app.
+A GitHub App works in place of an OAuth app: put its client ID in the entry's `clientId` field. Its permissions come from the app registration itself (the entry's `scope` field is ignored), it must be installed where users need access, and its user tokens expire after about eight hours, so users sign in again more often than with an OAuth app.
 
 **2. Add the managed entry**
 
@@ -47079,15 +47159,15 @@ GitHub Enterprise Server deployments need access to the instance's own host inst
 
 ### How users sign in
 
-The first time a user opens the GitHub connector, Claude Desktop shows a short code and opens GitHub's device-authorization page in the system browser. The user enters the code, reviews the requested access, and approves it. The resulting token is stored encrypted on the device and reused until it is revoked, it expires, or the entry's identity fields change; **Disconnect** in connector settings deletes it.
+The first time a user opens the GitHub connector, Claude Desktop shows a short code and opens GitHub's device-authorization page in the system browser. The user enters the code, reviews the requested access, and approves it. The resulting token is stored encrypted on the device and reused until it is revoked, it expires, or you change the entry's `name`, `host`, `clientId`, or `scope`; **Disconnect** in connector settings deletes it.
 
 ### Control what Claude can do
 
-Three levers narrow the local connector, from coarsest to finest:
+These fields of the entry limit what Claude can do through the local connector, from the broadest to the most specific:
 
 * **`readOnly`** removes every write tool from the server. Claude never sees them.
 * **`toolsets`** selects which github-mcp-server tool groups are registered, so you can expose repositories and pull requests without, for example, the Actions tools.
-* **`toolPolicy`** locks the approval state per tool. Without a policy, each call that Claude makes to a write tool needs approval. A few irreversible GitHub actions (merging a pull request, pushing commits, or triggering a workflow, for example) stay at ask or stricter no matter what the policy says.
+* **`toolPolicy`** locks the approval state per tool. Without a policy, each call that Claude makes to a write tool needs approval. A few irreversible GitHub actions (merging a pull request, pushing commits, or triggering a workflow, for example) stay at the `ask` setting or a stricter one, no matter what the policy says.
 
 The default `repo` OAuth scope grants read and write access to repositories the user can reach, so pair a broad scope with `readOnly` or a restrictive `toolPolicy` rather than relying on the scope alone to keep sessions read-only. A narrower `scope` list, or a GitHub App with minimal permissions, limits what the token itself can do.
 
@@ -47156,7 +47236,7 @@ Each user opens **Customize → Connectors** in Claude Desktop, clicks **Connect
 
 ## Other Google servers
 
-Google's other remote MCP servers take the same **Client ID**, **Client secret**, and **Authorization server** values. For the [Google Workspace servers](https://developers.google.com/workspace/guides/configure-mcp-servers) (Gmail, Drive, Calendar, Docs, Sheets, Slides, and Chat), that guide lists each server's URL and prerequisites, including a Google Cloud project enrolled in Google's [Workspace Developer Preview Program](https://developers.google.com/workspace/preview).
+Google's other remote MCP servers take the same **Client ID**, **Client secret**, and **Authorization server** values. For the [Google Workspace servers](https://developers.google.com/workspace/guides/configure-mcp-servers) (Gmail, Drive, Calendar, Docs, Sheets, Slides, and Chat), the linked Google guide lists each server's URL and prerequisites, including a Google Cloud project enrolled in Google's [Workspace Developer Preview Program](https://developers.google.com/workspace/preview).
 
 ## Troubleshoot sign-in errors
 
@@ -47768,7 +47848,7 @@ Either way the marketplace stays **available**, and each user installs the plugi
 }
 ```
 
-Keep the name exactly as shown. The Salesforce plugin defines an MCP server with this name, and Claude Desktop matches your entry to it by name and connects it with your client ID. Without the entry, users get the plugin's skills but not its Salesforce tools.
+Keep the name exactly as shown. The Salesforce plugin defines an MCP server with this name, and Claude Desktop matches your entry to that server by name and connects the server with your client ID. Without the entry, users get the plugin's skills but not its Salesforce tools.
 
 Enter exactly one URL as the authorization server. To send users to your org's My Domain login page instead of the shared Salesforce login page, enter that URL, for example `["https://yourorg.my.salesforce.com"]`.
 
@@ -48254,7 +48334,7 @@ Before you start, check that both devices meet the [requirements](#requirements-
    * The user owns the copied files. On Windows, if the user's account has no access to the application-data directory, the app shows **Claude Desktop failed to launch**. Repeat step 4.
    * The [`ant-did`](#identity) file in the application-data directory has the same contents as on the old device. If it doesn't, start again from step 1.
    * With MDM, both devices' managed configurations set the same `deploymentOrganizationUuid`, or neither sets it
-   * With the Enterprise Admin Console, the account menu at the bottom of the sidebar shows the same organization as on the old device. If it shows another name, look for a managed profile that [keeps the device off the admin console](/docs/third-party/claude-desktop/admin-console#keep-a-device-on-its-managed-profile). If you find one, remove it, then have the user relaunch Claude Desktop and sign in. Otherwise, have the user choose your organization from the account menu and sign in.
+   * With the Enterprise Admin Console, the account menu at the bottom of the sidebar shows the same organization as on the old device. If it shows another name, look for a managed profile that [keeps the device off the admin console](/docs/third-party/claude-desktop/admin-console#keep-a-device-on-its-managed-profile). If you find one, remove it, then have the user relaunch Claude Desktop and sign in if the app asks. Otherwise, have the user choose your organization from the account menu and sign in if the app asks.
 6. Have the user [set up what the copy doesn't move](#what-the-user-sets-up-again).
 7. Retire the old device, or turn off its scheduled tasks in Claude Desktop there. If the old device stays in use, its enabled scheduled tasks run on both devices. Any scheduled task that recently missed a run also runs once, soon after launch on the new device. To remove the user's data from the old device, see [Removing data](#removing-data).
 
@@ -48658,11 +48738,11 @@ Claude Code in the terminal doesn't use the broker. If you let it sign in to you
 
 ## Allow browser sign-in where your gateway uses the Entra broker
 
-If you [manage Claude Code in the terminal from the Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console-claude-code), Claude Code in the terminal can't use the OS identity broker. If your gateway's sign-in flow is `broker`, Claude Code can't use your gateway, and after a developer signs in, it doesn't start unless their computer sets a provider itself. You can turn on a switch so that Claude Code signs in with the browser instead, while Claude Desktop still uses the broker. The switch changes the following:
+Claude Code in the terminal can't use the OS identity broker. If you [manage Claude Code in the terminal from the Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console-claude-code) and your gateway's sign-in flow is `broker`, Claude Code can't use your gateway. In that case, after a developer signs in to your organization, Claude Code doesn't start unless the developer's computer sets a provider itself. You can turn on a switch so that Claude Code signs in with the browser instead, while Claude Desktop still uses the broker. The switch changes the following:
 
 * **Provider settings**: the next time a signed-in developer starts Claude Code, your gateway replaces their own provider settings and `apiKeyHelper`
 * **Gateway sign-in**: the developer approves the gateway's address and then signs in to the gateway, with `/login` in Claude Code. Until then, Claude Code refuses each prompt.
-* **Stored sign-in**: the browser sign-in stays on the developer's computer, with a refresh token if Entra returns one. On Linux and Windows, the sign-in is in the plain file `.credentials.json`. Some Windows computers use Windows Credential Manager instead.
+* **Stored sign-in**: the browser sign-in stays on the developer's computer, with a refresh token if Entra returns one. On Linux and Windows, the sign-in is in the unencrypted file `.credentials.json`. Some Windows computers use Windows Credential Manager instead.
 
 **1. Add the redirect URI**
 
@@ -48670,7 +48750,7 @@ In your Entra app registration, add `http://127.0.0.1/gateway-sign-in/callback` 
 
 **2. Check consent and Conditional Access**
 
-If your tenant requires it, grant consent for `offline_access`. If your Conditional Access policies check the device, set up developers' browsers to identify it, as described in [Why use the broker](#why-use-the-broker). A browser can't meet a policy that requires token protection.
+If your tenant requires it, grant consent for `offline_access`. If your Conditional Access policies check the device, set up developers' browsers to identify the device, as described in [Why use the broker](#why-use-the-broker). A browser can't meet a policy that requires token protection.
 
 **3. Turn on both switches**
 
@@ -48678,7 +48758,7 @@ Go to **Organization settings > Products > Claude Code**, and turn on the **Allo
 
 To store no refresh token, fill in **Scopes** without `offline_access`. If **Bearer token** is **Access token**, also turn off **Append offline_access**. Developers then sign in again each time the token expires. **Scopes** also applies to Claude Desktop.
 
-If you turn the browser sign-in switch off, the change applies the next time each developer starts Claude Code. It revokes nothing. The token stays on the computer until the developer runs `claude auth logout` in their terminal. To stop the stored refresh tokens from working, revoke the developers' sessions in Entra. This also ends their other Microsoft sign-ins, and Claude Desktop asks them to sign in again.
+If you turn the browser sign-in switch off, the change applies the next time each developer starts Claude Code. Turning the switch off revokes nothing. The token stays on the computer until the developer runs `claude auth logout` in their terminal. To stop the stored refresh tokens from working, revoke the developers' sessions in Entra. Revoking the sessions also ends the developers' other Microsoft sign-ins, and Claude Desktop asks the developers to sign in again.
 
 ## Troubleshoot
 
@@ -49568,7 +49648,7 @@ This page walks an IT administrator through a Microsoft Foundry deployment: crea
 
 ## Set up Azure
 
-These steps are performed once per Azure subscription. You need permission to create resources and, for in-app sign-in, to register an application in Microsoft Entra ID.
+Complete these steps once per Azure subscription. You need permission to create resources and, for in-app sign-in, to register an application in Microsoft Entra ID.
 
 **1. Create a Microsoft Foundry resource**
 
@@ -49618,19 +49698,19 @@ On success, the app returns to Cowork. For the device-code and browser flows the
 
 If the app can no longer renew the credential silently, it shows a **Sign in again** prompt; clicking it reopens the configured sign-in flow. For the device-code and browser flows this happens when the stored refresh token expires or is revoked. For the broker flow it happens when the broker can no longer renew the token silently.
 
-`inferenceFoundryTenantId`, `inferenceFoundryClientId`, and `inferenceFoundryAuthFlow` can be set through the [Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console#choose-how-users-authenticate-to-your-provider), an MDM profile, or a [bootstrap server](/docs/third-party/claude-desktop/bootstrap). When a bootstrap server delivers `inferenceFoundryResource`, `inferenceFoundryTenantId`, or `inferenceFoundryClientId`, the values are among the [keys that require user consent](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent), so users may see a one-time approval dialog depending on how `bootstrapUrl` reached the device.
+`inferenceFoundryTenantId`, `inferenceFoundryClientId`, and `inferenceFoundryAuthFlow` can be set through the [Enterprise Admin Console](/docs/third-party/claude-desktop/admin-console#choose-how-users-authenticate-to-your-provider), an MDM profile, or a [bootstrap server](/docs/third-party/claude-desktop/bootstrap). When a bootstrap server delivers `inferenceFoundryResource`, `inferenceFoundryTenantId`, or `inferenceFoundryClientId`, these keys are among the [keys that require user consent](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent), so users may see a one-time approval dialog depending on how `bootstrapUrl` reached the device.
 
 #### Allow network egress
 
-The sign-in flow reaches `login.microsoftonline.com` in addition to your Microsoft Foundry endpoint. Both hosts are included automatically in the **Egress** section of the in-app configuration window when these keys are set. When you [route requests through a gateway](#route-requests-through-a-gateway), the gateway's host replaces the resource host there.
+The sign-in flow reaches `login.microsoftonline.com` in addition to your Microsoft Foundry endpoint. Both hosts are included automatically in the **Egress** section of the in-app configuration window when `inferenceFoundryResource` and `inferenceFoundryTenantId` are set. When you [route requests through a gateway](#route-requests-through-a-gateway), the gateway's host replaces the resource host in the **Egress** section.
 
 ### Route requests through a gateway
 
-To send Microsoft Foundry traffic through a gateway or proxy you operate, such as Azure API Management in front of the resource, set `inferenceFoundryBaseUrl` (**Azure AI Foundry base URL**) to the gateway's base URL including any path, for example `https://llm-gateway.example.com/foundry`. It replaces the default `https://<resource-name>.services.ai.azure.com/anthropic` endpoint in Chat, Cowork, and Code, and it takes the same value as Claude Code's `ANTHROPIC_FOUNDRY_BASE_URL`, so one value serves both. `inferenceFoundryResource` is still required. The value must use `https`; from an MDM profile or the local configuration file it may instead be `http` for a proxy listening on the device's own loopback address (a bootstrap server response cannot deliver a loopback value).
+To send Microsoft Foundry traffic through a gateway or proxy you operate, such as Azure API Management in front of the resource, set `inferenceFoundryBaseUrl` (**Azure AI Foundry base URL**) to the gateway's base URL including any path, for example `https://llm-gateway.example.com/foundry`. The gateway's base URL replaces the default `https://<resource-name>.services.ai.azure.com/anthropic` endpoint in Chat, Cowork, and Code. `inferenceFoundryBaseUrl` takes the same value as Claude Code's `ANTHROPIC_FOUNDRY_BASE_URL`, so you can use one value for both settings. `inferenceFoundryResource` is still required. The value must use `https`, except that a value from an MDM profile or the local configuration file may use `http` for a proxy that listens on the device's own loopback address. A bootstrap server response cannot deliver a loopback value.
 
-The app sends the gateway the same credential it would send Microsoft Foundry: the API key, the credential helper's output, or with in-app sign-in each user's Entra ID token issued for the Azure Cognitive Services audience. A gateway that validates tokens must therefore accept that audience. If you want users to sign in against your own API's app registration instead, for example to map app roles to gateway policy, use the [gateway provider](/docs/third-party/claude-desktop/gateway) with its Entra ID sign-in rather than the Microsoft Foundry provider.
+The app sends the gateway the same credential it would send Microsoft Foundry: the API key, the credential helper's output, or, with in-app sign-in, each user's Entra ID token issued for the Azure Cognitive Services audience. A gateway that validates tokens must therefore accept that audience. If you want users to sign in against your own API's app registration instead, for example to map app roles to gateway policy, use the [gateway provider](/docs/third-party/claude-desktop/gateway) with its Entra ID sign-in rather than the Microsoft Foundry provider.
 
-This key works from an MDM profile, the local configuration file, and a [bootstrap server](/docs/third-party/claude-desktop/bootstrap), where it is one of the [keys that require user consent](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent). The Claude add-in for Microsoft 365 does not apply it yet and keeps calling the resource endpoint directly; if the add-in must also go through your gateway, configure the add-in's own gateway mode.
+You can set `inferenceFoundryBaseUrl` in an MDM profile, in the local configuration file, or from a [bootstrap server](/docs/third-party/claude-desktop/bootstrap). From a bootstrap server, `inferenceFoundryBaseUrl` is one of the [keys that require user consent](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent). The Claude add-in for Microsoft 365 does not apply `inferenceFoundryBaseUrl` yet and keeps calling the resource endpoint directly; if the add-in must also go through your gateway, configure the add-in's own gateway mode.
 
 ## Configure the app
 
@@ -49745,7 +49825,7 @@ If sign-in fails at the token step, confirm the **Azure Cognitive Services** per
 
 If sign-in fails with error code `AADSTS650057`, the **user_impersonation** permission is missing from the app registration. Add it under **API permissions**.
 
-If sign-in fails with error code `AADSTS65001`, the permission has not been consented. Select **Grant admin consent** on the **API permissions** page, or have the user accept the consent prompt if your tenant allows user consent.
+If sign-in fails with error code `AADSTS65001`, neither an administrator nor the user has consented to the **user_impersonation** permission. Select **Grant admin consent** on the **API permissions** page, or have the user accept the consent prompt if your tenant allows user consent.
 
 If browser-flow sign-in fails in the browser with error code `AADSTS50011`, the redirect URI is missing from the app registration or does not match. Add `http://127.0.0.1/callback` under **Authentication → Mobile and desktop applications**, using the literal address `127.0.0.1`, not `localhost`.
 
@@ -49767,6 +49847,8 @@ The gateway must implement the Anthropic [Messages API](https://docs.claude.com/
 
 * `POST /v1/messages` with [streaming](https://docs.claude.com/en/api/streaming) and [tool use](https://docs.claude.com/en/docs/tool-use) is required.
 * `GET /v1/models` is optional. If the gateway implements it, Claude Desktop on 3P auto-discovers available models; if not, set `inferenceModels` explicitly.
+
+Chat, Cowork, and Code sessions run on Claude Code, which sends their requests to your gateway. For the endpoints Claude Code calls, the headers and body fields to forward, and what breaks when a gateway strips them, see the [Claude Code gateway compatibility guide](https://code.claude.com/docs/en/llm-gateway-protocol). If your gateway forwards to a provider with a different request format, such as Amazon Bedrock, start with [Format mismatch with the upstream](https://code.claude.com/docs/en/llm-gateway-protocol#format-mismatch-with-the-upstream).
 
 The gateway should also preserve [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching). Chat, Cowork, and Code sessions send `cache_control` breakpoints with each turn so that the provider can reuse the tool definitions, system prompt, and earlier turns of the conversation instead of reprocessing them. A gateway that forwards these fields, or translates them for its upstream provider, keeps that behavior. A gateway that strips `cache_control`, or that changes the system prompt or tool list from one request to the next, makes the provider reprocess the whole conversation on every turn at full input-token cost and higher latency. To verify, check the [usage fields](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#tracking-cache-performance) your gateway returns or logs for Claude Desktop traffic: after the first request of a session, `cache_read_input_tokens` should be well above zero on most requests. If it is zero on every request, review the gateway's request transformation and caching settings for the route that serves Claude models.
 
@@ -49797,6 +49879,10 @@ You need three things in place:
 * A way to push managed configuration to user devices (your existing MDM)
 
 #### Set up single sign-on
+
+> [!NOTE]
+>
+> For a Microsoft Entra tenant in GCC High or DoD, register the application at `https://entra.microsoft.us`, and use `login.microsoftonline.us` wherever these steps show `login.microsoftonline.com`. These tenants sign in through the system browser, not the [OS identity broker](/docs/third-party/claude-desktop/entra-broker#gcc-high-and-dod-tenants).
 
 **1. Register an application in Entra ID**
 
@@ -50954,7 +51040,7 @@ The in-app configuration window is the recommended way to configure Claude Deskt
 
 From the macOS menu bar (or on Windows and Linux, the application menu ☰ in the top-left of the sign-in screen), go to **Help → Troubleshooting → Enable Developer Mode**, then **Developer → Configure Third-Party Inference…**.
 
-If you turn on Developer mode while the app is running a third-party configuration, it stays on across restarts. If you turned it on before that, the **Developer** menu is gone once the app relaunches into a third-party configuration, for example after **Apply Changes**. Go to **Help → Troubleshooting → Enable Developer Mode** again, and it stays on from then on. If the configuration sets [`developerModeEnabled`](/docs/third-party/claude-desktop/configuration#developermodeenabled) to `false`, neither that item nor the **Developer** menu appears.
+If you turn on Developer mode while the app is running a third-party configuration, Developer mode stays on across restarts. If you turned on Developer mode before the app ran a third-party configuration, the **Developer** menu is gone once the app relaunches into a third-party configuration, for example after **Apply Changes**. Go to **Help → Troubleshooting → Enable Developer Mode** again, and Developer mode stays on from then on. If the configuration sets [`developerModeEnabled`](/docs/third-party/claude-desktop/configuration#developermodeenabled) to `false`, neither the **Enable Developer Mode** item nor the **Developer** menu appears.
 
 To turn Developer mode off again, go to **Developer → Open Developer Config File**, change `"allowDevTools": true` to `false` in the file that opens (or delete the file), save it, then quit and reopen Claude Desktop. The **Developer** menu is gone on the next launch.
 
@@ -51465,7 +51551,7 @@ Security architecture, threat-model, and data-flow documentation for Claude Desk
 
 ### Security vulnerability reporting
 
-Anthropic manages our security program through HackerOne. [Use this form to report vulnerabilities](https://hackerone.com/4f1f16ba-10d3-4d09-9ecc-c721aad90f24/embedded_submissions/new).
+Anthropic manages its security program through HackerOne. [Use this form to report vulnerabilities](https://hackerone.com/4f1f16ba-10d3-4d09-9ecc-c721aad90f24/embedded_submissions/new).
 
 ***
 
@@ -51559,7 +51645,7 @@ Mantle supports a bearer token only. There is no in-app AWS sign-in or named-pro
 
 ## Set up AWS
 
-Enable Claude models in Amazon Bedrock for the region you will set as `inferenceBedrockRegion`, and obtain a Mantle bearer token for that account. See [Set up AWS](/docs/third-party/claude-desktop/bedrock#set-up-aws) on the Amazon Bedrock page for the model-access step; the IAM Identity Center steps there are not needed for Mantle.
+Enable Claude models in your AWS account, and obtain a Mantle bearer token for that account. See [Set up AWS](/docs/third-party/claude-desktop/bedrock#set-up-aws) on the Amazon Bedrock page for the step that enables the models; the IAM Identity Center steps there are not needed for Mantle.
 
 ## Prepare devices
 
@@ -51753,7 +51839,7 @@ Test each server yourself before you announce it: sign in to Claude Desktop as a
 
 ## Where the client secret goes
 
-Add a client secret only when the identity provider refuses sign-in without one. The console stores a value in **Client secret** only for a Google OAuth client of the **Desktop app** type: the value begins with `GOCSPX-`, **Authorization server** is exactly `["https://accounts.google.com"]`, and **Tenant ID** is empty. Google doesn't treat a Desktop-app client secret as confidential, so the console accepts it. A Google **Web application** client's secret has the same `GOCSPX-` prefix but is confidential, so always create a **Desktop app** client.
+Add a client secret only when the identity provider refuses sign-in without one. The console stores a value in **Client secret** only for a Google OAuth client of the **Desktop app** type. For the console to store the value, the value must begin with `GOCSPX-`, **Authorization server** must be exactly `["https://accounts.google.com"]`, and **Tenant ID** must be empty. Google doesn't treat a Desktop-app client secret as confidential, so the console accepts it. A Google **Web application** client's secret has the same `GOCSPX-` prefix but is confidential, so always create a **Desktop app** client.
 
 For every other identity provider the secret stays on the device. Install a script that prints the secret, at the same absolute path on every device, and enter that path in the **Client secret helper script** field. The script must print exactly one JSON object, `{"clientSecret": "…"}`, on stdout and exit with code `0` within 30 seconds. Claude Desktop runs it each time the server connects or refreshes its sign-in in the background. The console stores only the path, so distribute the script through your device management, as described under [When a helper script is the right choice](/docs/third-party/claude-desktop/admin-console#when-a-helper-script-is-the-right-choice), and see [Connect to Box](/docs/third-party/claude-desktop/connectors-box) for a minimal script. A configuration delivered by MDM or a bootstrap server can instead carry any identity provider's secret inline in `oauth.clientSecret`.
 
@@ -51768,7 +51854,7 @@ These fields appear when **OAuth** is set to **Bring your own client**. The [`ma
 | **Client ID** | You registered a client at the identity provider | The client ID from that registration |
 | **Client secret** | The identity provider requires the secret and the client is a Google Desktop-app client | The secret, beginning `GOCSPX-` |
 | **Client secret helper script** | The identity provider requires the secret (any identity provider) | The absolute path of the script on the device. Set this or **Client secret**, not both; in a configuration file that sets both, the script wins |
-| **Authorization server** | Required with a secret or secret helper script. Also required, as a single entry, with **Omit resource parameter** unless you set **Tenant ID** or **Authorization URL** and **Token URL**. Optional otherwise, to pin sign-in to a known issuer | A JSON array holding the authorization server's `issuer` value exactly as its metadata states it, for example `["https://accounts.google.com"]` (no trailing slash) or `["https://api.box.com"]` |
+| **Authorization server** | Required with a secret or secret helper script. Also required, as a single entry, with **Omit resource parameter**, unless you set **Tenant ID**, or both **Authorization URL** and **Token URL**. Optional otherwise, to pin sign-in to a known issuer | A JSON array holding the authorization server's `issuer` value exactly as its metadata states it, for example `["https://accounts.google.com"]` (no trailing slash) or `["https://api.box.com"]` |
 | **Authorization URL** and **Token URL** | The identity provider publishes no discovery document | Both HTTPS endpoints, always as a pair. Hidden when **Tenant ID** or **Authorization server** is set |
 | **Tenant ID** | The client is a single-tenant Microsoft Entra app. For a GCC High or DoD tenant, leave **Tenant ID** empty and enter the tenant's issuer, `["https://login.microsoftonline.us/<tenant-id>/v2.0"]`, in **Authorization server** | Your Directory (tenant) ID. Requires **Scope** |
 | **Scope** | Required with **Tenant ID** or **Omit resource parameter**. Optional otherwise | Space-separated scopes for the authorize request. Leave empty to request the scopes the server advertises |
@@ -51781,7 +51867,7 @@ These fields appear when **OAuth** is set to **Bring your own client**. The [`ma
 
 Turn on the **Omit resource parameter** switch only if the identity provider rejects the OAuth [`resource` parameter](/docs/third-party/claude-desktop/extensions#how-oauth-sign-in-works) that Claude Desktop sends at sign-in, for example with Microsoft Entra error `AADSTS9010010`. Claude Desktop then sends no `resource` parameter for that server. Set **OAuth** to **Bring your own client** to see the switch. In an MDM or bootstrap configuration, set `oauth.omitResource` to `true`.
 
-With Microsoft Entra ID, you can also fix `AADSTS9010010` by adding the URL that Claude Desktop sends to the API's Application ID URIs, unless that URL ends in a slash. Microsoft Entra ID doesn't accept such a URI. Claude Desktop sends the `resource` field of the server's [protected-resource metadata](/docs/third-party/claude-desktop/extensions#how-oauth-sign-in-works), and adds a trailing slash if the field is only an origin. Compare the two fixes:
+With Microsoft Entra ID, you can also fix `AADSTS9010010` by adding to the API's Application ID URIs the URL that Claude Desktop sends, unless that URL ends in a slash. Microsoft Entra ID doesn't accept a URI that ends in a slash. Claude Desktop sends the `resource` field of the server's [protected-resource metadata](/docs/third-party/claude-desktop/extensions#how-oauth-sign-in-works), and adds a trailing slash if the field is only an origin. Compare the two fixes:
 
 * **Register the URL**: follow [Microsoft Entra ID rejects the resource value](/docs/connectors/building/troubleshooting#microsoft-entra-id-rejects-the-resource-value). You need permission to edit the API's app registration. For a URL on a domain that your tenant hasn't verified, such as a vendor's hostname, the steps move every app that uses the API to v2.0 tokens, unless you use an alternative listed there. Microsoft Entra ID still refuses a token if a requested API scope belongs to a different app registration.
 * **Turn on the switch**: nothing changes in Microsoft Entra ID. The token is for the API that the **Scope** field names.
@@ -51792,7 +51878,7 @@ With the switch on, the entry also needs all of the following:
 * **Scope** with at least one scope besides `openid`, `profile`, `email`, `address`, `phone`, and `offline_access`
 * **Tenant ID**, a single **Authorization server** entry, or **Authorization URL** and **Token URL** with **Authorization server** empty
 
-If the entry doesn't meet all of them, Claude Desktop doesn't load it. The server then doesn't appear in Claude Desktop, and `main.log` records `managedMcpServers entry "<name>" dropped` with the reason.
+If the entry fails any of these requirements, Claude Desktop doesn't load the entry. The server then doesn't appear in Claude Desktop, and `main.log` records `managedMcpServers entry "<name>" dropped` with the reason.
 
 > [!WARNING]
 >
@@ -51823,7 +51909,7 @@ These messages appear in Claude Desktop, or in `main.log` in the [logs directory
 | "Couldn't connect to \{server} because it doesn't support automatic client registration", or `main.log` records that the authorization server does not support dynamic client registration | **OAuth** is **Auto-register** but the identity provider requires a client that you register | Register a public client with redirect URI `http://127.0.0.1:53280/callback`, set **OAuth** to **Bring your own client**, and fill in **Client ID** |
 | The browser step succeeds, then the connection fails and `main.log` records the token endpoint's error, for example `client_secret is missing` | The entry has a **Client ID** but the identity provider also requires the secret | Add the secret and **Authorization server** as described under [Where the client secret goes](#where-the-client-secret-goes) |
 | `main.log` names a rejected referrer host during sign-in | The identity provider completes sign-in from a host other than the one in its authorization URL | Add that hostname to **Additional redirect referrer hosts** |
-| The browser or `main.log` shows Microsoft Entra error `AADSTS9010010` | Claude Desktop sends the URL that the MCP server publishes about itself as the OAuth `resource` parameter, and Microsoft Entra ID rejects a `resource` that isn't an Application ID URI of the API whose scopes are requested | Register that URL as an Application ID URI in Microsoft Entra ID, or turn on the **Omit resource parameter** switch, as described under [Omit the resource parameter](#omit-the-resource-parameter) |
+| The browser or `main.log` shows Microsoft Entra error `AADSTS9010010` | As the OAuth `resource` parameter, Claude Desktop sends the URL that the MCP server publishes about itself. Microsoft Entra ID rejects a `resource` that isn't an Application ID URI of the API whose scopes are requested | Register that URL as an Application ID URI in Microsoft Entra ID, or turn on the **Omit resource parameter** switch, as described under [Omit the resource parameter](#omit-the-resource-parameter) |
 | The server shows as connected but its tool calls fail, and `main.log` records `mid-session refresh did not rotate` with an OAuth error code such as `invalid_request` as its `reason` | The identity provider refused a token refresh with an error that Claude Desktop treats as temporary, so Claude Desktop keeps retrying and doesn't ask the user to sign in again | Look up the refused request in the identity provider's sign-in log and correct what it reports |
 
 ## Related connector guides
@@ -52024,15 +52110,15 @@ Each entry is either a model ID string or an object. In an object, `name` holds 
 * `prefer1m: true`, with `supports1m: true`, shows the model as one entry. New conversations with it use the 1M context window. To do this for every entry that sets `supports1m`, set [`modelPrefer1mContext`](/docs/third-party/claude-desktop/configuration#modelprefer1mcontext) to `true`. When discovery fills the picker from a gateway, that key applies to every model the gateway [marks as supporting 1M](/docs/third-party/claude-desktop/gateway#models).
 * `behavesAs` names the Claude model behind an ID that Claude Desktop can't identify, such as a gateway routing alias. The picker then shows that model's **Effort** control. See [Map an unrecognized model ID to a Claude model](#map-an-unrecognized-model-id-to-a-claude-model).
 
-On any provider, a Chat conversation, Cowork session, or Code session on an entry without `supports1m` assumes a context window from the model ID:
+On any provider, a Chat conversation, Cowork session, or Code session on an entry without `supports1m` assumes a context window that depends on the model ID:
 
-* **An ID recognized as a model with a native 1M context window**, such as `us.anthropic.claude-opus-5`: you don't need `supports1m` or `prefer1m`. Setting them doesn't change the assumed window. For earlier Claude Desktop versions, see [Context window and compaction](/docs/third-party/claude-desktop/gateway#context-window-and-compaction) on the LLM gateway page. To check a model, see [Extended context](https://code.claude.com/docs/en/model-config#extended-context) in the Claude Code documentation, which lists the models that run with the 1M window by default.
+* **An ID recognized as a model with a native 1M context window**, such as `us.anthropic.claude-opus-5`: you don't need `supports1m` or `prefer1m`. Setting them doesn't change the assumed window. For Claude Desktop versions earlier than 2.19675.0, see [Context window and compaction](/docs/third-party/claude-desktop/gateway#context-window-and-compaction) on the LLM gateway page. To check whether a model has a native 1M context window, see [Extended context](https://code.claude.com/docs/en/model-config#extended-context) in the Claude Code documentation, which lists the models that run with the 1M window by default.
 * **An ID for a model without a native 1M context window, or an unrecognized ID whose entry doesn't set `behavesAs`**, such as `us.anthropic.claude-opus-4-6-v1` or a gateway routing alias: the assumed window is 200K tokens. If your deployment accepts 1M-token requests for the model, [set a larger context window for it](#set-a-larger-context-window-for-a-model).
-* **An unrecognized ID whose entry sets [`behavesAs`](#map-an-unrecognized-model-id-to-a-claude-model)**, through an LLM gateway: the assumed window is the window of the model that `behavesAs` names.
+* **An unrecognized ID whose entry sets [`behavesAs`](#map-an-unrecognized-model-id-to-a-claude-model)**, when sessions reach the model through an LLM gateway: the assumed window is the window of the model that `behavesAs` names.
 
 ### Set a larger context window for a model
 
-A session compacts a long conversation to fit the context window that it assumes for the model, even when your provider accepts more. If your deployment accepts 1M-token requests for a model that sessions assume 200K tokens for, declare that on the model's `inferenceModels` entry:
+A session compacts a long conversation to fit the context window that it assumes for the model, even when your provider accepts more. If your deployment accepts 1M-token requests for a model that sessions assume 200K tokens for, declare the larger window on the model's `inferenceModels` entry:
 
 * **A gateway routing alias for a Claude model with a native 1M context window**, such as Claude Sonnet 5: set [`behavesAs`](#map-an-unrecognized-model-id-to-a-claude-model) to that model's ID. New sessions on the alias assume that model's window.
 * **Any other model that your deployment serves with a 1M context window**: set `supports1m` and `prefer1m`. New Chat conversations, Cowork sessions, and Code sessions on the model request the 1M context window from your provider. With `supports1m` alone, only sessions that a user starts on the **1M context window** entry get the larger window.
@@ -52075,7 +52161,7 @@ In Code sessions, the cap also limits Claude Code's own effort settings, such as
 
 [`defaultModelEffort`](/docs/third-party/claude-desktop/configuration#defaultmodeleffort) sets the effort level the default model starts at, in place of its recommended level. Other models keep their recommended level. If you set a level the default model doesn't offer, or one above its `maxEffort`, the default model starts at the nearest lower level it offers.
 
-In Code, the `CLAUDE_CODE_EFFORT_LEVEL` environment variable or `effortLevel` in Claude Code's settings takes priority.
+In Code, the `CLAUDE_CODE_EFFORT_LEVEL` environment variable or `effortLevel` in Claude Code's settings takes priority over `defaultModelEffort`.
 
 `defaultModelEffort` also applies when [model discovery](/docs/third-party/claude-desktop/configuration#modeldiscoveryenabled) fills the picker instead of an `inferenceModels` list.
 
@@ -52107,7 +52193,7 @@ Without `behavesAs`, users can't change an unrecognized model's effort level. It
 
 ## Start every conversation on the default model
 
-Set [`alwaysStartWithDefaultModel`](/docs/third-party/claude-desktop/configuration#alwaysstartwithdefaultmodel) to `true` to start every new Chat conversation, Cowork session, and Code session on the [default model](#model-list-and-default-model) at its [starting effort level](#effort-levels), not on the user's last choice. When the user picks a model or effort level, it applies only for that conversation or session.
+Set [`alwaysStartWithDefaultModel`](/docs/third-party/claude-desktop/configuration#alwaysstartwithdefaultmodel) to `true` to start every new Chat conversation, Cowork session, and Code session on the [default model](#model-list-and-default-model) at its [starting effort level](#effort-levels), not on the user's last choice. When the user picks a model or effort level, the choice applies only to that conversation or session.
 
 If you leave `alwaysStartWithDefaultModel` unset, the default model and its starting effort level apply until a user picks a different model or effort level. Claude Desktop remembers that choice and starts the user's new conversations and sessions from it.
 
@@ -52343,7 +52429,7 @@ Your chats (now in Cowork), sessions, projects, and scheduled tasks appear. Your
 
 * If a scheduled task asks to use a tool, choose **Allow for all scheduled runs**.
 * If a session or project is missing its folder, your files are still where they were. Attach the folder again. If Claude refuses it, ask your IT team which folders are allowed, and move the files there.
-* Turn on [memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context#h_c9b905eb3f) in your settings. **Notes from Cowork** shows only while it's on.
+* Turn on [memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context#h_c9b905eb3f) in your settings. You can add **Notes from Cowork** to your memory only while memory is on.
 * In **Settings > Import**, click **Add instructions** for each set of instructions listed, **Add to memory** until **Notes from Cowork** disappears, and **Import…** if a skill is missing from **Customize > Skills**. Claude may leave out notes on how it should respond, so add those to your [instructions](https://support.claude.com/en/articles/10185728-understanding-claude-s-personalization-features).
 * Set up remote connectors and any missing plugin marketplaces again, install the plugins you want in **Customize > Plugins**, and add any keys or sign-ins your plugins and extensions need.
 
@@ -52383,7 +52469,7 @@ On macOS and Windows, Cowork's sandboxed shell also follows the OS proxy setting
 A few limits apply to the agent regardless of how the proxy is chosen:
 
 * Only `http://` and `https://` proxies are handed to the agent. If the OS or PAC answer is a SOCKS proxy, the app skips it, and the agent connects directly or through the last `http://` or `https://` proxy named for the inference endpoint since Claude Desktop started.
-* There is no interactive proxy sign-in. If your proxy requires a username and password, neither the app, the agent, nor the built-in GitHub connector's server can prompt for them and requests fail. The connector's server gets the proxy's address and no credential, so a proxy that signs devices in with NTLM or Kerberos refuses it too. Run a local forwarding proxy that authenticates upstream on the device (for example, Cntlm or Px) and point the OS or the pinned key at it.
+* There is no interactive proxy sign-in. If your proxy requires a username and password, neither the app, the agent, nor the built-in GitHub connector's server can prompt for them and requests fail. The connector's server gets the proxy's address and no credential, so a proxy that signs devices in with NTLM or Kerberos refuses it too. On the device, run a local forwarding proxy that authenticates to your proxy (for example, Cntlm or Px), and point the OS proxy settings or the `egressProxyUrl` key at that local proxy.
 * If your proxy intercepts TLS, see [TLS-intercepting proxies](#tls-intercepting-proxies) below.
 
 ### PAC script for the sandboxed shell
@@ -52410,9 +52496,9 @@ If you want the app, the agent, and (on macOS and Windows) Cowork's sandboxed sh
 
 Both keys are read once at launch; a change takes effect the next time the app starts. While either key is set, the OS proxy settings are ignored for the app, the agent, and (on macOS and Windows) Cowork's sandboxed shell. SOCKS URLs and URLs with embedded credentials (`user:password@`) are rejected.
 
-If you point the key at a local forwarding proxy on the device, give it as `http://127.0.0.1:<port>`. An `https://` loopback proxy cannot pass TLS verification from inside Cowork's sandboxed shell, so the shell's commands fail to connect. The app logs a warning at sandbox start when it sees that combination.
+If you point `egressProxyUrl` at a local forwarding proxy on the device, write the proxy's address as `http://127.0.0.1:<port>`. An `https://` loopback proxy cannot pass TLS verification from inside Cowork's sandboxed shell, so the shell's commands fail to connect. The app logs a warning at sandbox start when it sees that combination.
 
-These keys are read from an MDM profile, registry policy, or local configuration file only; they are ignored if returned from a bootstrap server. They also follow the same precedence rule as the update keys: when an MDM profile or registry policy sets any key in that group, values for these keys in a local configuration file are ignored. See [Update keys and managed precedence](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence).
+The app reads `egressProxyUrl` and `egressProxyPacUrl` only from an MDM profile, registry policy, or local configuration file, and ignores them in a bootstrap server's response. These keys also belong to the same group of app-behavior keys as the update keys. When an MDM profile or registry policy sets any key in that group, the app ignores values for these two keys in a local configuration file. See [Update keys and managed precedence](/docs/third-party/claude-desktop/mdm#update-keys-and-managed-precedence).
 
 On Linux, or wherever you deploy the local configuration file, the key sits alongside your other settings:
 
@@ -52424,7 +52510,7 @@ On Linux, or wherever you deploy the local configuration file, the key sits alon
 
 In a macOS configuration profile the same key is a `<key>egressProxyUrl</key><string>http://proxy.example.com:8080</string>` pair in the `com.anthropic.claudefordesktop` payload. On Windows it is a `REG_SZ` value named `egressProxyUrl` under `HKLM\SOFTWARE\Policies\Claude`, or under `HKCU\SOFTWARE\Policies\Claude` if the rest of your registry policy is there. The app [ignores `HKCU` policy when machine policy is present](/docs/third-party/claude-desktop/mdm#4-deploy-the-configuration). See [Value types](/docs/third-party/claude-desktop/configuration-format#value-types) and [Deploy with MDM](/docs/third-party/claude-desktop/mdm) for the surrounding profile and registry structure.
 
-Three behaviors to plan for:
+Plan for these behaviors:
 
 * If the pinned proxy is unreachable, requests fail. The app does not fall back to a direct connection.
 * If a pinned PAC script cannot be downloaded, the app connects directly and the agent gets no proxy. Cowork's sandboxed shell gets its own copy of the script through a separate download when the sandbox starts. If that download fails or returns something other than a PAC script, such as a sign-in page, the shell connects directly. The download isn't tried again until the sandbox next starts, so quit and reopen Claude Desktop on the affected device once the script is reachable. Combine the key with network-layer egress rules if a silent fallback to direct is not acceptable (see the warning below).
@@ -52432,7 +52518,7 @@ Three behaviors to plan for:
 
 ## What is and is not routed
 
-"App proxy" means the pinned key if one is set, otherwise the OS settings, with PAC rules applied per request.
+"The pinned key" means `egressProxyUrl` or `egressProxyPacUrl`, described under [Pin a proxy from managed configuration](#pin-a-proxy-from-managed-configuration). "App proxy" means the proxy from the pinned key if one is set, and otherwise the proxy from the OS proxy settings, with PAC rules applied per request.
 
 | Traffic | Proxy it follows |
 | - | - |
@@ -52450,7 +52536,7 @@ Three behaviors to plan for:
 | Commands in Cowork's sandboxed shell on macOS and Windows | The pinned key if one is set (a pinned PAC script is evaluated per request inside the sandbox), otherwise the OS proxy settings |
 | Commands in Cowork's sandboxed shell on Linux | None; commands connect directly |
 | The agent in an [SSH remote Code session](/docs/third-party/claude-desktop/ssh-remote-sessions) | None from the device: not the pinned key, the OS proxy settings, or proxy variables from Claude Code managed settings on the device. The host's own network route applies, with any Claude Code managed settings on the host. See [Inference credentials on the remote host](/docs/third-party/claude-desktop/ssh-remote-sessions#inference-credentials-on-the-remote-host). |
-| App update check and download | On macOS and Windows, both: the app contacts the update hosts through the app proxy, and the platform's updater follows the OS proxy settings. Allow the [update hosts](/docs/third-party/claude-desktop/telemetry#required-egress-paths) on both. To keep updates off a direct path, set the OS proxy on the device, or distribute updates yourself with [`disableAutoUpdates`](/docs/third-party/claude-desktop/configuration#disableautoupdates). On Linux, your package manager's own proxy configuration. |
+| App update check and download | On macOS and Windows, both the app proxy and the OS proxy settings: the app contacts the update hosts through the app proxy, and the platform's updater follows the OS proxy settings. Allow the [update hosts](/docs/third-party/claude-desktop/telemetry#required-egress-paths) on both. To keep updates off a direct path, set the OS proxy on the device, or distribute updates yourself with [`disableAutoUpdates`](/docs/third-party/claude-desktop/configuration#disableautoupdates). On Linux, your package manager's own proxy configuration. |
 | `credentialHelper` scripts for [plugin marketplaces](/docs/third-party/claude-desktop/extensions#how-a-marketplace-credential-helper-runs) | App proxy, resolved for the marketplace's host and passed to the script as `HTTPS_PROXY` and `HTTP_PROXY` |
 | `inferenceCredentialHelper`, `bootstrapHeadersHelper`, and helper scripts in `managedMcpServers` entries | None injected; the script runs with the app's environment. If it needs a proxy, set one inside the script. |
 | [Brokered Microsoft Entra sign-in](/docs/third-party/claude-desktop/entra-broker) (Company Portal on macOS, Web Account Manager on Windows) | The OS proxy settings, which Company Portal and Web Account Manager follow. Set them through the MDM that manages the device. |
@@ -52468,18 +52554,18 @@ Some traffic doesn't follow the pinned key or the proxy the app resolved, or fol
 
 > [!WARNING]
 >
-> A proxy setting is routing, not enforcement. Nothing on this page prevents a process on the device from connecting directly if the network permits it. If you need a guarantee that traffic leaves only through your proxy, block direct egress at the firewall or secure web gateway and allow only the proxy. The inverse also holds: on an open network, a misconfigured or unreachable PAC script can quietly result in direct connections.
+> A proxy setting is routing, not enforcement. Nothing on this page prevents a process on the device from connecting directly if the network permits it. If you need a guarantee that traffic leaves only through your proxy, block direct egress at the firewall or secure web gateway and allow only the proxy. On an open network, a misconfigured or unreachable PAC script can quietly result in direct connections.
 
 ### The agent uses one proxy
 
-The agent sends its own traffic (inference, its remote MCP connections, and in Code sessions its web fetches and plugin installs) through the one proxy resolved for your inference endpoint. Per-host PAC rules are not re-evaluated inside the agent. For a local Code session, the app does ask the PAC script about GitHub's hosts, and adds those that the script sends direct to `NO_PROXY`.
+The agent sends its own traffic (inference, its remote MCP connections, and in Code sessions its web fetches and plugin installs) through the one proxy resolved for your inference endpoint. Per-host PAC rules are not re-evaluated inside the agent. For a local Code session, the app does ask the PAC script about GitHub's hosts. The app then adds to `NO_PROXY` GitHub hosts that the script sends direct, by the rule in the [`egressProxyPacUrl`](/docs/third-party/claude-desktop/configuration#egressproxypacurl) entry.
 
-This needs attention only when that one proxy is not right for everything the agent reaches: typically some hosts (an internal MCP server, a private package registry, a self-hosted plugin marketplace) must be reached directly while the proxy only carries public traffic, or the reverse. In order of preference:
+This needs attention only when that one proxy is not right for everything the agent reaches: typically some hosts (an internal MCP server, a private package registry, a self-hosted plugin marketplace) must be reached directly while the proxy only carries public traffic, or the reverse. Choose from these options, in order of preference:
 
 1. Let the proxy these devices use carry both kinds of traffic. Nothing else needs configuring.
 2. Otherwise, list the domains that must connect directly in `NO_PROXY` through Claude Code managed settings (see the next section), using leading-dot suffixes such as `.example.corp`, and accept that everything not listed goes to the proxy.
 
-The inverse edge case: if your PAC script returns `DIRECT` for the inference endpoint (common when the gateway is on your internal network), the agent gets no proxy at all, even for hosts the script would proxy. If the agent's other traffic must go through a proxy in that layout, set `HTTPS_PROXY` and a `NO_PROXY` entry for the gateway's domain through Claude Code managed settings.
+In the inverse case, your PAC script returns `DIRECT` for the inference endpoint (common when the gateway is on your internal network). The agent then gets no proxy at all, even for hosts the script would proxy. If the agent's other traffic must go through a proxy in that layout, set `HTTPS_PROXY` and a `NO_PROXY` entry for the gateway's domain through Claude Code managed settings.
 
 ## Interaction with Claude Code managed settings
 
@@ -52490,7 +52576,7 @@ The inverse edge case: if your PAC script returns `DIRECT` for the inference end
 In Claude Code [managed settings](https://code.claude.com/docs/en/settings#settings-files) on the device (a `managed-settings.json` file or an OS-level Claude Code policy), you can set `HTTPS_PROXY`, `HTTP_PROXY`, or `NO_PROXY` in the `env` block. Those values apply to the agent in Chat, Cowork, and Code sessions and take precedence over what the app would have supplied. Precedence is per variable:
 
 * A managed `HTTPS_PROXY` replaces the app's proxy, and the app's loopback `NO_PROXY` entries stay in place.
-* A managed `NO_PROXY` replaces the app's list. When the app is also supplying the proxy, the loopback entries are appended.
+* A managed `NO_PROXY` replaces the app's list. When the app is also supplying the proxy, the app appends its loopback entries to the managed value.
 
 See Claude Code's [network configuration](https://code.claude.com/docs/en/network-config) page for the variables themselves.
 
@@ -52514,9 +52600,9 @@ The example also sets `parentSettingsBehavior` to `"merge"`. Without `"merge"`, 
 * A bare hostname matches that host exactly. To cover a domain and its subdomains, use a leading dot: `.example.corp` matches `example.corp` and `api.example.corp`.
 * IP addresses match literally. CIDR ranges such as `10.0.0.0/8` are not supported.
 * `host:port` entries match that host on that port only.
-* `*` disables the proxy entirely, and only when it is the whole value; it is not a wildcard inside a list.
+* `*` disables the proxy entirely, but only when `*` is the whole value. Inside a list, `*` is not a wildcard.
 
-These settings reach the agent process only. The app itself and Cowork's sandboxed shell keep the proxy behavior described above, and the other paths listed under [Traffic that bypasses the app proxy](#traffic-that-bypasses-the-app-proxy) are likewise unaffected by Claude Code managed settings.
+The proxy variables in Claude Code managed settings reach the agent process only. The app itself and Cowork's sandboxed shell keep the proxy behavior described above, and the other paths listed under [Traffic that bypasses the app proxy](#traffic-that-bypasses-the-app-proxy) are likewise unaffected by Claude Code managed settings.
 
 ## TLS-intercepting proxies
 
@@ -53768,7 +53854,7 @@ Add the key to the same [configuration source](/docs/third-party/claude-desktop/
 * **macOS profile or Windows registry**: write the value as a [JSON string](/docs/third-party/claude-desktop/configuration-format#value-types-in-a-profile-or-registry-policy)
 * **Bootstrap server**: the key applies after the user approves it in a dialog, unless the device [trusts the server's values without prompting](/docs/third-party/claude-desktop/bootstrap#keys-that-require-user-consent)
 
-If one configuration serves several operating systems, such as a bootstrap server's response, add `platformOverrides` with a `command` under `win32` (Windows), `darwin` (macOS), or `linux`. In a macOS profile, a Windows registry policy, or the [Linux configuration file](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file), set only `command`. Versions before 4.16336.0 reject the whole key and show no status line, so add `platformOverrides` only after every device has updated. The top-level `command` is required and runs on any system you don't list:
+If one configuration serves several operating systems, such as a bootstrap server's response, add `platformOverrides` with a `command` under `win32` (Windows), `darwin` (macOS), or `linux`. In a macOS profile, a Windows registry policy, or the [Linux configuration file](/docs/third-party/claude-desktop/configuration-format#the-linux-configuration-file), set only `command`. Versions before 4.16336.0 reject the whole key when it contains `platformOverrides`, and show no status line, so add `platformOverrides` only after every device has updated. The top-level `command` is required and runs on any system you don't list:
 
 ```json theme={null}
 {
@@ -53791,7 +53877,7 @@ On Claude Desktop 4.16336.0 or later, if [`inferenceModelPricingEnabled`](/docs/
 
 Claude Desktop starts the status line program with no arguments and no window, as the user who runs Claude Desktop.
 
-* **File type**: on macOS and Linux, an executable file, such as a compiled program or a script that starts with `#!`. Claude Desktop doesn't check the interpreter that a `#!` line names, so install it where users can't change it too. Python also runs code from the user's folders unless you start it with `-I`, for example `#!/usr/bin/python3 -I`. On Windows, an `.exe` file or a `.ps1`, `.cmd`, or `.bat` script.
+* **File type**: on macOS and Linux, an executable file, such as a compiled program or a script that starts with `#!`. Claude Desktop doesn't check the interpreter that a `#!` line names, so also install that interpreter where users can't change it. Python also runs code from the user's folders unless you start it with `-I`, for example `#!/usr/bin/python3 -I`. On Windows, an `.exe` file or a `.ps1`, `.cmd`, or `.bat` script.
 
 * **Input**: one line of JSON on standard input, with the session ID, the model, and the [session cost](#session-cost-in-the-status-line-input). A field with no value is left out, so handle a missing `model` or `cost`. Later versions can add fields, so ignore any that the program doesn't use. Don't build a file path from these values.
 
@@ -53814,12 +53900,12 @@ Claude Desktop starts the status line program with no arguments and no window, a
 `cost.total_cost_usd` is the session's estimated cost so far. Claude Desktop sends it only while [`inferenceModelPricingEnabled`](/docs/third-party/claude-desktop/configuration#inferencemodelpricingenabled) is on and the session has an estimate. The value is a number in US dollars with up to six decimal places and no exponent. It's for display only and can differ from your provider's bill.
 
 * **Source**: Claude Desktop's own sum for the session, added up on the user's device. It covers Cowork, Chat, and Code sessions, including [Code sessions over SSH](/docs/third-party/claude-desktop/ssh-remote-sessions). With no status line set, the built-in "Session cost (estimate)" line above the message box shows the same sum.
-* **Models with no price**: a model ID that can't be matched to a Claude model, such as an opaque gateway alias, adds nothing. After you give that ID a rate in [`inferenceModelPricing`](/docs/third-party/claude-desktop/configuration#inferencemodelpricing), only its later usage counts. The input doesn't show that the sum is partial.
+* **Models with no price**: a model ID that can't be matched to a Claude model, such as an opaque gateway alias, adds nothing to the sum. After you give that ID a rate in [`inferenceModelPricing`](/docs/third-party/claude-desktop/configuration#inferencemodelpricing), only its later usage counts. The input doesn't show that the sum is partial.
 * **Missing `cost`**: don't show \$0. Check for each of these causes:
   * `inferenceModelPricingEnabled` is off
-  * The session has no priced estimate yet, such as before Claude Desktop records its first turn's cost or when it has used only models with no price
+  * The session has no priced estimate yet, such as before Claude Desktop records the cost of the session's first turn or when the session has used only models with no price
   * Claude Desktop [couldn't read its usage ledger](#troubleshoot-a-missing-status-line), the local record of these estimates
-* **Scripts written for Claude Code**: [Claude Code's status line](https://code.claude.com/docs/en/statusline) always sends `cost`, among many other fields. Claude Desktop sends only the fields in the [sample input](#write-the-status-line-program), so check a script that you carry over for other fields and for a fallback to 0. Claude Desktop's sum can also differ from Claude Code's total, for example after `/clear`.
+* **Scripts written for Claude Code**: [Claude Code's status line](https://code.claude.com/docs/en/statusline) always sends `cost`, among many other fields. Claude Desktop sends only the fields in the [sample input](#write-the-status-line-program), so check whether a script that you carry over reads other fields or falls back to 0 when `cost` is missing. Claude Desktop's sum can also differ from Claude Code's total, for example after `/clear`.
 
 This macOS and Linux script prints the cost. While `cost` is missing it prints nothing, so no line shows:
 
@@ -53837,7 +53923,7 @@ printf 'Session cost (estimate): $%.2f\n' "$cost"
 
 A `.ps1` script runs in Windows PowerShell, not PowerShell 7.
 
-* **Execution policy**: if Group Policy allows only signed scripts, sign the `.ps1` script with a certificate that each device trusts, and add it to each device's Trusted Publishers store. If Group Policy turns scripts off, use a `.cmd` or `.exe` file.
+* **Execution policy**: if Group Policy allows only signed scripts, sign the `.ps1` script with a certificate that each device trusts, and add that certificate to each device's Trusted Publishers store. If Group Policy turns scripts off, use a `.cmd` or `.exe` file.
 * **Encoding**: a script must print UTF-8, or characters outside ASCII can show as "�" or "?". In a `.ps1` script, set UTF-8 output in the first statement, as the [Windows sample](#sample-status-line-programs) does, and save the file as UTF-8 with BOM. In a `.cmd` or `.bat` script, put `chcp 65001 >nul` right after `@echo off`, and save the file as UTF-8 without BOM.
 
 ### Sample status line programs
@@ -54398,23 +54484,23 @@ This page walks an IT administrator through a complete deployment on Google Clou
 
 ## Choose an authentication approach
 
-Google Cloud's Agent Platform authenticates with Google Cloud Application Default Credentials, which can be supplied several ways. The right one depends on whether your users have Google identities and whether you need per-user attribution in Cloud Audit Logs.
+Claude Desktop authenticates to Google Cloud's Agent Platform with Google Cloud Application Default Credentials, which you can supply in several ways. The right way depends on whether your users have Google identities and whether you need per-user attribution in Cloud Audit Logs.
 
 | Scenario | Use | Per-device prerequisite | Per-user Cloud Audit Logs identity | Notes |
 | - | - | - | - | - |
 | Proof of concept, single team | [Service-account key](#credentials-file) (`inferenceVertexCredentialsFile`) | The key file on each device | No (shared service account) | A long-lived secret distributed to every device. Simplest to start; not recommended for broad rollout. |
 | Users have Google Workspace or Cloud Identity accounts | [In-app Google sign-in](#in-app-google-sign-in) (`inferenceVertexOAuth*`) | None | Yes | Users sign in with their Google account inside the app. |
 | Users authenticate with a third-party IdP (Entra ID, Okta, Ping, …) and you don't want to provision Google identities | [In-app Workforce Identity sign-in](#in-app-workforce-identity-sign-in) (`inferenceVertexWorkforce*`) | None | Yes (workforce-pool principal) | Users sign in with their corporate identity inside the app. The app runs PKCE against your IdP and exchanges the ID token at Google STS. |
-| Your organization already has tooling that obtains a bearer token accepted by Google Cloud's Agent Platform | [Credential helper](/docs/third-party/claude-desktop/configuration#inferencecredentialhelper) (`inferenceCredentialHelper`) | The helper executable on each device | Depends on what the helper obtains | The app sends the token the helper prints as the bearer on each inference request. |
+| Your organization already has tooling that obtains a bearer token accepted by Google Cloud's Agent Platform | [Credential helper](/docs/third-party/claude-desktop/configuration#inferencecredentialhelper) (`inferenceCredentialHelper`) | The helper executable on each device | Depends on what the helper obtains | The helper prints a token, and the app sends that token as the bearer token on each inference request. |
 | You already operate an LLM proxy | [Gateway provider](/docs/third-party/claude-desktop/gateway) instead of Google Cloud's Agent Platform | None | At your gateway | The proxy holds the Google Cloud credentials; the app authenticates only to the proxy. |
 
 > [!WARNING]
 >
-> If your Google Workspace or Cloud Identity organization enforces a **Google Cloud session length** of a few hours or less (Admin console → Security → Google Cloud session control), the in-app Google sign-in stores a refresh token that is subject to that policy, and users will be prompted to sign in again each time it expires. For short session policies, either mark your OAuth client as a [trusted app exempt from reauthentication](https://support.google.com/a/answer/9368756), or use a service-account key, Workforce Identity sign-in, or the gateway provider instead.
+> If your Google Workspace or Cloud Identity organization enforces a **Google Cloud session length** of a few hours or less (Admin console → Security → Google Cloud session control), the in-app Google sign-in stores a refresh token that is subject to that policy, and users will be prompted to sign in again each time the refresh token expires. For short session policies, either mark your OAuth client as a [trusted app exempt from reauthentication](https://support.google.com/a/answer/9368756), or use a service-account key, Workforce Identity sign-in, or the gateway provider instead.
 
 ## Set up Google Cloud
 
-These steps are performed once per Google Cloud project, regardless of which authentication approach you chose. You need a project with Owner or Editor access.
+Complete these steps once per Google Cloud project, regardless of which authentication approach you chose. You need a project with Owner or Editor access.
 
 **1. Enable the Vertex AI API**
 
@@ -54450,7 +54536,7 @@ If your users authenticate with Microsoft Entra ID, Okta, or another identity pr
 
 Create a service account in your project, grant it the **Vertex AI User** role, and download its JSON key. Distribute the key file to a fixed path on each device through your device-management tooling and set `inferenceVertexCredentialsFile` to that path.
 
-`inferenceVertexCredentialsFile` accepts any Application Default Credentials JSON format, so if your environment already produces an `authorized_user` file (from `gcloud auth application-default login`) or an `external_account` Workforce Identity Federation configuration, you can point at that file instead. For `external_account` files, the `credential_source` must be of type `file` or `url` (`executable` sources are not supported), and separate tooling on the device must obtain the IdP token and write it to the configured location; Claude Desktop does not perform that step.
+`inferenceVertexCredentialsFile` accepts any Application Default Credentials JSON format, so if your environment already produces an `authorized_user` file (from `gcloud auth application-default login`) or an `external_account` Workforce Identity Federation configuration, you can set the key to that file's path instead. For `external_account` files, the `credential_source` must be of type `file` or `url` (`executable` sources are not supported), and separate tooling on the device must obtain the IdP token and write it to the configured location; Claude Desktop does not perform that step.
 
 ### In-app Google sign-in
 
@@ -54512,7 +54598,7 @@ In your IdP, register a native OAuth client for the app. The app does not send a
 
 Register the redirect URI with `127.0.0.1` rather than `localhost`, because the app uses `127.0.0.1` by default and most IdPs do not treat the two as interchangeable. If your IdP accepts only `localhost` in a registered redirect URI, set the `redirectHost` field of [`inferenceVertexWorkforceOidc`](/docs/third-party/claude-desktop/configuration#inferencevertexworkforceoidc) to `localhost` and register `http://localhost/callback` instead, or `http://localhost:<port>/callback` when you set `redirectPort`.
 
-Distribute the workforce-pool provider audience (`inferenceVertexWorkforceAudience`, in the form `//iam.googleapis.com/locations/global/workforcePools/POOL/providers/PROVIDER`) and the IdP OIDC client (`inferenceVertexWorkforceOidc`) in the managed configuration; the app shows a **Sign in with Google Cloud** page on first launch, runs an authorization-code-with-PKCE flow against your IdP in the system browser, exchanges the returned ID token for a Google Cloud access token at `sts.googleapis.com`, and stores the IdP refresh token encrypted with the operating system's secure storage. No `gcloud` CLI, helper script, or Google identity is required.
+Distribute the workforce-pool provider audience (`inferenceVertexWorkforceAudience`, in the form `//iam.googleapis.com/locations/global/workforcePools/POOL/providers/PROVIDER`) and the IdP OIDC client (`inferenceVertexWorkforceOidc`) in the managed configuration. The app then shows a **Sign in with Google Cloud** page on first launch. For the sign-in, the app runs an authorization-code-with-PKCE flow against your IdP in the system browser, exchanges the returned ID token for a Google Cloud access token at `sts.googleapis.com`, and stores the IdP refresh token encrypted with the operating system's secure storage. No `gcloud` CLI, helper script, or Google identity is required.
 
 The app always requests the `offline_access` scope so that the IdP returns a refresh token for silent renewal. If your IdP rejects `offline_access` on this client (for example, a PingFederate public client without the Refresh Token grant type enabled), set the `omitOfflineAccess` field of `inferenceVertexWorkforceOidc` to `true`. Without a refresh token the app cannot refresh silently, so users will be prompted to sign in again each time the IdP's ID token expires, typically about once an hour.
 

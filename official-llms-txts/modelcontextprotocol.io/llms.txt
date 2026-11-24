@@ -339,6 +339,7 @@
 - [Group Charter Template](https://modelcontextprotocol.io/community/charter-template.md): The charter template for MCP working groups and interest groups, and how to submit a charter.
 - [Working Groups Overview](https://modelcontextprotocol.io/community/working-groups/overview.md): Current MCP working groups, their leads, channels, and focus.
 - [MCP Apps Working Group Charter](https://modelcontextprotocol.io/community/working-groups/apps.md): Charter for the MCP Apps Working Group.
+- [Core Primitives Charter](https://modelcontextprotocol.io/community/working-groups/core-primitives.md): Charter for the MCP Core Primitives Working Group.
 - [File Uploads Charter](https://modelcontextprotocol.io/community/working-groups/file-uploads.md): Charter for the MCP File Uploads Working Group.
 - [Filesystems Charter](https://modelcontextprotocol.io/community/working-groups/filesystems.md): Charter for the MCP Filesystems Working Group.
 - [Governance Working Group Charter](https://modelcontextprotocol.io/community/working-groups/governance.md): Charter for the MCP Governance Working Group.
