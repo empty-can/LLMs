@@ -1,130 +1,138 @@
 ---
-対象期間: 2026年11月20日 〜 2026年11月21日
-作成日: 2026-11-21
+対象期間: 2026年11月21日 〜 2026年11月23日
+作成日: 2026-11-23
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 1 回で、差分は本文 `llms-full.txt` の 7 ページで計 19 行（追加 10 行・削除 9 行）にとどまり、索引 `llms.txt` は変わりませんでした。コミュニティの連絡手段の案内で GitHub Discussions の用途が絞られ、Discord の招待リンクが差し替えられたほか、拡張の対応表にクライアントが 1 つ加わっています。
+今回の対象期間の取り込みは 2 回で、MCP の入力ファイルに差分が出たのはそのうち 1 回でした。新規ページが 1 件（Core Primitives Working Group の憲章）加わり、既存ページは 2 件で、WG の一覧からこの憲章ページへのリンクが張られました。
 
 主要なものを以下に挙げます。
 
-1. Communication ページの連絡手段の表で、GitHub Discussions の用途が会合の議題・議事録と告知に絞られた。ディスカッションを開けるのはこのリポジトリの書き込み権限を持つ人だけで、アイデア・機能の要望・質問は Discord から始める
-2. Discord の招待リンクが、6 ページの 8 か所で `discord.gg/6CSzBmMkjX` から `discord.gg/modelcontextprotocol` に差し替えられた
-3. Extension Support Matrix の対応表にクライアント mcp-use の行が加わり、クライアントは 18 になった
+1. Core Primitives Working Group の憲章ページが加わった。当面はツールの結果の形（shape）・安定性（stability）・宛先（audience）の 3 つの問題に取り組み、リードは Kurtis Van Gent 氏と David Soria Parra 氏、会合は週 1 回 60 分
+2. Working Groups Overview の表の Core Primitives のリンク先が GitHub のリポジトリから憲章ページに変わり、Working Groups and Interest Groups の Current groups の一覧にも Core Primitives が加わって WG は 15 になった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Communication で GitHub Discussions の用途が会合の記録と告知に絞られた**](#1-communication-で-github-discussions-の用途が会合の記録と告知に絞られた):  
-  連絡手段を定める Communication ページの Channels の表で、GitHub Discussions の行の用途が書き換わった。旧版は「アイデア、根拠を添えた機能の要望、質問、ロードマップの議論、告知とリリース、会合の議題と議事録（Meeting Notes のカテゴリ）」だった。新版は「会合の議題と議事録（Meeting Notes のカテゴリ群）と告知」で、ディスカッションを開けるのはこのリポジトリの書き込み権限を持つ人だけであること、アイデア・機能の要望・質問は Discord から始めることが明記された。
-2. [**Discord の招待リンクが 6 ページ 8 か所で差し替えられた**](#2-discord-の招待リンクが-6-ページ-8-か所で差し替えられた):  
-  Communication・Governance and Stewardship・Financial Services Charter・Transports Charter・Working Groups and Interest Groups・SEP-2149 の 6 ページで、Discord サーバーへの招待リンク計 8 か所が `https://discord.gg/6CSzBmMkjX` から `https://discord.gg/modelcontextprotocol` に変わった。`llms-full.txt` に旧リンクは残っていない。チャンネルを直接指す `discord.com/channels/…` 形式の 7 つのリンクは変わっていない。
-3. [**拡張の対応表に mcp-use の行が加わった**](#3-拡張の対応表に-mcp-use-の行が加わった):  
-  Extension Support Matrix の Support matrix の表の末尾に、クライアント mcp-use（リンク先は GitHub の `mcp-use/mcp-use`）の行が加わり、クライアントの行は 17 から 18 になった。`llms-full.txt` ではこの行の 6 つのセルはすべて空だが、この表では対応を示すチェックマークが出力されないため、どの拡張に対応するかは `llms-full.txt` からは読み取れない。
+1. [**Core Primitives WG の憲章ページが加わった**](#1-core-primitives-wg-の憲章ページが加わった):  
+  新しいページ Core Primitives Charter（`community/working-groups/core-primitives`、91 行）が加わり、索引 `llms.txt` にもエントリが入った。ロードマップの Improved Primitives の優先領域に置かれた WG で、当面はツールの結果について、形（`content`・`structuredContent`・`outputSchema`・audience の注釈に形式と宛先が混在している）、安定性（同じツールと入力でも結果のスキーマが変わりうる）、宛先（形式と宛先を分けて扱う）の 3 つに取り組む。ロードマップが割り当てた content annotations の扱いの判断も受け持ち、progressive discovery は対象外として Progressive Disclosure WG に委ねている。リードは Kurtis Van Gent 氏（Google）と David Soria Parra 氏（Anthropic）、会合は週 1 回 60 分。
+2. [**WG の一覧 2 ページで Core Primitives が憲章ページにつながった**](#2-wg-の一覧-2-ページで-core-primitives-が憲章ページにつながった):  
+  Working Groups Overview の表では、Core Primitives の行のリンク先が GitHub の `modelcontextprotocol/core-primitives-wg` から新しい憲章ページ（`/community/working-groups/core-primitives`）に変わった。リード・Discord・Focus の列は変わっていない。Working Groups and Interest Groups の Current groups では、WG の一覧に Core Primitives が MCP Apps と File Uploads の間に加わり、14 から 15 になった。
 <!-- light:highlight-list:end -->
 
-## 1. Communication で GitHub Discussions の用途が会合の記録と告知に絞られた
+## 1. Core Primitives WG の憲章ページが加わった
 
-今回の対象期間の取り込みは 1 回で、差分が出たのは本文 `llms-full.txt` だけでした（追加 10 行・削除 9 行）。総行数は 47,601 行から 47,602 行になり、収録ページ数（163 件。`examples` が 2 回収録されているため、URL としては 162 件）は変わっていません。索引 `llms.txt` には差分がありません（エントリ 364 件のまま）。変更のあった 7 ページはいずれも 50 行未満の変更で、軽微な更新に当たります。
+今回の対象期間の取り込みは 2 回（2026年11月23日・24日の実行分）で、MCP の入力ファイルに差分が出たのは 24 日の 1 回だけでした。入力の 2 ファイルとも差分があり、本文 `llms-full.txt` は追加 93 行・削除 1 行で、総行数は 47,602 行から 47,694 行に、収録ページ数は 163 件から 164 件（`examples` が 2 回収録されているため、URL としては 162 件から 163 件）になりました。索引 `llms.txt` は追加 1 行で、エントリ数は 364 件から 365 件になっています（軽微な更新の「その他」参照）。
 
-| ページ | 行数 | 追加 | 削除 | 主な変更 |
+`llms-full.txt` の差分の内訳は次のとおりです。行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。
+
+| 内訳 | 行数 | 追加 | 削除 | 扱い |
 |---|---|---|---|---|
-| Communication | 34 → 34 | 3 | 3 | GitHub Discussions の行の書き換え（このハイライト）、Discord の招待リンク 2 か所（ハイライト 2） |
-| Governance and Stewardship | 130 → 130 | 2 | 2 | Discord の招待リンク 2 か所（ハイライト 2） |
-| Financial Services Charter | 123 → 123 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
-| Transports Charter | 151 → 151 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
-| Working Groups and Interest Groups | 151 → 151 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
-| SEP-2149: MCP Group Governance and Charter Template | 438 → 438 | 1 | 1 | Discord の招待リンク 1 か所（ハイライト 2） |
-| Extension Support Matrix | 63 → 64 | 1 | 0 | mcp-use の行の追加（ハイライト 3） |
-| 計 | | 10 | 9 | |
+| Core Primitives Charter（新規ページ） | — → 91 | 91 | 0 | 新規追加（このハイライト） |
+| Working Groups Overview | 26 → 26 | 1 | 1 | 軽微な更新（ハイライト 2） |
+| Working Groups and Interest Groups | 151 → 152 | 1 | 0 | 軽微な更新（ハイライト 2） |
+| 計 | | 93 | 1 | |
 
-行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。
+新しいページは Core Primitives Charter（`community/working-groups/core-primitives`）で、索引の説明文は「Charter for the MCP Core Primitives Working Group.」です。本文 `llms-full.txt` でも索引 `llms.txt` でも、MCP Apps Working Group Charter と File Uploads Charter の間に置かれています。
 
-**Communication（`community/communication`）**: プロジェクトの連絡手段、非公開にしてよい場合、決定の記録先を定めたページです。冒頭の Channels の表は、Discord・Meeting calendar・GitHub Discussions・GitHub Issues・Security advisories の 5 つの手段と、それぞれの用途を並べています。このうち GitHub Discussions の行の用途が、次のように書き換わりました。
+ページは、Core Primitives Working Group が MCP のコアのプリミティブを改善する提案をまとめる WG であり、ロードマップ（`/development/roadmap#4-improved-primitives`）が Improved Primitives の優先領域でこの WG の名前を挙げている、と位置づけを述べます。当面の焦点はツールの結果で、その形（shape）・安定性（stability）・宛先（audience）の 3 つです。リードは Kurtis Van Gent 氏（Google）と David Soria Parra 氏（Anthropic）の 2 人、会合は週 1 回 60 分の Working Session で、提案は GitHub の `modelcontextprotocol/core-primitives-wg` リポジトリで練られます。Changelog の唯一の行は 2026年11月11日の「Initial charter」です。各節の内容は「新規追加されたページ」で扱います。
 
-| | 用途（原文） |
-|---|---|
-| 旧 | Ideas, feature requests with rationale, questions, roadmap discussion, announcements and releases, and meeting agendas and notes (Meeting Notes category) |
-| 新 | Meeting agendas and notes, in the Meeting Notes categories, and announcements. Only people with write access to this repository can open a discussion. Ideas, feature requests and questions start on Discord |
+なお、変更されていない Roadmap ページの Improved Primitives の節は、Tool result shape と Primitive annotations に加えて、Progressive discovery の担当も Core Primitives WG としています。一方、新しい憲章では progressive discovery は対象外（Out of Scope）で、Progressive Disclosure WG が扱うとされており、両ページの記述は揃っていません。
 
-- **用途**: 会合の議題と議事録、告知（announcements）の 2 つになった。会合の記録の置き場所は、旧版の単数の「Meeting Notes category」から、複数形の「Meeting Notes categories」になっている
-- **開ける人の制限（新設）**: ディスカッションを開けるのは、このリポジトリ（リンク先の `modelcontextprotocol/modelcontextprotocol`）の書き込み権限を持つ人だけと明記された
-- **Discord への振り分け（新設）**: アイデア・機能の要望・質問は Discord から始める、とされた。旧版の用途にあったロードマップの議論とリリース（「announcements and releases」の releases）は、新版の行には挙がっていない
+- [Core Primitives Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives#in-scope)
 
-Discord の行の用途（コントリビューターどうしのリアルタイムの調整。WG・IG・SDK の議論を含む）は、招待リンクのほかは変わっていません。表の直後の段落（各 SDK とプロジェクトのリポジトリはそれぞれ課題の管理と Discord のチャンネルを持ち、ほとんどは Discussions を無効にして Issues を使う。このリポジトリと registry が主な例外）と、Decision records の節（技術や統治の決定に向かう Discord の議論は GitHub Discussion へ移さなければならず、決定は `notes` ラベルの Discussion か SEP のプルリクエストに記録する）も変わっていません。
+## 2. WG の一覧 2 ページで Core Primitives が憲章ページにつながった
 
-- [Communication - MCP Docs](https://modelcontextprotocol.io/community/communication#channels)
+憲章ページの追加にあわせて、WG を一覧する 2 つのページが更新されました。
 
-## 2. Discord の招待リンクが 6 ページ 8 か所で差し替えられた
+- **Working Groups Overview（追加 1 行・削除 1 行）**: 現行の WG を並べた表（Working group・Leads・Discord・Focus の 4 列、15 行）で、Core Primitives の行の Working group の列のリンク先が、GitHub の `https://github.com/modelcontextprotocol/core-primitives-wg` から新しい憲章ページ `/community/working-groups/core-primitives` に変わりました。これで表の 15 行すべてが憲章ページを指すようになっています。リード（Kurtis Van Gent 氏・David Soria Parra 氏）、Discord（`#core-primitives-wg`）、Focus（ロードマップの Improved Primitives の領域での、ツールの結果の形・安定性・宛先）の各列は変わっていません
+- **Working Groups and Interest Groups（追加 1 行）**: Current groups の節の「Working groups:」の一覧に、Core Primitives（リンク先は `/community/working-groups/core-primitives`）が MCP Apps と File Uploads の間に加わり、WG は 14 から 15 になりました。Interest groups の一覧は変わっていません
 
-本文中の Discord サーバーへの招待リンク 8 か所が、すべて `https://discord.gg/6CSzBmMkjX` から `https://discord.gg/modelcontextprotocol` に変わりました。リンクの文言と前後の文は変わっておらず、head の `llms-full.txt` に旧リンクは残っていません。
-
-| ページ | 箇所 |
-|---|---|
-| Communication | Channels の表の Discord の行と、Discord の節の冒頭の「MCP Contributor Discord」（2 か所） |
-| Governance and Stewardship | Technical Governance の Communication Channels の、メンテナー全員で共有する Discord サーバーと、Communication の Public Chat の、公開の Discord サーバー（2 か所） |
-| Financial Services Charter | Operations の末尾の `#financial-services-ig` のリンク |
-| Transports Charter | Operations の、`#transports-wg` で非同期に議論するとした文の「MCP Discord」 |
-| Working Groups and Interest Groups | Forming a group の Interest group の、`#wg-ig-group-creation` のチャンネルがある Discord |
-| SEP-2149: MCP Group Governance and Charter Template | Specification の 1.9 Lifecycle の Interest Group Formation の、同じく `#wg-ig-group-creation` のチャンネルがある Discord |
-
-Financial Services Charter の `#financial-services-ig` のリンクは、チャンネルではなくサーバーの招待リンクを指しているため、これも新しい招待リンクに変わりました。一方、チャンネルを直接指す `discord.com/channels/…` 形式のリンク 7 つ（`#auth-ig`・`#scientific-computing-ig`・`#security-ig`・`#tool-annotations-ig`・`#progressive-disclosure-wg`・`#server-card-wg`・`#skills-over-mcp-wg`）は変わっていません。
-
-- [Communication - MCP Docs](https://modelcontextprotocol.io/community/communication#discord)
-- [Governance and Stewardship - MCP Docs](https://modelcontextprotocol.io/community/governance#public-chat)
-
-## 3. 拡張の対応表に mcp-use の行が加わった
-
-Extension Support Matrix（63 行から 64 行、追加 1 行）の Support matrix の表で、末尾（Glean の後）にクライアント mcp-use の行が加わり、クライアントの行は 17 から 18 になりました。リンク先は GitHub の `mcp-use/mcp-use` リポジトリです。
-
-`llms-full.txt` では、この行の 6 つのセル（MCP Apps・OAuth Client Credentials・Enterprise Auth・Skills・Tasks・Events）はすべて空です。2026年10月20日のサマリで書いたとおり、`llms-full.txt` の書式が変わってから、この表では対応を示すチェックマークが出力されていません。空のセルが非対応を意味するとは限らず、mcp-use がどの拡張に対応するかは `llms-full.txt` からは読み取れません。Extension overview の表と、Support matrix の表の後の 2 つの注記は変わっていません。
-
-- [Extension Support Matrix - MCP Docs](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+- [Working Groups Overview - MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)
+- [Working Groups and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-今回の対象期間に新たに追加されたページはありません。本文 `llms-full.txt` の収録ページ数（163 件。URL としては 162 件）と、索引 `llms.txt`（エントリ 364 件）は前回と同じです。
+- [**Core Primitives Charter**](#1-core-primitives-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives)):  
+  Core Primitives Working Group の憲章（91 行）。ツールの結果の形・安定性・宛先の 3 つの問題を対象範囲とし、関連する WG、リーダーシップ、決定権限、運営、作業項目を定めている。索引 `llms.txt` にもエントリが加わった（位置づけはハイライト 1 参照）。
 <!-- light:new-pages:end -->
+
+## 1. Core Primitives Charter
+
+Core Primitives Charter は 91 行のページで、タイトルを除く見出しは 13 個（`##` が 8・`###` が 5）です。表を 5 つ含み、コードブロックはありません。各節の要点は次のとおりです。
+
+**Group Type・Mission Statement**: 種別は Working Group です。使命は、MCP のコアのプリミティブを改善する提案をまとめることで、ロードマップが Improved Primitives の優先領域でこの WG の名前を挙げていること、当面はツールの結果（その形・安定性・宛先）に焦点を置くことを述べています。
+
+**In Scope**: ツールの結果の 3 つの問題を挙げています。
+
+- **Tool result shape（結果の形）**: 結果の契約では、形式と宛先が `content`・`structuredContent`・`outputSchema`・audience の注釈に混在しており、仕様・拡張・ホストのドキュメントで結果の扱いについての指針が食い違っている。作業は、形式に依存しない明示的な結果の選択とルーティング、クライアントがコードを生成する前に発見できる戻り値の型を扱う。問題の記述（problem statement）は `core-primitives-wg` リポジトリのプルリクエスト #2 でレビュー中、としている
+- **Tool result stability（結果の安定性）**: クライアントの実装には、ツールの結果の型についての安定性の保証が無い。同じツールと入力でも、呼び出しごと、時間の経過、クライアントの違いによって結果のスキーマが変わりうる。作業は、結果の型にとって安定性とは何か、クライアントが比較・固定（pin）できるその型の識別子、互換な変更と破壊的な変更の分類と伝え方を扱う
+- **Tool result audience（結果の宛先）**: `content` と `structuredContent` は結果の形式を表すが、届け先は決めていない。モデル、プログラムのコード、MCP App のビュー、ユーザーは、同じ呼び出しからそれぞれ違うデータを必要としうる。作業は、結果の契約で宛先を形式と分けて扱うことを対象とする
+
+あわせて、ロードマップがプリミティブの注釈（primitive annotations）もこの WG に割り当てていること、つまり content annotations（リンク先は仕様 2026-07-28 の resources の Annotations）をツールの結果とリソースに適用するか、役に立たないなら非推奨にするかを決めることを述べています。優先領域の残りは、WG が定めるものとしてロードマップが開けてある、としています。
+
+**Out of Scope・Related Groups**: progressive discovery は対象外で、Progressive Disclosure WG が扱います。関連グループには、その Progressive Disclosure WG（同じ優先領域で、クライアントがサーバーのツールやリソースを必要に応じて知るロードマップの項目を扱う）と、File Uploads WG（スコープ付きのファイル操作とファイルシステム風のリソースの意味論の作業を、ロードマップが同じ優先領域に置いている）の 2 つを挙げています。
+
+**Leadership**: リードは次の 2 人で、任期はどちらも「To be confirmed」です。
+
+| Role | Name | Organization | GitHub |
+|---|---|---|---|
+| Lead | Kurtis Van Gent | Google | `@kurtisvg` |
+| Lead | David Soria Parra | Anthropic | `@dsp-ant` |
+
+**Authority & Decision Rights**: 8 種類の決定について権限を定めています。会合の運営と日程、WG 内の提案の優先順位付け、対象範囲内の SEP の振り分けとクローズ（理由を記録する）は WG リードが単独で決め、範囲内の技術的な設計は WG の合意で決めます。仕様の変更は、追加的なものが WG の合意のあと Core Maintainer の承認、破壊的・根本的なものはさらに広いレビューも要します。対象範囲の拡大には Core Maintainer の承認が必要で、WG メンバーの承認は WG メンバーのスポンサーによります。
+
+**Operations**: 会合は週 1 回 60 分の Working Session（技術的な議論と提案のレビュー）で、コミュニティカレンダー（`meet.modelcontextprotocol.io/tag/core-primitives-wg`）に載ります。リポジトリは `modelcontextprotocol/core-primitives-wg`、Discord のチャンネルは `#core-primitives-wg` です。
+
+**Deliverables & Success Metrics**: Active Work Items の表は 3 行で、目標日はいずれも「To be confirmed」です。提案は `core-primitives-wg` リポジトリで練られます。Success Criteria は「リードが定める」とだけあります。
+
+| Item | Status | Champion |
+|---|---|---|
+| Tool result shape | Problem statement approved | Kurtis Van Gent |
+| Tool result stability | Problem statement seeking feedback | David Soria Parra |
+| Tool result audience | To be confirmed | To be confirmed |
+
+Tool result shape の状態は、この表では「Problem statement approved」ですが、In Scope の本文では問題の記述がプルリクエスト #2 で「レビュー中」とされており、ページ内で記述が揃っていません。
+
+**Changelog**: 2026年11月11日の「Initial charter」の 1 行です。
+
+- [Core Primitives Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives#in-scope)
+- [Core Primitives Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives#active-work-items)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。本文の変更は 7 ページで計 19 行（追加 10 行・削除 9 行）で、1 ページあたり最大 6 行（Communication）にとどまり、すべて軽微な更新に当たります（ハイライト 1 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページの変更は 2 ページで計 3 行（追加 2 行・削除 1 行）にとどまり、軽微な更新に当たります（ハイライト 2 参照）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms-full.txt` の 1 件で（`llms.txt` は変更なし）、7 ページに次の変更がありました。
+今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（Core Primitives Charter）のほかに、次の変更がありました。
 
 **機能改善**
 
-- Communication の Channels の表で、GitHub Discussions の用途を会合の議題・議事録と告知に絞り、ディスカッションを開けるのは書き込み権限を持つ人だけであること、アイデア・機能の要望・質問は Discord から始めることを明記した（詳細はハイライト 1 参照） — [Communication](https://modelcontextprotocol.io/community/communication#channels)
-- Extension Support Matrix の Support matrix の表に、クライアント mcp-use の行を追加した（詳細はハイライト 3 参照） — [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix#support-matrix)
+- Working Groups and Interest Groups の Current groups の WG の一覧に、Core Primitives を MCP Apps と File Uploads の間に追加し、WG は 15 になった（詳細はハイライト 2 参照） — [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
 
 **その他**
 
-- Communication の Channels の表の Discord の行と、Discord の節の「MCP Contributor Discord」のリンクを、新しい招待リンク `discord.gg/modelcontextprotocol` に変更した（詳細はハイライト 2 参照） — [Communication](https://modelcontextprotocol.io/community/communication#discord)
-- Governance and Stewardship の Communication Channels と Public Chat の Discord サーバーのリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Governance and Stewardship](https://modelcontextprotocol.io/community/governance#communication-channels)
-- Financial Services Charter の Operations の `#financial-services-ig` のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Financial Services Charter](https://modelcontextprotocol.io/community/interest-groups/financial-services#operations)
-- Transports Charter の Operations の「MCP Discord」のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Transports Charter](https://modelcontextprotocol.io/community/working-groups/transports#operations)
-- Working Groups and Interest Groups の Forming a group の Interest group の Discord のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#interest-group)
-- SEP-2149: MCP Group Governance and Charter Template の 1.9 Lifecycle（Interest Group Formation）の Discord のリンクを、同じく新しい招待リンクに変更した（詳細はハイライト 2 参照） — [SEP-2149: MCP Group Governance and Charter Template](https://modelcontextprotocol.io/seps/2149-working-group-charter-template#1-9-lifecycle)
+- Working Groups Overview の表で、Core Primitives の行のリンク先を GitHub の `modelcontextprotocol/core-primitives-wg` から新しい憲章ページに変更（詳細はハイライト 2 参照） — [Working Groups Overview](https://modelcontextprotocol.io/community/working-groups/overview)
+- 索引 `llms.txt` で、MCP Apps Working Group Charter と File Uploads Charter のエントリの間に Core Primitives Charter のエントリ（説明文「Charter for the MCP Core Primitives Working Group.」）を追加。エントリ数は 364 件から 365 件、ファイルは 369 行から 370 行になった（末尾に改行が無いため、改行の数では 368 から 369） — [Core Primitives Charter](https://modelcontextprotocol.io/community/working-groups/core-primitives)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-20.md](./archives/latest/2026-11-20.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-20.md](./archives/latest-detail/2026-11-20.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-21.md](./archives/latest/2026-11-21.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-21.md](./archives/latest-detail/2026-11-21.md)
 
 <!--
-base_commit: 5f51174830a6109f6c27c1eeae6dd98de6f65dde
-head_commit: 3279a161e968357548276a7baa091d6d6f481473
-generated_at_full: 2026-11-22T15:23:29+09:00
+base_commit: 3279a161e968357548276a7baa091d6d6f481473
+head_commit: 6b8844c93bee3ab36c9d7bb656a2476fb661c469
+generated_at_full: 2026-11-24T15:29:36+09:00
 -->
