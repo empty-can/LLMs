@@ -8077,6 +8077,9 @@
     <loc>https://claude.com/marketplace/connectors/general-legal</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/general-translation</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/getty-images</loc>
   </url>
   <url>
@@ -8404,6 +8407,9 @@
     <loc>https://claude.com/marketplace/connectors/jedify</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/jedox</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/jentic</loc>
   </url>
   <url>
@@ -8420,6 +8426,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/jotform-sign</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/juicebox</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/jump-mcp</loc>
@@ -8830,6 +8839,9 @@
     <loc>https://claude.com/marketplace/connectors/miro</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/mitratech-legal</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/mixpanel</loc>
   </url>
   <url>
@@ -9157,6 +9169,9 @@
     <loc>https://claude.com/marketplace/connectors/peec-ai</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/pega-blueprint</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/pending-brand24</loc>
   </url>
   <url>
@@ -9254,6 +9269,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/plus-ai-mcp</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/plus-margins</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/pocket-capture</loc>
@@ -10498,6 +10516,9 @@
     <loc>https://claude.com/marketplace/plugins/ai-plugins</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/plugins/ai-producer-by-opusclip</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/plugins/aikido</loc>
   </url>
   <url>
@@ -10601,6 +10622,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/aws-amplify</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/aws-context</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/aws-continuum</loc>
@@ -11048,6 +11072,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/figma</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/finaloop</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/finance</loc>
@@ -11767,9 +11794,6 @@
     <loc>https://claude.com/marketplace/plugins/semgrep</loc>
   </url>
   <url>
-    <loc>https://claude.com/marketplace/plugins/semgrep-guardian</loc>
-  </url>
-  <url>
     <loc>https://claude.com/marketplace/plugins/sent</loc>
   </url>
   <url>
@@ -11801,6 +11825,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/slack</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/slideworks</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/slint-ai-plugins</loc>
@@ -12745,6 +12772,9 @@
     <loc>https://claude.com/resources/articles/improving-skill-creator-test-measure-and-refine-agent-skills</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/articles/install-as-app</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/articles/integrate-apis-seamlessly</loc>
   </url>
   <url>
@@ -12911,6 +12941,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/articles/skills-explained</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/articles/skills-over-mcp-tasks-and-more</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/articles/smart-reports-surveys-pooled-budgets</loc>
