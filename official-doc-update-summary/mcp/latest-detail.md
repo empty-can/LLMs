@@ -1,138 +1,255 @@
 ---
-対象期間: 2026年11月21日 〜 2026年11月23日
-作成日: 2026-11-23
+対象期間: 2026年11月23日 〜 2026年11月24日
+作成日: 2026-11-24
 ---
 
 # MCP 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-今回の対象期間の取り込みは 2 回で、MCP の入力ファイルに差分が出たのはそのうち 1 回でした。新規ページが 1 件（Core Primitives Working Group の憲章）加わり、既存ページは 2 件で、WG の一覧からこの憲章ページへのリンクが張られました。
+今回の対象期間の取り込みは 1 回で、差分は本文 `llms-full.txt` の 26 ページで計 243 行（追加 164 行・削除 79 行）でした。索引 `llms.txt` は変わっていません。どのページも 50 行未満の変更で軽微な更新に当たり、仕様（2026-07-28）の記述の補足・整合と、クライアント構築チュートリアルの手直しが中心です。
 
 主要なものを以下に挙げます。
 
-1. Core Primitives Working Group の憲章ページが加わった。当面はツールの結果の形（shape）・安定性（stability）・宛先（audience）の 3 つの問題に取り組み、リードは Kurtis Van Gent 氏と David Soria Parra 氏、会合は週 1 回 60 分
-2. Working Groups Overview の表の Core Primitives のリンク先が GitHub のリポジトリから憲章ページに変わり、Working Groups and Interest Groups の Current groups の一覧にも Core Primitives が加わって WG は 15 になった
+1. Sampling の Data Types の Messages に、ツールの使用（`tool_use`）とツールの結果（`tool_result`）のコンテンツブロックの例が加わり、`content` が単一のブロックかブロックの配列であることが明記された
+2. Resources・Prompts・Tools のリスト変更通知の JSON 例に `subscriptionId` の `_meta` が加わり、Resources では通知の送り先が `subscriptions/listen` のストリームを開いたクライアントだと明記された
+3. Dynamic Client Registration の非推奨の注記が、2026-07-28 版で非推奨になったこと、少なくとも 12 か月は仕様に残ること、非推奨機能の一覧へのリンクを含む形に書き換わった
+4. Elicitation のフォームのスキーマで、許される配列は複数選択の列挙だけだと明記され、URL モードの OAuth の流れの図も直った
+5. クライアント構築チュートリアルで、要件に Linux が加わり、よくあるエラーの対処が書き直され、Kotlin のタブは JDK 17 以上になった
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**Core Primitives WG の憲章ページが加わった**](#1-core-primitives-wg-の憲章ページが加わった):  
-  新しいページ Core Primitives Charter（`community/working-groups/core-primitives`、91 行）が加わり、索引 `llms.txt` にもエントリが入った。ロードマップの Improved Primitives の優先領域に置かれた WG で、当面はツールの結果について、形（`content`・`structuredContent`・`outputSchema`・audience の注釈に形式と宛先が混在している）、安定性（同じツールと入力でも結果のスキーマが変わりうる）、宛先（形式と宛先を分けて扱う）の 3 つに取り組む。ロードマップが割り当てた content annotations の扱いの判断も受け持ち、progressive discovery は対象外として Progressive Disclosure WG に委ねている。リードは Kurtis Van Gent 氏（Google）と David Soria Parra 氏（Anthropic）、会合は週 1 回 60 分。
-2. [**WG の一覧 2 ページで Core Primitives が憲章ページにつながった**](#2-wg-の一覧-2-ページで-core-primitives-が憲章ページにつながった):  
-  Working Groups Overview の表では、Core Primitives の行のリンク先が GitHub の `modelcontextprotocol/core-primitives-wg` から新しい憲章ページ（`/community/working-groups/core-primitives`）に変わった。リード・Discord・Focus の列は変わっていない。Working Groups and Interest Groups の Current groups では、WG の一覧に Core Primitives が MCP Apps と File Uploads の間に加わり、14 から 15 になった。
+1. [**Sampling の Messages にツールの使用と結果のブロックが加わった**](#1-sampling-の-messages-にツールの使用と結果のブロックが加わった):  
+  Sampling の Data Types の Messages で、`content` は単一のコンテンツブロックかその配列で、各ブロックは Message Content Constraints の制約に従う、と書き換わった。既存の Text・Image・Audio に加え、Tool Use Content（`type: "tool_use"`・`id`・`name`・`input`）と Tool Result Content（`type: "tool_result"`・`toolUseId`・`content`）の JSON 例が加わった。Message Flow の図の最後の `tools/call` の id は 3 から 2 に直り、Context Inclusion の `includeContext` の説明も言い換えられた。
+2. [**リスト変更通知が subscriptions/listen の購読に揃った**](#2-リスト変更通知が-subscriptionslisten-の購読に揃った):  
+  Resources・Prompts・Tools の List Changed Notification の JSON 例に、`params._meta` の `io.modelcontextprotocol/subscriptionId` が加わった。Resources では、通知の送り先が `resourcesListChanged: true` で `subscriptions/listen` のストリームを開いたクライアントだと明記された（Prompts と Tools には同じ趣旨の文が既にあった）。Client Best Practices の「Refresh on `list_changed`」の行も、`toolsListChanged: true` でストリームを開くよう書き換わった。
+3. [**Dynamic Client Registration の非推奨の注記が詳しくなった**](#3-dynamic-client-registration-の非推奨の注記が詳しくなった):  
+  Client Registration の Dynamic Client Registration の節の警告が、「非推奨で、新しい実装は Client ID Metadata Documents を使う」から、プロトコルの版 `2026-07-28` で非推奨になったこと（PR #2858）、機能のライフサイクルのポリシーにより、その版のリリースから少なくとも 12 か月は仕様に残ってから削除の対象になること、非推奨機能の一覧（deprecated features registry）へのリンクを含む形になった。
+4. [**Elicitation のフォームのスキーマの記述と URL モードの図が直った**](#4-elicitation-のフォームのスキーマの記述と-url-モードの図が直った):  
+  フォームモードのスキーマは「プリミティブ型のプロパティだけを持つ平らなオブジェクト」から、「文字列・数値・真偽値・列挙のプロパティを持つ平らなオブジェクトで、許される配列は複数選択の列挙だけ」に書き換わった（Schema Reference の `PrimitiveSchemaDefinition` も同様）。全リクエストが `mode` を含まなければならないとした文には、フォームモードは省略してよいとの例外が付いた。URL モードの OAuth の流れの図では、クライアントからサーバーへの「Accept response」が消え、ユーザーが元のリクエストを再試行する手順が加わった。
+5. [**クライアント構築チュートリアルの要件とエラーの対処が改められた**](#5-クライアント構築チュートリアルの要件とエラーの対処が改められた):  
+  Build an MCP client の Python・TypeScript・Ruby のタブで、要件が「Mac or Windows」から「macOS, Windows, or Linux」になった。よくあるエラーの一覧では、`Connection refused` の行が `Connection closed`（Ruby は `Server process has exited` など）に替わり、サーバーのコマンドを直接実行して起動するか確かめるよう案内している。Kotlin のタブは、Build an MCP server とともに要件が JDK 11 以上から 17 以上になり、トラブルシューティングの jar のファイル名が実行手順の節と揃った。
 <!-- light:highlight-list:end -->
 
-## 1. Core Primitives WG の憲章ページが加わった
+## 1. Sampling の Messages にツールの使用と結果のブロックが加わった
 
-今回の対象期間の取り込みは 2 回（2026年11月23日・24日の実行分）で、MCP の入力ファイルに差分が出たのは 24 日の 1 回だけでした。入力の 2 ファイルとも差分があり、本文 `llms-full.txt` は追加 93 行・削除 1 行で、総行数は 47,602 行から 47,694 行に、収録ページ数は 163 件から 164 件（`examples` が 2 回収録されているため、URL としては 162 件から 163 件）になりました。索引 `llms.txt` は追加 1 行で、エントリ数は 364 件から 365 件になっています（軽微な更新の「その他」参照）。
+今回の対象期間の取り込みは 1 回（2026年11月25日の実行分）で、差分が出たのは本文 `llms-full.txt` だけでした（追加 164 行・削除 79 行）。総行数は 47,694 行から 47,779 行になり、収録ページ数（164 件。`examples` が 2 回収録されているため、URL としては 163 件）は変わっていません。索引 `llms.txt` には差分がありません（エントリ 365 件のまま）。変更のあった 26 ページはいずれも 50 行未満の変更で、軽微な更新に当たります。
 
-`llms-full.txt` の差分の内訳は次のとおりです。行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。
-
-| 内訳 | 行数 | 追加 | 削除 | 扱い |
+| ページ | 行数 | 追加 | 削除 | 主な変更 |
 |---|---|---|---|---|
-| Core Primitives Charter（新規ページ） | — → 91 | 91 | 0 | 新規追加（このハイライト） |
-| Working Groups Overview | 26 → 26 | 1 | 1 | 軽微な更新（ハイライト 2） |
-| Working Groups and Interest Groups | 151 → 152 | 1 | 0 | 軽微な更新（ハイライト 2） |
-| 計 | | 93 | 1 | |
+| Build an MCP client | 2,925 → 2,927 | 19 | 17 | 要件・エラーの対処・Kotlin の JDK と jar 名（ハイライト 5） |
+| Build an MCP server | 3,074 → 3,074 | 1 | 1 | Kotlin のタブの JDK（ハイライト 5） |
+| Client Best Practices | 304 → 304 | 1 | 1 | Refresh on `list_changed` の行（ハイライト 2） |
+| Connect to local MCP servers | 274 → 274 | 1 | 1 | トラブルシューティングの項目名 |
+| Connect to remote MCP Servers | 112 → 112 | 1 | 1 | サポート記事のリンクのドメイン |
+| What is the Model Context Protocol (MCP)? | 61 → 61 | 1 | 1 | 図の代替テキスト |
+| Architecture overview | 570 → 570 | 1 | 1 | Identity Exchange の目的 |
+| Debugging | 369 → 369 | 4 | 4 | 仕様へのリンクの版（4 か所） |
+| Authorization（Inspector） | 164 → 164 | 4 | 4 | 仕様へのリンクの版（4 か所） |
+| TUI client | 95 → 95 | 2 | 2 | 仕様へのリンクの版（2 か所） |
+| Security Best Practices | 990 → 990 | 3 | 3 | 仕様へのリンクの版（3 か所） |
+| Client Registration | 201 → 207 | 14 | 8 | DCR の非推奨の注記（ハイライト 3）、CIMD の図の例の URL |
+| Authorization（仕様） | 443 → 443 | 1 | 1 | OAuth 2.1 の草案のリンク |
+| Progress | 89 → 98 | 9 | 0 | リクエスト例の `_meta` の省略の注記 |
+| Versioning and Compatibility | 185 → 187 | 3 | 1 | 互換性の表の 2 行、拡張のリンク |
+| Key Changes | 120 → 120 | 4 | 4 | 変更点の 3 項目の手直し |
+| Elicitation | 666 → 668 | 11 | 9 | フォームのスキーマ・URL モードの図（ハイライト 4） |
+| Sampling | 677 → 705 | 32 | 4 | Messages のブロックの型・図・Context Inclusion（このハイライト） |
+| Specification | 139 → 142 | 6 | 3 | Additional Utilities の一覧、リンク 2 か所 |
+| Schema Reference | 1,574 → 1,574 | 2 | 2 | `PrimitiveSchemaDefinition` の説明（ハイライト 4） |
+| Prompts | 335 → 340 | 6 | 1 | リスト変更通知の例（ハイライト 2） |
+| Resources | 435 → 454 | 22 | 3 | リスト変更通知（ハイライト 2）、Resource Template の型 |
+| Tools | 794 → 799 | 7 | 2 | リスト変更通知の例（ハイライト 2）、`description` の説明への Optional の表記の追加 |
+| Caching | 178 → 181 | 3 | 0 | `resources/read` のキャッシュを無効にする通知 |
+| Completion | 213 → 213 | 3 | 3 | 3 つのフィールドの説明への Optional の表記の追加 |
+| Authorization Charter | 116 → 117 | 3 | 2 | SEP のスポンサーの扱いの文言、Changelog |
+| 計 | | 164 | 79 | |
 
-新しいページは Core Primitives Charter（`community/working-groups/core-primitives`）で、索引の説明文は「Charter for the MCP Core Primitives Working Group.」です。本文 `llms-full.txt` でも索引 `llms.txt` でも、MCP Apps Working Group Charter と File Uploads Charter の間に置かれています。
+行数は、ページのタイトルの行（`# `）から次のページの直前までを数えたものです。ページ名が同じ「Authorization」は、MCP Inspector の認可のページ（`docs/2026-07-28/tools/inspector/authorization`）と、仕様の認可のページ（`specification/2026-07-28/basic/authorization`）の 2 つです。
 
-ページは、Core Primitives Working Group が MCP のコアのプリミティブを改善する提案をまとめる WG であり、ロードマップ（`/development/roadmap#4-improved-primitives`）が Improved Primitives の優先領域でこの WG の名前を挙げている、と位置づけを述べます。当面の焦点はツールの結果で、その形（shape）・安定性（stability）・宛先（audience）の 3 つです。リードは Kurtis Van Gent 氏（Google）と David Soria Parra 氏（Anthropic）の 2 人、会合は週 1 回 60 分の Working Session で、提案は GitHub の `modelcontextprotocol/core-primitives-wg` リポジトリで練られます。Changelog の唯一の行は 2026年11月11日の「Initial charter」です。各節の内容は「新規追加されたページ」で扱います。
+**Sampling（`specification/2026-07-28/client/sampling`）**: Data Types の Messages の節で、`content` フィールドの説明が「次のものを含められる（can contain）」から、「単一のコンテンツブロックか、コンテンツブロックの配列を含む。各ブロックは次のいずれかの型で、message content constraints（同じページの Message Content Constraints の節へのリンク）に従う」に書き換わりました。続く型の例は、既存の Text Content・Image Content・Audio Content の後に、次の 2 つが加わっています。
 
-なお、変更されていない Roadmap ページの Improved Primitives の節は、Tool result shape と Primitive annotations に加えて、Progressive discovery の担当も Core Primitives WG としています。一方、新しい憲章では progressive discovery は対象外（Out of Scope）で、Progressive Disclosure WG が扱うとされており、両ページの記述は揃っていません。
+| 見出し | JSON 例の主なフィールド |
+|---|---|
+| Tool Use Content | `"type": "tool_use"`、`"id": "call_abc123"`、`"name": "get_weather"`、`"input": { "city": "Paris" }` |
+| Tool Result Content | `"type": "tool_result"`、`"toolUseId": "call_abc123"`、`"content"`（`text` のブロック 1 つを含む配列） |
 
-- [Core Primitives Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives#in-scope)
+ツールを使うサンプリング自体は、同じページの Sampling with Tools と Message Content Constraints の節（変更なし）で既に説明されており、Data Types の型の一覧がそれに追いついた形です。
 
-## 2. WG の一覧 2 ページで Core Primitives が憲章ページにつながった
+同じページでは、ほかに次の 2 か所が変わっています。
 
-憲章ページの追加にあわせて、WG を一覧する 2 つのページが更新されました。
+- **Message Flow**: シーケンス図の最後の、承認された応答を添えてリクエストをやり直す矢印が、`tools/call(id:3, Return approved response)` から `tools/call(id:2, Return approved response)` になりました
+- **Context Inclusion**: `includeContext` パラメーターの説明が、「クライアントが応答に含めることを期待される文脈の情報を指定する」から、「クライアントがプロンプトに文脈の情報を付けるよう求める」に言い換えられました。`"none"`・`"thisServer"`・`"allServers"` の 3 つの値と、`"thisServer"` と `"allServers"` が非推奨だとする文は変わっていません
 
-- **Working Groups Overview（追加 1 行・削除 1 行）**: 現行の WG を並べた表（Working group・Leads・Discord・Focus の 4 列、15 行）で、Core Primitives の行の Working group の列のリンク先が、GitHub の `https://github.com/modelcontextprotocol/core-primitives-wg` から新しい憲章ページ `/community/working-groups/core-primitives` に変わりました。これで表の 15 行すべてが憲章ページを指すようになっています。リード（Kurtis Van Gent 氏・David Soria Parra 氏）、Discord（`#core-primitives-wg`）、Focus（ロードマップの Improved Primitives の領域での、ツールの結果の形・安定性・宛先）の各列は変わっていません
-- **Working Groups and Interest Groups（追加 1 行）**: Current groups の節の「Working groups:」の一覧に、Core Primitives（リンク先は `/community/working-groups/core-primitives`）が MCP Apps と File Uploads の間に加わり、WG は 14 から 15 になりました。Interest groups の一覧は変わっていません
+なお、Deprecated Features のページ（変更なし）では、Sampling 自体が `2026-07-28` で非推奨の機能として載っています。
 
-- [Working Groups Overview - MCP Docs](https://modelcontextprotocol.io/community/working-groups/overview)
-- [Working Groups and Interest Groups - MCP Docs](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
+- [Sampling - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/client/sampling#messages)
+
+## 2. リスト変更通知が subscriptions/listen の購読に揃った
+
+仕様のサーバーの機能の 3 ページで、リスト変更通知（`notifications/*/list_changed`）の JSON 例に `params` が加わりました。
+
+```json
+"params": {
+  "_meta": {
+    "io.modelcontextprotocol/subscriptionId": "listen-1"
+  }
+}
+```
+
+- **Resources（List Changed Notification の節で追加 8 行・削除 2 行）**: List Changed Notification の節の文が、「`listChanged` の能力を宣言したサーバーは通知を送るべき（SHOULD）」から、「…`resourcesListChanged: true` で `subscriptions/listen`（Subscriptions のページへのリンク）のストリームを開いたクライアントに通知を送るべき」になり、`notifications/resources/list_changed` の例に上記の `params` が加わりました
+- **Prompts**: 通知の送り先を `subscriptions/listen` のストリームを開いたクライアントとする文は既にあり、`notifications/prompts/list_changed` の例に `params` が加わっただけです
+- **Tools**: Prompts と同じく、`notifications/tools/list_changed` の例に `params` が加わりました
+
+あわせて、Resources の Capabilities の節で、`listChanged` も `subscribe` も扱わないサーバーは「それ（it）を省略してよい」が「両方のフィールドを省略してよい」になりました。
+
+Client Best Practices の Progressive Tool Discovery の Implementation Guidelines の表では、「Refresh on `list_changed`」の行が「サーバーが `notifications/tools/list_changed` を送ったら検索のカタログを索引し直す」から、「サーバーがツールについて `listChanged: true` を宣言しているなら、`toolsListChanged: true` で `subscriptions/listen`（Subscriptions のページへのリンク）のストリームを開き、サーバーが `notifications/tools/list_changed` を送ったら検索のカタログを索引し直す」に書き換わりました。
+
+- [Resources - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#list-changed-notification)
+- [Client Best Practices - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/clients/client-best-practices#implementation-guidelines)
+
+## 3. Dynamic Client Registration の非推奨の注記が詳しくなった
+
+Client Registration（201 行から 207 行）の Dynamic Client Registration の節の冒頭の警告（WARNING）が、4 行から 10 行に書き換わりました。
+
+| | 内容 |
+|---|---|
+| 旧 | Dynamic Client Registration は非推奨。新しい実装は Client ID Metadata Documents を使うべき。この方式は、Client ID Metadata Documents に対応しない認可サーバーとの後方互換のために残っている |
+| 新 | **Deprecated**: Dynamic Client Registration はプロトコルの版 `2026-07-28` で非推奨になった（PR #2858）。機能のライフサイクルのポリシー（feature lifecycle policy）のもとで、その版のリリースから少なくとも 12 か月は仕様に残り、その後に削除の対象になる。新しい実装は Client ID Metadata Documents を使うべき。後方互換のために残っている点は同じ。非推奨機能の一覧（deprecated features registry。Deprecated Features のページへのリンク）を参照 |
+
+非推奨であること自体と、移行先が Client ID Metadata Documents であることは旧版と同じで、非推奨になった版と根拠の PR、削除までの猶予、一覧へのリンクが加わっています。リンク先の Deprecated Features のページ（変更なし）にも、Dynamic Client Registration の行（PR #2858、`2026-07-28` で非推奨、最も早い削除は 2027年07月28日以降にリリースされる最初の版）が既にあります。
+
+同じページの Client ID Metadata Documents Flow のシーケンス図では、クライアントのメタデータ文書の例の URL が、4 か所とも `https://app.example.com/oauth/metadata.json` から `https://app.example.com/oauth/client-metadata.json` に変わりました（軽微な更新の「その他」参照）。
+
+- [Client Registration - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration#dynamic-client-registration)
+
+## 4. Elicitation のフォームのスキーマの記述と URL モードの図が直った
+
+Elicitation（666 行から 668 行、追加 11 行・削除 9 行）では、フォームモードの記述が 2 つの点で既存の規定と揃い、URL モードの図が直りました。
+
+**`mode` の省略**: Elicitation Requests の節で、「すべての elicitation のリクエストは次のパラメーターを含まなければならない（MUST）」に、「ただしフォームモードのリクエストは `mode` を省略してよい（MAY）」が付きました。直後の表（`mode` はフォームモードでは任意で、省略時は `"form"`）と、後方互換のためにフォームモードでは `mode` を省略してよいとする文は既にあり、それと食い違っていた文が直った形です。冒頭の 2 つのモードの説明でも、フォームモードは「任意の（optional）JSON スキーマで応答を検証する」から「JSON スキーマで応答を検証する」になりました。
+
+**フォームのスキーマで許される型**: Requested Schema の節が次のように書き換わりました。
+
+| 箇所 | 旧 | 新 |
+|---|---|---|
+| スキーマの制限 | プリミティブ型のプロパティだけを持つ平らなオブジェクト | 文字列・数値・真偽値・列挙のプロパティを持つ平らなオブジェクト。許される配列のプロパティは複数選択の列挙だけ |
+| 型の一覧の前置き | 次のプリミティブ型に限る | 次の型に限る |
+| 既定値 | すべてのプリミティブ型が任意の既定値を持てる | これらの型はすべて任意の既定値を持てる |
+| 対象外の機能 | 入れ子の構造、（列挙以外の）オブジェクトの配列など | 入れ子の構造、複数選択の列挙以外の配列など |
+
+Schema Reference の `PrimitiveSchemaDefinition` の説明も、「プリミティブ型だけを許し、入れ子のオブジェクトや配列を持たない」から「文字列・数値・真偽値・列挙で、入れ子のオブジェクトを持たない。許される配列は複数選択の列挙だけ」になりました。
+
+**URL モード**: URL Mode Elicitation Requests の節の注記は、「**New feature:** URL モードは `2025-11-25` 版で導入された（is introduced）」から「New feature」の表示が外れ、「導入された（was introduced）」になりました。設計と実装が将来の版で変わりうるとする部分は残っています。URL Mode Elicitation for OAuth Flows の Implementation Pattern のシーケンス図は、次の 3 か所が変わっています。
+
+- サーバーからクライアントへの `InputRequiredResult` の中身が、`(mode: "url", url: …, requestState)` から `(elicitation/create (mode: "url", url: …), requestState)` になった
+- クライアントが URL を開いた直後の、クライアントからサーバーへの「Accept response」の矢印が消えた
+- サーバーがトークンをユーザーの識別情報に結び付けた後に、ユーザーがクライアントに元のリクエストの再試行を指示する矢印（Retry the original request）が加わり、続いてクライアントが `tools/call (ElicitResults, requestState)` を送る
+
+- [Elicitation - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#requested-schema)
+- [Elicitation - MCP Docs](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#implementation-pattern)
+
+## 5. クライアント構築チュートリアルの要件とエラーの対処が改められた
+
+Build an MCP client（2,925 行から 2,927 行、追加 19 行・削除 17 行）は、言語ごとのタブ（Python・TypeScript・Java・Kotlin・C#・Ruby・Rust）に分かれています。今回変わったのは Python・TypeScript・Kotlin・Ruby の 4 つのタブです。
+
+**System Requirements**: Python・TypeScript・Ruby のタブで、「Mac or Windows computer」が「macOS, Windows, or Linux computer」になりました。Kotlin のタブでは「JDK 11 or higher」が「JDK 17 or higher」になっています。
+
+**Common Error Messages**: 4 つのタブで、エラーと対処の一覧が次のように変わりました。`llms-full.txt` から `Connection refused` の行は無くなっています。
+
+| タブ | 旧 | 新 |
+|---|---|---|
+| Python | `FileNotFoundError`: サーバーのパスを確認する | `FileNotFoundError`: コマンド（`python`・`node`）が使えることを確かめる |
+| Python・TypeScript・Kotlin | `Connection refused`: サーバーが動いていて、パスが正しいことを確かめる | `Connection closed`: サーバーのパスを確認し、サーバーのコマンドを直接実行して起動するか確かめる |
+| Ruby | `Errno::ENOENT`: サーバーのパスと、コマンド（`ruby`・`python3`・`node`）が使えることを確かめる | `Failed to spawn server process`: コマンド（`ruby`・`python3`・`node`）が使えることを確かめる |
+| Ruby | `Connection refused`: 上と同じ | `Server process has exited` または `Failed to write to server process`: サーバーのパスを確認し、サーバーのコマンドを直接実行して起動するか確かめる |
+
+**Python のタブ**: Main Entry Point のコードで、引数が足りないときの使い方の表示が `python client.py <path_to_server_script>` から `uv run client.py <path_to_server_script>` になり、Running the Client の節の注記（サーバーのクイックスタートの天気のチュートリアルを続ける場合のコマンドの例）も `uv run client.py …` になりました。Running the Client と Server Path Issues の節のコマンドは既に `uv run client.py` だったので、これでタブ内の表記が揃っています。
+
+**Kotlin のタブ**: `build.gradle.kts` の例に `version = "0.1.0"` が加わりました。Server Path Issues の節のコマンドの例 4 行は、jar のファイル名が `build/libs/client.jar` から `build/libs/kotlin-mcp-client-0.1.0-all.jar` になり、既にこの名前を使っていた Running the client の節と揃いました。Build Issues の節の JDK の版のエラーについての項目は、「インストールした JDK が `build.gradle.kts` の `jvmToolchain` の設定以上であることを確かめる」から「インストールした JDK が 17 以上であることを確かめる」になりました（`build.gradle.kts` の例に `jvmToolchain` の記述はありません）。
+
+Build an MCP server の Kotlin のタブでも、System requirements の「JDK 11 or higher installed.」が「JDK 17 or higher installed.」になりました。
+
+- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#common-error-messages)
+- [Build an MCP client - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#build-issues)
+- [Build an MCP server - MCP Docs](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#system-requirements-4)
 
 ## 新規追加されたページ
 
 <!-- light:new-pages:start -->
-- [**Core Primitives Charter**](#1-core-primitives-charter) ([MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives)):  
-  Core Primitives Working Group の憲章（91 行）。ツールの結果の形・安定性・宛先の 3 つの問題を対象範囲とし、関連する WG、リーダーシップ、決定権限、運営、作業項目を定めている。索引 `llms.txt` にもエントリが加わった（位置づけはハイライト 1 参照）。
+今回の対象期間に新たに追加されたページはありません。本文 `llms-full.txt` の収録ページ数（164 件。URL としては 163 件）と、索引 `llms.txt`（エントリ 365 件）は前回と同じです。
 <!-- light:new-pages:end -->
-
-## 1. Core Primitives Charter
-
-Core Primitives Charter は 91 行のページで、タイトルを除く見出しは 13 個（`##` が 8・`###` が 5）です。表を 5 つ含み、コードブロックはありません。各節の要点は次のとおりです。
-
-**Group Type・Mission Statement**: 種別は Working Group です。使命は、MCP のコアのプリミティブを改善する提案をまとめることで、ロードマップが Improved Primitives の優先領域でこの WG の名前を挙げていること、当面はツールの結果（その形・安定性・宛先）に焦点を置くことを述べています。
-
-**In Scope**: ツールの結果の 3 つの問題を挙げています。
-
-- **Tool result shape（結果の形）**: 結果の契約では、形式と宛先が `content`・`structuredContent`・`outputSchema`・audience の注釈に混在しており、仕様・拡張・ホストのドキュメントで結果の扱いについての指針が食い違っている。作業は、形式に依存しない明示的な結果の選択とルーティング、クライアントがコードを生成する前に発見できる戻り値の型を扱う。問題の記述（problem statement）は `core-primitives-wg` リポジトリのプルリクエスト #2 でレビュー中、としている
-- **Tool result stability（結果の安定性）**: クライアントの実装には、ツールの結果の型についての安定性の保証が無い。同じツールと入力でも、呼び出しごと、時間の経過、クライアントの違いによって結果のスキーマが変わりうる。作業は、結果の型にとって安定性とは何か、クライアントが比較・固定（pin）できるその型の識別子、互換な変更と破壊的な変更の分類と伝え方を扱う
-- **Tool result audience（結果の宛先）**: `content` と `structuredContent` は結果の形式を表すが、届け先は決めていない。モデル、プログラムのコード、MCP App のビュー、ユーザーは、同じ呼び出しからそれぞれ違うデータを必要としうる。作業は、結果の契約で宛先を形式と分けて扱うことを対象とする
-
-あわせて、ロードマップがプリミティブの注釈（primitive annotations）もこの WG に割り当てていること、つまり content annotations（リンク先は仕様 2026-07-28 の resources の Annotations）をツールの結果とリソースに適用するか、役に立たないなら非推奨にするかを決めることを述べています。優先領域の残りは、WG が定めるものとしてロードマップが開けてある、としています。
-
-**Out of Scope・Related Groups**: progressive discovery は対象外で、Progressive Disclosure WG が扱います。関連グループには、その Progressive Disclosure WG（同じ優先領域で、クライアントがサーバーのツールやリソースを必要に応じて知るロードマップの項目を扱う）と、File Uploads WG（スコープ付きのファイル操作とファイルシステム風のリソースの意味論の作業を、ロードマップが同じ優先領域に置いている）の 2 つを挙げています。
-
-**Leadership**: リードは次の 2 人で、任期はどちらも「To be confirmed」です。
-
-| Role | Name | Organization | GitHub |
-|---|---|---|---|
-| Lead | Kurtis Van Gent | Google | `@kurtisvg` |
-| Lead | David Soria Parra | Anthropic | `@dsp-ant` |
-
-**Authority & Decision Rights**: 8 種類の決定について権限を定めています。会合の運営と日程、WG 内の提案の優先順位付け、対象範囲内の SEP の振り分けとクローズ（理由を記録する）は WG リードが単独で決め、範囲内の技術的な設計は WG の合意で決めます。仕様の変更は、追加的なものが WG の合意のあと Core Maintainer の承認、破壊的・根本的なものはさらに広いレビューも要します。対象範囲の拡大には Core Maintainer の承認が必要で、WG メンバーの承認は WG メンバーのスポンサーによります。
-
-**Operations**: 会合は週 1 回 60 分の Working Session（技術的な議論と提案のレビュー）で、コミュニティカレンダー（`meet.modelcontextprotocol.io/tag/core-primitives-wg`）に載ります。リポジトリは `modelcontextprotocol/core-primitives-wg`、Discord のチャンネルは `#core-primitives-wg` です。
-
-**Deliverables & Success Metrics**: Active Work Items の表は 3 行で、目標日はいずれも「To be confirmed」です。提案は `core-primitives-wg` リポジトリで練られます。Success Criteria は「リードが定める」とだけあります。
-
-| Item | Status | Champion |
-|---|---|---|
-| Tool result shape | Problem statement approved | Kurtis Van Gent |
-| Tool result stability | Problem statement seeking feedback | David Soria Parra |
-| Tool result audience | To be confirmed | To be confirmed |
-
-Tool result shape の状態は、この表では「Problem statement approved」ですが、In Scope の本文では問題の記述がプルリクエスト #2 で「レビュー中」とされており、ページ内で記述が揃っていません。
-
-**Changelog**: 2026年11月11日の「Initial charter」の 1 行です。
-
-- [Core Primitives Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives#in-scope)
-- [Core Primitives Charter - MCP Docs](https://modelcontextprotocol.io/community/working-groups/core-primitives#active-work-items)
 
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-今回の対象期間に大幅な更新（本文 50 行以上の変更）があった既存ページはありません。既存ページの変更は 2 ページで計 3 行（追加 2 行・削除 1 行）にとどまり、軽微な更新に当たります（ハイライト 2 参照）。
+今回の対象期間に大幅な更新（本文 50 行以上の変更）があったページはありません。本文の変更は 26 ページで計 243 行（追加 164 行・削除 79 行）で、1 ページあたり最大 36 行（Build an MCP client と Sampling）にとどまり、すべて軽微な更新に当たります（ハイライト 1 参照）。
 <!-- light:updated-pages:end -->
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回差分が出たファイルは `llms.txt` と `llms-full.txt` の 2 件で、新規ページ（Core Primitives Charter）のほかに、次の変更がありました。
+今回差分が出たファイルは `llms-full.txt` の 1 件で（`llms.txt` は変更なし）、26 ページに次の変更がありました。
 
 **機能改善**
 
-- Working Groups and Interest Groups の Current groups の WG の一覧に、Core Primitives を MCP Apps と File Uploads の間に追加し、WG は 15 になった（詳細はハイライト 2 参照） — [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups#current-groups)
+- Sampling の Data Types の Messages に、Tool Use Content と Tool Result Content の例を追加し、`content` が単一のブロックかブロックの配列であることを明記した（詳細はハイライト 1 参照） — [Sampling](https://modelcontextprotocol.io/specification/2026-07-28/client/sampling#messages)
+- Sampling の Context Inclusion で、`includeContext` の説明を「クライアントがプロンプトに文脈の情報を付けるよう求める」に言い換えた（詳細はハイライト 1 参照） — [Sampling](https://modelcontextprotocol.io/specification/2026-07-28/client/sampling#context-inclusion)
+- Resources の List Changed Notification で、通知の送り先を `resourcesListChanged: true` で `subscriptions/listen` のストリームを開いたクライアントと明記し、例に `subscriptionId` の `_meta` を加えた（詳細はハイライト 2 参照） — [Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#list-changed-notification)
+- Prompts の List Changed Notification の例に、`subscriptionId` の `_meta` を加えた（詳細はハイライト 2 参照） — [Prompts](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts#list-changed-notification)
+- Tools の List Changed Notification の例に、`subscriptionId` の `_meta` を加えた（詳細はハイライト 2 参照） — [Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#list-changed-notification)
+- Client Best Practices の Implementation Guidelines の「Refresh on `list_changed`」で、`toolsListChanged: true` で `subscriptions/listen` のストリームを開くよう書き換えた（詳細はハイライト 2 参照） — [Client Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/develop/clients/client-best-practices#implementation-guidelines)
+- Resources の Data Types で、Resource の定義に任意の `annotations` を加え、Resource Template の定義の節（`uriTemplate`・`name`・`title`・`description`・`icons`・`mimeType`・`annotations`）を新設した。`mimeType` は、テンプレートに合うすべてのリソースが同じ型のときだけ含める — [Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#resource-template)
+- Client Registration の Dynamic Client Registration の非推奨の注記に、非推奨になった版（`2026-07-28`、PR #2858）、少なくとも 12 か月の猶予、非推奨機能の一覧へのリンクを加えた（詳細はハイライト 3 参照） — [Client Registration](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration#dynamic-client-registration)
+- Elicitation の Requested Schema で、フォームのスキーマのプロパティは文字列・数値・真偽値・列挙で、許される配列は複数選択の列挙だけだと明記した（詳細はハイライト 4 参照） — [Elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#requested-schema)
+- Schema Reference の `PrimitiveSchemaDefinition` の説明を、同じく複数選択の列挙の配列を許す形に改めた（詳細はハイライト 4 参照） — [Schema Reference](https://modelcontextprotocol.io/specification/2026-07-28/schema#primitiveschemadefinition)
+- Build an MCP client の Python・TypeScript・Ruby のタブの要件を「macOS, Windows, or Linux computer」にした（詳細はハイライト 5 参照） — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#system-requirements)
+- Build an MCP client の 4 つのタブの Common Error Messages で、`Connection refused` などの行を、`Connection closed` などとサーバーのコマンドを直接実行して確かめる対処に書き直した（詳細はハイライト 5 参照） — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#common-error-messages)
+- Build an MCP client の Kotlin のタブで、要件と Build Issues の JDK を 17 以上にした（詳細はハイライト 5 参照） — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#build-issues)
+- Build an MCP server の Kotlin のタブの要件を JDK 17 以上にした（詳細はハイライト 5 参照） — [Build an MCP server](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server#system-requirements-4)
+- Versioning and Compatibility の Compatibility Matrix に、クライアントが Modern でサーバーが Dual-era の行（動く。サーバーはその版に従ってステートレスにクライアントに応える）と、両方が Dual-era の行（動く。共通して対応する modern の版があればクライアントは modern のまま）を加え、表は 9 行になった — [Versioning and Compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning#compatibility-matrix)
+- Progress の冒頭の説明と Progress Flow の節のあいだに、このページのリクエストの例は `progressToken` だけを示して `_meta`（`io.modelcontextprotocol/protocolVersion`・`clientInfo`・`clientCapabilities`）を省いているが、すべてのリクエストは必須の `_meta` のフィールドを含まなければならない（MUST）とする注記を加えた — [Progress](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/progress)
+- Caching の Interaction with Notifications に、キャッシュした `resources/read` の結果を無効にする通知は、そのリソースかその下位のリソースについての `notifications/resources/updated` だとする文を加えた — [Caching](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching#interaction-with-notifications)
+- Key Changes の Minor changes の 5 項目目（`CacheableResult` による `ttlMs` と `cacheScope` の必須化）で、対象の結果に `server/discover` を加え、根拠に PR #2855 を加えた — [Key Changes](https://modelcontextprotocol.io/specification/2026-07-28/changelog#minor-changes)
+- Tools の Data Types の Tool の定義で、`description` の説明を「Optional human-readable description」にした — [Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#tool)
+- Completion の Data Types で、CompleteRequest の `context` とその `arguments`、CompleteResult の `hasMore` の説明に「Optional」を付けた — [Completion](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/completion#completerequest)
+- Specification の Additional Utilities の一覧を、Configuration・Progress tracking・Cancellation・Error reporting の 4 項目から、Progress tracking・Cancellation・Subscriptions・Completion・Pagination・Caching・Error reporting の 7 項目にした（Configuration は外れた） — [Specification](https://modelcontextprotocol.io/specification/2026-07-28/index#additional-utilities)
+- Architecture overview の Understanding the Discovery Exchange で、Identity Exchange（`clientInfo` と `serverInfo`）の目的を「デバッグと互換性のため」から「表示・ログ・デバッグのため」にした — [Architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture#understanding-the-discovery-exchange)
+
+**バグ修正**
+
+- Sampling の Message Flow の図で、承認された応答を添えて送り直す `tools/call` の id を 3 から 2 に直した（詳細はハイライト 1 参照） — [Sampling](https://modelcontextprotocol.io/specification/2026-07-28/client/sampling#message-flow)
+- Elicitation の Elicitation Requests で、全リクエストが `mode` を含まなければならないとした文に、フォームモードは省略してよいとの例外を付け、同じ節の表・後方互換の文と揃えた（詳細はハイライト 4 参照） — [Elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#elicitation-requests)
+- Elicitation の URL Mode Elicitation for OAuth Flows の図で、「Accept response」の矢印を外し、ユーザーが元のリクエストを再試行する矢印を加えた（詳細はハイライト 4 参照） — [Elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#implementation-pattern)
+- Build an MCP client の Python のタブで、使い方の表示と注記のコマンドを `uv run client.py` にし、タブ内の他の節と揃えた（詳細はハイライト 5 参照） — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#running-the-client)
+- Build an MCP client の Kotlin のタブで、`build.gradle.kts` の例に `version = "0.1.0"` を加え、Server Path Issues の jar のファイル名を `kotlin-mcp-client-0.1.0-all.jar` にして Running the client の節と揃えた（詳細はハイライト 5 参照） — [Build an MCP client](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-client#server-path-issues-3)
 
 **その他**
 
-- Working Groups Overview の表で、Core Primitives の行のリンク先を GitHub の `modelcontextprotocol/core-primitives-wg` から新しい憲章ページに変更（詳細はハイライト 2 参照） — [Working Groups Overview](https://modelcontextprotocol.io/community/working-groups/overview)
-- 索引 `llms.txt` で、MCP Apps Working Group Charter と File Uploads Charter のエントリの間に Core Primitives Charter のエントリ（説明文「Charter for the MCP Core Primitives Working Group.」）を追加。エントリ数は 364 件から 365 件、ファイルは 369 行から 370 行になった（末尾に改行が無いため、改行の数では 368 から 369） — [Core Primitives Charter](https://modelcontextprotocol.io/community/working-groups/core-primitives)
+- Debugging（4 か所）・Inspector の Authorization（4 か所）・TUI client（2 か所）・Security Best Practices（3 か所）で、仕様へのリンク計 13 か所を `/specification/latest/…` から `/specification/2026-07-28/…` に変えた。`llms-full.txt` には `/specification/latest/` へのリンクがほかに 5 か所（Build an MCP App に 2 か所、Enterprise-Managed Authorization・Authorization Extensions・Design Principles に各 1 か所）残っている — [Debugging](https://modelcontextprotocol.io/docs/2026-07-28/tools/debugging#debugging-tools-overview)
+- Client Registration の Client ID Metadata Documents Flow の図で、クライアントのメタデータ文書の例の URL を `oauth/metadata.json` から `oauth/client-metadata.json` に変えた（4 か所） — [Client Registration](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration#client-id-metadata-documents-flow)
+- 仕様の Authorization の Refresh Tokens で、OAuth 2.1 Section 4.3 へのリンク先を草案の `draft-ietf-oauth-v2-1-14` から `-13` に変えた。`llms-full.txt` の OAuth 2.1 の草案へのリンクはこれですべて `-13` になった — [Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/index#refresh-tokens)
+- Versioning and Compatibility の Extension Negotiation と、Key Changes の Minor changes の 1 項目目で、拡張の概要へのリンクを `/docs/extensions/overview` から `/extensions/overview` に変えた — [Versioning and Compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning#extension-negotiation)
+- Key Changes の Minor changes の 12 項目目で、番号を振り直すエラーコードを「この草案で導入した」から「この版の以前の草案で導入した」に言い換えた — [Key Changes](https://modelcontextprotocol.io/specification/2026-07-28/changelog#minor-changes)
+- Specification の Extensions の Skills over MCP のリンク先を、WG の憲章（`/community/working-groups/skills-over-mcp`）から拡張の概要（`/extensions/skills/overview`）に変え、Learn More の Client Features のカードのリンク先を `/specification/2026-07-28/client` から `/specification/2026-07-28/client/elicitation` に変えた — [Specification](https://modelcontextprotocol.io/specification/2026-07-28/index#extensions)
+- Elicitation の URL Mode Elicitation Requests の注記から「**New feature:**」の表示を外し、「導入された（was introduced）」にした — [Elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#url-mode-elicitation-requests)
+- Resources の Capabilities で、どちらの機能も扱わないサーバーが省略してよいものを「両方のフィールド」と明記した — [Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#capabilities)
+- Connect to local MCP servers の Troubleshooting で、項目名を「Server not showing up in Claude / hammer icon missing」から「Server not showing up in Claude」にした — [Connect to local MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers#troubleshooting)
+- Connect to remote MCP Servers の What are Custom Connectors? で、カスタムコネクタの入門記事へのリンクのドメインを `support.anthropic.com` から `support.claude.com` に変えた — [Connect to remote MCP Servers](https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-remote-servers#what-are-custom-connectors)
+- What is the Model Context Protocol (MCP)? の MCP の図に、`llms-full.txt` 上で代替テキスト（AI アプリケーションとデータソース・ツールのあいだの標準化されたプロトコルとしての MCP の図、という説明）が付いた — [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro)
+- Authorization Charter で、SEP のスポンサーについての文言を SEP guidelines に委ねる形に言い換え（Out of Scope は「スポンサーと受理は SEP guidelines に従い、メンテナーと Core Maintainer に残る」から「スポンサーは SEP guidelines に従い、受理はメンテナーと Core Maintainer に残る」に、From problem to SEP は「スポンサーを見つける」から「SEP guidelines の Sponsors の説明どおりにスポンサーを得る」に）、Changelog に 2026年11月10日の行を加えた — [Authorization Charter](https://modelcontextprotocol.io/community/interest-groups/auth#from-problem-to-sep)
 <!-- light:minor-updates:end -->
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-21.md](./archives/latest/2026-11-21.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-21.md](./archives/latest-detail/2026-11-21.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-23.md](./archives/latest/2026-11-23.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-23.md](./archives/latest-detail/2026-11-23.md)
 
 <!--
-base_commit: 3279a161e968357548276a7baa091d6d6f481473
-head_commit: 6b8844c93bee3ab36c9d7bb656a2476fb661c469
-generated_at_full: 2026-11-24T15:29:36+09:00
+base_commit: 6b8844c93bee3ab36c9d7bb656a2476fb661c469
+head_commit: 1c6dc5c3f6d9261729fd5a8dbb3dd2389c542149
+generated_at_full: 2026-11-25T15:29:52+09:00
 -->
