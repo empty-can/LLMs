@@ -8416,6 +8416,9 @@
     <loc>https://claude.com/marketplace/connectors/jetpost</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/jitter</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/jobber</loc>
   </url>
   <url>
@@ -8618,6 +8621,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/london-stock-exchange-group</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/loomi-connect</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/loopio</loc>
@@ -9034,6 +9040,9 @@
     <loc>https://claude.com/marketplace/connectors/onesignal</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/oneteam</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/onfire</loc>
   </url>
   <url>
@@ -9071,6 +9080,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/oracle-netsuite</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/ordinal</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/oreilly</loc>
@@ -10280,6 +10292,15 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/weinc</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/weinc-copy-any-design</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/weinc-domain-for-anything</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/weinc-instant-website</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/wetransfer</loc>
@@ -11899,6 +11920,9 @@
     <loc>https://claude.com/marketplace/plugins/superdesign</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/plugins/superme</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/plugins/supermetrics</loc>
   </url>
   <url>
@@ -12038,6 +12062,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/weinc</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/whenever</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/wiley-scholar-gateway</loc>
@@ -13759,6 +13786,9 @@
     <loc>https://claude.com/resources/webinars/dri-ing-your-career</loc>
   </url>
   <url>
+    <loc>https://claude.com/resources/webinars/engineers-agents-and-black-friday-what-shopify-learned-at-peak</loc>
+  </url>
+  <url>
     <loc>https://claude.com/resources/webinars/enterprise-readiness-a-cisos-guide-to-deploying-claude</loc>
   </url>
   <url>
@@ -13784,6 +13814,9 @@
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/how-anthropic-and-asana-transform-work-at-scale-with-ai-agents</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/resources/webinars/how-anthropic-secures-its-agents</loc>
   </url>
   <url>
     <loc>https://claude.com/resources/webinars/how-anthropic-works-with-claude-tag-in-slack</loc>
