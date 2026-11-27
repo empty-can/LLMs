@@ -29940,9 +29940,9 @@ This page defines the contributor roles in the MCP project, what each requires a
 | [Contributor](#contributor) | Anyone who has contributed to MCP in any form | None. Issues and group meetings are open to all. [Pull requests](/community/contributing#change-the-specification-or-docs) vary by repository | None |
 | [Member](#member) | Established, active contributor | GitHub organization membership, triage rights | 2-3 months of active participation |
 | [Maintainer](#maintainer) | Steward of a named area (an SDK, a tool, a docs area, a group) | Merge rights in the area, listed in [`MAINTAINERS.md`](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md) | 6 months as Member |
-| [Core Maintainer](#core-maintainer) | Project-wide technical leadership; authority in [Governance](/community/governance#roles) | Administrative rights on all repositories | By invitation after sustained Maintainer contribution |
-| [Lead Maintainer](#lead-maintainer) | Founding role; authority in [Governance](/community/governance#roles) | Administrative rights on all repositories and infrastructure | Founders and their successors only |
-| [Community Moderator](#community-moderator) | Code of Conduct enforcement and incident handling | Moderation tools on Discord and GitHub Discussions | Member status; parallel track |
+| [Core Maintainer](#core-maintainer) | Project-wide technical leadership. Authority in [Governance](/community/governance#roles) | Administrative rights on all repositories | By invitation after sustained Maintainer contribution |
+| [Lead Maintainer](#lead-maintainer) | Founding role. Authority in [Governance](/community/governance#roles) | Administrative rights on all repositories and infrastructure | Founders and their successors only |
+| [Community Moderator](#community-moderator) | Code of Conduct enforcement and incident handling | Moderation tools on Discord and GitHub Discussions | Member status, parallel track |
 
 Timelines are minimums, advancement is discretionary, and an exception requires Core Maintainer approval with written rationale. Code, specification text, documentation, triage, security work, community work and moderation all count equally toward every role.
 
@@ -29978,6 +29978,39 @@ A Contributor is anyone who has contributed to MCP in any form: issues, pull req
 **Privileges.** Merge rights in owned areas. May sponsor Members, Maintainers and SEPs (see [SEP Guidelines](/community/sep-guidelines#sponsors)). Included in roadmap and prioritization discussions. Listed in [`MAINTAINERS.md`](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md).
 
 **Minimum time.** 6 months as Member.
+
+### Release managers
+
+Primary and secondary release managers are selected from the project's [Maintainers](#maintainer).
+
+Maintainers can nominate themselves for these roles. A candidate is selected when more than half of the [Core Maintainers](#core-maintainer) vote in favor. The voting group includes Lead Maintainers but not emeritus members.
+
+If a release manager becomes unavailable, Core Maintainers can select a replacement through the same nomination and voting process.
+
+The secondary release manager becomes the primary release manager for the following release. Core Maintainers select a new secondary release manager before planning for that release begins. The primary release managers for the first release do not need to have served as secondary release managers.
+
+The primary release manager coordinates:
+
+* The release calendar
+* SEP review scheduling
+* Soft and hard freezes
+* SDK readiness
+* Release publication
+* Release communications
+
+The secondary release manager helps maintain the [SEP review queue](/community/release-cycle#sep-review-queue) and handoff notes while preparing to lead the next release cycle.
+
+Release cycles overlap by two months. During the overlap, the secondary release manager is also the primary release manager for the following cycle and leads its planning with the new secondary release manager.
+
+The outgoing primary release manager remains accountable for the current release until it is published. On release day, the release managers complete the handoff notes with outstanding issues and their owners.
+
+After each release, the release managers publish a retrospective. It covers SEP review queue wait times, readiness at soft freeze, SDK beta availability, critical fixes after hard freeze, and release manager workload while cycles overlap.
+
+A release manager who is blocked can escalate the decision to the Core Maintainers.
+
+Core Maintainers accept or reject SEPs and approve any change after hard freeze. They also make sure that release managers have the access and resources they need, and invite them to Core Maintainer meetings.
+
+The [release cycle](/community/release-cycle) defines the schedule and deadlines, and the [maintainer roster](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md#release-managers) lists the current release managers.
 
 ## Core Maintainer
 
@@ -30340,6 +30373,19 @@ The [Contributor Ladder](/community/contributor-ladder) also defines the **Membe
 The Core Maintainer group meets every two weeks to discuss and vote on proposals, as well as discuss any topics needed. The shared Discord server can be used to discuss and vote on smaller proposals if needed.
 
 The Lead Maintainer, Core Maintainer, and Maintainer group should attempt to meet in person every three to six months.
+
+### Amendments
+
+Only Lead Maintainers can propose amendments to this governance structure. An amendment takes effect when two-thirds of all Core Maintainers approve it.
+
+An amendment proposal must:
+
+1. Be submitted in writing, with a clear rationale for the change.
+2. Include the specific language that modifies the existing governance provisions.
+3. Allow a comment period of at least five days before the vote.
+4. Be decided by a recorded vote of the Core Maintainers.
+
+Approved amendments also need the approval of LF Projects, LLC, as described in [General Project Policies](#general-project-policies).
 
 ## Processes
 
@@ -31244,6 +31290,133 @@ A vulnerability with no evidence of exploitation is not a CRA escalation event. 
 [Communication](/community/communication) sets out which channel is for what, when a channel may be private, and where decisions are recorded.
 
 
+# Release Cycle
+Source: https://modelcontextprotocol.io/community/release-cycle
+
+Release milestones and deadlines for SEP authors and SDK maintainers.
+
+MCP specification releases are published every six months, generally on the last Tuesday of March and September.
+
+## Schedule
+
+Each release has an eight-month cycle. Planning for the next release starts **2 months** before the current release is published. [Release managers](/community/contributor-ladder#release-managers) publish the exact milestone dates for each release on the [releases page](https://voting.modelcontextprotocol.io/p/releases) at the start of planning. Milestone intervals are measured in calendar months.
+
+Specification versions use the release date in [`YYYY-MM-DD` format](/docs/learn/versioning).
+
+![March and September release cycles, each with planning, Core Maintainer review, and stabilization. The cycles overlap by two months, and releases are six months apart.](https://mintcdn.com/mcp/DlhTaFDK8kDED8OR/images/release-cycle-timeline-light.svg?fit=max\&auto=format\&n=DlhTaFDK8kDED8OR\&q=85\&s=6dc770fc8b4f5f5946565b53b831b99b)
+
+Eight-month cycles overlap by two months. Releases are six months apart.
+
+## Milestones
+
+| Milestone | Before release | Outcome |
+| - | - | - |
+| Planning begins | 8 months | Core Maintainers propose a roadmap and gather feedback from maintainers and working groups. |
+| Core Maintainer review opens | 6 months | Priorities are published and scheduled SEP reviews begin. |
+| Soft freeze | 2.5 months | Review closes. Included SEPs must be [Final](/community/sep-guidelines#workflow) and merged. |
+| Next-cycle planning begins | 2 months | Planning for the following release starts. |
+| SDK beta | 1.5 months | Tier 1 SDKs publish betas supporting the frozen specification. |
+| Hard freeze | 1 month | Specification changes are restricted to critical fixes. |
+| Release | 0 months | The specification, release notes, implementation and migration guidance, and SDK readiness summary are published. |
+
+During planning, Core Maintainers publish priorities for the next six to twelve months in the [roadmap](/development/roadmap), along with dependencies across working groups and SDKs. Proposals that align with the roadmap receive review priority, but a place on the roadmap does not guarantee acceptance or inclusion in a particular release.
+
+### Soft freeze
+
+At soft freeze, **2.5 months** before release, the release scope is fixed:
+
+* Release managers publish the frozen scope and the list of deferred proposals.
+* Until hard freeze, only bug fixes, polish, and clarifications within that scope can be merged.
+* New features and substantial redesigns move to a later cycle.
+
+### Hard freeze
+
+At hard freeze, **1 month** before release, the specification changes only for critical fixes:
+
+* A critical fix addresses a critical security vulnerability or a defect in correctness or interoperability that blocks the release.
+* Each fix follows the [critical fix procedure](#critical-fixes).
+* More than half of the [Core Maintainers](/community/sep-guidelines#review-and-acceptance) must approve each fix in a recorded vote.
+
+## SEP review and inclusion
+
+Sponsorship, submission, and finalization follow the [SEP workflow](/community/sep-guidelines#workflow). A working group lead or Core Maintainer submits proposals to the [SEP review queue](https://voting.modelcontextprotocol.io/p/seps). The queue accepts submissions year-round. Submitting a proposal does not guarantee review time or inclusion in a release.
+
+### SEP review queue
+
+Release managers maintain the SEP review queue. Each entry records:
+
+* A link to the proposal
+* The sponsoring group and its representative
+* The sponsor, if one is assigned
+* Whether the request is for formal review or pre-review
+* The readiness date, roadmap alignment, and target review cycle
+
+An entry for formal review links to the SEP pull request in the [specification repository](https://github.com/modelcontextprotocol/modelcontextprotocol). This includes [Extensions Track](/community/sep-guidelines#sep-types) SEPs, which are proposed in the specification repository and not in an extension repository. An entry for pre-review can link to an early proposal anywhere, such as a working group or extension repository. That proposal does not need a SEP number or the sponsoring group's approval yet.
+
+A working group lead or Core Maintainer can request a pre-review to discuss a proposal's direction, dependencies, and major concerns before the proposal is complete. A pre-review gives authors feedback but does not approve the proposal or reserve a place in a release.
+
+### Review scheduling
+
+Formal reviews take place at regular Core Maintainer meetings during the review window. Release managers build each meeting agenda from the SEP review queue in this order:
+
+1. Proposals that are ready for formal review come before pre-reviews.
+2. Within each of those two groups, roadmap-aligned proposals come first.
+3. Among proposals with the same roadmap alignment, the proposal with the oldest readiness date comes first.
+
+Release managers record the reason for any exception to this order in the queue. A proposal that is deferred only because the agenda was full keeps its readiness date. A proposal that was returned for substantive revision receives a new readiness date when it is resubmitted.
+
+### Formal review
+
+![Formal SEP review: the agenda is published 2 weeks before the meeting, reviewers comment on the pull request during the week before the meeting, the proposal is presented at the meeting, and the acceptance vote stays open for 7 calendar days.](https://mintcdn.com/mcp/DlhTaFDK8kDED8OR/images/sep-review-timeline-light.svg?fit=max\&auto=format\&n=DlhTaFDK8kDED8OR\&q=85\&s=de19ca755b0e8ec0c6140dfd1037f4ab)
+
+A formal review takes three weeks, from the published agenda to the end of the vote.
+
+1. **2 weeks before the meeting:** Release managers select ready proposals with the Core Maintainers and publish the agenda and proposal links. They invite each proposal's authors and its working group lead or sponsoring Core Maintainer to the meeting.
+2. **1 week before the meeting:** During this week, reviewers leave comments on the pull request. Authors and sponsors respond and identify the questions that need discussion.
+3. **At the meeting:** The author, working group lead, or sponsoring Core Maintainer presents the proposal, the remaining questions, and any implementation feedback.
+4. **After the presentation:** The sponsor opens the [acceptance vote](/community/sep-guidelines#review-and-acceptance), which remains open for **7 calendar days**.
+
+### Inclusion in a release
+
+A SEP reaches [Final status](/community/sep-guidelines#workflow) when its sponsor has verified all required artifacts, including the specification changes, reference implementation, and any required conformance tests. To be included in a release, a SEP must reach Final and have its pull request merged by the soft freeze date.
+
+The release date does not move for unfinished proposals. SEPs that miss soft freeze are considered for later releases:
+
+* Accepted SEPs keep their status unless a substantial redesign requires another review.
+* Proposals awaiting a decision keep their status and return to the SEP review queue.
+
+Inclusion in a later release depends on the proposal's readiness and that cycle's scope. Changes for future releases remain in proposal branches or pull requests until the current release is published.
+
+A freeze applies to everything that is not yet merged when it starts. A SEP that was already accepted, or whose vote was still open at that point, has to follow the freeze like any other change.
+
+The review window applies to all SEP types. Process and Informational SEPs take effect after acceptance and implementation, independently of specification publication. Extensions follow their [publication lifecycle](/extensions/overview#extension-lifecycle).
+
+## SDK deadlines
+
+SDK maintainers should begin implementation as soon as a SEP is accepted. They should report specification ambiguities to the author and sponsor while fixes can still be merged. SDK implementations are not required for a SEP to reach Final status.
+
+[Tier 1 SDKs](/community/sdk-tiers) publish beta versions **1.5 months** before the release and stable versions before the specification is published. The beta gives client and server developers half a month to report issues before hard freeze.
+
+These deadlines cover the features required by the tiering policy, not experimental features or extensions. SDKs in other tiers are encouraged to publish betas on the same schedule.
+
+Beta release notes identify the target specification release, the available functionality, known gaps, and where to report feedback. SDK maintainers work with release managers to keep the public readiness summary up to date with SDK versions, conformance results, gaps, owners, and expected resolution dates.
+
+Release managers escalate a missed beta or stable milestone to the Core Maintainers and the [SDK Working Group](/community/working-groups/sdk) and report it in the release guidance. SDK delays do not postpone the specification release or automatically change an SDK's tier.
+
+## Critical fixes
+
+After hard freeze, the primary release manager coordinates each critical fix through a regular pull request. A critical fix does not need a separate SEP, a sponsor, or a meeting presentation.
+
+1. The primary release manager confirms that the change meets the [hard-freeze criteria](#hard-freeze). The pull request documents the defect, why the fix cannot wait for the next release, the smallest change that fixes the defect, and the effect on SDKs and release artifacts.
+2. The primary release manager opens a recorded vote of all eligible Core Maintainers. The vote can take place outside the review window. The primary release manager can shorten the seven-day voting period, but must notify all eligible Core Maintainers of the deadline and the reason.
+3. Maintainers of the affected implementations review the change, and the relevant regression and conformance checks are run. If the change alters observable protocol behavior, the conformance tests are updated.
+4. After approval and validation, the pull request is merged. The primary release manager records the vote, decision, and validation results, notifies the affected SDK maintainers, and updates the readiness summary and release notes.
+
+If a defect cannot be fixed safely before the release, the affected feature and the changes that depend on it can be removed from the release. Removal follows the same procedure and vote. The rest of the specification is released on schedule.
+
+Security-sensitive details follow the [security disclosure process](/community/policies#reporting-a-vulnerability). The decision and validation record stays in a restricted channel during an embargo and is published when disclosure permits.
+
+
 # SDK Tiers
 Source: https://modelcontextprotocol.io/community/sdk-tiers
 
@@ -31358,7 +31531,9 @@ Source: https://modelcontextprotocol.io/community/sep-guidelines
 
 When a Specification Enhancement Proposal is required and the procedure a proposal follows from pull request to Final.
 
-This page describes when a Specification Enhancement Proposal (SEP) is required and the procedure from pull request to Final. A SEP is a design document that gives a concise technical specification of a feature or process and its rationale. Its author is responsible for building consensus and recording dissenting opinions. [SEP-1850](/seps/1850) adopted the process and [SEP-2484](/seps/2484) the conformance gate. Changing either requires a Process SEP. The sponsorship rules on this page follow [SEP-3398](/seps/3398).
+A Specification Enhancement Proposal (SEP) is a design document that specifies a feature or process and explains its rationale. Its author is responsible for building consensus and recording dissenting opinions.
+
+Changes to the SEP process require a Process SEP.
 
 ## When you need a SEP
 
@@ -31371,7 +31546,7 @@ Write a SEP for:
 * A governance or process change
 * Anything controversial or with several plausible designs, such as a change to how authorization works
 
-Bug fixes, clarifications, editorial changes, new examples for existing features, schema fixes that do not change behavior, and tests go in an ordinary pull request. Amendments to the governance document itself follow the procedure in [SEP-2085](/seps/2085), not this process. If unsure, ask in [Discord](/community/communication#discord) first.
+Bug fixes, clarifications, editorial changes, new examples for existing features, schema fixes that do not change behavior, and tests go in an ordinary pull request. Amendments to the governance document itself follow the [amendment procedure](/community/governance#amendments), not this process. If unsure, ask in [Discord](/community/communication#discord) first.
 
 ## SEP types
 
@@ -31382,7 +31557,7 @@ Bug fixes, clarifications, editorial changes, new examples for existing features
 
 ## Before you write
 
-A SEP needs a working group to sponsor it before formal review (see [Sponsors](#sponsors)).
+A SEP needs sponsorship from a working group or the Core Maintainer group before formal review (see [Sponsors](#sponsors)). Most proposals start with a working group.
 
 To get a working group's sponsorship:
 
@@ -31410,8 +31585,8 @@ flowchart TD
     Superseded["superseded"]
 
     Idea -->|"Developed in the open,<br/>no sponsor yet"| DraftPR
-    Idea -->|"Working group<br/>agrees to sponsor"| Draft
-    DraftPR -->|"Working group<br/>agrees to sponsor"| Draft
+    Idea -->|"Working group or Core Maintainers<br/>agree to sponsor"| Draft
+    DraftPR -->|"Working group or Core Maintainers<br/>agree to sponsor"| Draft
     DraftPR -->|"180 days without a sponsor"| Dormant
     Dormant -->|"Sponsor found, PR reopened"| Draft
     Draft --> Withdrawn
@@ -31426,10 +31601,10 @@ flowchart TD
 
 1. Copy [`seps/TEMPLATE.md`](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/TEMPLATE.md) to `seps/0000-<slug>.md` and fill it in.
 2. Open a pull request against the [specification repository](https://github.com/modelcontextprotocol/modelcontextprotocol), titled `sep: <description>` as in `sep: propose task cancellation`, following the [pull request title guidelines](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/CONTRIBUTING.md#pull-request-titles). Authors who are not members of the `modelcontextprotocol` GitHub organization ask the working group's leads or the [sponsor](#sponsors) to open the pull request and name them as the author.
-3. The SEP number is the PR number. Rename the file (PR #1850 becomes `seps/1850-<slug>.md`), update the header, and run `npm run generate:seps`, or the `check:seps` CI job fails. Rename the pull request to `sep(SEP-1850): <description>`; a follow-up commit is enough, with no amend or force-push. Later pull requests about this SEP keep `SEP-1850` as their scope and link to it in the description.
-4. Until a working group has agreed to sponsor the SEP, it stays a draft pull request. A draft pull request is for developing a proposal in the open. It is not yet in the SEP process, the `Status` header in the SEP stays unset, and the `wg-support-needed` label marks it.
-5. Once a working group has agreed to [sponsor](#sponsors) the SEP, the pull request is marked ready for review. The `Sponsor` header names the person who acts on the sponsoring group's behalf, and that person sets `draft`. Review takes place in PR comments.
-6. When the SEP is ready, the sponsor confirms that the prior discussion happened and is linked in the pull request description, sets `in-review`, and puts it on the Core Maintainer meeting agenda. The author and sponsor may present it.
+3. The SEP number is the PR number. Rename the file (PR #1850 becomes `seps/1850-<slug>.md`), update the header, and run `npm run generate:seps`, or the `check:seps` CI job fails. Rename the pull request to `sep(SEP-1850): <description>`. A follow-up commit is enough, with no amend or force-push. Later pull requests about this SEP keep `SEP-1850` as their scope and link to it in the description.
+4. Until a working group or the Core Maintainers agree to sponsor the SEP, it stays a draft pull request. A draft pull request is for developing a proposal in the open. It is not yet in the SEP process, the `Status` header in the SEP stays unset, and the `wg-support-needed` label marks it.
+5. Once a group has agreed to [sponsor](#sponsors) the SEP, the pull request is marked ready for review. The `Sponsor` header names the person who acts on the sponsoring group's behalf, and that person sets `draft`. Review takes place in PR comments.
+6. When the SEP is ready, the sponsor verifies that the sponsorship decision and prior discussion are linked in the pull request description, then sets `in-review`. The WG Lead or sponsoring Core Maintainer submits it to the [SEP review queue](https://voting.modelcontextprotocol.io/p/seps). Release managers schedule reviews during the [release cycle's review window](/community/release-cycle#milestones). The author and sponsor may present the proposal.
 7. Core Maintainers decide under [Review and acceptance](#review-and-acceptance). The sponsor records the outcome, `accepted` or `rejected`, on the PR and in the SEP header.
 8. For an accepted SEP, the author adds to the same PR: the specification prose, the `schema.ts` changes with regenerated output (see [CONTRIBUTING.md](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/CONTRIBUTING.md#schema-changes)), a changelog entry, and any required documentation edits (for a deprecation, the four edits under [Deprecating a Feature](/community/feature-lifecycle#deprecating-a-feature)). The reference implementation is completed where it lives: an SDK branch, a fork or a standalone repository (see [Prototype Requirements](#prototype-requirements)). For a Standards Track SEP with observable protocol behavior, the conformance scenario and `sep-NNNN.yaml` are merged (see [Conformance Test Requirement](#conformance-test-requirement)). SDK implementations are not required for Final.
 9. The sponsor verifies these artifacts and sets `final`. The PR is then merged.
@@ -31439,7 +31614,7 @@ The eight `Status` values, also defined on the [SEP index](/seps):
 | Status | Meaning | Set by |
 | - | - | - |
 | `draft` | Has a sponsor, pull request ready for review, under informal review in PR comments | Sponsor |
-| `in-review` | On the Core Maintainer agenda for formal review | Sponsor |
+| `in-review` | In the SEP review queue or on the Core Maintainer agenda for formal review | Sponsor |
 | `accepted` | Approved, awaiting specification text, reference implementation and conformance | Sponsor, after the Core Maintainer decision |
 | `rejected` | Declined by Core Maintainers | Sponsor, after the Core Maintainer decision |
 | `withdrawn` | Withdrawn by the author | Author or sponsor |
@@ -31470,7 +31645,19 @@ A SEP needs a working prototype before it can be accepted: an implementation in 
 
 ## Review and acceptance
 
-Core Maintainers review `in-review` SEPs at their meeting every two weeks under the [decision process](/community/governance#decision-process). The criteria are a working prototype, clear benefit to the MCP ecosystem, community support and consensus, and fit with the roadmap and the design principles. The outcome is `accepted`, `rejected`, or a return to `draft` with specific feedback recorded on the PR.
+Core Maintainers review `in-review` SEPs during the [release cycle's review window](/community/release-cycle#milestones), from **6 months** before release until the soft freeze date. Release managers publish the agenda and proposal links **2 weeks** before each meeting. Review considers the working prototype, benefit to the MCP ecosystem, community support and consensus, and fit with the [roadmap](/development/roadmap) and [design principles](/community/design-principles).
+
+Release managers [order the SEP review queue](/community/release-cycle#review-scheduling) by roadmap alignment and then by the date each proposal became ready for review.
+
+After the presentation, the sponsor opens a recorded seven-calendar-day vote and links the record from the SEP PR. Acceptance requires more than half of the Core Maintainers to vote in favor. The vote stays open for all seven days and must conclude before the soft freeze date.
+
+The sponsor records the tally, decision, rationale, and follow-up on the PR and in the SEP review queue. If more than half of the Core Maintainers vote against a SEP, it is marked `rejected` and does not move forward in its current form. The author can revise the proposal based on the feedback and resubmit it for review. A proposal that reaches neither threshold returns to `draft` for revision or later review.
+
+All current Core Maintainers, including Lead Maintainers, are eligible to vote. Emeritus members are not. The voting record lists the eligible voters and the revision being voted on. Abstentions and absences do not count as votes in favor, and a majority of the maintainers attending a meeting is not sufficient on its own.
+
+If the proposal changes materially during the vote, it returns to review, and votes cast for the earlier revision do not carry over. A vote that cannot conclude before the review window closes is deferred to the next window.
+
+Lead Maintainers keep their [existing authority](/community/governance#roles). A proposal that amends governance also has to meet the stricter requirements of the [governance amendment procedure](/community/governance#amendments).
 
 ## Conformance Test Requirement
 
@@ -33528,13 +33715,21 @@ The Model Context Protocol roadmap, covering the priority areas Core Maintainers
 
 > [!NOTE]
 >
-> Last updated: **2026-08-22**
+> Last updated: **2026-11-16**
 
 This page outlines the Core Maintainers' vision for the protocol over the coming six to twelve months, highlighting objectives targeted for the next specification update and beyond. It describes our primary strategic goals and the expected deliverables from [Working and Interest Groups](/community/working-interest-groups).
 
 > [!NOTE]
 >
 > This roadmap reflects current thinking rather than firm commitments. Priorities may shift, some items may be delivered differently than described or deferred, and work not listed here may still be included in the release.
+
+## Next Release
+
+The next specification release is targeted for **March 30, 2027**. This replaces the earlier December 2026 target. It is the first release on the six-month [release cycle](/community/release-cycle), and it uses the planning completed in August 2026. Its Core Maintainer review window closes at the soft freeze date, **2.5 months** before the release. The [2027-03-30 release page](https://voting.modelcontextprotocol.io/p/releases/2027-03-30) lists the exact milestone dates and the SEPs targeted for the release, and the [review agenda](https://voting.modelcontextprotocol.io/p/agenda) lists the scheduled review meetings.
+
+Planning for the September 2027 release begins in late January 2027, and planning for the March 2028 release begins in late July 2027.
+
+SEP pull requests that were opened before the release cycle took effect remain valid. They keep their numbers, discussions, and completed decisions, and authors do not need to close and recreate them. Before its next formal review, each of these proposals needs [sponsorship](/community/sep-guidelines#sponsors) from a working group or the Core Maintainer group and an entry in the [SEP review queue](/community/release-cycle#sep-review-queue). Proposals that were already accepted remain accepted and must be Final and merged by the soft freeze date to be included in the release.
 
 ## SEP Prioritization
 

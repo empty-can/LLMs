@@ -7195,6 +7195,9 @@
     <loc>https://claude.com/marketplace/connectors/bitmovin</loc>
   </url>
   <url>
+    <loc>https://claude.com/marketplace/connectors/bitpanda</loc>
+  </url>
+  <url>
     <loc>https://claude.com/marketplace/connectors/bitrise-mcp</loc>
   </url>
   <url>
@@ -8027,6 +8030,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/frontify</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/connectors/fulfil</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/connectors/fullenrich-mcp</loc>
@@ -10772,6 +10778,9 @@
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/cerebrium-skills</loc>
+  </url>
+  <url>
+    <loc>https://claude.com/marketplace/plugins/chattermill</loc>
   </url>
   <url>
     <loc>https://claude.com/marketplace/plugins/chdb</loc>

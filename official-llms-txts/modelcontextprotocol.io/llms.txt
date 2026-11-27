@@ -333,6 +333,7 @@
 - [SEP Guidelines](https://modelcontextprotocol.io/community/sep-guidelines.md): When a Specification Enhancement Proposal is required and the procedure a proposal follows from pull request to Final.
 - [Design Principles](https://modelcontextprotocol.io/community/design-principles.md): The core design principles that guide the development of the Model Context Protocol.
 - [Roadmap](https://modelcontextprotocol.io/development/roadmap.md): The Model Context Protocol roadmap, covering the priority areas Core Maintainers and Working Groups are driving for the next specification release and how they shape SEP review.
+- [Release Cycle](https://modelcontextprotocol.io/community/release-cycle.md): Release milestones and deadlines for SEP authors and SDK maintainers.
 - [Governance and Stewardship](https://modelcontextprotocol.io/community/governance.md): Learn about the Model Context Protocol's governance structure and how to participate in the community
 - [Contributor Ladder](https://modelcontextprotocol.io/community/contributor-ladder.md): The contributor roles in the MCP project, what each requires and grants, and how people move between them.
 - [Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups.md): The MCP project's working groups and interest groups, how to join or start one, and the operating rules every group follows.
