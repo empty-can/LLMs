@@ -1,57 +1,78 @@
 ---
-対象期間: 2026年11月24日 〜 2026年11月25日
-作成日: 2026-11-25
+対象期間: 2026年11月25日 〜 2026年11月27日
+作成日: 2026-11-27
 ---
 
 # Claude Code 公式ドキュメント更新サマリ - 詳細版
 
 <!-- light:summary:start -->
 ```markdown
-**今回は、ターミナルのタップモードの音声入力が、自動で止まっても文字を送らずに残し、続きを録れるようになったことがページに載りました。Claude Security の `claude-security` コマンドでは、サンドボックスでのスキャンに `--provider` でプロバイダーを渡す手順が加わりました**。変わったのは `voice-dictation`・`claude-security`・`managed-settings` の 3 ページだけで、どれも 50 行未満です。changelog への追加、新規ページ、新着情報のページはなく、`llms.txt` も変わっていません（URL は 221 のまま）。`llms-full.txt` の生の差分は追加 61・削除 13 で、総行数は 137,436 行から 137,484 行になりました。
+**今回は、Desktop アプリの管理者向けの記述が増えました。SSH とローカルセッションを制限する 3 つのキーは、サーバー管理設定（server-managed settings）と各コンピューターの管理設定の両方に置く、という節ができました。管理設定の `model` で、新しいセッションが始まるモデルを決める節も加わりました**。変わったのは `desktop`・`settings-reference`・`model-config` の 3 ページです。このうち `desktop` は 78 行（追加 62・削除 16）が変わった大幅更新です。changelog への追加、新規ページ、新着情報のページはなく、`llms.txt` も変わっていません（URL は 221 のまま）。`llms-full.txt` の生の差分は追加 75・削除 25 で、総行数は 137,484 行から 137,534 行になりました。
 
 主要なものを以下に挙げます。
 
-1. ターミナルのタップモードの録音が自動で止まるまでの時間が、言葉の認識がない 60 秒か合計 10 分に延びた（以前は 15 秒か 2 分）。止まっても文字は送られずにプロンプトに残り、`Space` のタップで続きを録れる。止まった理由はフッターに出る
-2. `claude-security` コマンドでサンドボックスでスキャンするときは、`--provider` に `anthropic`・`bedrock`・`vertex`・`foundry` のどれかを渡す。どれを使うかは `/status` で確かめ、Windows では `--provider` の代わりに `--no-sandbox` を付ける
+1. Claude Desktop v3.1623.0 以降は、`sshHostAllowlist`・`disableDesktopLocalSessions`・`disableSshSavedPasswords` を、サーバー管理設定と、コンピューター上の Claude Code の MDM ポリシーか管理設定ファイルの両方から読む。両方に同じ値を置き、コンピューター側は Desktop 自身のデバイス管理ポリシーではなく Claude Code のものに置く
+2. Desktop の管理設定の表に `model` が加わり、モデルピッカーの **Set by admin** の意味と、開始時のモデルの設定をやめる手順が載った。`model-config` では、組織のデフォルトの上書きが有効でも `--model` などのモデルで始まるのは「ターミナルでは」と限定された
+3. Linux か macOS のリモートマシンでは、Claude Desktop v6.6395.0 以降なら、フォルダーの制限があっても Desktop の切断中にファイルの読み取り・検索・編集を続けられる。新しいワークフローも、条件を満たせば前もって承認しておくことで切断中に始められる
 ```
 <!-- light:summary:end -->
 
 ## ハイライト
 
 <!-- light:highlight-list:start -->
-1. [**タップモードの音声入力は自動で止まっても送信されず続きを録れるようになった**](#1-タップモードの音声入力は自動で止まっても送信されず続きを録れるようになった):  
-  `voice-dictation` に h3「Resume a recording that stopped by itself」ができ、自動で止まったタップモードの録音の文字が送信されずにプロンプトに残ること、`Enter` で送るか `Space` のタップで続きを録れること、フッターの `dictation stopped` の 7 つのメッセージの意味が載りました。録音が自動で止まるのは、言葉の認識がない 60 秒か合計 10 分（以前は 15 秒か 2 分）です
-2. [**Claude Security のシェルからのスキャンでプロバイダーを指定するようになった**](#2-claude-security-のシェルからのスキャンでプロバイダーを指定するようになった):  
-  `claude-security` の「Scan from your shell」に、サンドボックスでのスキャンには `--provider` でコードを受け取るプロバイダー（`anthropic`・`bedrock`・`vertex`・`foundry`）を渡す、という手順と、`/status` での値の選び方、`--model-base-url` の使い方が加わり、コマンドの例もすべて `--provider <provider>` 付きになりました
+1. [**Desktop の SSH とローカルセッションの 3 つのキーをサーバー管理設定とコンピューターの両方に置くようになった**](#1-desktop-の-ssh-とローカルセッションの-3-つのキーをサーバー管理設定とコンピューターの両方に置くようになった):  
+  `desktop` に h4「Keys that apply from server-managed settings and managed settings on a computer」と、その下の h5「Which SSH host allowlists apply」ができました。Claude Desktop v3.1623.0 以降が `sshHostAllowlist`・`disableDesktopLocalSessions`・`disableSshSavedPasswords` を両方から読むこと、どちらの値が効くか、なぜ同じ許可リストを両方に置くのかが載っています。`settings-reference` の 2 つのキーの説明と、`policyHelper` の h4「Keys that only Claude Desktop uses」もこれに合わせて改められました
+2. [**管理設定の model で Desktop の新しいセッションが始まるモデルを決められることが載った**](#2-管理設定の-model-で-desktop-の新しいセッションが始まるモデルを決められることが載った):  
+  `desktop` の管理設定の表に `model` の行が加わり、h4「Set the model that new sessions start on」ができました。モデルピッカーの **Set by admin** の意味、設定をやめる 3 つの手順、組織のデフォルトモデルが上書きする場合の扱いが載っています。`model-config` の「Organization default model」も、`--model` などのモデルで始まるのは「ターミナルでは」と書き直されました
+3. [**Desktop の切断中も SSH のタスクでファイルの操作とワークフローを続けられる条件が載った**](#3-desktop-の切断中も-ssh-のタスクでファイルの操作とワークフローを続けられる条件が載った):  
+  `desktop` の「Limits while Desktop is disconnected」で、フォルダーの制限があっても、Linux か macOS のリモートマシンで Claude Desktop v6.6395.0 以降ならファイルの読み取り・検索・編集を続けられる、となりました。新しいワークフローを切断中に始めるための事前の承認の手順と、それを試す「Test file work and workflows」も加わっています。Windows のリモートマシンでの MCP サーバーの扱いも v6.6395.0 に合わせて書き直されました
 <!-- light:highlight-list:end -->
 
-## 1. タップモードの音声入力は自動で止まっても送信されず続きを録れるようになった
+## 1. Desktop の SSH とローカルセッションの 3 つのキーをサーバー管理設定とコンピューターの両方に置くようになった
 
-**`voice-dictation` の「Tap to record and send」が書き直され、h3「Resume a recording that stopped by itself」ができました。** 前回の changelog に加わった v2.1.332 の、タップモードの録音を長く続け、止まったら文字を送らずに残す、という変更がページに反映されたものです。
+**`desktop` の「Managed settings」の下に、h4「Keys that apply from server-managed settings and managed settings on a computer」と、h5「Which SSH host allowlists apply」ができました。** 以前の「Restrict which SSH hosts users can connect to」の警告は、サーバー管理設定を配るなら `sshHostAllowlist` はそこに置くこと、という内容でした。Desktop は既定ではポリシーのキーを配る最上位の管理ソースからしかこのキーを読まず、そこで未設定なら下位の MDM ポリシーや管理設定ファイルの一覧は無視して未設定として扱う、とありました。さらに、Desktop は起動時にサーバー管理設定を取得してキャッシュを持たないので、取得に成功するまではマシン上の一覧が効く、という理由で、同じ一覧を各マシンにも置くよう求めていました。今は、両方に置く理由を新しい節で説明する形になっています。
 
-- **自動で止まる条件**: ターミナルのタップモードの録音は、言葉の認識がないまま 60 秒たつか、合計で 10 分たつと止まります（以前は無音の 15 秒か合計 2 分）。プロンプトを送るか編集したときにも止まります
-- **止まった後**: 自動で止まった録音の文字は、送られずにプロンプトに残り、フッターに止まった理由が出ます。`Enter` で送るか、文字を編集していなければ、カーソルを文字の末尾に置いて `Space` をタップし、録音を続けます。次のタップで止めたとき、3 語以上を足していれば全文が送られます。トラブルシューティングには、v2.1.332 より前は 15 秒か 2 分で止まり、3 語以上の文字を送っていた、と書かれています
-- **2 回目のタップで止めたとき**: これまでどおり、3 語以上なら自動で送られ、それより短ければ入るだけで送られません。この説明は箇条書きに整理されました
-- **フッターのメッセージ**: 表に 7 つの行があります。`dictation stopped after 1m with no new words`（60 秒認識がない）、`dictation stopped at its 10m limit`（10 分に達した）、`dictation stopped: lost the connection`（文字起こしのサービスへの接続が閉じたか、失敗の後に開き直せない）、`dictation stopped: lost the microphone`（SoX や `arecord` のような録音のプログラムが終わったか、始まらない）、`dictation stopped: the prompt lost focus`（モデルの選択などのパネルかトランスクリプトビューアーを開いた）、`dictation stopped: the terminal detached`（バックグラウンドのセッションから最後のターミナルが離れた）、`dictation stopped: the prompt changed`（プロンプトの文字が変わった。もう一度録るには、先にプロンプトを送るか消す）です
+- **読む場所**: Claude Desktop v3.1623.0 以降は、表の 3 つのキーを、サーバー管理設定と、コンピューター上の Claude Code の MDM ポリシーか管理設定ファイルの両方から読みます。MDM ポリシーを使うなら Claude Code のもの（macOS では `com.anthropic.claudecode` ドメイン、Windows では `HKLM\SOFTWARE\Policies\ClaudeCode`）に置き、Desktop 自身のデバイス管理ポリシーには置きません。Claude アカウントでサインインしないサードパーティのプロバイダーの利用者には、claude.com の「SSH remote sessions in Claude Desktop on 3P」を案内しています
+- **どの値が効くか**（表）: `sshHostAllowlist` は、設定した一覧のそれぞれにホストが一致しなければなりません（例外は h5 に記載）。緩めるには、設定した一覧のそれぞれにホストを足します。`disableDesktopLocalSessions` と `disableSshSavedPasswords` は、コンピューター上の `true`、または Desktop が取得した後のサーバー管理設定の `true` で、もう一方が `false` でも機能がオフになります。緩めるには、`true` を置いたすべての場所から外します
+- **注意の 3 点**: 1 台のコンピューターに Claude Code の MDM ポリシーと管理設定ファイルの両方がある場合は、ポリシーに置きます。ポリシーが何かのポリシーキーを設定していると、Desktop は既定でファイルにあるこれらのキーを無視するためです。v3.1623.0 より前の版では、各キーをサーバー管理設定にも置きます。既定では、Desktop が取得した後はそちらの値だけが効きます。2 つの `disable` のキーは、Desktop が片方のソースしか持たない間も効くよう、サーバー管理設定と各コンピューターの両方で `true` にします
+- **h5「Which SSH host allowlists apply」**: サーバー管理設定と各コンピューターに同じ一覧を置くよう求めています。両方の一覧に縛られない場面として、次の 3 つを挙げています。起動のたびに、Desktop がサーバー管理設定を取得するまでの間（コンピューターに一覧がないと、どのホストも許しうる。v4.16336.0 以降は、30 日未満の以前の取得で得たサーバー管理設定の一覧のコピーとも照合するが、利用者が消したり書き換えたりできるので頼らない）。利用者が別の組織か個人のアカウントにサインインしたとき（サーバー管理設定の一覧が届かない）。最上位のソースで `managedSourcesBehavior` を `"merge"` にしたとき（Desktop が両方の一覧を合わせ、片方にしかないホストも許しうる）。空の配列は、どのホストにも一致しない一覧として扱われ、何も制限しない未設定とは違います。SSH セッションをオフにするには、すべてのソースに空の配列を置きます
 
-トラブルシューティングにも変化があります。`text kept, Enter to send` か `dictation stopped` がターミナルのフッターに出たときの項目が加わり、タップしても空白が入る場合の項目は、プロンプトに文字があり、録音の再開でもなければ `Space` は空白を入れる、録るにはプロンプトを送るか消す、という説明になりました。VS Code の拡張機能の項目は、メッセージが `Dictation stopped: no speech recognized for 60 seconds`・`Dictation stopped at its 10-minute limit`・`Dictation stopped: this panel was hidden` の 3 つになりました。パネルが見えていれば、接続とマイクが働いている限り、認識がない 60 秒か開始から 10 分で止まり、パネルを隠すと、認識がない 15 秒か隠してから 2 分で止まります。v2.1.332 より前は、前の 2 つのメッセージは `Dictation stopped: no speech recognized for 15 seconds` と `Dictation stopped at its 2-minute limit` でした。`Dictation error: The microphone stopped sending audio`（認識した文字はプロンプトの欄に残り、送られない）の項目も加わっています。
+同じページのほかの箇所も、この節に合わせて改められました。「Turn off local sessions and distribute SSH connections」は、3 つのキーを最上位の管理ソース 1 つに置き、サーバー管理設定を配るならコンピューターにもコピーを置く、という説明でした。今は、サーバー管理設定を配るならそこと各コンピューター（Claude Code の MDM ポリシーか、それがなければ管理設定ファイル）に置き、配らないなら最上位の管理ソースに置く、となりました。「Managed settings」の表の `sshHostAllowlist`・`disableDesktopLocalSessions`・`disableSshSavedPasswords` の行にも、サーバー管理設定を使うなら両方に置く、と加わりました。SSH セッションに届く管理設定の項目は、複数の管理ソースを配る場合、`sshConfigs` は `settings-reference` のその項目を、残りの 3 つは新しい h4 を見る、という案内になりました。
 
-- [音声ディクテーション - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/voice-dictation#resume-a-recording-that-stopped-by-itself)
-- [Voice dictation - Claude Code Docs (English)](https://code.claude.com/docs/en/voice-dictation#resume-a-recording-that-stopped-by-itself)
+`settings-reference` も同じ方向で書き直されました。`disableDesktopLocalSessions` と `sshHostAllowlist` の Scope は、サーバー管理設定を配るならそこと各コンピューターに置く、となりました。`disableDesktopLocalSessions` の `false` には「もう一方の場所の `true` がローカルセッションをオフにしうる」と加わっています。`sshHostAllowlist` には、Desktop はこのキーをポリシーヘルパーからは読まない、と加わりました。既定値にも、サードパーティのプロバイダーでは SSH セッションは既定でオフ、と加わっています。`policyHelper` の下には h4「Keys that only Claude Desktop uses」ができました。Desktop は自分だけが使うキー（`sshHostAllowlist`・`disableDesktopLocalSessions` など）をヘルパーを走らせずに読むので、ヘルパーだけが出すキーは未設定として扱います。こうしたキーは、ヘルパーを指定している MDM ポリシーか管理設定ファイルに置きます。
 
-## 2. Claude Security のシェルからのスキャンでプロバイダーを指定するようになった
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#keys-that-apply-from-server-managed-settings-and-managed-settings-on-a-computer)
+- [All settings - Claude Code Docs (English)](https://code.claude.com/docs/en/settings-reference#keys-that-only-claude-desktop-uses)
 
-**`claude-security` の「Scan from your shell」で、コマンドの走らせ方の段落が書き直されました。** 以前は、必要なら `--sudo` か `--no-sandbox` を付けて走らせる、とだけあり、コマンドの例は `claude-security` や `claude-security --changes` でした。今は、サンドボックスでスキャンするときは、コードを受け取るプロバイダーの値を `--provider` に渡します。
+## 2. 管理設定の model で Desktop の新しいセッションが始まるモデルを決められることが載った
 
-- **値**: `anthropic`（有料プランか Anthropic API）・`bedrock`（Amazon Bedrock）・`vertex`（Google Cloud の Agent Platform。以前の Vertex AI）・`foundry`（Microsoft Foundry）
-- **値の選び方**: ターミナルで `claude` を起動して `/status` を打ち、`API provider` の行とベース URL の行を見ます。`API provider` の行が `Amazon Bedrock`・`Google Vertex AI`・`Microsoft Foundry` なら対応する値を使い、`Amazon Bedrock (Mantle)` のようなほかのプロバイダーならセッションの中でスキャンします。ベース URL の行があれば、その URL も `--model-base-url` で渡します（例: `Anthropic base URL` なら `--provider anthropic --model-base-url https://models.example.com`。URL を拒まれたらセッションの中でスキャン）。どちらの行もなければ、組織で Claude Code を使っているなら管理者に尋ね、そうでなければ `anthropic` を使います
-- **ベース URL と資格情報**: ベース URL を渡すと、資格情報がそのホストに送られうる、と注意があります。`Anthropic base URL` では、そのホストが発行した資格情報を、ベアラートークンなら `ANTHROPIC_AUTH_TOKEN`、API キーなら `ANTHROPIC_API_KEY` で渡します
-- **コマンドの例**: `claude-security --provider <provider>`・`claude-security --provider <provider> --changes`・`claude-security --provider <provider> --tui` になりました。Windows では `--provider` と `--model-base-url` の代わりに `--no-sandbox` を付けます（`claude-security --no-sandbox --changes` など）
+**`desktop` の「Managed settings」の表に `model` の行（新しいローカルセッションが始まるモデルの ID を設定する）が加わり、h4「Set the model that new sessions start on」ができました。**
 
-「Update the plugin」の、コマンドかオプションが効かないときに確かめるプラグインの版も、0.13.0 以降から 0.13.1 以降になりました（GitHub Actions のジョブの節にある版 0.13.0 のコミットの記述はそのままです）。
+- **Set by admin**: モデルピッカーのモデルの横にこの表示があれば、管理設定がそのモデルを `model` に設定しています。表示があるとき、新しいローカルセッションの開始時には、利用者が選べる限り、利用者が最後に選んだモデルよりそのモデルが優先されます。利用者はセッションごとに別のモデルを選べます
+- **設定をやめる手順**: 1）利用者のコンピューターで **Settings > Code** か **Settings > Claude Code** を開き、**Starting values from your organization** の下で、どの管理ソースが効いているかを確かめる。2）`model` を設定しているすべての管理ソースから外し、利用者に Desktop を再起動してもらう。3）利用者に、使う各フォルダーで、セッションの最初のメッセージを送る前にモデルを選んでもらう。それまでは、新しいセッションが外したモデルで始まることがあります
+- **組織のデフォルトモデルとの関係**: 組織のデフォルトモデルが利用者の選択を上書きする設定なら、これらのセッションは、利用者が選べる限りそのデフォルトで始まります。ターミナルでは `model` が優先されるのとは違います。利用者に選ばせるには、**Organization settings > Models** と、独自のデフォルトを持つ各カスタムロールで、**Always start with the default model and effort level** もオフにします
 
-- [コードベースの脆弱性をスキャンする - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/claude-security#scan-from-your-shell)
-- [Scan your codebase for vulnerabilities - Claude Code Docs (English)](https://code.claude.com/docs/en/claude-security#scan-from-your-shell)
+`model-config` の「Organization default model」では、上書きが有効でも `--model` フラグ・`ANTHROPIC_MODEL`・管理設定・`--settings` が「なお優先される」という文が、「ターミナルでは、上書きが有効でも、新しいセッションはそれらが設定するモデルで始まる」になりました（末尾の「instead」も外れています）。`model-config` は `llms-full.txt` に 2 回載っており、同じ 1 行の変更が 2 か所に出ています。`desktop` の「Shared configuration」の Models の項目からは、Desktop と CLI で同じモデルが使える、という文が外れ、Desktop でのモデルの選び方だけになりました。
+
+- [デスクトップアプリ - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/desktop#set-the-model-that-new-sessions-start-on)
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#set-the-model-that-new-sessions-start-on)
+- [モデル設定 - Claude Code Docs (日本語)](https://code.claude.com/docs/ja/model-config#organization-default-model)
+- [Model configuration - Claude Code Docs (English)](https://code.claude.com/docs/en/model-config#organization-default-model)
+
+## 3. Desktop の切断中も SSH のタスクでファイルの操作とワークフローを続けられる条件が載った
+
+**`desktop` の「Keep a task running while Desktop is disconnected」の下の h5「Limits while Desktop is disconnected」で、切断中に失敗しうるものの説明が書き直されました。**
+
+- **Folder restrictions**: 組織がセッションで使えるフォルダーを制限していると、Desktop はファイルの読み取り・検索・編集をそれぞれ確認します。以前は、切断中はそれぞれ最大 10 分待って失敗する、とだけありました。今は、Linux か macOS のリモートマシンで Claude Desktop v6.6395.0 以降なら、3 つとも切断中に続けられます。タスクのファイルはセッションのワークツリー（ワークツリーがなければセッションのフォルダー）に置き、リモートマシンで試してから使います。Windows のリモートマシンか、それより前の版では、Desktop を接続したままにします
+- **Workflows**: 切断中に新しいワークフローが最大 10 分待って失敗する、という説明はそのままです。フォルダーの制限があるとき、企業ランチャー（corporate launcher）を通すとき、Claude Desktop v5.11492.0 より前のときは、切断中に新しいワークフローを始められない、と加わりました。それ以外なら、長いタスクの前にワークフローを承認しておきます。リモートマシンのセッションで Claude にワークフローを頼み、Desktop が尋ねたら承認します。承認はその後に開いたセッションでしか効かないので、長いタスクは新しいセッションで始めます。そのセッションでは、Auto のようにワークフローのたびに尋ねない権限モードを選び、先にリモートマシンで試します
+- **ワークツリーの編集が続くとき**（アコーディオン）: 編集が失敗する場合のうち、フォルダーの制限は「Claude Desktop が v6.6395.0 より前のとき」に限られ、Desktop を更新するよう書かれました
+
+h5「Prepare a long task」には「Test file work and workflows」の項目が加わりました。長いタスクでファイルの操作かワークフローが要るなら、数分後にファイルを編集するかワークフローを始める短いタスクを走らせ、その前に Desktop を終了します。20 分以上たってからセッションを開き、読み取り・検索・編集・ワークフローのどれかが失敗していたら、長いタスクの間は Desktop を接続したままにします。
+
+h4「Windows remote machines」の MCP サーバーの項目は「MCP servers while disconnected」になりました。以前は、一部の Windows のリモートマシンでは `claude_desktop_config.json` の MCP サーバーの呼び出しが Desktop を通るので切断中は使えず、Claude Desktop v2.37337.0 より前はすべての Windows のリモートマシンがそうだ、という説明でした。今は、切断中にコンピューターの `claude_desktop_config.json` の MCP サーバーを使うには、Claude Desktop v6.6395.0 以降で OpenSSH クライアントを通して接続し、そうでなければタスクがそれらのサーバーを使う間は Desktop を接続したままにする、となりました。
+
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#keep-a-task-running-while-desktop-is-disconnected)
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#windows-remote-machines)
 
 ## 新規追加されたページ
 
@@ -62,35 +83,49 @@
 ## 大幅に更新されたページ
 
 <!-- light:updated-pages:start -->
-（今回の対象期間に大幅更新されたページはありません。変わったページで最も多いのは `voice-dictation` の 46 行（追加 39・削除 7）で、50 行に届きません）
+- [**Desktop application**](#1-desktop-application) ([English](https://code.claude.com/docs/en/desktop#keys-that-apply-from-server-managed-settings-and-managed-settings-on-a-computer)):  
+  78 行（追加 62・削除 16）が変わりました。管理設定の 2 つの h4 と 1 つの h5 が加わり（詳細はハイライト 1・2 参照）、切断中のタスクの制限（ハイライト 3）と、SSH の接続のタイムアウトの再試行の条件が書き直されました
 <!-- light:updated-pages:end -->
+
+**行数の数え方**: `llms-full.txt` の生の差分のハンクを、追加行は head 側、削除行は base 側の `Source:` 行でページに振り分けた値です。ページの並びは変わっていません。大幅更新の 1 ページに次いで多いのは `settings-reference` の 18 行（追加 11・削除 7）、`model-config` の 4 行（追加 2・削除 2）で、どちらも 50 行に届きません。
+
+## 1. Desktop application
+
+**`desktop` は 78 行（追加 62・削除 16）が変わり、`llms-full.txt` の中のページは 2,519 行から 2,565 行になりました。** 見出しは h4「Keys that apply from server-managed settings and managed settings on a computer」・h5「Which SSH host allowlists apply」・h4「Set the model that new sessions start on」の 3 つが加わり、外れたものはありません。`llms.txt` の説明文は変わっていません。
+
+- **「Managed settings」**: 2 つの h4 と 1 つの h5、表の `model` の行、表の 3 つのキーの行への追記、SSH セッションに届く管理設定の項目の書き直し（詳細はハイライト 1・2 参照）。SSH セッションの項目にあった、ローカルの管理設定で `permissions.disableBypassPermissionsMode` か `disableAutoMode` を設定するとリモートホストの設定にかかわらずそのモードがモードセレクターに出ない、という文は、下の段落へ移りました（内容は変わっていません）
+- **「Restrict which SSH hosts users can connect to」と「Turn off local sessions and distribute SSH connections」**: サーバー管理設定とコンピューターの両方に置く、という説明に書き直されました（詳細はハイライト 1 参照）
+- **「Limits while Desktop is disconnected」「Prepare a long task」「Windows remote machines」**: フォルダーの制限・ワークフロー・MCP サーバーの扱い（詳細はハイライト 3 参照）
+- **「Raise the SSH connection timeout」**（h4「Use your SSH configuration」の下の h5）: `ConnectTimeout` を設定していないときの表が書き直されました。以前の 1 行目は、macOS か Linux の Claude Desktop v4.4212.0 以降でジャンプホストか `ProxyCommand` を通してセッションを始めるとき、30 秒の後に 90 秒の 2 回目がある、というものでした。そこでは、Desktop が `ProxyJump` のホストに出すログインのプロンプトの時間は数えない、とされていました。今は、新しいセッション・メッセージ・リトライで自分から始めるジャンプホストか `ProxyCommand` を通した接続なら 30 秒で、表の下の版なら、時間切れの後に 90 秒でもう 1 回試せます。最初の試行でプロンプトが出ていれば 2 回目はなく、経路の待ち時間はすべて数えます。それ以外の接続と、Desktop が自分で始める再接続は「30 秒と見込む」になりました。表の下には、90 秒の 2 回目には OpenSSH クライアントを通した接続が要り、新しいセッションには v4.4212.0 以降、メッセージかリトライには v4.23118.0 以降が要る、と加わりました。Desktop が Windows で動くときと、リモートマシンが `MaxSessions 1` を設定しているときは v6.6395.0 以降が要ります
+- **「Shared configuration」**: Models の項目から、Desktop と CLI で同じモデルが使える、という文が外れました（ハイライト 2 参照）
+
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#keys-that-apply-from-server-managed-settings-and-managed-settings-on-a-computer)
+- [Desktop application - Claude Code Docs (English)](https://code.claude.com/docs/en/desktop#use-your-ssh-configuration)
 
 ## 軽微な更新
 
 <!-- light:minor-updates:start -->
-今回の差分は **2 ファイル**（`llms-full.txt`・見出しマップ）で、`llms.txt` は変わっていません。`llms-full.txt` で内容が変わったのは **3 ページ**で、`voice-dictation` が 46 行（追加 39・削除 7）、`claude-security` が 26 行（追加 21・削除 5）、`managed-settings` が 2 行（追加 1・削除 1）です（合計で追加 61・削除 13 で、生の差分と一致します）。changelog への追加と、新着情報（whats-new）のページはありません。
+今回の差分は **2 ファイル**（`llms-full.txt`・見出しマップ）で、`llms.txt` は変わっていません。対象期間の途中の取り込み（`479f813`）では Claude Code の入力ファイルは変わっておらず、差分はすべて `ff1331b` の取り込みのものです。`llms-full.txt` で内容が変わったのは **3 ページ**で、大幅更新の `desktop` が 78 行（追加 62・削除 16）、`settings-reference` が 18 行（追加 11・削除 7）、`model-config` が 4 行（追加 2・削除 2。`llms-full.txt` に 2 回載っているページの同じ変更が 2 か所に出たもの）です（合計で追加 75・削除 25 で、生の差分と一致します）。以下は、大幅更新の `desktop` を除く 2 ページの変更です。changelog への追加と、新着情報（whats-new）のページはありません。
 
 **新機能**
 
-- タップモードで自動で止まった録音を、送らずに残して続きを録れるようになり、h3「Resume a recording that stopped by itself」とフッターのメッセージの表ができた（詳細はハイライト 1 参照） — [日本語](https://code.claude.com/docs/ja/voice-dictation#resume-a-recording-that-stopped-by-itself) / [English](https://code.claude.com/docs/en/voice-dictation#resume-a-recording-that-stopped-by-itself)
-- `claude-security` コマンドの、サンドボックスでのスキャンの `--provider` と `--model-base-url`（詳細はハイライト 2 参照） — [日本語](https://code.claude.com/docs/ja/claude-security#scan-from-your-shell) / [English](https://code.claude.com/docs/en/claude-security#scan-from-your-shell)
+- `settings-reference` の `policyHelper` の下に h4「Keys that only Claude Desktop uses」ができた。Desktop は自分だけが使うキーをヘルパーを走らせずに読むので、そうしたキーはヘルパーを指定する MDM ポリシーか管理設定ファイルに置く（詳細はハイライト 1 参照） — [English](https://code.claude.com/docs/en/settings-reference#keys-that-only-claude-desktop-uses)
 
 **機能改善**
 
-- ターミナルのタップモードの録音が自動で止まるまでの時間が、認識のない 60 秒か合計 10 分に延びた（詳細はハイライト 1 参照） — [日本語](https://code.claude.com/docs/ja/voice-dictation#tap-to-record-and-send) / [English](https://code.claude.com/docs/en/voice-dictation#tap-to-record-and-send)
-- VS Code の拡張機能の録音も、パネルが見えていれば認識のない 60 秒か開始から 10 分で止まるようになり、パネルを隠したときの `Dictation stopped: this panel was hidden` と、`Dictation error: The microphone stopped sending audio` の項目が加わった（詳細はハイライト 1 参照） — [日本語](https://code.claude.com/docs/ja/voice-dictation#troubleshooting) / [English](https://code.claude.com/docs/en/voice-dictation#troubleshooting)
-- 録音を `Esc` か `Ctrl+C` で取り消せるのは、パネル・質問・パーミッションのプロンプトのどれも開いていないとき、と明記された。録音を終えて文字起こしを待つ間に取り消せるのも、「プロンプトで」と限定された — [日本語](https://code.claude.com/docs/ja/voice-dictation#cancel-a-recording) / [English](https://code.claude.com/docs/en/voice-dictation#cancel-a-recording)
-- 「Hold to record」の、`Space` で音声入力を始められない場所の説明で、修飾キーの組み合わせに割り当て直す場面が、「どちらの場所からでも」から「vim モードの INSERT の外か、トランスクリプトビューアーからのホールドモード」になった — [日本語](https://code.claude.com/docs/ja/voice-dictation#hold-to-record) / [English](https://code.claude.com/docs/en/voice-dictation#hold-to-record)
+- `settings-reference` の `sshHostAllowlist` の Scope が、サーバー管理設定を配るならそこと各コンピューターに同じ一覧を置く、になり、Desktop はこのキーをポリシーヘルパーから読まない、と加わった。Default には、サードパーティのプロバイダーでは SSH セッションは既定でオフ、と加わった（詳細はハイライト 1 参照） — [English](https://code.claude.com/docs/en/settings-reference#sshhostallowlist)
+- `settings-reference` の `disableDesktopLocalSessions` の Scope が、サーバー管理設定を配るならそこと各コンピューターに置く、になり、`false` に「もう一方の場所の `true` がローカルセッションをオフにしうる」と加わった（詳細はハイライト 1 参照） — [English](https://code.claude.com/docs/en/settings-reference#disabledesktoplocalsessions)
+- `model-config` の「Organization default model」で、上書きが有効でも `--model` フラグ・`ANTHROPIC_MODEL`・管理設定・`--settings` のモデルで新しいセッションが始まるのは「ターミナルでは」と限定された（詳細はハイライト 2 参照） — [日本語](https://code.claude.com/docs/ja/model-config#organization-default-model) / [English](https://code.claude.com/docs/en/model-config#organization-default-model)
 
 **その他**
 
-- `claude-security` の「Update the plugin」で、コマンドかオプションが効かないときに確かめるプラグインの版が 0.13.0 以降から 0.13.1 以降になった — [日本語](https://code.claude.com/docs/ja/claude-security#update-the-plugin) / [English](https://code.claude.com/docs/en/claude-security#update-the-plugin)
-- `managed-settings` の「How Claude Code combines managed sources」で、リモートの設定（server-managed settings か Claude apps gateway が配る設定）について、「次の条件のどれかを満たすときだけ取得する」が「次の条件のどれかを満たすとき取得できる」という言い方になった。条件の 3 項目は変わっていない — [日本語](https://code.claude.com/docs/ja/managed-settings#how-claude-code-combines-managed-sources) / [English](https://code.claude.com/docs/en/managed-settings#how-claude-code-combines-managed-sources)
+- `settings-reference` の `disableDesktopLocalSessions` で、Type の「JSON の Boolean の `true` だけが効く」が「JSON の Boolean の `true` を使う」という言い方になった。ほかの値は無視し、文字列の `"true"` や `1` のような Boolean でない値には警告も記録する、という文と、「Local sessions on managed devices」へのリンクの文が外れた — [English](https://code.claude.com/docs/en/settings-reference#disabledesktoplocalsessions)
+- `settings-reference` の `sshHostAllowlist` の、`managedSourcesBehavior` を `"merge"` にしたときの段落で、どれかに一致するホストを「許す」が、片方にしか一致しないホストも「許しうる」に、空の配列を置いても SSH セッションがほかのソースのホストで「オンのまま」が「オンのままでありうる」になった — [English](https://code.claude.com/docs/en/settings-reference#sshhostallowlist)
 <!-- light:minor-updates:end -->
 
-見出しマップ（`en/claude_code_docs_map.md`）は、更新時刻が 2026年11月25日 05:00:49 UTC から 2026年11月25日 06:20:24 UTC に替わったほか、見出しの 5 行が加わりました（6,993 行から 6,998 行）。`voice-dictation` の h3「Resume a recording that stopped by itself」と、`hooks` の h3「PreSkillShellCommand」・その下の h4 が 3 つです。`hooks` の 4 行は、前回の対象期間に `llms-full.txt` に加わっていた節（前回のハイライト 2）で、今回、見出しマップがそれに追いつきました（`llms-full.txt` の `PreSkillShellCommand` は base・head とも 25 か所で、変わっていません）。
+見出しマップ（`en/claude_code_docs_map.md`）は、更新時刻が 2026年11月25日 06:20:24 UTC から 2026年11月28日 05:00:48 UTC に替わったほか、見出しの 4 行が加わりました（6,998 行から 7,002 行）。`desktop` の h4「Keys that apply from server-managed settings and managed settings on a computer」とその下の h5「Which SSH host allowlists apply」、h4「Set the model that new sessions start on」、`settings-reference` の h4「Keys that only Claude Desktop uses」で、どれも `llms-full.txt` に加わった見出しです。今回、見出しマップにだけ先に載った見出しはありません。
 
-**参考リンクについて**: 日本語版は、リンクを付けた 3 ページの HTML を取得して、見出しの id があるかと、今回の差分で出入りしたコードの字句・メッセージ（`dictation stopped after 1m with no new words`・`text kept, Enter to send`・`Dictation stopped: this panel was hidden`・`The microphone stopped sending audio`・`--provider`・`--model-base-url`・`Amazon Bedrock (Mantle)`・`ANTHROPIC_AUTH_TOKEN`・`0.13.1` など）が英語版と同じだけあるかを確かめました。地の文だけの変更（取り消しの条件、ホールドモードの説明、録音が止まるまでの時間、`managed-settings` の言い方）は日本語版の本文を読んで確かめ、どれも今回の内容になっていたので、すべての項目で日本語版にもリンクしています。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
+**参考リンクについて**: 日本語版は、リンクを付けた 3 ページの HTML を取得して確かめました。見るのは、見出しの id があるかと、今回の差分で出入りしたコードの字句（版の数字・キー名・リンク先。base と head の `llms-full.txt` で数が違うものだけ）が英語版と同じだけあるかです。`model-config` は、日本語版の「Organization default model」が「ターミナルでは」の文になっていたので、日本語版にもリンクしています。`desktop` は、日本語版に h4「Set the model that new sessions start on」と表の `model` の行があり、「Shared configuration」の Models の項目も今回の内容になっていたので、その節には日本語版にもリンクしています。一方、`desktop` の日本語版には h4「Keys that apply from server-managed settings and managed settings on a computer」がなく、`v6.6395.0` も 0 か所で、`v4.23118.0` や `#prepare-a-long-task` の数も英語版より少なくなっていました。SSH の節はまだ追従していないため、英語版だけにリンクしています。`settings-reference` の日本語版にも h4「Keys that only Claude Desktop uses」と新しいリンク先がないので、英語版だけにしています。h5 の「Which SSH host allowlists apply」「Raise the SSH connection timeout」「Prepare a long task」「Limits while Desktop is disconnected」には HTML の id がないため、親の h4 の id を使っています。**changelog ページへのリンクは、本サマリの方針どおり付けていません。**
 
 ## 新着情報
 
@@ -100,11 +135,11 @@
 
 ## 関連リンク
 
-- 前回サマリ(ライト版): [./archives/latest/2026-11-24.md](./archives/latest/2026-11-24.md)
-- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-24.md](./archives/latest-detail/2026-11-24.md)
+- 前回サマリ(ライト版): [./archives/latest/2026-11-25.md](./archives/latest/2026-11-25.md)
+- 前回サマリ(詳細版): [./archives/latest-detail/2026-11-25.md](./archives/latest-detail/2026-11-25.md)
 
 <!--
-base_commit: 1c6dc5c3f6d9261729fd5a8dbb3dd2389c542149
-head_commit: 1fbf59d6a37ee0c078616ce1887005838b16c3ae
-generated_at_full: 2026-11-26T15:06:23+09:00
+base_commit: 1fbf59d6a37ee0c078616ce1887005838b16c3ae
+head_commit: ff1331b1ac08161c9abe13ea96b72c30b1a450ff
+generated_at_full: 2026-11-28T15:05:59+09:00
 -->
