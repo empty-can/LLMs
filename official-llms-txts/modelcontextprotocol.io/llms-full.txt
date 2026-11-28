@@ -24421,10 +24421,11 @@ This matrix shows which MCP clients support each [official extension](/extension
 | [mcpc MCP CLI](https://github.com/apify/mcpc) | | | | | | |
 | [Glean](https://www.glean.com/) | | | | | | |
 | [mcp-use](https://github.com/mcp-use/mcp-use) | | | | | | |
+| [OpenCode](https://opencode.ai/) | | | | | | [Partial](https://github.com/anomalyco/opencode/pull/65271) |
 
 > [!NOTE]
 >
-> Events support marked **Partial** means webhook delivery only. Clients marked with a check support poll, push and webhook delivery. Most of these implementations predate SEP-3415 reaching Final and track the draft specification.
+> Events support marked **Partial** means only some delivery modes: webhook only for ChatGPT, and push only for OpenCode. Clients marked with a check support poll, push and webhook delivery. Most of these implementations predate SEP-3415 reaching Final and track the draft specification.
 
 > [!NOTE]
 >
@@ -33718,6 +33719,8 @@ The Model Context Protocol roadmap, covering the priority areas Core Maintainers
 > Last updated: **2026-11-16**
 
 This page outlines the Core Maintainers' vision for the protocol over the coming six to twelve months, highlighting objectives targeted for the next specification update and beyond. It describes our primary strategic goals and the expected deliverables from [Working and Interest Groups](/community/working-interest-groups).
+
+For when specification releases ship and how SEPs are scheduled into them, see the [release cycle](/community/release-cycle).
 
 > [!NOTE]
 >
